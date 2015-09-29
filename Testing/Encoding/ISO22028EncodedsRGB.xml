@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+	<Header>
+		<ProfileVersion>5.0</ProfileVersion>
+		<ProfileDeviceClass>enc3</ProfileDeviceClass>
+		<DataColourSpace>RGB </DataColourSpace>
+	</Header>
+	<Tags>
+		<utf8TextType>
+			<TagSignature>rfnm</TagSignature>
+			<TextData>ISO 22028</TextData>
+		</utf8TextType>
+		<utf8TextType>
+			<TagSignature>csnm</TagSignature>
+			<TextData>sRGB</TextData>
+		</utf8TextType>
+		<tagStructureType>
+			<TagSignature>cept</TagSignature>
+			<StructureSignature>cept</StructureSignature>
+			<MemberTags>
+				<float32NumberType>
+					<TagSignature>bXYZ</TagSignature>
+					<Data>0.15 0.06</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>gXYZ</TagSignature>
+					<Data>0.30 0.60</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>rXYZ</TagSignature>
+					<Data>0.64 0.33</Data>
+				</float32NumberType>
+				<segmentedCurveType>
+					<TagSignature>func</TagSignature>
+					<SegmentedCurve>
+						<FormulaSegment Start="-inf" End="0.0031308" FunctionType="0">1.0 12.92 0 0</FormulaSegment>
+						<FormulaSegment Start="0.0031308" End="+inf" FunctionType="0">0.41666666666666666666667 1.1371189658248803997310804071743 0 -0.055</FormulaSegment>
+					</SegmentedCurve>
+				</segmentedCurveType>
+				<float32NumberType>
+					<TagSignature>wlum</TagSignature>
+					<Data>80</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>wXYZ</TagSignature>
+					<Data>0.3127 0.3290</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>eRng</TagSignature>
+					<Data>0 1</Data>
+				</float32NumberType>
+				<uInt8NumberType>
+					<TagSignature>bits</TagSignature>
+					<Data>0 8 16</Data>
+				</uInt8NumberType>
+				<signatureType>
+					<TagSignature>imst</TagSignature>
+					<Signature>dorc</Signature>
+				</signatureType>
+				<float32NumberType>
+					<TagSignature>ibkg</TagSignature>
+					<Data>16</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>srnd</TagSignature>
+					<Data>4.1</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>alum</TagSignature>
+					<Data>64</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>mwpl</TagSignature>
+					<Data>80</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>mwpc</TagSignature>
+					<Data>0.3127 0.3290</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>mbpl</TagSignature>
+					<Data>80</Data>
+				</float32NumberType>
+				<float32NumberType>
+					<TagSignature>mbpc</TagSignature>
+					<Data>0.3127 0.3290</Data>
+				</float32NumberType>
+			</MemberTags>
+		</tagStructureType>
+	</Tags>	
+</IccProfile>

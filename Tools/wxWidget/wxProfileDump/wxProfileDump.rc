@@ -1,0 +1,15 @@
+aaaa                    ICON    "wxProfileDump.ico"
+
+/* Useful if PROVIDE_DEFAULT_ICONS is set in wx_setup.h */
+#define IHaveMDIParentIcon
+#define IHaveMDIChildIcon
+
+wxSTD_MDIPARENTFRAME    ICON    "wxProfileDump.ico"
+wxSTD_MDICHILDFRAME     ICON    "ProfileDumpDoc.ico"
+
+wxProfileDump_icn       ICON    "wxProfileDump.ico"
+ProfileDumpDoc_icn      ICON    "ProfileDumpDoc.ico"
+
+
+#include "wx/msw/wx.rc"
+

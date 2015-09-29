@@ -1,0 +1,443 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		84D0CD5514CDFD1600E7BC57 /* IccApplyBPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD3D14CDFD1600E7BC57 /* IccApplyBPC.h */; };
+		84D0CD5614CDFD1600E7BC57 /* IccCmm.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD3E14CDFD1600E7BC57 /* IccCmm.h */; };
+		84D0CD5714CDFD1600E7BC57 /* IccDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD3F14CDFD1600E7BC57 /* IccDefs.h */; };
+		84D0CD5814CDFD1600E7BC57 /* IccEval.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4014CDFD1600E7BC57 /* IccEval.h */; };
+		84D0CD5914CDFD1600E7BC57 /* IccIO.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4114CDFD1600E7BC57 /* IccIO.h */; };
+		84D0CD5A14CDFD1600E7BC57 /* IccMpeACS.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4214CDFD1600E7BC57 /* IccMpeACS.h */; };
+		84D0CD5B14CDFD1600E7BC57 /* IccMpeBasic.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4314CDFD1600E7BC57 /* IccMpeBasic.h */; };
+		84D0CD5C14CDFD1600E7BC57 /* IccMpeFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4414CDFD1600E7BC57 /* IccMpeFactory.h */; };
+		84D0CD5D14CDFD1600E7BC57 /* IccPrmg.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4514CDFD1600E7BC57 /* IccPrmg.h */; };
+		84D0CD5E14CDFD1600E7BC57 /* IccProfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4614CDFD1600E7BC57 /* IccProfile.h */; };
+		84D0CD5F14CDFD1600E7BC57 /* IccProfLibConf.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4714CDFD1600E7BC57 /* IccProfLibConf.h */; };
+		84D0CD6014CDFD1600E7BC57 /* IccTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4814CDFD1600E7BC57 /* IccTag.h */; };
+		84D0CD6114CDFD1600E7BC57 /* IccTagBasic.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4914CDFD1600E7BC57 /* IccTagBasic.h */; };
+		84D0CD6214CDFD1600E7BC57 /* IccTagFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4A14CDFD1600E7BC57 /* IccTagFactory.h */; };
+		84D0CD6314CDFD1600E7BC57 /* IccTagLut.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4B14CDFD1600E7BC57 /* IccTagLut.h */; };
+		84D0CD6414CDFD1600E7BC57 /* IccTagMPE.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4C14CDFD1600E7BC57 /* IccTagMPE.h */; };
+		84D0CD6514CDFD1600E7BC57 /* IccTagProfSeqId.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4D14CDFD1600E7BC57 /* IccTagProfSeqId.h */; };
+		84D0CD6614CDFD1600E7BC57 /* IccUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4E14CDFD1600E7BC57 /* IccUtil.h */; };
+		84D0CD6714CDFD1600E7BC57 /* IccXformFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD4F14CDFD1600E7BC57 /* IccXformFactory.h */; };
+		84D0CD6814CDFD1600E7BC57 /* icProfileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD5014CDFD1600E7BC57 /* icProfileHeader.h */; };
+		84D0CD6914CDFD1600E7BC57 /* MainPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD5114CDFD1600E7BC57 /* MainPage.h */; };
+		84D0CD6A14CDFD1600E7BC57 /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD5214CDFD1600E7BC57 /* md5.h */; };
+		84D0CD6B14CDFD1600E7BC57 /* IccConvertUTF.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD5314CDFD1600E7BC57 /* IccConvertUTF.h */; };
+		84D0CD6C14CDFD1600E7BC57 /* IccTagDict.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D0CD5414CDFD1600E7BC57 /* IccTagDict.h */; };
+		84D0CEB914CE1C2500E7BC57 /* IccApplyBPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEA414CE1C2500E7BC57 /* IccApplyBPC.cpp */; };
+		84D0CEBA14CE1C2500E7BC57 /* IccCmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEA514CE1C2500E7BC57 /* IccCmm.cpp */; };
+		84D0CEBB14CE1C2500E7BC57 /* IccEval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEA614CE1C2500E7BC57 /* IccEval.cpp */; };
+		84D0CEBC14CE1C2500E7BC57 /* IccIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEA714CE1C2500E7BC57 /* IccIO.cpp */; };
+		84D0CEBD14CE1C2500E7BC57 /* IccMpeACS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEA814CE1C2500E7BC57 /* IccMpeACS.cpp */; };
+		84D0CEBE14CE1C2500E7BC57 /* IccMpeBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEA914CE1C2500E7BC57 /* IccMpeBasic.cpp */; };
+		84D0CEBF14CE1C2500E7BC57 /* IccMpeFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEAA14CE1C2500E7BC57 /* IccMpeFactory.cpp */; };
+		84D0CEC014CE1C2500E7BC57 /* IccPrmg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEAB14CE1C2500E7BC57 /* IccPrmg.cpp */; };
+		84D0CEC114CE1C2500E7BC57 /* IccProfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEAC14CE1C2500E7BC57 /* IccProfile.cpp */; };
+		84D0CEC214CE1C2500E7BC57 /* IccTagBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEAD14CE1C2500E7BC57 /* IccTagBasic.cpp */; };
+		84D0CEC314CE1C2500E7BC57 /* IccTagFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEAE14CE1C2500E7BC57 /* IccTagFactory.cpp */; };
+		84D0CEC414CE1C2500E7BC57 /* IccTagLut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEAF14CE1C2500E7BC57 /* IccTagLut.cpp */; };
+		84D0CEC514CE1C2500E7BC57 /* IccTagMPE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB014CE1C2500E7BC57 /* IccTagMPE.cpp */; };
+		84D0CEC614CE1C2500E7BC57 /* IccTagProfSeqId.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB114CE1C2500E7BC57 /* IccTagProfSeqId.cpp */; };
+		84D0CEC714CE1C2500E7BC57 /* IccUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB214CE1C2500E7BC57 /* IccUtil.cpp */; };
+		84D0CEC814CE1C2500E7BC57 /* IccXformFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB314CE1C2500E7BC57 /* IccXformFactory.cpp */; };
+		84D0CEC914CE1C2500E7BC57 /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB414CE1C2500E7BC57 /* md5.cpp */; };
+		84D0CECA14CE1C2500E7BC57 /* IccConvertUTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB514CE1C2500E7BC57 /* IccConvertUTF.cpp */; };
+		84D0CECB14CE1C2500E7BC57 /* IccTagDict.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D0CEB614CE1C2500E7BC57 /* IccTagDict.cpp */; };
+		D2E4615805D9820200369F64 /* RefIccMAXCmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 069390F600CDABE311CA254A /* RefIccMAXCmm.cpp */; };
+		D2E4615A05D9820200369F64 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 069390FC00CDAD9411CA254A /* ApplicationServices.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		069390F600CDABE311CA254A /* RefIccMAXCmm.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = RefIccMAXCmm.cpp; sourceTree = "<group>"; };
+		069390FC00CDAD9411CA254A /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		84D0CD3D14CDFD1600E7BC57 /* IccApplyBPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccApplyBPC.h; path = ../../../IccProfLib/IccApplyBPC.h; sourceTree = SOURCE_ROOT; };
+		84D0CD3E14CDFD1600E7BC57 /* IccCmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccCmm.h; path = ../../../IccProfLib/IccCmm.h; sourceTree = SOURCE_ROOT; };
+		84D0CD3F14CDFD1600E7BC57 /* IccDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccDefs.h; path = ../../../IccProfLib/IccDefs.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4014CDFD1600E7BC57 /* IccEval.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccEval.h; path = ../../../IccProfLib/IccEval.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4114CDFD1600E7BC57 /* IccIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccIO.h; path = ../../../IccProfLib/IccIO.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4214CDFD1600E7BC57 /* IccMpeACS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccMpeACS.h; path = ../../../IccProfLib/IccMpeACS.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4314CDFD1600E7BC57 /* IccMpeBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccMpeBasic.h; path = ../../../IccProfLib/IccMpeBasic.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4414CDFD1600E7BC57 /* IccMpeFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccMpeFactory.h; path = ../../../IccProfLib/IccMpeFactory.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4514CDFD1600E7BC57 /* IccPrmg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccPrmg.h; path = ../../../IccProfLib/IccPrmg.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4614CDFD1600E7BC57 /* IccProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccProfile.h; path = ../../../IccProfLib/IccProfile.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4714CDFD1600E7BC57 /* IccProfLibConf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccProfLibConf.h; path = ../../../IccProfLib/IccProfLibConf.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4814CDFD1600E7BC57 /* IccTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTag.h; path = ../../../IccProfLib/IccTag.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4914CDFD1600E7BC57 /* IccTagBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagBasic.h; path = ../../../IccProfLib/IccTagBasic.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4A14CDFD1600E7BC57 /* IccTagFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagFactory.h; path = ../../../IccProfLib/IccTagFactory.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4B14CDFD1600E7BC57 /* IccTagLut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagLut.h; path = ../../../IccProfLib/IccTagLut.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4C14CDFD1600E7BC57 /* IccTagMPE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagMPE.h; path = ../../../IccProfLib/IccTagMPE.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4D14CDFD1600E7BC57 /* IccTagProfSeqId.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagProfSeqId.h; path = ../../../IccProfLib/IccTagProfSeqId.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4E14CDFD1600E7BC57 /* IccUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccUtil.h; path = ../../../IccProfLib/IccUtil.h; sourceTree = SOURCE_ROOT; };
+		84D0CD4F14CDFD1600E7BC57 /* IccXformFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccXformFactory.h; path = ../../../IccProfLib/IccXformFactory.h; sourceTree = SOURCE_ROOT; };
+		84D0CD5014CDFD1600E7BC57 /* icProfileHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = icProfileHeader.h; path = ../../../IccProfLib/icProfileHeader.h; sourceTree = SOURCE_ROOT; };
+		84D0CD5114CDFD1600E7BC57 /* MainPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainPage.h; path = ../../../IccProfLib/MainPage.h; sourceTree = SOURCE_ROOT; };
+		84D0CD5214CDFD1600E7BC57 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = md5.h; path = ../../../IccProfLib/md5.h; sourceTree = SOURCE_ROOT; };
+		84D0CD5314CDFD1600E7BC57 /* IccConvertUTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccConvertUTF.h; path = ../../../IccProfLib/IccConvertUTF.h; sourceTree = SOURCE_ROOT; };
+		84D0CD5414CDFD1600E7BC57 /* IccTagDict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagDict.h; path = ../../../IccProfLib/IccTagDict.h; sourceTree = SOURCE_ROOT; };
+		84D0CEA414CE1C2500E7BC57 /* IccApplyBPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccApplyBPC.cpp; path = ../../../IccProfLib/IccApplyBPC.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEA514CE1C2500E7BC57 /* IccCmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccCmm.cpp; path = ../../../IccProfLib/IccCmm.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEA614CE1C2500E7BC57 /* IccEval.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccEval.cpp; path = ../../../IccProfLib/IccEval.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEA714CE1C2500E7BC57 /* IccIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccIO.cpp; path = ../../../IccProfLib/IccIO.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEA814CE1C2500E7BC57 /* IccMpeACS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccMpeACS.cpp; path = ../../../IccProfLib/IccMpeACS.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEA914CE1C2500E7BC57 /* IccMpeBasic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccMpeBasic.cpp; path = ../../../IccProfLib/IccMpeBasic.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEAA14CE1C2500E7BC57 /* IccMpeFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccMpeFactory.cpp; path = ../../../IccProfLib/IccMpeFactory.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEAB14CE1C2500E7BC57 /* IccPrmg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccPrmg.cpp; path = ../../../IccProfLib/IccPrmg.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEAC14CE1C2500E7BC57 /* IccProfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccProfile.cpp; path = ../../../IccProfLib/IccProfile.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEAD14CE1C2500E7BC57 /* IccTagBasic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagBasic.cpp; path = ../../../IccProfLib/IccTagBasic.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEAE14CE1C2500E7BC57 /* IccTagFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagFactory.cpp; path = ../../../IccProfLib/IccTagFactory.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEAF14CE1C2500E7BC57 /* IccTagLut.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagLut.cpp; path = ../../../IccProfLib/IccTagLut.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB014CE1C2500E7BC57 /* IccTagMPE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagMPE.cpp; path = ../../../IccProfLib/IccTagMPE.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB114CE1C2500E7BC57 /* IccTagProfSeqId.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagProfSeqId.cpp; path = ../../../IccProfLib/IccTagProfSeqId.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB214CE1C2500E7BC57 /* IccUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccUtil.cpp; path = ../../../IccProfLib/IccUtil.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB314CE1C2500E7BC57 /* IccXformFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccXformFactory.cpp; path = ../../../IccProfLib/IccXformFactory.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB414CE1C2500E7BC57 /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = md5.cpp; path = ../../../IccProfLib/md5.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB514CE1C2500E7BC57 /* IccConvertUTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccConvertUTF.cpp; path = ../../../IccProfLib/IccConvertUTF.cpp; sourceTree = SOURCE_ROOT; };
+		84D0CEB614CE1C2500E7BC57 /* IccTagDict.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagDict.cpp; path = ../../../IccProfLib/IccTagDict.cpp; sourceTree = SOURCE_ROOT; };
+		D2E4615D05D9820200369F64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2E4615E05D9820200369F64 /* RefIccLabs.cmm */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefIccLabs.cmm; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2E4615905D9820200369F64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2E4615A05D9820200369F64 /* ApplicationServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* RefIccMAXCmm */ = {
+			isa = PBXGroup;
+			children = (
+				84D0CD3C14CDFD0700E7BC57 /* SamleICC */,
+				069390F600CDABE311CA254A /* RefIccMAXCmm.cpp */,
+				D2E4615D05D9820200369F64 /* Info.plist */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				19C28FB4FE9D528D11CA2CBB /* Products */,
+			);
+			name = RefIccMAXCmm;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				069390FC00CDAD9411CA254A /* ApplicationServices.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		19C28FB4FE9D528D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2E4615E05D9820200369F64 /* RefIccLabs.cmm */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84D0CD3C14CDFD0700E7BC57 /* SamleICC */ = {
+			isa = PBXGroup;
+			children = (
+				84D0CEA414CE1C2500E7BC57 /* IccApplyBPC.cpp */,
+				84D0CEA514CE1C2500E7BC57 /* IccCmm.cpp */,
+				84D0CEA614CE1C2500E7BC57 /* IccEval.cpp */,
+				84D0CEA714CE1C2500E7BC57 /* IccIO.cpp */,
+				84D0CEA814CE1C2500E7BC57 /* IccMpeACS.cpp */,
+				84D0CEA914CE1C2500E7BC57 /* IccMpeBasic.cpp */,
+				84D0CEAA14CE1C2500E7BC57 /* IccMpeFactory.cpp */,
+				84D0CEAB14CE1C2500E7BC57 /* IccPrmg.cpp */,
+				84D0CEAC14CE1C2500E7BC57 /* IccProfile.cpp */,
+				84D0CEAD14CE1C2500E7BC57 /* IccTagBasic.cpp */,
+				84D0CEAE14CE1C2500E7BC57 /* IccTagFactory.cpp */,
+				84D0CEAF14CE1C2500E7BC57 /* IccTagLut.cpp */,
+				84D0CEB014CE1C2500E7BC57 /* IccTagMPE.cpp */,
+				84D0CEB114CE1C2500E7BC57 /* IccTagProfSeqId.cpp */,
+				84D0CEB214CE1C2500E7BC57 /* IccUtil.cpp */,
+				84D0CEB314CE1C2500E7BC57 /* IccXformFactory.cpp */,
+				84D0CEB414CE1C2500E7BC57 /* md5.cpp */,
+				84D0CEB514CE1C2500E7BC57 /* IccConvertUTF.cpp */,
+				84D0CEB614CE1C2500E7BC57 /* IccTagDict.cpp */,
+				84D0CD3D14CDFD1600E7BC57 /* IccApplyBPC.h */,
+				84D0CD3E14CDFD1600E7BC57 /* IccCmm.h */,
+				84D0CD3F14CDFD1600E7BC57 /* IccDefs.h */,
+				84D0CD4014CDFD1600E7BC57 /* IccEval.h */,
+				84D0CD4114CDFD1600E7BC57 /* IccIO.h */,
+				84D0CD4214CDFD1600E7BC57 /* IccMpeACS.h */,
+				84D0CD4314CDFD1600E7BC57 /* IccMpeBasic.h */,
+				84D0CD4414CDFD1600E7BC57 /* IccMpeFactory.h */,
+				84D0CD4514CDFD1600E7BC57 /* IccPrmg.h */,
+				84D0CD4614CDFD1600E7BC57 /* IccProfile.h */,
+				84D0CD4714CDFD1600E7BC57 /* IccProfLibConf.h */,
+				84D0CD4814CDFD1600E7BC57 /* IccTag.h */,
+				84D0CD4914CDFD1600E7BC57 /* IccTagBasic.h */,
+				84D0CD4A14CDFD1600E7BC57 /* IccTagFactory.h */,
+				84D0CD4B14CDFD1600E7BC57 /* IccTagLut.h */,
+				84D0CD4C14CDFD1600E7BC57 /* IccTagMPE.h */,
+				84D0CD4D14CDFD1600E7BC57 /* IccTagProfSeqId.h */,
+				84D0CD4E14CDFD1600E7BC57 /* IccUtil.h */,
+				84D0CD4F14CDFD1600E7BC57 /* IccXformFactory.h */,
+				84D0CD5014CDFD1600E7BC57 /* icProfileHeader.h */,
+				84D0CD5114CDFD1600E7BC57 /* MainPage.h */,
+				84D0CD5214CDFD1600E7BC57 /* md5.h */,
+				84D0CD5314CDFD1600E7BC57 /* IccConvertUTF.h */,
+				84D0CD5414CDFD1600E7BC57 /* IccTagDict.h */,
+			);
+			name = SamleICC;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2E4615505D9820200369F64 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84D0CD5514CDFD1600E7BC57 /* IccApplyBPC.h in Headers */,
+				84D0CD5614CDFD1600E7BC57 /* IccCmm.h in Headers */,
+				84D0CD5714CDFD1600E7BC57 /* IccDefs.h in Headers */,
+				84D0CD5814CDFD1600E7BC57 /* IccEval.h in Headers */,
+				84D0CD5914CDFD1600E7BC57 /* IccIO.h in Headers */,
+				84D0CD5A14CDFD1600E7BC57 /* IccMpeACS.h in Headers */,
+				84D0CD5B14CDFD1600E7BC57 /* IccMpeBasic.h in Headers */,
+				84D0CD5C14CDFD1600E7BC57 /* IccMpeFactory.h in Headers */,
+				84D0CD5D14CDFD1600E7BC57 /* IccPrmg.h in Headers */,
+				84D0CD5E14CDFD1600E7BC57 /* IccProfile.h in Headers */,
+				84D0CD5F14CDFD1600E7BC57 /* IccProfLibConf.h in Headers */,
+				84D0CD6014CDFD1600E7BC57 /* IccTag.h in Headers */,
+				84D0CD6114CDFD1600E7BC57 /* IccTagBasic.h in Headers */,
+				84D0CD6214CDFD1600E7BC57 /* IccTagFactory.h in Headers */,
+				84D0CD6314CDFD1600E7BC57 /* IccTagLut.h in Headers */,
+				84D0CD6414CDFD1600E7BC57 /* IccTagMPE.h in Headers */,
+				84D0CD6514CDFD1600E7BC57 /* IccTagProfSeqId.h in Headers */,
+				84D0CD6614CDFD1600E7BC57 /* IccUtil.h in Headers */,
+				84D0CD6714CDFD1600E7BC57 /* IccXformFactory.h in Headers */,
+				84D0CD6814CDFD1600E7BC57 /* icProfileHeader.h in Headers */,
+				84D0CD6914CDFD1600E7BC57 /* MainPage.h in Headers */,
+				84D0CD6A14CDFD1600E7BC57 /* md5.h in Headers */,
+				84D0CD6B14CDFD1600E7BC57 /* IccConvertUTF.h in Headers */,
+				84D0CD6C14CDFD1600E7BC57 /* IccTagDict.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2E4615405D9820200369F64 /* RefIccMAXCmm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2A63CFC08FDC5CC00395C95 /* Build configuration list for PBXNativeTarget "RefIccMAXCmm" */;
+			buildPhases = (
+				D2E4615505D9820200369F64 /* Headers */,
+				D2E4615605D9820200369F64 /* Resources */,
+				D2E4615705D9820200369F64 /* Sources */,
+				D2E4615905D9820200369F64 /* Frameworks */,
+				D2E4615B05D9820200369F64 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RefIccMAXCmm;
+			productInstallPath = "$(HOME)/Library/ColorSync/CMMs";
+			productName = RefIccMAXCmm;
+			productReference = D2E4615E05D9820200369F64 /* RefIccLabs.cmm */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = D2A63D0008FDC5CC00395C95 /* Build configuration list for PBXProject "RefIccMAXCmm" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* RefIccMAXCmm */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2E4615405D9820200369F64 /* RefIccMAXCmm */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D2E4615605D9820200369F64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		D2E4615B05D9820200369F64 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2E4615705D9820200369F64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2E4615805D9820200369F64 /* RefIccMAXCmm.cpp in Sources */,
+				84D0CEB914CE1C2500E7BC57 /* IccApplyBPC.cpp in Sources */,
+				84D0CEBA14CE1C2500E7BC57 /* IccCmm.cpp in Sources */,
+				84D0CEBB14CE1C2500E7BC57 /* IccEval.cpp in Sources */,
+				84D0CEBC14CE1C2500E7BC57 /* IccIO.cpp in Sources */,
+				84D0CEBD14CE1C2500E7BC57 /* IccMpeACS.cpp in Sources */,
+				84D0CEBE14CE1C2500E7BC57 /* IccMpeBasic.cpp in Sources */,
+				84D0CEBF14CE1C2500E7BC57 /* IccMpeFactory.cpp in Sources */,
+				84D0CEC014CE1C2500E7BC57 /* IccPrmg.cpp in Sources */,
+				84D0CEC114CE1C2500E7BC57 /* IccProfile.cpp in Sources */,
+				84D0CEC214CE1C2500E7BC57 /* IccTagBasic.cpp in Sources */,
+				84D0CEC314CE1C2500E7BC57 /* IccTagFactory.cpp in Sources */,
+				84D0CEC414CE1C2500E7BC57 /* IccTagLut.cpp in Sources */,
+				84D0CEC514CE1C2500E7BC57 /* IccTagMPE.cpp in Sources */,
+				84D0CEC614CE1C2500E7BC57 /* IccTagProfSeqId.cpp in Sources */,
+				84D0CEC714CE1C2500E7BC57 /* IccUtil.cpp in Sources */,
+				84D0CEC814CE1C2500E7BC57 /* IccXformFactory.cpp in Sources */,
+				84D0CEC914CE1C2500E7BC57 /* md5.cpp in Sources */,
+				84D0CECA14CE1C2500E7BC57 /* IccConvertUTF.cpp in Sources */,
+				84D0CECB14CE1C2500E7BC57 /* IccTagDict.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D2A63CFD08FDC5CC00395C95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					ppc,
+					ppc64,
+					i386,
+				);
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = YES;
+				GCC_ENABLE_SSE42_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = /Library/ColorSync/CMMs;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					ApplicationServices,
+				);
+				PRODUCT_NAME = RefIccLabs;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				WRAPPER_EXTENSION = cmm;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		D2A63CFE08FDC5CC00395C95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = YES;
+				GCC_ENABLE_SSE42_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = /Library/ColorSync/CMMs;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					ApplicationServices,
+				);
+				PRODUCT_NAME = RefIccLabs;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				WRAPPER_EXTENSION = cmm;
+			};
+			name = Release;
+		};
+		D2A63D0108FDC5CC00395C95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					ppc,
+					ppc64,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+			};
+			name = Debug;
+		};
+		D2A63D0208FDC5CC00395C95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					ppc,
+					ppc64,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D2A63CFC08FDC5CC00395C95 /* Build configuration list for PBXNativeTarget "RefIccMAXCmm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A63CFD08FDC5CC00395C95 /* Debug */,
+				D2A63CFE08FDC5CC00395C95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2A63D0008FDC5CC00395C95 /* Build configuration list for PBXProject "RefIccMAXCmm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A63D0108FDC5CC00395C95 /* Debug */,
+				D2A63D0208FDC5CC00395C95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

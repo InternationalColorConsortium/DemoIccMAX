@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <ProfileVersion>5.0</ProfileVersion>
+    <ProfileDeviceClass>enc3</ProfileDeviceClass>
+	  <DataColourSpace>RGB </DataColourSpace>
+  </Header>
+  <Tags>
+    <utf8TextType>
+	  <TagSignature>rfnm</TagSignature>
+	  <TextData>sRGB</TextData>
+	</utf8TextType>
+  </Tags>  
+</IccProfile>

@@ -1,0 +1,6 @@
+'CMYK' ; Data Format
+icEncodePercent ; Encoding
+100.0   0.0   0.0   0.0
+  0.0 100.0   0.0   0.0
+  0.0   0.0 100.0   0.0
+  0.0   0.0   0.0 100.0
