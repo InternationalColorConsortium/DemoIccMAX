@@ -737,7 +737,10 @@ CIccXmlArrayType<T, Tsig>::~CIccXmlArrayType()
 template <class T, icTagTypeSignature Tsig>
 bool CIccXmlArrayType<T, Tsig>::ParseArray(xmlNode *pNode)
 {
-  char *scanType = (Tsig == icSigFloatArrayType ? "f" : "n");
+  char scanType[2];
+  scanType[0] = (Tsig == icSigFloatArrayType ? 'f' : 'n');
+  scanType[1] = 0;
+
   icUInt32Number n = icXmlNodeCount(pNode, scanType);
   
   if (n) {

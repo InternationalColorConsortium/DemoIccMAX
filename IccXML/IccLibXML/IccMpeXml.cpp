@@ -1834,7 +1834,7 @@ bool CIccMpeXmlCalculator::ToXml(std::string &xml, std::string blanks/* = ""*/)
   char line[256];
   std::string blanks2 = blanks + "  ";
 
-  sprintf(line, "<CalculatorElement inputChannels=\"%d\" outputChannels=\"%d\"", NumInputChannels(), NumOutputChannels());
+  sprintf(line, "<CalculatorElement InputChannels=\"%d\" OutputChannels=\"%d\"", NumInputChannels(), NumOutputChannels());
   xml += blanks + line;
 
   if (m_nReserved) {

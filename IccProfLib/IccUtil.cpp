@@ -1174,6 +1174,11 @@ icUInt32Number icGetSpaceSamples(icColorSpaceSignature sig)
           if (d0>=0)
             return d0;
         }
+        else if (!strncmp(szSig, "MCH", 3)) {  //Litte CMS multi-channel notation (not part of ICC specification)
+          int d0 = icHexDigit(szSig[3]);
+          if (d0>=0)
+            return d0;
+        }
       }
       return 0;
     }

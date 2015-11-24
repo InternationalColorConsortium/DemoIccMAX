@@ -72,6 +72,7 @@
 #define _TIFFIMG_H
 
 #include "tiffio.h"                  // need tiff library
+#include "icProfileHeader.h"
 
 #define PHOTO_MINISBLACK  0
 #define PHOTO_MINISWHITE  1
@@ -86,63 +87,63 @@ public:
 
   void Close();
 
-  bool Create(const char *szFname, unsigned long nWidth, unsigned long nHeight,
-              unsigned long nBPS, unsigned long nPhoto, unsigned long nSamples,
+  bool Create(const char *szFname, icUInt32Number nWidth, icUInt32Number nHeight,
+              icUInt32Number nBPS, icUInt32Number nPhoto, icUInt32Number nSamples,
               float fXRes, float fYRes, bool bCompress=true, bool bSep=false);
   bool Open(const char *szFname);
 
   bool ReadLine(unsigned char *pBuf);
   bool WriteLine(unsigned char *pBuf);
   
-  unsigned long GetWidth() { return m_nWidth;}
-  unsigned long GetHeight() { return m_nHeight;}
+  icUInt32Number GetWidth() { return m_nWidth;}
+  icUInt32Number GetHeight() { return m_nHeight;}
   double GetWidthIn() { return (double)m_nWidth / m_fXRes; }
   double GetHeightIn() { return (double)m_nHeight / m_fYRes; }
-  unsigned long GetBitsPerSample() { return m_nBitsPerSample;}
-  unsigned long GetPhoto();
-  unsigned long GetSamples() { return m_nSamples;}
-  unsigned long GetExtraSamples() { return m_nExtraSamples; }
-  unsigned long GetCompress() { return m_nCompress; }
-  unsigned long GetPlanar() { return m_nPlanar; }
+  icUInt32Number GetBitsPerSample() { return m_nBitsPerSample;}
+  icUInt32Number GetPhoto();
+  icUInt32Number GetSamples() { return m_nSamples;}
+  icUInt32Number GetExtraSamples() { return m_nExtraSamples; }
+  icUInt32Number GetCompress() { return m_nCompress; }
+  icUInt32Number GetPlanar() { return m_nPlanar; }
   float GetXRes() {return m_fXRes;}
   float GetYRes() {return m_fYRes;}
 
-  unsigned long GetBytesPerLine() { return m_nBytesPerLine; }
+  icUInt32Number GetBytesPerLine() { return m_nBytesPerLine; }
 
-  bool GetIccProfile(unsigned char *&pProfile, unsigned long &nLen);
-  bool SetIccProfile(unsigned char *pProfile, unsigned long nLen);
+  bool GetIccProfile(unsigned char *&pProfile, icUInt32Number &nLen);
+  bool SetIccProfile(unsigned char *pProfile, icUInt32Number nLen);
 
 protected:
   TIFF *m_hTif;
   bool m_bRead;
 
-  unsigned long m_nWidth;
-  unsigned long m_nHeight;
-  unsigned short m_nBitsPerSample;
-  unsigned short m_nBytesPerSample;
-  unsigned short m_nPhoto;
-  unsigned short m_nSamples;
-  unsigned short m_nExtraSamples;
-  unsigned short m_nPlanar;
-  unsigned short m_nCompress;
+  icUInt32Number m_nWidth;
+  icUInt32Number m_nHeight;
+  icUInt16Number m_nBitsPerSample;
+  icUInt16Number m_nBytesPerSample;
+  icUInt16Number m_nPhoto;
+  icUInt16Number m_nSamples;
+  icUInt16Number m_nExtraSamples;
+  icUInt16Number m_nPlanar;
+  icUInt16Number m_nCompress;
 
   float m_fXRes;
   float m_fYRes;
 
-  unsigned long m_nBytesPerLine;
-  unsigned long m_nRowsPerStrip;
-  unsigned long m_nStripSize;
-  unsigned long m_nStripSamples;
-  unsigned long m_nStripsPerSample;
-  unsigned long m_nBytesPerStripLine;
+  icUInt32Number m_nBytesPerLine;
+  icUInt32Number m_nRowsPerStrip;
+  icUInt32Number m_nStripSize;
+  icUInt32Number m_nStripSamples;
+  icUInt32Number m_nStripsPerSample;
+  icUInt32Number m_nBytesPerStripLine;
 
   unsigned char *m_pStripBuf;
 
-  unsigned long m_nCurLine;
-  unsigned long m_nCurStrip;
+  icUInt32Number m_nCurLine;
+  icUInt32Number m_nCurStrip;
 
   unsigned char *m_pProfile;
-  unsigned long m_nProfileLength;
+  icUInt32Number m_nProfileLength;
 };
 
 #endif // !defined(_TIFFIMG_H)

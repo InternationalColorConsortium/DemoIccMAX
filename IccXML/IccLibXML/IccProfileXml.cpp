@@ -157,12 +157,14 @@ bool CIccProfileXml::ToXml(std::string &xml)
       xml += "    <SpectralRange>\n";
       sprintf(line, "     <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n)", 
               icF16toF(m_Header.spectralRange.start), icF16toF(m_Header.spectralRange.end), m_Header.spectralRange.steps);
+      xml += line;
       xml += "    </SpectralRange>\n";
     }
     if (m_Header.biSpectralRange.steps) {
       xml += "    <BiSpectralRange>\n";
       sprintf(line, "     <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n)", 
               icF16toF(m_Header.biSpectralRange.start), icF16toF(m_Header.biSpectralRange.end), m_Header.biSpectralRange.steps);
+      xml += line;
       xml += "    </BiSpectralRange>\n";
     }
   }

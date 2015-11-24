@@ -1788,7 +1788,7 @@ bool CIccTagXmlSpectralViewingConditions::ToXml(std::string &xml, std::string bl
     xml += blanks + "</ObserverFuncs>\n";
   }
 
-  sprintf(buf, "<StdIlluminant>%s</IllumType>\n", info.GetIlluminantName(m_stdIlluminant));
+  sprintf(buf, "<StdIlluminant>%s</StdIlluminant>\n", info.GetIlluminantName(m_stdIlluminant));
   xml += blanks + buf;
 
   sprintf(buf, "<ColorTemperature>%.8f</ColorTemperature>\n", m_colorTemperature);

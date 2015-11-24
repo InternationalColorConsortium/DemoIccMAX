@@ -121,8 +121,8 @@ void CTiffImg::Close()
   }
 }
 
-bool CTiffImg::Create(const char *szFname, unsigned long nWidth, unsigned long nHeight,
-              unsigned long nBPS, unsigned long nPhoto, unsigned long nSamples,
+bool CTiffImg::Create(const char *szFname, icUInt32Number nWidth, icUInt32Number nHeight,
+              icUInt32Number nBPS, icUInt32Number nPhoto, icUInt32Number nSamples,
               float fXRes, float fYRes, bool bCompress, bool bSep)
 {
   Close();
@@ -130,8 +130,8 @@ bool CTiffImg::Create(const char *szFname, unsigned long nWidth, unsigned long n
 
   m_nWidth = nWidth;
   m_nHeight = nHeight;
-  m_nBitsPerSample = (unsigned short)nBPS;
-  m_nSamples = (unsigned short)nSamples;
+  m_nBitsPerSample = (icUInt16Number)nBPS;
+  m_nSamples = (icUInt16Number)nSamples;
   m_nRowsPerStrip = 1;
   m_fXRes = fXRes;
   m_fYRes = fYRes;
@@ -235,9 +235,9 @@ bool CTiffImg::Open(const char *szFname)
     TIFFError(szFname,"Can not open input image");
     return false;
   }
-  unsigned short nPlanar=PLANARCONFIG_CONTIG;
-  unsigned short nOrientation=ORIENTATION_TOPLEFT;
-  unsigned short nSampleFormat=SAMPLEFORMAT_UINT;
+  icUInt16Number nPlanar=PLANARCONFIG_CONTIG;
+  icUInt16Number nOrientation=ORIENTATION_TOPLEFT;
+  icUInt16Number nSampleFormat=SAMPLEFORMAT_UINT;
 
   TIFFGetField(m_hTif, TIFFTAG_IMAGEWIDTH, &m_nWidth);
   TIFFGetField(m_hTif, TIFFTAG_IMAGELENGTH, &m_nHeight);
@@ -260,7 +260,7 @@ bool CTiffImg::Open(const char *szFname)
     Close();
     return false;
   }
-  m_nCurStrip=(unsigned long)-1;
+  m_nCurStrip=(icUInt32Number)-1;
   m_nCurLine = 0;
 
   m_nStripSize = TIFFStripSize(m_hTif);
@@ -303,16 +303,16 @@ bool CTiffImg::ReadLine(unsigned char *pBuf)
   if (!m_bRead)
     return false;
 
-  unsigned long nStrip = m_nCurLine / m_nRowsPerStrip;
-  unsigned long nRowOffset = m_nCurLine % m_nRowsPerStrip;
+  icUInt32Number nStrip = m_nCurLine / m_nRowsPerStrip;
+  icUInt32Number nRowOffset = m_nCurLine % m_nRowsPerStrip;
 
   if (nStrip != m_nCurStrip) {
     m_nCurStrip = nStrip;
 
     if (m_nStripSamples>1) {
-      unsigned long s;
+      icUInt32Number s;
       unsigned char *pos = m_pStripBuf;
-      unsigned long nStripOffset = 0;
+      icUInt32Number nStripOffset = 0;
       for (s=0; s<m_nStripSamples; s++) {
         if (TIFFReadEncodedStrip(m_hTif, m_nCurStrip+nStripOffset, pos, m_nStripSize) < 0) {
           return false;
@@ -330,7 +330,7 @@ bool CTiffImg::ReadLine(unsigned char *pBuf)
     unsigned char *src, *dst;
     src = m_pStripBuf+nRowOffset*m_nBytesPerStripLine;
     dst = pBuf;
-    unsigned long w, s;
+    icUInt32Number w, s;
     for (w=0; w<m_nWidth; w++) {
       unsigned char *pos = src;
       for (s=0; s<m_nSamples; s++) {
@@ -359,7 +359,7 @@ bool CTiffImg::WriteLine(unsigned char *pBuf)
       unsigned char *src, *dst;
       src = pBuf;
       dst = m_pStripBuf;
-      unsigned long w, s, offset;
+      icUInt32Number w, s, offset;
       for (w=0; w<m_nWidth; w++) {
         unsigned char *pos = dst;
         for (s=0; s<m_nSamples; s++) {
@@ -387,7 +387,7 @@ bool CTiffImg::WriteLine(unsigned char *pBuf)
   return true;
 }
 
-unsigned long CTiffImg::GetPhoto()
+icUInt32Number CTiffImg::GetPhoto()
 {
   if (m_nPhoto==PHOTOMETRIC_MINISBLACK ||
       m_nPhoto==PHOTOMETRIC_RGB) {
@@ -406,7 +406,7 @@ unsigned long CTiffImg::GetPhoto()
 }
 
 
-bool CTiffImg::GetIccProfile(unsigned char *&pProfile, unsigned long &nLen)
+bool CTiffImg::GetIccProfile(unsigned char *&pProfile, icUInt32Number &nLen)
 {
   pProfile = NULL;
   nLen = 0;
@@ -416,7 +416,7 @@ bool CTiffImg::GetIccProfile(unsigned char *&pProfile, unsigned long &nLen)
   return pProfile!=NULL && nLen>0;
 }
 
-bool CTiffImg::SetIccProfile(unsigned char *pProfile, unsigned long nLen)
+bool CTiffImg::SetIccProfile(unsigned char *pProfile, icUInt32Number nLen)
 {
   TIFFSetField(m_hTif, TIFFTAG_ICCPROFILE, nLen, pProfile);
   

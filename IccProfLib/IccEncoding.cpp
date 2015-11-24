@@ -121,12 +121,12 @@ public:
   virtual icStatusEncConvert ConvertFromParams(CIccProfilePtr &newIcc, CIccTagStruct *pParams, icHeader *pHeader);
 };
 
-static icFloatNumber icGetParamFloatNum(CIccTagStruct *pParams, icCeptMemberSignature sig, icFloatNumber default=0)
+static icFloatNumber icGetParamFloatNum(CIccTagStruct *pParams, icCeptMemberSignature sig, icFloatNumber defaultValue=0)
 {
   CIccTagFloat32 *pTag = (CIccTagFloat32*)pParams->FindElemOfType(sig, icSigFloat32ArrayType);
 
   if (!pTag || pTag->GetSize()<1)
-    return default;
+    return defaultValue;
 
   return (*pTag)[0];
 }

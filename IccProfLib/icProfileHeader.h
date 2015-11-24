@@ -693,7 +693,7 @@ typedef enum {
     icSigCmykData                       = 0x434D594B,  /* 'CMYK' */
     icSigCmyData                        = 0x434D5920,  /* 'CMY ' */
     
-    icSig1colorData                     = 0x30434C52,  /* '1CLR' */
+    icSig1colorData                     = 0x31434C52,  /* '1CLR' */
     icSig2colorData                     = 0x32434C52,  /* '2CLR' */
     icSig3colorData                     = 0x33434C52,  /* '3CLR' */
     icSig4colorData                     = 0x34434C52,  /* '4CLR' */
