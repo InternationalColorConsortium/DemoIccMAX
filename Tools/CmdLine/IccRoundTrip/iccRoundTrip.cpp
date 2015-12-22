@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  © see below
+    Copyright:  (c) see below
 */
 
 /*

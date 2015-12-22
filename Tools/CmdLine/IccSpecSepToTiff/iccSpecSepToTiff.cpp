@@ -7,7 +7,7 @@
 
     Version:    V1
 
-    Copyright:  © see below
+    Copyright:  (c) see below
 */
 
 /*
@@ -83,6 +83,10 @@ void Usage()
   printf("Usage: SpecSep2Tiff output_file compress_flag sep_flag infile_fmt_file start_nm end_nm inc_nm {embedded_icc_profile_file}\n\n");
 }
 
+#ifndef _MAX_PATH
+#define _MAX_PATH 510
+#endif
+
 //===================================================
 
 int main(int argc, icChar* argv[])
@@ -99,6 +103,7 @@ int main(int argc, icChar* argv[])
   long bpl, bps;
   bool invert = false;
   int start, end, step, n;
+  float xRes, yRes;
 
   if (argc<7) {
     printf("Usage: SpecSep2Tiff output_file compress_flag sep_flag infile_fmt_file start_nm end_nm inc_nm {embedded_icc_profile_file}\n");
@@ -162,8 +167,8 @@ int main(int argc, icChar* argv[])
     goto cleanup;
   }
 
-  float xRes=f->GetXRes();
-  float yRes=f->GetYRes();
+  xRes=f->GetXRes();
+  yRes=f->GetYRes();
 
   if (xRes<1)
     xRes = 72;

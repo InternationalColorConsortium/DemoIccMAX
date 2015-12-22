@@ -12,7 +12,7 @@ in addition to legacy ICC profiles defined by earlier ICC profile
 specifications (<a href="http://www.color.org/icc_specs2.xalter">http://www.color.org/icc_specs2.xalter</a>).<span style="">&nbsp;&nbsp; </span><o:p></o:p></p>
 
 <p class="MsoNormal">iccMAX is not intended as a replacement for legacy ICC.1
-based profiles , the existing architecture, but as an extension or alternative
+based profiles, the existing architecture, but as an extension or alternative
 where requirements cannot be fully met by ICC.1.<span style="">&nbsp; </span>Some of the areas covered by iccMAX include:
 Multi-spectral, Medical Imaging, Image Capture/Digital Photography, Package
 Printing, Color Management on Internet, Fine Art, and Color Information
@@ -157,9 +157,9 @@ within ColorSync.<o:p></o:p></p>
 <p class="MsoListParagraphCxSpLast" style="margin-left: 1in; text-indent: -0.25in;"><!--[if !supportLists]--><span style="font-family: &quot;Courier New&quot;;"><span style="">o<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;
 </span></span></span><!--[endif]-->wxProfileDump provies a wxWidgets based (<a href="https://www.wxwidgets.org/">https://www.wxwidgets.org/</a>) GUI based
 legacy ICC and iccMAX profile inspector tool.<span style="">&nbsp;
-</span>The code for this tool is based on wxWidgets 2.x) and is therefore
+</span>The code for this tool is based on wxWidgets 2.x, and is therefore
 dependent on this version of wxWidgets.<span style="">&nbsp;
-</span>At present only Windows based testing has been performed on this tough
+</span>At present only Windows based testing has been performed on this
 (though wxWidgets is a cross-platform development environment).<span style="">&nbsp; </span>A development effort to port this tool to the
 cross-platform QT development environment is greatly needed.<o:p></o:p></p>
 
@@ -271,8 +271,22 @@ For example:<o:p></o:p></p>
 
 <h3>MacOS-X<o:p></o:p></h3>
 
-<p class="MsoNormal">TBD<o:p></o:p></p>
-
-<h3>Linux<o:p></o:p></h3>
+<p class="MsoNormal">XCODE projects can be found in each of the library
+and project folders that are presently supported for building on the
+MacOS-X platform. <o:p></o:p>The file Build/XCode/BuildAll.sh contains a bash Terminal script that can be used to build all of the XCODE projects. &nbsp;</p><p class="MsoNormal">Header
+files and&nbsp;binaries for the libtiff and libxml libraries&nbsp;need
+to be manually installed before the BuildAll.sh script is executed.
+&nbsp;The libtiff header files need to be placed in the
+Build/XCode/libtiff folder (specified by the LibTifSetup.txt file in
+this folder). &nbsp;The libxml header files need to be placed in the
+Build/XCode/libxml folder (specified by the LibXmlSetup.txt file in
+this folder). &nbsp;<span style=""></span>(Note: Projects with
+additional dependencies may not correctly build if these folders not set up before running the BuildAll.sh script).</p><p class="MsoNormal">The
+BuildAll.sh script file will make a copy of the libIccProfLib.a and
+libIccXML.a library binaries into the Build/XCode/lib folder. &nbsp;The
+libraries in Build/XCode/Lib are then referenced by the rest of the
+projects in RefIccMAX. &nbsp;Executables for the various tools will be
+placed into the Testing folder after a successful run
+of&nbsp;BuildAll.sh.</p><h3>Linux<o:p></o:p></h3>
 
 <p class="MsoNormal">TBD</p><h2>License</h2>The ICC Software License, Version 0.2<br><br><br>Copyright (c) 2003-2015 The International Color Consortium. All rights <br>reserved.<br><br>Redistribution and use in source and binary forms, with or without<br>modification, are permitted provided that the following conditions<br>are met:<br><br>1. Redistributions of source code must retain the above copyright<br>&nbsp;&nbsp; notice, this list of conditions and the following disclaimer. <br><br>2. Redistributions in binary form must reproduce the above copyright<br>&nbsp;&nbsp; notice, this list of conditions and the following disclaimer in<br>&nbsp;&nbsp; the documentation and/or other materials provided with the<br>&nbsp;&nbsp; distribution.<br><br>3. In the absence of prior written permission, the names "ICC" and "The<br>&nbsp;&nbsp; International Color Consortium" must not be used to imply that the<br>&nbsp;&nbsp; ICC organization endorses or promotes products derived from this<br>&nbsp;&nbsp; software.<br><br>THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED<br>WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES<br>OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<br>DISCLAIMED.&nbsp; IN NO EVENT SHALL THE INTERNATIONAL COLOR CONSORTIUM OR<br>ITS CONTRIBUTING MEMBERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,<br>SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT<br>LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF<br>USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<br>ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,<br>OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT<br>OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF<br>SUCH DAMAGE.<br>====================================================================<br><br>This software consists of voluntary contributions made by many<br>individuals on behalf of the The International Color Consortium. <br><br><br>Membership in the ICC is encouraged when this software is used for<br>commercial purposes. <br><br>&nbsp; <br>For more information on The International Color Consortium, please<br>see &lt;http://www.color.org/&gt;.<br></body></html>

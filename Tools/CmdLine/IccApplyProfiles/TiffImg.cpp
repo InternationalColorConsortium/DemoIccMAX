@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  © see below
+    Copyright:  (c) see below
 */
 
 /*
@@ -121,8 +121,8 @@ void CTiffImg::Close()
   }
 }
 
-bool CTiffImg::Create(const char *szFname, icUInt32Number nWidth, icUInt32Number nHeight,
-              icUInt32Number nBPS, icUInt32Number nPhoto, icUInt32Number nSamples,
+bool CTiffImg::Create(const char *szFname, unsigned int nWidth, unsigned int nHeight,
+              unsigned int nBPS, unsigned int nPhoto, unsigned int nSamples,
               float fXRes, float fYRes, bool bCompress, bool bSep)
 {
   Close();
@@ -260,7 +260,7 @@ bool CTiffImg::Open(const char *szFname)
     Close();
     return false;
   }
-  m_nCurStrip=(icUInt32Number)-1;
+  m_nCurStrip=(unsigned int)-1;
   m_nCurLine = 0;
 
   m_nStripSize = TIFFStripSize(m_hTif);
@@ -303,16 +303,16 @@ bool CTiffImg::ReadLine(unsigned char *pBuf)
   if (!m_bRead)
     return false;
 
-  icUInt32Number nStrip = m_nCurLine / m_nRowsPerStrip;
-  icUInt32Number nRowOffset = m_nCurLine % m_nRowsPerStrip;
+  unsigned int nStrip = m_nCurLine / m_nRowsPerStrip;
+  unsigned int nRowOffset = m_nCurLine % m_nRowsPerStrip;
 
   if (nStrip != m_nCurStrip) {
     m_nCurStrip = nStrip;
 
     if (m_nStripSamples>1) {
-      icUInt32Number s;
+      unsigned int s;
       unsigned char *pos = m_pStripBuf;
-      icUInt32Number nStripOffset = 0;
+      unsigned int nStripOffset = 0;
       for (s=0; s<m_nStripSamples; s++) {
         if (TIFFReadEncodedStrip(m_hTif, m_nCurStrip+nStripOffset, pos, m_nStripSize) < 0) {
           return false;
@@ -330,7 +330,7 @@ bool CTiffImg::ReadLine(unsigned char *pBuf)
     unsigned char *src, *dst;
     src = m_pStripBuf+nRowOffset*m_nBytesPerStripLine;
     dst = pBuf;
-    icUInt32Number w, s;
+    unsigned int w, s;
     for (w=0; w<m_nWidth; w++) {
       unsigned char *pos = src;
       for (s=0; s<m_nSamples; s++) {
@@ -359,7 +359,7 @@ bool CTiffImg::WriteLine(unsigned char *pBuf)
       unsigned char *src, *dst;
       src = pBuf;
       dst = m_pStripBuf;
-      icUInt32Number w, s, offset;
+      unsigned int w, s, offset;
       for (w=0; w<m_nWidth; w++) {
         unsigned char *pos = dst;
         for (s=0; s<m_nSamples; s++) {
@@ -387,7 +387,7 @@ bool CTiffImg::WriteLine(unsigned char *pBuf)
   return true;
 }
 
-icUInt32Number CTiffImg::GetPhoto()
+unsigned int CTiffImg::GetPhoto()
 {
   if (m_nPhoto==PHOTOMETRIC_MINISBLACK ||
       m_nPhoto==PHOTOMETRIC_RGB) {
@@ -406,7 +406,7 @@ icUInt32Number CTiffImg::GetPhoto()
 }
 
 
-bool CTiffImg::GetIccProfile(unsigned char *&pProfile, icUInt32Number &nLen)
+bool CTiffImg::GetIccProfile(unsigned char *&pProfile, unsigned int &nLen)
 {
   pProfile = NULL;
   nLen = 0;
@@ -416,7 +416,7 @@ bool CTiffImg::GetIccProfile(unsigned char *&pProfile, icUInt32Number &nLen)
   return pProfile!=NULL && nLen>0;
 }
 
-bool CTiffImg::SetIccProfile(unsigned char *pProfile, icUInt32Number nLen)
+bool CTiffImg::SetIccProfile(unsigned char *pProfile, unsigned int nLen)
 {
   TIFFSetField(m_hTif, TIFFTAG_ICCPROFILE, nLen, pProfile);
   

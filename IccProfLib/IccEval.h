@@ -5,7 +5,7 @@ Contains:   Header file for implementation of the CIccProfile Evaluation utilite
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*

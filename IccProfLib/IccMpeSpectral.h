@@ -6,7 +6,7 @@ Contains:   Header for implementation of Basic CIccTagMPE elements
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*
@@ -221,7 +221,7 @@ public:
                icUInt16Number nOutputChannels=3);
   CIccCLUT *GetCLUT() { return m_pCLUT; }
   CIccCLUT *GetApplyCLUT() { return m_pApplyCLUT; }
-  icFloatNumber *GetWhite() { m_pWhite; }
+  icFloatNumber *GetWhite() { return m_pWhite; }
 
   virtual bool IsLateBinding() const { return true; }
 

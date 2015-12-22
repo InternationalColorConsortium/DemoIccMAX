@@ -6,7 +6,7 @@ Contains:   Header for implementation of Basic CIccTagMPE elements
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*

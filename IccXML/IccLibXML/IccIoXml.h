@@ -5,7 +5,7 @@ Contains:   Implementation of the IIccOpenFileIO interface.
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*

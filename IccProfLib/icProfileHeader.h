@@ -3,7 +3,7 @@
 
     Contains:   ICC profile definitions and structures including Version 4 extensions
 
-    Copyright:  © see ICC Software License
+    Copyright:  (c) see ICC Software License
 
  * <b>
  * This version of the header file corresponds to the profile

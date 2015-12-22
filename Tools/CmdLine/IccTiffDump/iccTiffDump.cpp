@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  © see below
+    Copyright:  (c) see below
 */
 
 /*
@@ -159,7 +159,7 @@ int main(int argc, icChar* argv[])
   printf("Compression:       %s\n", GetId(SrcImg.GetCompress(), compression_types));
 
   unsigned char *pProfMem;
-  unsigned long nLen;
+  unsigned int nLen;
   if (SrcImg.GetIccProfile(pProfMem, nLen)) {
     printf("Profile:           Embedded\n");
 

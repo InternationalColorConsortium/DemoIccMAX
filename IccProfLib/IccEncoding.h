@@ -5,7 +5,7 @@ Contains:   Header for implementation of Encoded profile class utiltities
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*

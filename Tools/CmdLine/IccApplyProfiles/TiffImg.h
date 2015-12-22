@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  © see below
+    Copyright:  (c) see below
 */
 
 /*
@@ -87,38 +87,38 @@ public:
 
   void Close();
 
-  bool Create(const char *szFname, icUInt32Number nWidth, icUInt32Number nHeight,
-              icUInt32Number nBPS, icUInt32Number nPhoto, icUInt32Number nSamples,
+  bool Create(const char *szFname, unsigned int nWidth, unsigned int nHeight,
+              unsigned int nBPS, unsigned int nPhoto, unsigned int nSamples,
               float fXRes, float fYRes, bool bCompress=true, bool bSep=false);
   bool Open(const char *szFname);
 
   bool ReadLine(unsigned char *pBuf);
   bool WriteLine(unsigned char *pBuf);
   
-  icUInt32Number GetWidth() { return m_nWidth;}
-  icUInt32Number GetHeight() { return m_nHeight;}
+  unsigned int GetWidth() { return m_nWidth;}
+  unsigned int GetHeight() { return m_nHeight;}
   double GetWidthIn() { return (double)m_nWidth / m_fXRes; }
   double GetHeightIn() { return (double)m_nHeight / m_fYRes; }
-  icUInt32Number GetBitsPerSample() { return m_nBitsPerSample;}
-  icUInt32Number GetPhoto();
-  icUInt32Number GetSamples() { return m_nSamples;}
-  icUInt32Number GetExtraSamples() { return m_nExtraSamples; }
-  icUInt32Number GetCompress() { return m_nCompress; }
-  icUInt32Number GetPlanar() { return m_nPlanar; }
+  unsigned int GetBitsPerSample() { return m_nBitsPerSample;}
+  unsigned int GetPhoto();
+  unsigned int GetSamples() { return m_nSamples;}
+  unsigned int GetExtraSamples() { return m_nExtraSamples; }
+  unsigned int GetCompress() { return m_nCompress; }
+  unsigned int GetPlanar() { return m_nPlanar; }
   float GetXRes() {return m_fXRes;}
   float GetYRes() {return m_fYRes;}
 
-  icUInt32Number GetBytesPerLine() { return m_nBytesPerLine; }
+  unsigned int GetBytesPerLine() { return m_nBytesPerLine; }
 
-  bool GetIccProfile(unsigned char *&pProfile, icUInt32Number &nLen);
-  bool SetIccProfile(unsigned char *pProfile, icUInt32Number nLen);
+  bool GetIccProfile(unsigned char *&pProfile, unsigned int  &nLen);
+  bool SetIccProfile(unsigned char *pProfile, unsigned int  nLen);
 
 protected:
   TIFF *m_hTif;
   bool m_bRead;
 
-  icUInt32Number m_nWidth;
-  icUInt32Number m_nHeight;
+  unsigned int m_nWidth;
+  unsigned int m_nHeight;
   icUInt16Number m_nBitsPerSample;
   icUInt16Number m_nBytesPerSample;
   icUInt16Number m_nPhoto;
@@ -130,20 +130,20 @@ protected:
   float m_fXRes;
   float m_fYRes;
 
-  icUInt32Number m_nBytesPerLine;
-  icUInt32Number m_nRowsPerStrip;
-  icUInt32Number m_nStripSize;
-  icUInt32Number m_nStripSamples;
-  icUInt32Number m_nStripsPerSample;
-  icUInt32Number m_nBytesPerStripLine;
+  unsigned int m_nBytesPerLine;
+  unsigned int m_nRowsPerStrip;
+  unsigned int m_nStripSize;
+  unsigned int m_nStripSamples;
+  unsigned int m_nStripsPerSample;
+  unsigned int m_nBytesPerStripLine;
 
   unsigned char *m_pStripBuf;
 
-  icUInt32Number m_nCurLine;
-  icUInt32Number m_nCurStrip;
+  unsigned int m_nCurLine;
+  unsigned int m_nCurStrip;
 
   unsigned char *m_pProfile;
-  icUInt32Number m_nProfileLength;
+  unsigned int m_nProfileLength;
 };
 
 #endif // !defined(_TIFFIMG_H)

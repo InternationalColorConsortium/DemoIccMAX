@@ -1,0 +1,271 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		302BFCA81C2157D30063E0D2 /* libIccLibXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA71C2157D30063E0D2 /* libIccLibXML.a */; };
+		302BFCAA1C2157EA0063E0D2 /* libIccProfLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA91C2157EA0063E0D2 /* libIccProfLib.a */; };
+		30CE17E31C0F98E300C5CF90 /* IccFromXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CE17E21C0F98E300C5CF90 /* IccFromXml.cpp */; };
+		30CE17E71C0F990300C5CF90 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 30CE17E51C0F990300C5CF90 /* libxml2.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		30CE17BD1C0F989900C5CF90 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		302BFCA71C2157D30063E0D2 /* libIccLibXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccLibXML.a; path = ../../lib/libIccLibXML.a; sourceTree = SOURCE_ROOT; };
+		302BFCA91C2157EA0063E0D2 /* libIccProfLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccProfLib.a; path = ../../lib/libIccProfLib.a; sourceTree = SOURCE_ROOT; };
+		30CE17BF1C0F989900C5CF90 /* IccFromXml */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IccFromXml; sourceTree = BUILT_PRODUCTS_DIR; };
+		30CE17E21C0F98E300C5CF90 /* IccFromXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccFromXml.cpp; sourceTree = SOURCE_ROOT; };
+		30CE17E51C0F990300C5CF90 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = ../../../../usr/lib/libxml2.dylib; sourceTree = DEVELOPER_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		30CE17BC1C0F989900C5CF90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				302BFCA81C2157D30063E0D2 /* libIccLibXML.a in Frameworks */,
+				302BFCAA1C2157EA0063E0D2 /* libIccProfLib.a in Frameworks */,
+				30CE17E71C0F990300C5CF90 /* libxml2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		30CE17B61C0F989900C5CF90 = {
+			isa = PBXGroup;
+			children = (
+				30CE17C11C0F989900C5CF90 /* IccFromXml */,
+				30CE17E21C0F98E300C5CF90 /* IccFromXml.cpp */,
+				302BFCA91C2157EA0063E0D2 /* libIccProfLib.a */,
+				302BFCA71C2157D30063E0D2 /* libIccLibXML.a */,
+				30CE17E51C0F990300C5CF90 /* libxml2.dylib */,
+				30CE17C01C0F989900C5CF90 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		30CE17C01C0F989900C5CF90 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30CE17BF1C0F989900C5CF90 /* IccFromXml */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		30CE17C11C0F989900C5CF90 /* IccFromXml */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = IccFromXml;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		30CE17BE1C0F989900C5CF90 /* IccFromXml */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30CE17C61C0F989900C5CF90 /* Build configuration list for PBXNativeTarget "IccFromXml" */;
+			buildPhases = (
+				30CE17BB1C0F989900C5CF90 /* Sources */,
+				30CE17BC1C0F989900C5CF90 /* Frameworks */,
+				30CE17BD1C0F989900C5CF90 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IccFromXml;
+			productName = IccFromXml;
+			productReference = 30CE17BF1C0F989900C5CF90 /* IccFromXml */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		30CE17B71C0F989900C5CF90 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = "Franz Herbert";
+				TargetAttributes = {
+					30CE17BE1C0F989900C5CF90 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 30CE17BA1C0F989900C5CF90 /* Build configuration list for PBXProject "IccFromXml" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 30CE17B61C0F989900C5CF90;
+			productRefGroup = 30CE17C01C0F989900C5CF90 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30CE17BE1C0F989900C5CF90 /* IccFromXml */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		30CE17BB1C0F989900C5CF90 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30CE17E31C0F98E300C5CF90 /* IccFromXml.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		30CE17C41C0F989900C5CF90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../IccProfLib/**",
+					"../../IccLibXML/**",
+					../../../Build/Xcode,
+				);
+				LIBRARY_SEARCH_PATHS = ../lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		30CE17C51C0F989900C5CF90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../IccProfLib/**",
+					"../../IccLibXML/**",
+					../../../Build/Xcode,
+				);
+				LIBRARY_SEARCH_PATHS = ../lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		30CE17C71C0F989900C5CF90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LIBRARY_SEARCH_PATHS = ../../../Build/Xcode/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		30CE17C81C0F989900C5CF90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LIBRARY_SEARCH_PATHS = ../../../Build/Xcode/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		30CE17BA1C0F989900C5CF90 /* Build configuration list for PBXProject "IccFromXml" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30CE17C41C0F989900C5CF90 /* Debug */,
+				30CE17C51C0F989900C5CF90 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		30CE17C61C0F989900C5CF90 /* Build configuration list for PBXNativeTarget "IccFromXml" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30CE17C71C0F989900C5CF90 /* Debug */,
+				30CE17C81C0F989900C5CF90 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 30CE17B71C0F989900C5CF90 /* Project object */;
+}

@@ -5,7 +5,7 @@ Contains:   Implementation of the CIccTag class and creation factories
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*

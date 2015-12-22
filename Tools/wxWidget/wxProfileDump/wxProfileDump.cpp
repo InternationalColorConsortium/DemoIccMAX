@@ -5,7 +5,7 @@ Contains:   Main application that displays profile contents using wxWidgets
 
 Version:    V1
 
-Copyright:  © see ICC Software License
+Copyright:  (c) see ICC Software License
 */
 
 /*

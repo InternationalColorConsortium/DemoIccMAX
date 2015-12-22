@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  © see below
+    Copyright:  (c) see below
 */
 
 /*
@@ -259,7 +259,7 @@ int main(int argc, icChar* argv[])
       }
 
       if (!i && !stricmp(argv[nCount], "-embedded")) {
-        unsigned long len=0;
+        unsigned int len=0;
         icUInt8Number *pProfile=NULL;
 
         if (!SrcImg.GetIccProfile(pProfile, len)) {

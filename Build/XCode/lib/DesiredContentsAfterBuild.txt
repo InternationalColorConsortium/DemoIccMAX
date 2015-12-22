@@ -1,0 +1,5 @@
+The desired files in this folder after a successfull build are as follows:
+
+DesiredContentsAfterBuild.txt - this file
+libIccProfLib.a - IccProfLib library
+libIccXML.a - IccXML library

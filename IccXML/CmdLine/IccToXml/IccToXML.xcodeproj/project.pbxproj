@@ -1,0 +1,271 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		302BFC6D1C214FC80063E0D2 /* IccToXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302BFC6C1C214FC80063E0D2 /* IccToXml.cpp */; };
+		302BFCA21C21569C0063E0D2 /* libIccLibXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA11C21569C0063E0D2 /* libIccLibXML.a */; };
+		302BFCA41C21577D0063E0D2 /* libIccProfLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA31C21577D0063E0D2 /* libIccProfLib.a */; };
+		302BFCA61C2157A60063E0D2 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA51C2157A60063E0D2 /* libxml2.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		302BFC481C214F030063E0D2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		302BFC4A1C214F030063E0D2 /* IccToXML */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IccToXML; sourceTree = BUILT_PRODUCTS_DIR; };
+		302BFC6C1C214FC80063E0D2 /* IccToXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccToXml.cpp; sourceTree = SOURCE_ROOT; };
+		302BFCA11C21569C0063E0D2 /* libIccLibXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccLibXML.a; path = ../../lib/libIccLibXML.a; sourceTree = SOURCE_ROOT; };
+		302BFCA31C21577D0063E0D2 /* libIccProfLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccProfLib.a; path = ../../lib/libIccProfLib.a; sourceTree = SOURCE_ROOT; };
+		302BFCA51C2157A60063E0D2 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = ../../../../usr/lib/libxml2.dylib; sourceTree = DEVELOPER_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		302BFC471C214F030063E0D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				302BFCA41C21577D0063E0D2 /* libIccProfLib.a in Frameworks */,
+				302BFCA21C21569C0063E0D2 /* libIccLibXML.a in Frameworks */,
+				302BFCA61C2157A60063E0D2 /* libxml2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		302BFC411C214F030063E0D2 = {
+			isa = PBXGroup;
+			children = (
+				302BFC4C1C214F030063E0D2 /* IccToXML */,
+				302BFC4B1C214F030063E0D2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		302BFC4B1C214F030063E0D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				302BFC4A1C214F030063E0D2 /* IccToXML */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		302BFC4C1C214F030063E0D2 /* IccToXML */ = {
+			isa = PBXGroup;
+			children = (
+				302BFC6C1C214FC80063E0D2 /* IccToXml.cpp */,
+				302BFCA31C21577D0063E0D2 /* libIccProfLib.a */,
+				302BFCA11C21569C0063E0D2 /* libIccLibXML.a */,
+				302BFCA51C2157A60063E0D2 /* libxml2.dylib */,
+			);
+			path = IccToXML;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		302BFC491C214F030063E0D2 /* IccToXML */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 302BFC511C214F030063E0D2 /* Build configuration list for PBXNativeTarget "IccToXML" */;
+			buildPhases = (
+				302BFC461C214F030063E0D2 /* Sources */,
+				302BFC471C214F030063E0D2 /* Frameworks */,
+				302BFC481C214F030063E0D2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IccToXML;
+			productName = IccToXML;
+			productReference = 302BFC4A1C214F030063E0D2 /* IccToXML */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		302BFC421C214F030063E0D2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Franz Herbert";
+				TargetAttributes = {
+					302BFC491C214F030063E0D2 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = 302BFC451C214F030063E0D2 /* Build configuration list for PBXProject "IccToXML" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 302BFC411C214F030063E0D2;
+			productRefGroup = 302BFC4B1C214F030063E0D2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				302BFC491C214F030063E0D2 /* IccToXML */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		302BFC461C214F030063E0D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				302BFC6D1C214FC80063E0D2 /* IccToXml.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		302BFC4F1C214F030063E0D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		302BFC501C214F030063E0D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		302BFC521C214F030063E0D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libstdc++";
+				HEADER_SEARCH_PATHS = (
+					"../../../IccProfLib/**",
+					"../../IccLibXML/**",
+					../../../Build/Xcode,
+				);
+				LIBRARY_SEARCH_PATHS = ../../../Build/XCode/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		302BFC531C214F030063E0D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libstdc++";
+				HEADER_SEARCH_PATHS = (
+					"../../../IccProfLib/**",
+					"../../IccLibXML/**",
+					../../../Build/Xcode,
+				);
+				LIBRARY_SEARCH_PATHS = ../../../Build/XCode/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		302BFC451C214F030063E0D2 /* Build configuration list for PBXProject "IccToXML" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				302BFC4F1C214F030063E0D2 /* Debug */,
+				302BFC501C214F030063E0D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		302BFC511C214F030063E0D2 /* Build configuration list for PBXNativeTarget "IccToXML" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				302BFC521C214F030063E0D2 /* Debug */,
+				302BFC531C214F030063E0D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 302BFC421C214F030063E0D2 /* Project object */;
+}
