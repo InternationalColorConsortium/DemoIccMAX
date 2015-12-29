@@ -237,7 +237,6 @@ icFloatNumber *IIccProfileConnectionConditions::getEmissiveObserver(const icSpec
     if (mapRange) {
 
       if (obs) {
-        icFloatNumber *Ycmf = new icFloatNumber[range.steps];
         fptr = &pView->m_observer[0];
         tptr = obs;
         for (i=0; i<3; i++) {
