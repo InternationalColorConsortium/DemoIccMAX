@@ -290,6 +290,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   pIcc->AttachTag(icSigAToB3Tag, pMpeTag);
 
   if (!icMatrixInvert3x3(pMtx2->GetMatrix())) {
+    delete pMtx2;
     delete pIcc;
     return icEncConvertBadParams;
   }
