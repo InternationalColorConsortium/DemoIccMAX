@@ -418,3 +418,7 @@ CIccMatrixMath *CIccMatrixMath::rangeMap(const icSpectralRange &srcRange, const 
 
   return NULL;
 }
+
+#ifdef USEREFICCMAXNAMESPACE
+} //namespace refIccMAX
+#endif
