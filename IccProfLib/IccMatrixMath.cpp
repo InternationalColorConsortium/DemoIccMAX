@@ -76,6 +76,7 @@
 
 #include "IccMatrixMath.h"
 #include "IccUtil.h"
+#include <cstring>
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {

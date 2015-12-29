@@ -1,5 +1,6 @@
 #include "IccSparseMatrix.h"
 
+#include <cstring>
 
 CIccSparseMatrix::CIccSparseMatrix(void *pMatrix, icUInt32Number nSize, icSparseMatrixType nType, bool bInitFromData/*=false*/)
 {
