@@ -1193,8 +1193,10 @@ bool CIccTagArray::Read(icUInt32Number size, CIccIO *pIO)
   if (count) {
     icPositionNumber *tagPos = new icPositionNumber[count];
 
-    if (!SetSize(count))
+    if (!SetSize(count)) {
+      delete[] tagPos;
       return false;
+    }
 
     for (i=0; i<count; i++) {
       if (!pIO->Read32(&tagPos[i].offset) ||
