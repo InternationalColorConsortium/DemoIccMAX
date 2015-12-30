@@ -77,6 +77,7 @@ Copyright:  see ICC Software License
 #include "IccUtil.h"
 #include <string>
 #include <time.h>
+#include <cstring>
 
 class CIccDefaultEncProfileCacheHandler : public IIccEncProfileCacheHandler
 {
