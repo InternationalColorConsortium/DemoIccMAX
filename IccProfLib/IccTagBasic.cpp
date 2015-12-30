@@ -4305,7 +4305,7 @@ void CIccTagSparseMatrixArray::Describe(std::string &sDescription)
     for (r=0; r<mtx.Rows(); r++) {
       icUInt16Number rs = start[r];
       icUInt16Number re = start[r+1];
-      sprintf(buf, "Row%d:");
+      sprintf(buf, "Row%d:", r);
       sDescription += buf;
 
       for (c=rs; c<re; c++) {

@@ -369,13 +369,14 @@ int main(int argc, icChar* argv[])
     }
   }
 
-  unsigned char *pSBuf = (unsigned char *)malloc(SrcImg.GetBytesPerLine());
-  unsigned char *pDBuf = (unsigned char *)malloc(DstImg.GetBytesPerLine());
+  unsigned char *pSBuf = (unsigned char *)malloc(SrcImg.GetBytesPerLine());  
 
   if (!pSBuf) {
     printf("Out of Memory!\n");
     return false;
   }
+
+  unsigned char *pDBuf = (unsigned char *)malloc(DstImg.GetBytesPerLine());
 
   if (!pDBuf) {
     printf("Out of Memory!\n");
