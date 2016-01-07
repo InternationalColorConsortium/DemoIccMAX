@@ -1,0 +1,12 @@
+'nmcl'	; Data Format
+icEncodeValue	; Encoding
+
+{ "Brown" } 0.0
+{ "Brown" } 0.5
+{ "Brown" } 1.0
+
+{ "Neon-Orange" } 0.50
+{ "Neon-Orange" } 1.0
+
+{ "Neon-Yellow" } 0.5
+{ "Neon-Yellow" } 1.0
