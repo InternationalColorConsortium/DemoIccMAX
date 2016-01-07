@@ -344,7 +344,7 @@ public:
   virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeCurveSet(*this);}
   virtual ~CIccMpeCurveSet();
 
-  void SetSize(int nNewSize);
+  bool SetSize(int nNewSize);
 
   bool SetCurve(int nIndex, icCurveSetCurvePtr newCurve);
 
@@ -442,7 +442,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  void SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels);
+  bool SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels);
 
   icFloatNumber *GetMatrix() {return m_pMatrix;}
   icFloatNumber *GetConstants() {return m_pConstants;}

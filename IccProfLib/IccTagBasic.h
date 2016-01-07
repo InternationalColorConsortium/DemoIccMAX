@@ -588,7 +588,7 @@ public:
 
   icUInt32Number GetSize() const { return m_nSize; }
   icUInt32Number GetDeviceCoords() const {return m_nDeviceCoords;}
-  void SetSize(icUInt32Number nSize, icInt32Number nDeviceCoords=-1);
+  bool SetSize(icUInt32Number nSize, icInt32Number nDeviceCoords=-1);
 
   virtual void SetColorSpaces(icColorSpaceSignature csPCS, icColorSpaceSignature csDevice);
   icColorSpaceSignature GetPCS() const {return m_csPCS;}
@@ -647,7 +647,7 @@ public:
   icXYZNumber &operator[](icUInt32Number index) const {return m_XYZ[index];}
   icXYZNumber *GetXYZ(icUInt32Number index) {return &m_XYZ[index];}
   icUInt32Number GetSize() const { return m_nSize; }
-  void SetSize(icUInt32Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt32Number nSize, bool bZeroNew=true);
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
 protected:
@@ -684,7 +684,7 @@ public:
   icChromaticityNumber &operator[](icUInt32Number index) {return m_xy[index];}
   icChromaticityNumber *Getxy(icUInt32Number index) {return &m_xy[index];}
   icUInt32Number GetSize() const { return m_nChannels; }
-  void SetSize(icUInt16Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt16Number nSize, bool bZeroNew=true);
 
   icUInt16Number m_nColorantType;
 
@@ -768,7 +768,7 @@ public:
   icUInt32Number GetBytesPerMatrix() const { return m_nChannelsPerMatrix*sizeof(icFloatNumber); }
 
   // Reset destroys any existing data and lets you change matrix allocation
-  void Reset(icUInt32Number nNumMatrices, icUInt16Number nChannelsPerMatrix); 
+  bool Reset(icUInt32Number nNumMatrices, icUInt16Number nChannelsPerMatrix); 
 
   icSparseMatrixType GetMatrixType() const { return m_nMatrixType; }
   void SetMatrixType(icSparseMatrixType nType) { m_nMatrixType = nType; }
@@ -832,7 +832,7 @@ public:
 
   /// Returns the size of the data array
   icUInt32Number GetSize() const { return m_nSize; }
-  void SetSize(icUInt32Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt32Number nSize, bool bZeroNew=true);
 
   virtual bool IsNumArrayType() const { return true; }
 
@@ -901,7 +901,7 @@ public:
 
   /// Returns the size of the data array
   icUInt32Number GetSize() const { return m_nSize; }
-  void SetSize(icUInt32Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt32Number nSize, bool bZeroNew=true);
 
   virtual bool IsNumArrayType() const { return true; }
 
@@ -991,7 +991,7 @@ public:
 
   /// Returns the size of the data array
   icUInt32Number GetSize() const { return m_nSize; }
-  void SetSize(icUInt32Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt32Number nSize, bool bZeroNew=true);
 
   virtual bool IsNumArrayType() const { return true; }
 
@@ -1091,15 +1091,15 @@ public: //member functions
   icUInt32Number GetAnsiSize();
   const icChar *GetAnsi(icChar *szBuf, icUInt32Number nBufSize);
   
-  void SetSize(icUInt32Number);
+  bool SetSize(icUInt32Number);
 
-  void SetText(const icChar *szText,
+  bool SetText(const icChar *szText,
                icLanguageCode nLanguageCode = icLanguageCodeEnglish,
                icCountryCode nRegionCode = icCountryCodeUSA);
-  void SetText(const icUInt16Number *sszUnicode16Text,
+  bool SetText(const icUInt16Number *sszUnicode16Text,
                icLanguageCode nLanguageCode = icLanguageCodeEnglish,
                icCountryCode nRegionCode = icCountryCodeUSA);
-  void SetText(const icUInt32Number *sszUnicode32Text,
+  bool SetText(const icUInt32Number *sszUnicode32Text,
                icLanguageCode nLanguageCode = icLanguageCodeEnglish,
                icCountryCode nRegionCode = icCountryCodeUSA);
 
@@ -1202,7 +1202,7 @@ public:
   virtual bool Write(CIccIO *pIO);
 
   icUInt32Number GetSize() const { return m_nSize; }
-  void SetSize(icUInt32Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt32Number nSize, bool bZeroNew=true);
   icUInt8Number &operator[] (icUInt32Number index) { return m_pData[index]; }
   icUInt8Number *GetData(icUInt32Number index=0) { return &m_pData[index];}
 
@@ -1277,7 +1277,7 @@ public:
   virtual void Describe(std::string &sDescription);
   icUInt8Number& operator[](int index) { return m_pData[index]; }
   icUInt8Number *GetData(int index) { return &m_pData[index]; }
-  void SetSize(icUInt16Number nsize, bool bZeronew=true);
+  bool SetSize(icUInt16Number nsize, bool bZeronew=true);
   icUInt32Number GetSize() const {return m_nCount;}
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
@@ -1313,7 +1313,7 @@ public:
   icColorantTableEntry &operator[](icUInt32Number index) {return m_pData[index];}
   icColorantTableEntry *GetEntry(icUInt32Number index) {return &m_pData[index];}
   icUInt32Number GetSize() const { return m_nCount; }
-  void SetSize(icUInt16Number nSize, bool bZeroNew=true);
+  bool SetSize(icUInt16Number nSize, bool bZeroNew=true);
 
   void SetPCS(icColorSpaceSignature sig) {m_PCS = sig;}
   icColorSpaceSignature GetPCS() const {return m_PCS;};

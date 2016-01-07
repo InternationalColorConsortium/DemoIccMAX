@@ -82,7 +82,7 @@ public:
 
   void Clear();
   size_t Size() { return m_len; }
-  void Resize(size_t len);
+  bool Resize(size_t len);
 
   CIccUTF16String& operator=(const CIccUTF16String &wstr);
   CIccUTF16String& operator=(const char *szStr);
@@ -92,7 +92,7 @@ public:
 
   const icUInt16Number *c_str() { return m_str; }
 
-  void FromUtf8(const char *szStr, size_t sizeSrc=0);
+  bool FromUtf8(const char *szStr, size_t sizeSrc=0);
   const char *ToUtf8(std::string &buf);
   const wchar_t *ToWString(std::wstring &buf);
 

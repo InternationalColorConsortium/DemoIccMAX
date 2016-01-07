@@ -257,7 +257,7 @@ CIccMpeSpectralMatrix::~CIccMpeSpectralMatrix()
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeSpectralMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range)
+bool CIccMpeSpectralMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range)
 {
   if (m_pMatrix) {
     free(m_pMatrix);
@@ -289,6 +289,12 @@ void CIccMpeSpectralMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Numbe
   m_pOffset = (icFloatNumber*)calloc(range.steps, sizeof(icFloatNumber));
   m_pWhite = (icFloatNumber*)calloc(range.steps, sizeof(icFloatNumber));
 
+  if (!m_pMatrix || !m_pOffset || !m_pWhite) {
+    m_size = 0;
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -1689,7 +1695,7 @@ CIccMpeSpectralObserver::~CIccMpeSpectralObserver()
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeSpectralObserver::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range)
+bool CIccMpeSpectralObserver::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range)
 {
   if (m_pWhite) {
     free(m_pWhite);
@@ -1706,6 +1712,11 @@ void CIccMpeSpectralObserver::SetSize(icUInt16Number nInputChannels, icUInt16Num
   m_Range = range;
 
   m_pWhite = (icFloatNumber*)calloc(range.steps, sizeof(icFloatNumber));
+
+  if (!m_pWhite)
+    return false;
+
+  return true;
 }
 
 /**
@@ -1799,7 +1810,9 @@ bool CIccMpeSpectralObserver::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read16(&m_flags))
     return false;
 
-  SetSize(nInputChannels, nOutputChannels, range);
+  if (!SetSize(nInputChannels, nOutputChannels, range))
+    return false;
+
   if (!m_pWhite )
     return false;
 

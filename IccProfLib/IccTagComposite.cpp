@@ -1357,16 +1357,20 @@ bool CIccTagArray::SetSize(icUInt32Number nSize)
 {
   if (!m_nSize) {
     m_TagVals = (IccTagPtr*)calloc(nSize, sizeof(IccTagPtr));
-    if (!m_TagVals)
+    if (!m_TagVals) {
+      m_nSize =0;
       return false;
+    }
   }
   else {
     if (nSize<=m_nSize)
       return true;
 
     m_TagVals = (IccTagPtr*)realloc(m_TagVals, nSize*sizeof(IccTagPtr));
-    if (!m_TagVals)
+    if (!m_TagVals) {
+      m_nSize = 0;
       return false;
+    }
     memset(&m_TagVals[m_nSize], 0, (nSize-m_nSize)*sizeof(IccTagPtr));
   }
   m_nSize = nSize;

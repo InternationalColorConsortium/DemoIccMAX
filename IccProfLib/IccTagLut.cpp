@@ -252,7 +252,8 @@ bool CIccTagCurve::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&nSize))
     return false;
 
-  SetSize(nSize, icInitNone);
+  if (!SetSize(nSize, icInitNone))
+    return false;
 
   if (m_nSize) {
     if (pIO->ReadUInt16Float(m_Curve, m_nSize)!=(icInt32Number)m_nSize)
@@ -430,10 +431,10 @@ void CIccTagCurve::DumpLut(std::string &sDescription, const icChar *szName,
 *  nSizeOpt - flag to zero newly formed values
 *****************************************************************************
 */
-void CIccTagCurve::SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt/*=icInitZero*/)
+bool CIccTagCurve::SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt/*=icInitZero*/)
 {
   if (nSize==m_nSize)
-    return;
+    return true;
 
   if (!nSize && m_Curve) {
     free(m_Curve);
@@ -444,6 +445,11 @@ void CIccTagCurve::SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt/*=i
       m_Curve = (icFloatNumber*)malloc(nSize*sizeof(icFloatNumber));
     else
       m_Curve = (icFloatNumber*)realloc(m_Curve, nSize*sizeof(icFloatNumber));
+
+    if (!m_Curve) {
+      m_nSize = 0;
+      return false;
+    }
 
     switch (nSizeOpt) {
     case icInitNone:
@@ -474,6 +480,8 @@ void CIccTagCurve::SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt/*=i
   }
   m_nSize = nSize;
   m_nMaxIndex = (icUInt16Number)(nSize - 1);
+
+  return true;
 }
 
 /**
@@ -486,14 +494,16 @@ void CIccTagCurve::SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt/*=i
 *  gamma - gamma value to use
 *****************************************************************************
 */
-void CIccTagCurve::SetGamma(icFloatNumber gamma)
+bool CIccTagCurve::SetGamma(icFloatNumber gamma)
 {
-  SetSize(1, icInitNone);
+  if (!SetSize(1, icInitNone))
+    return false;
 
   icInt16Number whole = (icInt16Number)gamma;
   icFloatNumber frac = gamma - (icFloatNumber)whole;
 
   m_Curve[0] = (icFloatNumber)((whole * 256) + (frac*256.0)) / (icFloatNumber)65535.0; 
+  return true;
 }
 
 /**
@@ -4433,7 +4443,8 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
 
     pCurves[i] = pCurve = (CIccTagCurve*)CIccTag::Create(icSigCurveType);
 
-    pCurve->SetSize(256);
+    if (!pCurve->SetSize(256))
+      return false;
 
     if (pIO->ReadUInt8Float(&(*pCurve)[0], 256) != 256)
       return false;                                                                       
@@ -4456,7 +4467,8 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
 
     pCurves[i] = pCurve = (CIccTagCurve*)CIccTag::Create(icSigCurveType);
 
-    pCurve->SetSize(256);
+    if (!pCurve->SetSize(256))
+      return false;
 
     if (pIO->ReadUInt8Float(&(*pCurve)[0], 256) != 256)
       return false;                                                                       
@@ -4877,7 +4889,8 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
 
     pCurves[i] = pCurve = (CIccTagCurve*)CIccTag::Create(icSigCurveType);
 
-    pCurve->SetSize(nInputEntries);
+    if (!pCurve->SetSize(nInputEntries))
+      return false;
 
     if (pIO->ReadUInt16Float(&(*pCurve)[0], nInputEntries) != nInputEntries)
       return false;
@@ -4900,7 +4913,8 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
 
     pCurves[i] = pCurve = (CIccTagCurve*)CIccTag::Create(icSigCurveType);
 
-    pCurve->SetSize(nOutputEntries);
+    if (!pCurve->SetSize(nOutputEntries))
+      return false;
 
     if (pIO->ReadUInt16Float(&(*pCurve)[0], nOutputEntries) != nOutputEntries)
       return false;

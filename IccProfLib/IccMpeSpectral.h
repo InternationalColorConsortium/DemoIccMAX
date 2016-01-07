@@ -105,7 +105,7 @@ public:
 
   const icSpectralRange &GetRange() { return m_Range;}
 
-  void SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range );
+  bool SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range );
 
   icFloatNumber *GetWhite() { return m_pWhite;}
   icFloatNumber *GetMatrix() {return m_pMatrix;}
@@ -317,7 +317,7 @@ public:
 
   const icSpectralRange &GetRange() { return m_Range;}
 
-  void SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range );
+  bool SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, const icSpectralRange &range );
 
   icFloatNumber *GetWhite() { return m_pWhite;}
 

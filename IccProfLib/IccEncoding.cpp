@@ -189,7 +189,9 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   CIccTagXYZ *pXYZ = new CIccTagXYZ();
   float XYZMedia[3];
   icYxy2XYZVector(XYZMedia, 1.0f, &(*pMediaWhitePt)[0], 1);
-  pXYZ->SetSize(1);
+  if (!pXYZ->SetSize(1))
+    return icEncConvertMemoryError;
+
   (*pXYZ)[0].X = icDtoF(XYZMedia[0]);
   (*pXYZ)[0].Y = icDtoF(XYZMedia[1]);
   (*pXYZ)[0].Z = icDtoF(XYZMedia[2]);
@@ -220,7 +222,9 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
       delete pIcc;
       return icEncConvertMemoryError;
     }
-    pMtx->SetSize(3, 3);
+    if (!pMtx->SetSize(3, 3))
+      return icEncConvertMemoryError;
+
     pLumMtx->GetValues(pMtx->GetMatrix(), 0, 9);
     pLumMtx->GetValues(&lumMtx[0], 0, 9);
     pMpeTag->Attach(pMtx);
@@ -251,7 +255,12 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   }
 
   CIccTagFloat32 *pxy;
-  pMtx->SetSize(3,3);
+  if (!pMtx->SetSize(3,3)) {
+    delete pMtx;
+    delete pMpeTag;
+    delete pIcc;
+    return icEncConvertMemoryError;
+  }
   icFloatNumber *mtx=pMtx->GetMatrix();
   
   pxy = (CIccTagFloat32*)pParams->FindElemOfType(icRedPrimaryXYZCeptMember, icSigFloat32ArrayType);
@@ -311,12 +320,11 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   if (pSegCurve && pSegCurve->GetCurve()) {
     CIccSegmentedCurve *pCurve = pSegCurve->GetCurve();
     CIccMpeCurveSet *pCurves = (CIccMpeCurveSet*)CIccMultiProcessElement::Create(icSigCurveSetElemType);
-    if (!pCurves) {
+    if (!pCurves || !pCurves->SetSize(3)) {
       delete pMpeTag;
       delete pIcc;
       return icEncConvertMemoryError;
     }
-    pCurves->SetSize(3);
     pCurves->SetCurve(0, pCurve->NewCopy());
     pCurves->SetCurve(1, pCurve->NewCopy());
     pCurves->SetCurve(2, pCurve->NewCopy());

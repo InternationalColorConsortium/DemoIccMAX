@@ -184,12 +184,17 @@ void CIccUTF16String::Clear()
   m_str[0] = 0;
 }
 
-void CIccUTF16String::Resize(size_t len)
+bool CIccUTF16String::Resize(size_t len)
 {
   if (len>m_alloc) {
     size_t nAlloc = AllocSize(len);
 
     m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
+
+    if (!m_str) {
+      m_len = 0;
+      return false;
+    }
   }
 
   if (len>m_len) {
@@ -197,6 +202,7 @@ void CIccUTF16String::Resize(size_t len)
   }
   m_len = len;
   m_str[m_len] = 0;
+  return true;
 }
 
 size_t CIccUTF16String::WStrlen(const icUInt16Number *uzStr)
@@ -211,11 +217,19 @@ CIccUTF16String& CIccUTF16String::operator=(const CIccUTF16String &wstr)
 {
   if (m_alloc<=wstr.m_alloc) {
     m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
-    m_alloc = wstr.m_alloc;
+    if (m_str)
+      m_alloc = wstr.m_alloc;
+    else
+      m_alloc = 0;
   }
-  m_len = wstr.m_len;
+  if (m_str) {
+    m_len = wstr.m_len;
 
-  memcpy(m_str, wstr.m_str, (m_len+1)*sizeof(icUInt16Number));
+    memcpy(m_str, wstr.m_str, (m_len+1)*sizeof(icUInt16Number));
+  }
+  else {
+    m_len = 0;
+  }
 
   return *this;
 }
@@ -234,17 +248,25 @@ CIccUTF16String& CIccUTF16String::operator=(const icUInt16Number *uzStr)
 
   if (m_alloc<=nAlloc) {
     m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
-    m_alloc =nAlloc;
+    if (m_str)
+      m_alloc = nAlloc;
+    else
+      m_alloc = 0;
   }
-  m_len = n;
+  if (m_str) {
+    m_len = n;
 
-  memcpy(m_str, uzStr, (m_len+1)*sizeof(icUInt16Number));
+    memcpy(m_str, uzStr, (m_len+1)*sizeof(icUInt16Number));
+  }
+  else {
+    m_len = 0;
+  }
 
   return *this;
 }
 
 
-void CIccUTF16String::FromUtf8(const char *szStr, size_t sizeSrc)
+bool CIccUTF16String::FromUtf8(const char *szStr, size_t sizeSrc)
 {
   if (!sizeSrc)
     sizeSrc = strlen(szStr);
@@ -255,20 +277,27 @@ void CIccUTF16String::FromUtf8(const char *szStr, size_t sizeSrc)
       m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
       m_alloc = nAlloc;
     }
-    UTF16 *szDest = m_str;
-    icConvertUTF8toUTF16((const UTF8 **)&szStr, (const UTF8 *)&szStr[sizeSrc], &szDest, &szDest[m_alloc], lenientConversion);
-    if (m_str[0]==0xfeff) {
-      size_t i;
-      for (i=1; m_str[i]; i++)
-        m_str[i-1] = m_str[i];
-      m_str[i-1] = 0;
+    if (m_str) {
+      UTF16 *szDest = m_str;
+      icConvertUTF8toUTF16((const UTF8 **)&szStr, (const UTF8 *)&szStr[sizeSrc], &szDest, &szDest[m_alloc], lenientConversion);
+      if (m_str[0]==0xfeff) {
+        size_t i;
+        for (i=1; m_str[i]; i++)
+          m_str[i-1] = m_str[i];
+        m_str[i-1] = 0;
+      }
+      m_len = WStrlen(m_str);
     }
-    m_len = WStrlen(m_str);
+    else {
+      m_len =0;
+      return false;
+    }
   }
   else {
     m_len = 0;
     m_str[0] = 0;
   }
+  return true;
 }
 
 const char *CIccUTF16String::ToUtf8(std::string &buf)

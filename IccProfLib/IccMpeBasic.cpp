@@ -2099,7 +2099,7 @@ CIccMpeCurveSet &CIccMpeCurveSet::operator=(const CIccMpeCurveSet &curveSet)
   m_nReserved = m_nReserved;
 
   if (m_curve) {
-    delete [] m_curve;
+    free(m_curve);
   }
 
   if (curveSet.m_nInputChannels) {
@@ -2155,7 +2155,7 @@ CIccMpeCurveSet::~CIccMpeCurveSet()
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeCurveSet::SetSize(int nNewSize)
+bool CIccMpeCurveSet::SetSize(int nNewSize)
 {
   if (m_curve) {
     icCurveMap map;
@@ -2175,14 +2175,30 @@ void CIccMpeCurveSet::SetSize(int nNewSize)
 
   if (nNewSize) {
     m_curve = (icCurveSetCurvePtr*)calloc(nNewSize, sizeof(icCurveSetCurvePtr));
+
+    if (!m_curve) {
+      m_position = NULL;
+      m_nInputChannels = m_nOutputChannels = 0;
+      return false;
+    }
+
     m_position = (icPositionNumber*)calloc(nNewSize, sizeof(icPositionNumber));
 
+    if (!m_position) {
+      free(m_curve);
+      m_curve = NULL;
+
+      m_nInputChannels = m_nOutputChannels = 0;
+      return false;
+    }
     m_nInputChannels = m_nOutputChannels = nNewSize;
   }
   else {
     m_curve = NULL;
     m_nInputChannels = m_nOutputChannels = 0;
   }
+
+  return true;
 }
 
 /**
@@ -2295,7 +2311,8 @@ bool CIccMpeCurveSet::Read(icUInt32Number size, CIccIO *pIO)
   if (nInputChannels != nOutputChannels)
     return false;
 
-  SetSize(nInputChannels);
+  if (!SetSize(nInputChannels))
+    return false;
 
   if (m_curve) {
     int i;
@@ -3019,19 +3036,30 @@ CIccMpeMatrix::~CIccMpeMatrix()
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels)
+bool CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels)
 {
-  if (m_pMatrix)
+  if (m_pMatrix) {
     free(m_pMatrix);
+    m_pMatrix = NULL;
+  }
 
   m_size = (icUInt32Number)nInputChannels * nOutputChannels;
 
-  if (m_size)
+  if (m_size) {
     m_pMatrix = (icFloatNumber*)calloc(m_size, sizeof(icFloatNumber));
+    if (!m_pMatrix)
+      return false;
+  }
+
   m_pConstants = (icFloatNumber*)calloc(nOutputChannels, sizeof(icFloatNumber));
+  
+  if (!m_pConstants)
+    return false;
 
   m_nInputChannels = nInputChannels;
   m_nOutputChannels = nOutputChannels;
+
+  return true;
 }
 
 /**
@@ -3117,7 +3145,9 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
   if (size < headerSize + nInputChannels * nOutputChannels *sizeof(icFloatNumber) &&
       size >= headerSize + nOutputChannels * sizeof(icFloatNumber)) {
 
-    SetSize(0, nOutputChannels);
+    if (!SetSize(0, nOutputChannels))
+      return false;
+
     m_nInputChannels = nInputChannels;
 
     //Read Constant data
@@ -3125,7 +3155,8 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
       return false;
   }
   else {
-    SetSize(nInputChannels, nOutputChannels);
+    if (!SetSize(nInputChannels, nOutputChannels))
+      return false;
 
     if (!m_pMatrix) 
       return false;

@@ -146,8 +146,8 @@ public:
   icFloatNumber &operator[](icUInt32Number index) {return m_Curve[index];}
   icFloatNumber *GetData(icUInt32Number index) {return &m_Curve[index];}
   icUInt32Number GetSize() const { return m_nSize; }
-  void SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt=icInitZero);
-  void SetGamma(icFloatNumber gamma);
+  bool SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt=icInitZero);
+  bool SetGamma(icFloatNumber gamma);
 
   virtual void Begin() {m_nMaxIndex = (icUInt16Number)m_nSize - 1;}
   virtual icFloatNumber Apply(icFloatNumber v) const;

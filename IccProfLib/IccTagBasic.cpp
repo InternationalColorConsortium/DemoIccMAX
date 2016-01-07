@@ -2623,7 +2623,7 @@ CIccTagNamedColor2::~CIccTagNamedColor2()
  *  nDeviceCoords - number of device channels
  *****************************************************************************
  */
-void CIccTagNamedColor2::SetSize(icUInt32Number nSize, icInt32Number nDeviceCoords/*=-1*/)
+bool CIccTagNamedColor2::SetSize(icUInt32Number nSize, icInt32Number nDeviceCoords/*=-1*/)
 {
   if (nSize <1)
     nSize = 1;
@@ -2638,6 +2638,9 @@ void CIccTagNamedColor2::SetSize(icUInt32Number nSize, icInt32Number nDeviceCoor
   icUInt32Number nColorEntrySize = 32/*rootName*/ + (3/*PCS*/ + 1/*iAny*/ + nDeviceCoords)*sizeof(icFloatNumber);
 
   SIccNamedColorEntry* pNamedColor = (SIccNamedColorEntry*)calloc(nSize, nColorEntrySize);
+
+  if (!pNamedColor)
+    return false;
 
   icUInt32Number i, nCopy = __min(nSize, m_nSize);
   icUInt32Number j, nCoords = __min(nNewCoords, (icInt32Number)m_nDeviceCoords);
@@ -2663,6 +2666,8 @@ void CIccTagNamedColor2::SetSize(icUInt32Number nSize, icInt32Number nDeviceCoor
   m_nDeviceCoords = nNewCoords;
 
   ResetPCSCache();
+
+  return true;
 }
 
 
@@ -2750,7 +2755,8 @@ bool CIccTagNamedColor2::Read(icUInt32Number size, CIccIO *pIO)
   if (nCount < nNum)
     return false;
 
-  SetSize(nNum, nCoords);
+  if (!SetSize(nNum, nCoords))
+    return false;
 
   icUInt32Number i;
   SIccNamedColorEntry *pNamedColor=m_NamedColor;
@@ -3433,7 +3439,8 @@ bool CIccTagXYZ::Read(icUInt32Number size, CIccIO *pIO)
   icUInt32Number nNum=((size-2*sizeof(icUInt32Number)) / sizeof(icXYZNumber));
   icUInt32Number nNum32 = nNum*sizeof(icXYZNumber)/sizeof(icUInt32Number);
 
-  SetSize(nNum);
+  if (!SetSize(nNum))
+    return false;
 
   if (pIO->Read32(m_XYZ, nNum32) != (icInt32Number)nNum32 )
     return false;
@@ -3518,16 +3525,24 @@ void CIccTagXYZ::Describe(std::string &sDescription)
  *  bZeroNew - flag to zero newly formed values
  *****************************************************************************
  */
-void CIccTagXYZ::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagXYZ::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
 {
   if (nSize==m_nSize)
-    return;
+    return true;
 
   m_XYZ = (icXYZNumber*)realloc(m_XYZ, nSize*sizeof(icXYZNumber));
+
+  if (!m_XYZ) {
+    m_nSize = 0;
+    return false;
+  }
+
   if (bZeroNew && m_nSize < nSize) {
     memset(&m_XYZ[m_nSize], 0, (nSize-m_nSize)*sizeof(icXYZNumber));
   }
   m_nSize = nSize;
+
+  return true;
 }
 
 
@@ -3694,7 +3709,8 @@ bool CIccTagChromaticity::Read(icUInt32Number size, CIccIO *pIO)
   if (nNum < nChannels)
     return false;
 
-  SetSize((icUInt16Number)nNum);
+  if (!SetSize((icUInt16Number)nNum))
+    return false;
 
   if (pIO->Read32(&m_xy[0], nNum32) != (icInt32Number)nNum32 )
     return false;
@@ -3785,17 +3801,24 @@ void CIccTagChromaticity::Describe(std::string &sDescription)
  *  bZeroNew - flag to zero newly formed values
  *****************************************************************************
  */
-void CIccTagChromaticity::SetSize(icUInt16Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagChromaticity::SetSize(icUInt16Number nSize, bool bZeroNew/*=true*/)
 {
   if (m_nChannels == nSize)
-    return;
+    return true;
 
   m_xy = (icChromaticityNumber*)realloc(m_xy, nSize*sizeof(icChromaticityNumber));
+
+  if (!m_xy) {
+    m_nChannels = 0;
+    return false;
+  }
+
   if (bZeroNew && nSize > m_nChannels) {
     memset(&m_xy[m_nChannels], 0, (nSize - m_nChannels)*sizeof(icChromaticityNumber));
   }
 
   m_nChannels = nSize;
+  return true;
 }
 
 
@@ -4471,10 +4494,10 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
  *   determines the fixed block size for each matrix
  *****************************************************************************
  */
-void CIccTagSparseMatrixArray::Reset(icUInt32Number nNumMatrices, icUInt16Number nChannelsPerMatrix)
+bool CIccTagSparseMatrixArray::Reset(icUInt32Number nNumMatrices, icUInt16Number nChannelsPerMatrix)
 {
   if (nNumMatrices==m_nSize && nChannelsPerMatrix==m_nChannelsPerMatrix)
-    return;
+    return true;
 
   m_nSize = nNumMatrices;
   m_nChannelsPerMatrix = nChannelsPerMatrix;
@@ -4482,7 +4505,14 @@ void CIccTagSparseMatrixArray::Reset(icUInt32Number nNumMatrices, icUInt16Number
   icUInt32Number nSize = m_nSize * GetBytesPerMatrix();
   
   m_RawData = (icUInt8Number *)realloc(m_RawData, nSize);
+
+  if (!m_RawData) {
+    m_nSize = 0;
+    return false;
+  }
+
   memset(m_RawData, 0, nSize);
+  return true;
 }
 
 
@@ -4752,7 +4782,8 @@ bool CIccTagFixedNum<T, Tsig>::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number nSize=((size-2*sizeof(icUInt32Number)) / sizeof(T));
 
-  SetSize(nSize);
+  if (!SetSize(nSize))
+    return false;
 
   if (pIO->Read32(m_Num, nSize) != (icInt32Number)nSize )
     return false;
@@ -4849,16 +4880,24 @@ void CIccTagFixedNum<T, Tsig>::Describe(std::string &sDescription)
  *****************************************************************************
  */
 template <class T, icTagTypeSignature Tsig>
-void CIccTagFixedNum<T, Tsig>::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagFixedNum<T, Tsig>::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
 {
   if (nSize==m_nSize)
-    return;
+    return true;
 
   m_Num = (T*)realloc(m_Num, nSize*sizeof(T));
+
+  if (!m_Num) {
+    m_nSize = 0;
+    return false;
+  }
+
   if (bZeroNew && m_nSize < nSize) {
     memset(&m_Num[m_nSize], 0, (nSize-m_nSize)*sizeof(T));
   }
   m_nSize = nSize;
+
+  return true;
 }
 
 /**
@@ -5191,7 +5230,8 @@ bool CIccTagNum<T, Tsig>::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number nSize=((size-2*sizeof(icUInt32Number)) / sizeof(T));
 
-  SetSize(nSize);
+  if (!SetSize(nSize))
+    return false;
 
   if (sizeof(T)==sizeof(icUInt8Number)) {
     if (pIO->Read8(m_Num, nSize) != (icInt32Number)nSize )
@@ -5362,16 +5402,24 @@ void CIccTagNum<icUInt64Number, icSigUInt64ArrayType>::Describe(std::string &sDe
  *****************************************************************************
  */
 template <class T, icTagTypeSignature Tsig>
-void CIccTagNum<T, Tsig>::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagNum<T, Tsig>::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
 {
   if (nSize==m_nSize)
-    return;
+    return true;
 
   m_Num = (T*)realloc(m_Num, nSize*sizeof(T));
+
+  if (!m_Num) {
+    m_nSize = 0;
+    return false;
+  }
+
   if (bZeroNew && m_nSize < nSize) {
     memset(&m_Num[m_nSize], 0, (nSize-m_nSize)*sizeof(T));
   }
   m_nSize = nSize;
+
+  return true;
 }
 
 /**
@@ -5757,7 +5805,8 @@ bool CIccTagFloatNum<T, Tsig>::Read(icUInt32Number size, CIccIO *pIO)
   if (Tsig==icSigFloat16ArrayType) {
     icUInt32Number nSize=((size-2*sizeof(icUInt32Number)) / sizeof(icFloat16Number));
 
-    SetSize(nSize);
+    if (!SetSize(nSize))
+      return false;
 
     if (pIO->ReadFloat16Float(&m_Num[0], nSize) != (icInt32Number)nSize)
       return false;
@@ -5765,7 +5814,8 @@ bool CIccTagFloatNum<T, Tsig>::Read(icUInt32Number size, CIccIO *pIO)
   else if (Tsig==icSigFloat32ArrayType) {
     icUInt32Number nSize=((size-2*sizeof(icUInt32Number)) / sizeof(icFloat32Number));
 
-    SetSize(nSize);
+    if (!SetSize(nSize))
+      return false;
 
     if (pIO->Read32(m_Num, nSize) != (icInt32Number)nSize )
       return false;
@@ -5773,7 +5823,8 @@ bool CIccTagFloatNum<T, Tsig>::Read(icUInt32Number size, CIccIO *pIO)
   else if (Tsig==icSigFloat64ArrayType) {
     icUInt32Number nSize=((size-2*sizeof(icUInt32Number)) / sizeof(icFloat64Number));
 
-    SetSize(nSize);
+    if (!SetSize(nSize))
+      return false;
 
     if (pIO->Read64(m_Num, nSize) != (icInt32Number)nSize )
       return false;
@@ -5907,16 +5958,24 @@ void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription)
  *****************************************************************************
  */
 template <class T, icTagTypeSignature Tsig>
-void CIccTagFloatNum<T, Tsig>::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
+bool  CIccTagFloatNum<T, Tsig>::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
 {
   if (nSize==m_nSize)
-    return;
+    return true;
 
   m_Num = (T*)realloc(m_Num, nSize*sizeof(T));
+
+  if (!m_Num) {
+    m_nSize = 0;
+    return false;
+  }
+
   if (bZeroNew && m_nSize < nSize) {
     memset(&m_Num[m_nSize], 0, (nSize-m_nSize)*sizeof(T));
   }
   m_nSize = nSize;
+
+  return true;
 }
 
 /**
@@ -6359,8 +6418,9 @@ CIccLocalizedUnicode &CIccLocalizedUnicode::operator=(const CIccLocalizedUnicode
   if (&UnicodeText == this)
     return *this;
 
-  SetSize(UnicodeText.GetLength());
-  memcpy(m_pBuf, UnicodeText.GetBuf(), m_nLength*sizeof(icUInt16Number));
+  if (SetSize(UnicodeText.GetLength())) {
+    memcpy(m_pBuf, UnicodeText.GetBuf(), m_nLength*sizeof(icUInt16Number));
+  }
   m_nLanguageCode = UnicodeText.m_nLanguageCode;
   m_nCountryCode = UnicodeText.m_nCountryCode;
 
@@ -6456,15 +6516,23 @@ const icChar *CIccLocalizedUnicode::GetAnsi(icChar *szBuf, icUInt32Number nBufSi
  *
  *****************************************************************************
  */
-void CIccLocalizedUnicode::SetSize(icUInt32Number nSize)
+bool CIccLocalizedUnicode::SetSize(icUInt32Number nSize)
 {
   if (nSize == m_nLength)
-    return;
+    return true;
 
   m_pBuf = (icUInt16Number*)realloc(m_pBuf, (nSize+1)*sizeof(icUInt16Number));
+
+  if (!m_pBuf) {
+    m_nLength = 0;
+    return false;
+  }
+
   m_nLength = nSize;
 
   m_pBuf[nSize]=0;
+
+  return true;
 }
 
 /**
@@ -6479,14 +6547,16 @@ void CIccLocalizedUnicode::SetSize(icUInt32Number nSize)
  *  nRegionCode = the region code type as defined by icCountryCode
  *****************************************************************************
  */
-void CIccLocalizedUnicode::SetText(const icChar *szText,
+bool CIccLocalizedUnicode::SetText(const icChar *szText,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
   int len=(icInt32Number)strlen(szText), i;
   icUInt16Number *pBuf;
 
-  SetSize(len);
+  if (!SetSize(len))
+    return false;
+  
   pBuf = m_pBuf;
   for (i=0; i<len; i++) {
     *pBuf++ = *szText++;
@@ -6495,6 +6565,8 @@ void CIccLocalizedUnicode::SetText(const icChar *szText,
 
   m_nLanguageCode = nLanguageCode;
   m_nCountryCode = nRegionCode;
+
+  return true;
 }
 
 /**
@@ -6509,7 +6581,7 @@ void CIccLocalizedUnicode::SetText(const icChar *szText,
  *  nRegionCode = the region code type as defined by icCountryCode
  *****************************************************************************
  */
-void CIccLocalizedUnicode::SetText(const icUInt16Number *sszUnicode16Text,
+bool CIccLocalizedUnicode::SetText(const icUInt16Number *sszUnicode16Text,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
@@ -6518,11 +6590,14 @@ void CIccLocalizedUnicode::SetText(const icUInt16Number *sszUnicode16Text,
 
   for (len=0; *pBuf; len++, pBuf++);
 
-  SetSize(len);
+  if (!SetSize(len))
+    return false;
   memcpy(m_pBuf, sszUnicode16Text, (len+1)*sizeof(icUInt16Number));
 
   m_nLanguageCode = nLanguageCode;
   m_nCountryCode = nRegionCode;
+
+  return true;
 }
 
 /**
@@ -6537,7 +6612,7 @@ void CIccLocalizedUnicode::SetText(const icUInt16Number *sszUnicode16Text,
 *  nRegionCode = the region code type as defined by icCountryCode
 *****************************************************************************
 */
-void CIccLocalizedUnicode::SetText(const icUInt32Number *sszUnicode32Text,
+bool CIccLocalizedUnicode::SetText(const icUInt32Number *sszUnicode32Text,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
@@ -6548,16 +6623,21 @@ void CIccLocalizedUnicode::SetText(const icUInt32Number *sszUnicode32Text,
   if (*pBuf)
     pBuf--;
 
-  SetSize(len*2);
+  if (!SetSize(len*2))
+    return false;
+
   const icUInt32Number *srcStart = sszUnicode32Text;
   icUInt16Number *dstStart = m_pBuf;
   icConvertUTF32toUTF16(&srcStart, &srcStart[len], &dstStart, &dstStart[len*2], lenientConversion);
 
   *dstStart=0;
-  SetSize((icUInt32Number)(dstStart - m_pBuf));
+  if (!SetSize((icUInt32Number)(dstStart - m_pBuf)))
+    return false;
 
   m_nLanguageCode = nLanguageCode;
   m_nCountryCode = nRegionCode;
+
+  return true;
 }
 
 
@@ -6703,7 +6783,9 @@ bool CIccTagMultiLocalizedUnicode::Read(icUInt32Number size, CIccIO *pIO)
 
     nNumChar = nLength / sizeof(icUInt16Number);
 
-    Unicode.SetSize(nNumChar);
+    if (!Unicode.SetSize(nNumChar))
+      return false;
+
     Unicode.m_nLanguageCode = nLanguageCode;
     Unicode.m_nCountryCode = nRegionCode;
 
@@ -6797,6 +6879,11 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription)
   int nSize = 127, nAnsiSize;
   CIccMultiLocalizedUnicode::iterator i;
 
+  if (!szBuf) {
+    sDescription += "***Allocation Error***\r\n";
+    return;
+  }
+
   for (i=m_Strings->begin(); i!=m_Strings->end(); i++) {
     if (i!=m_Strings->begin())
       sDescription += "\r\n";
@@ -6811,12 +6898,21 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription)
 
     if (nAnsiSize>nSize) {
       szBuf = (icChar*)realloc(szBuf, nAnsiSize+1);
+
+      if (!szBuf)
+        nSize = 0;
+      else
       nSize = nAnsiSize;
     }
-    i->GetAnsi(szBuf, nSize);
-    sDescription += "\"";
-    sDescription += szBuf;
-    sDescription += "\"\r\n";
+    if (szBuf) {
+      i->GetAnsi(szBuf, nSize);
+      sDescription += "\"";
+      sDescription += szBuf;
+      sDescription += "\"\r\n";
+    }
+    else {
+      sDescription += "***Allocation Error***\r\n";
+    }
   }
 }
 
@@ -7112,7 +7208,8 @@ bool CIccTagData::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number nNum = size-3*sizeof(icUInt32Number);
 
-  SetSize(nNum);
+  if (!SetSize(nNum))
+    return false;
 
   if (pIO->Read8(m_pData, nNum) != (icInt32Number)nNum)
     return false;
@@ -7238,16 +7335,24 @@ void CIccTagData::Describe(std::string &sDescription)
  *  bZeroNew - flag to zero newly formed values
  *****************************************************************************
  */
-void CIccTagData::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagData::SetSize(icUInt32Number nSize, bool bZeroNew/*=true*/)
 {
   if (m_nSize == nSize)
-    return;
+    return true;
 
   m_pData = (icUInt8Number*)realloc(m_pData, nSize*sizeof(icUInt8Number));
+
+  if (!m_pData) {
+    m_nSize = 0;
+    return false;
+  }
+
   if (bZeroNew && nSize > m_nSize) {
     memset(&m_pData[m_nSize], 0, (nSize-m_nSize)*sizeof(icUInt8Number));
   }
   m_nSize = nSize;
+
+  return true;
 }
 
 
@@ -7608,7 +7713,8 @@ bool CIccTagColorantOrder::Read(icUInt32Number size, CIccIO *pIO)
   if (nNum < nCount)
     return false;
 
-  SetSize((icUInt16Number)nCount);
+  if (!SetSize((icUInt16Number)nCount))
+    return false;
 
   if (pIO->Read8(&m_pData[0],nNum) != (icInt32Number)nNum)
     return false;
@@ -7691,17 +7797,25 @@ void CIccTagColorantOrder::Describe(std::string &sDescription)
  *  bZeroNew - flag to zero newly formed values
  *****************************************************************************
  */
-void CIccTagColorantOrder::SetSize(icUInt16Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagColorantOrder::SetSize(icUInt16Number nSize, bool bZeroNew/*=true*/)
 {
   if (m_nCount == nSize)
-    return;
+    return true;
 
   m_pData = (icUInt8Number*)realloc(m_pData, nSize*sizeof(icUInt8Number));
+
+  if (!m_pData) {
+    m_nCount = 0;
+    return false;
+  }
+
   if (bZeroNew && nSize > m_nCount) {
     memset(&m_pData[m_nCount], 0, (nSize - m_nCount)*sizeof(icUInt8Number));
   }
 
   m_nCount = nSize;
+
+  return true;
 }
 
 
@@ -7890,7 +8004,8 @@ bool CIccTagColorantTable::Read(icUInt32Number size, CIccIO *pIO)
   if (nNum < nCount)
     return false;
   
-  SetSize((icUInt16Number)nCount);
+  if (!SetSize((icUInt16Number)nCount))
+    return false;
 
   for (icUInt32Number i=0; i<nCount; i++) {
     if (pIO->Read8(&m_pData[i].name[0], nNum8) != (icInt32Number)nNum8)
@@ -8017,16 +8132,24 @@ void CIccTagColorantTable::Describe(std::string &sDescription)
  *  bZeroNew - flag to zero newly formed values
  *****************************************************************************
  */
-void CIccTagColorantTable::SetSize(icUInt16Number nSize, bool bZeroNew/*=true*/)
+bool CIccTagColorantTable::SetSize(icUInt16Number nSize, bool bZeroNew/*=true*/)
 {
   if (m_nCount == nSize)
-    return;
+    return true;
 
   m_pData = (icColorantTableEntry*)realloc(m_pData, nSize*sizeof(icColorantTableEntry));
+
+  if (!m_pData) {
+    m_nCount = 0;
+    return false;
+  }
+
   if (bZeroNew && nSize > m_nCount) {
     memset(&m_pData[m_nCount], 0, (nSize-m_nCount)*sizeof(icColorantTableEntry));
   }
   m_nCount = nSize;
+
+  return true;
 }
 
 
