@@ -1345,7 +1345,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
               m_Header.biSpectralRange.end ||
               m_Header.biSpectralRange.steps) {
                 sReport += icValidateWarningMsg;
-                sprintf(buf, " - Spectral PCS wavelengths defined with no spectral PCS!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
+                sprintf(buf, "%s - Spectral PCS wavelengths defined with no spectral PCS!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
                 sReport += buf;
                 rv = icMaxStatus(rv, icValidateWarning);
           }
@@ -1413,7 +1413,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
               m_Header.biSpectralRange.end ||
               m_Header.biSpectralRange.steps) {
             sReport += icValidateCriticalErrorMsg;
-            sprintf(buf, "Spectral PCS wavelengths defined with no spectral PCS!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
+            sprintf(buf, "%s - Spectral PCS wavelengths defined with no spectral PCS!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
