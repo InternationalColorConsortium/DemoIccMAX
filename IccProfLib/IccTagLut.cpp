@@ -444,7 +444,7 @@ bool CIccTagCurve::SetSize(icUInt32Number nSize, icTagCurveSizeInit nSizeOpt/*=i
     if (!m_Curve)
       m_Curve = (icFloatNumber*)malloc(nSize*sizeof(icFloatNumber));
     else
-      m_Curve = (icFloatNumber*)realloc(m_Curve, nSize*sizeof(icFloatNumber));
+      m_Curve = (icFloatNumber*)icRealloc(m_Curve, nSize*sizeof(icFloatNumber));
 
     if (!m_Curve) {
       m_nSize = 0;

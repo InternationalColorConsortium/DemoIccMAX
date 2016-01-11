@@ -577,7 +577,7 @@ bool CIccTagDict::Read(icUInt32Number size, CIccIO *pIO)
         //Make sure we have buf large enough for the string
         if (bufsize < pos[i].posName.size) {
           bufsize = pos[i].posName.size;
-          buf = (icUnicodeChar*)realloc(buf, bufsize);
+          buf = (icUnicodeChar*)icRealloc(buf, bufsize);
           if (!buf) {
             free(pos);
             delete ptr.ptr;
@@ -622,7 +622,7 @@ bool CIccTagDict::Read(icUInt32Number size, CIccIO *pIO)
         //Make sure we have buf large enough for the string
         if (bufsize < pos[i].posValue.size) {
           bufsize = pos[i].posValue.size;
-          buf = (icUnicodeChar*)realloc(buf, bufsize);
+          buf = (icUnicodeChar*)icRealloc(buf, bufsize);
           if (!buf) {
             free(pos);
             delete ptr.ptr;

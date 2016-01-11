@@ -4622,7 +4622,7 @@ bool CIccMpeCalculator::SetElem(icUInt32Number idx, CIccMultiProcessElement *pEl
 
   if (idx+1>count) {
     if (*pArray) {
-      *pArray = (CIccMultiProcessElement**)realloc(*pArray, (idx+1)*sizeof(CIccMultiProcessElement*));
+      *pArray = (CIccMultiProcessElement**)icRealloc(*pArray, (idx+1)*sizeof(CIccMultiProcessElement*));
 
       if (!(*pArray))
         return false;

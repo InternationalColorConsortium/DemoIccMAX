@@ -90,6 +90,37 @@ const char *icValidateWarningMsg = "Warning! - ";
 const char *icValidateNonCompliantMsg = "NonCompliant! - ";
 const char *icValidateCriticalErrorMsg = "Error! - ";
 
+
+/**
+ ******************************************************************************
+* Name: icRealloc
+* 
+* Purpose: realloc memory allocated by malloc or calloc freeing old memory on
+*  failure.
+* 
+* Args:
+*  ptr - memory block to realloc
+*  size - new size of memory block
+* 
+* Return: 
+*  pointer to reallocated memory block or NULL on failure.  Old memory is
+*  released on error.
+******************************************************************************
+*/void* icRealloc(void *ptr, size_t size)
+{
+  void *nptr;
+  
+  if (ptr)
+    nptr = realloc(ptr, size);
+  else
+    nptr = malloc(size);
+
+  if (!nptr && ptr)
+    free(ptr);
+
+  return nptr;
+}
+
 /**
  ******************************************************************************
 * Name: icRoundOffset

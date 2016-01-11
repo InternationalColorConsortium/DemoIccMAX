@@ -1366,7 +1366,7 @@ bool CIccTagArray::SetSize(icUInt32Number nSize)
     if (nSize<=m_nSize)
       return true;
 
-    m_TagVals = (IccTagPtr*)realloc(m_TagVals, nSize*sizeof(IccTagPtr));
+    m_TagVals = (IccTagPtr*)icRealloc(m_TagVals, nSize*sizeof(IccTagPtr));
     if (!m_TagVals) {
       m_nSize = 0;
       return false;

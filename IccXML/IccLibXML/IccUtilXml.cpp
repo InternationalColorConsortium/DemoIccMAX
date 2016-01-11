@@ -189,7 +189,7 @@ bool CIccUTF16String::Resize(size_t len)
   if (len>m_alloc) {
     size_t nAlloc = AllocSize(len);
 
-    m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
+    m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
 
     if (!m_str) {
       m_len = 0;
@@ -216,7 +216,7 @@ size_t CIccUTF16String::WStrlen(const icUInt16Number *uzStr)
 CIccUTF16String& CIccUTF16String::operator=(const CIccUTF16String &wstr)
 {
   if (m_alloc<=wstr.m_alloc) {
-    m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
+    m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
     if (m_str)
       m_alloc = wstr.m_alloc;
     else
@@ -247,7 +247,7 @@ CIccUTF16String& CIccUTF16String::operator=(const icUInt16Number *uzStr)
   size_t nAlloc = AllocSize(n);
 
   if (m_alloc<=nAlloc) {
-    m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
+    m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
     if (m_str)
       m_alloc = nAlloc;
     else
@@ -274,7 +274,7 @@ bool CIccUTF16String::FromUtf8(const char *szStr, size_t sizeSrc)
   if (sizeSrc) {
     size_t nAlloc = AllocSize(sizeSrc*2);
     if (m_alloc<=nAlloc) {
-      m_str = (icUInt16Number*)realloc(m_str, m_alloc*sizeof(icUInt16Number));
+      m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
       m_alloc = nAlloc;
     }
     if (m_str) {

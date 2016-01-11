@@ -80,6 +80,8 @@
 namespace refIccMAX {
 #endif
 
+void* ICCPROFLIB_API icRealloc(void *ptr, size_t size);
+
 #define icPiNum 3.14159265358979323846
 #define icPosInfinity (std::numeric_limits<icFloatNumber>::infinity()) 
 #define icNegInfinity (-std::numeric_limits<icFloatNumber>::infinity())
