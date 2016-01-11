@@ -9199,12 +9199,16 @@ bool CIccResponseCurveStruct::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number* nMeasurements = new icUInt32Number[m_nChannels];
 
-  if (pIO->Read32(&nMeasurements[0],m_nChannels) != m_nChannels)
+  if (pIO->Read32(&nMeasurements[0],m_nChannels) != m_nChannels) {
+    delete[] nMeasurements;
     return false;
+  }
 
   icUInt32Number nNum32 = m_nChannels*sizeof(icXYZNumber)/sizeof(icS15Fixed16Number);
-  if (pIO->Read32(&m_maxColorantXYZ[0], nNum32) != (icInt32Number)nNum32)
-  return false;
+  if (pIO->Read32(&m_maxColorantXYZ[0], nNum32) != (icInt32Number)nNum32) {
+    delete[] nMeasurements;
+    return false;
+  }
 
   icResponse16Number nResponse16;
   CIccResponse16List nResponseList;
@@ -9215,8 +9219,10 @@ bool CIccResponseCurveStruct::Read(icUInt32Number size, CIccIO *pIO)
     for (int j=0; j<(int)nMeasurements[i]; j++) {
       if (!pIO->Read16(&nResponse16.deviceCode) ||
          !pIO->Read16(&nResponse16.reserved)   ||
-         !pIO->Read32(&nResponse16.measurementValue))
+         !pIO->Read32(&nResponse16.measurementValue)) {
+        delete[] nMeasurements;
         return false;
+      }
       nResponseList.push_back(nResponse16);
     }
     m_Response16ListArray[i] = nResponseList;
@@ -9509,8 +9515,10 @@ bool CIccTagResponseCurveSet16::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number* nOffset = new icUInt32Number[nCountMeasmntTypes];
 
-  if (pIO->Read32(&nOffset[0], nCountMeasmntTypes) != nCountMeasmntTypes)
+  if (pIO->Read32(&nOffset[0], nCountMeasmntTypes) != nCountMeasmntTypes) {
+    delete[] nOffset;
     return false;
+  }
 
   delete [] nOffset;
 
