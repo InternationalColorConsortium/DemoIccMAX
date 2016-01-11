@@ -471,7 +471,7 @@ bool CIccTagProfileSequenceId::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
-  m_list->empty();
+  m_list->clear();
 
   icUInt32Number sig;
   icUInt32Number tagStart = pIO->Tell();
