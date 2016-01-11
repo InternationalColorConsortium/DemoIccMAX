@@ -7913,7 +7913,7 @@ CIccTagColorantTable::CIccTagColorantTable(const CIccTagColorantTable &ITCT)
   m_nCount = ITCT.m_nCount;
 
   m_pData = (icColorantTableEntry*)calloc(m_nCount, sizeof(icColorantTableEntry));
-  memcpy(m_pData, ITCT.m_pData, sizeof(m_nCount*sizeof(icColorantTableEntry)));
+  memcpy(m_pData, ITCT.m_pData, m_nCount*sizeof(icColorantTableEntry));
 }
 
 
