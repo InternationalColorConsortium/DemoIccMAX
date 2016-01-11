@@ -118,7 +118,7 @@ public: //member functions
   CIccTagMultiLocalizedUnicode* GetNameLocalized() { return m_pNameLocalized; }
   CIccTagMultiLocalizedUnicode* GetValueLocalized() { return m_pValueLocalized; }
 
-  void UnsetValue() { m_sValue.empty(); m_bValueSet = false; }
+  void UnsetValue() { m_sValue.clear(); m_bValueSet = false; }
   bool SetValue(std::wstring sValue);
 
   //SetNameLocalized and SetValueLocalized both transfer ownership of the argument to the CIccDirEntry object
