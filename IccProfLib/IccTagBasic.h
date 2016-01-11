@@ -186,7 +186,7 @@ public:
   * Parameter(s):
   * sDescription - A string to put the tag's description into.
   */
-  virtual void Describe(std::string &sDescription) { sDescription.empty(); }
+  virtual void Describe(std::string &sDescription) { sDescription.clear(); }
 
   /**
    ******************************************************************************
