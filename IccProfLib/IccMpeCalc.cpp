@@ -2779,8 +2779,10 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
 
               szFuncDef = ParseFuncDef(scan.GetPos(), *pCaseList, sReport);
 
-              if (!szFuncDef)
+              if (!szFuncDef) {
+                delete pCaseList;
                 return NULL;
+              }
 
               scan.SetPos(szFuncDef);
               op.sig = icSigCaseOp;
@@ -2794,8 +2796,10 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
 
               szFuncDef = ParseFuncDef(scan.GetPos(), *pDefaultList, sReport);
 
-              if (!szFuncDef)
+              if (!szFuncDef) {
+                delete pDefaultList;
                 return NULL;
+              }
 
               scan.SetPos(szFuncDef);
               op.sig = icSigDefaultOp;
