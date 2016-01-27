@@ -24,6 +24,10 @@ cd ..\Named
 ..\iccFromXML SparseMatrixNamedColor.xml SparseMatrixNamedColor.icc
 ..\iccFromXML SparseMatrixNamedColor2.xml SparseMatrixNamedColor2.icc
 
+cd ..\mcs
+..\iccFromXML 17ChanWithSpots-MVIS.xml 17ChanWithSpots-MVIS.icc
+..\iccFromXML 6ChanSelect-MID.xml 6ChanSelect-MID.icc
+
 cd ..\PCC
 ..\iccFromXML Lab-D50_2deg.xml Lab-D50_2deg.icc
 ..\iccFromXML Lab-D93_2deg.xml Lab-D93_2deg.icc
