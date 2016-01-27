@@ -172,6 +172,7 @@ protected:
 		wxStaticText *m_textRenderingIntent;
     wxStaticText *m_textSpectralPCS;
     wxStaticText *m_textSpectralWavelengths;
+    wxStaticText *m_textMaterialColorSpace;
 		wxStaticText *m_textSize;
 		wxStaticText *m_textType;
 		wxStaticText *m_textVersion;

@@ -187,6 +187,7 @@ icSignature ICCPROFLIB_API icGetSecondSigPathSig(std::string sigPath);
 icUInt32Number ICCPROFLIB_API icGetSigVal(const icChar *pBuf);
 icUInt32Number ICCPROFLIB_API icGetSpaceSamples(icColorSpaceSignature sig);
 icUInt32Number ICCPROFLIB_API icGetSpectralSpaceSamples(const icHeader *pHdr);
+icUInt32Number ICCPROFLIB_API icGetMaterialColorSpaceSamples(icMaterialColorSignature sig);
 
 bool ICCPROFLIB_API icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng2);
 

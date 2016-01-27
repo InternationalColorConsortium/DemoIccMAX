@@ -2891,7 +2891,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
       sReport += " -  Needs two or more tint steps!\r\n";
       bBad = true;
     }
-    if (nVals % m_nOutputChannels) {
+    if ((nVals % m_nOutputChannels)!=0) {
       CIccInfo Info;
       std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 

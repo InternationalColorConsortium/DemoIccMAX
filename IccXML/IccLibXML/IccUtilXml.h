@@ -191,7 +191,7 @@ icUInt64Number icGetDeviceAttrValue(xmlNode *pNode);
 icColorantEncoding icGetColorantValue(const icChar* str);
 icMeasurementUnitSig icGetMeasurementValue(const icChar* str);
 const std::string icGetDeviceAttrName(icUInt64Number devAttr);
-const std::string icGetHeaderFlagsName(icUInt32Number flags);
+const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS=false);
 const std::string icGetPadSpace(double value);
 
 typedef struct {	

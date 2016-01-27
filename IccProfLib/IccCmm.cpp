@@ -7303,6 +7303,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
           return icCmmStatBadSpaceLink;
         }
       }
+      break;
 
     default:
       return icCmmStatBadLutType;
@@ -7343,6 +7344,10 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
 
   if (!Xform.ptr) {
     return icCmmStatBadXform;
+  }
+
+  if (pProfile->m_Header.deviceClass==icSigMaterialVisualizationClass) {
+    bInput = true;
   }
 
   m_nLastSpace = nDstSpace;

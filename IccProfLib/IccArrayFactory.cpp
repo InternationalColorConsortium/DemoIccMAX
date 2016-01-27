@@ -97,6 +97,10 @@ bool CIccBasicArrayFactory::GetArraySigName(std::string &ArrayName, icArraySigna
       ArrayName = "Named Color Array";
       break;
 
+    case icSigUtf8TextTypeArray:
+      ArrayName = "UTF8 Text Array";
+      break;
+
     default:
       ArrayName = "Unknown Array Type";
       break;

@@ -477,6 +477,8 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
     sizerBox->Add(CreateSizerWithText(_("Spectral PCS:"), &m_textSpectralPCS), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Spectral PCS Range:"), &m_textSpectralWavelengths), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("BiSpectral PCS Range:"), &m_textBiSpectralWavelengths), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("MCS Color Space:"), &m_textMaterialColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
+
 
 		sizerTop->Add(sizerBox, wxSizerFlags().Expand().Border(wxALL, 5));
 
@@ -523,7 +525,7 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 			pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds));
 		m_textCreator->SetLabel(icGetSig(buf, pHdr->creator));
 		m_textColorSpace->SetLabel(Fmt.GetColorSpaceSigName(pHdr->colorSpace));
-		m_textFlags->SetLabel(Fmt.GetProfileFlagsName(pHdr->flags));
+		m_textFlags->SetLabel(Fmt.GetProfileFlagsName(pHdr->flags, pHdr->mcs!=0));
 		m_textPCS->SetLabel(Fmt.GetColorSpaceSigName(pHdr->pcs));
 		m_textPlatform->SetLabel(Fmt.GetPlatformSigName(pHdr->platform));
 		m_textRenderingIntent->SetLabel(Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
@@ -560,6 +562,12 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
     }
     else {
       m_textBiSpectralWavelengths->SetLabel(_T("Not Defined"));
+    }
+    if (pHdr->mcs) {
+      m_textMaterialColorSpace->SetLabel(Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
+    }
+    else {
+      m_textMaterialColorSpace->SetLabel(_T("Not Defined"));
     }
 
 		int item;

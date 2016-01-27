@@ -1347,12 +1347,109 @@ template <class T, class A, icTagTypeSignature Tsig>
 bool CIccTagXmlFloatNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   pNode = icXmlFindNode(pNode, "Data");
-  pNode = pNode->children;  
+
+  const char *filename = icXmlAttrValue(pNode, "Filename", "");
+  if (!filename[0]) {
+    filename = icXmlAttrValue(pNode, "File", "");
+  }
 
   A a;
 
-  if (!a.ParseArray(pNode) || !a.GetSize()) {   
-    return false;
+  if (filename[0]) {
+    CIccIO *file = IccOpenFileIO(filename, "rb");
+    if (!file){
+      parseStr += "Error! - File '";
+      parseStr += filename;
+      parseStr +="' not found.\n";
+      delete file;
+      return false;
+    }
+
+    icUInt32Number len = file->GetLength();
+
+    if (!stricmp(icXmlAttrValue(pNode, "Format", "text"), "text")) {
+      char *fbuf = (char*)malloc(len+1);
+      fbuf[len]=0;
+      if (!fbuf) {
+        parseStr += "Memory error!\n";
+        delete file;
+        return false;
+      }
+
+      if (file->Read8(fbuf, len)!=len) {
+        parseStr += "Read error of (";
+        parseStr += filename;
+        parseStr += ")!\n";
+        free(fbuf);
+        delete file;
+        return false;
+      }
+      delete file;
+
+      if (!a.ParseTextArray(fbuf) || !a.GetSize()) {
+        parseStr += "Parse error of (";
+        parseStr += filename;
+        parseStr += ")!\n";
+        free(fbuf);
+        return false;
+      }
+      free(fbuf);
+    }
+    else if (Tsig==icSigFloat16ArrayType && sizeof(T)==sizeof(icFloat16Number)) {
+      icUInt32Number n = len/sizeof(icFloat16Number);
+      this->SetSize(n);
+      if (file->Read16(&this->m_Num[0], n)!=n) {
+        delete file;
+        return false;
+      }
+      delete file;
+      return true;
+    }
+    else if (Tsig==icSigFloat16ArrayType && sizeof(T)==sizeof(icFloat32Number)) {
+      icUInt32Number n = len/sizeof(icFloat32Number);
+      this->SetSize(n);
+      if (file->ReadFloat16Float(&this->m_Num[0], n)!=n) {
+        delete file;
+        return false;
+      }
+      delete file;
+      return true;
+    }
+    else if (Tsig==icSigFloat32ArrayType && sizeof(T)==sizeof(icFloat32Number)) {
+      icUInt32Number n = len/sizeof(icFloat32Number);
+      this->SetSize(n);
+      if (file->ReadFloat32Float(&this->m_Num[0], n)!=n) {
+        delete file;
+        return false;
+      }
+      delete file;
+      return true;
+    }
+    else if (Tsig==icSigFloat64ArrayType && sizeof(T)==sizeof(icFloat64Number)) {
+      icUInt32Number n = len/sizeof(icFloat64Number);
+      this->SetSize(n);
+      if (file->Read64(&this->m_Num[0], n)!=n) {
+        delete file;
+        return false;
+      }
+      delete file;
+      return true;
+
+    }
+    else {
+      delete file;
+      parseStr += "Unsupported file parsing type!\n";
+      return false;
+    }
+  }
+  else {
+    pNode = pNode->children;  
+
+    A a;
+
+    if (!a.ParseArray(pNode) || !a.GetSize()) {   
+      return false;
+    }
   }
 
   icUInt32Number i, n = a.GetSize();

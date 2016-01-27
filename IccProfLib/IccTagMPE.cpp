@@ -1637,6 +1637,90 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         break;
       }
 
+    case icSigMToA0Tag:
+      {
+        nInput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
+        if (m_nInputChannels != nInput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of input channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        nOutput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
+        if (m_nOutputChannels != nOutput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of output channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        break;
+      }
+
+    case icSigAToM0Tag:
+      {
+        nInput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
+        if (m_nInputChannels != nInput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of input channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        nOutput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
+        if (m_nOutputChannels != nOutput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of output channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        break;
+      }
+
+    case icSigMToB0Tag:
+      {
+        nInput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
+        if (m_nInputChannels != nInput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of input channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
+        if (m_nOutputChannels != nOutput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of output channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        break;
+      }
+
+    case icSigMToS0Tag:
+      {
+        nInput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
+        if (m_nInputChannels != nInput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of input channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        nOutput = icGetSpectralSpaceSamples(&pProfile->m_Header);
+        if (m_nOutputChannels != nOutput) {
+          sReport += icValidateCriticalErrorMsg;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of output channels.\r\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        break;
+      }
+
     default:
       sReport += icValidateWarningMsg;
       sReport += sSigPathName;

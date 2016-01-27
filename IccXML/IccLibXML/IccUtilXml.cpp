@@ -1454,24 +1454,35 @@ const std::string icGetDeviceAttrName(icUInt64Number devAttr)
 	return xml;
 }
 
-const std::string icGetHeaderFlagsName(icUInt32Number flags)
+const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS)
 {
 	char line[256];
 	std::string xml;	
 
   if (flags & icEmbeddedProfileTrue)
-		sprintf(line, "<ProfileFlags EmbeddedInFile=\"true\" ");
+		sprintf(line, "<ProfileFlags EmbeddedInFile=\"true\"");
 	else
-	  sprintf(line, "<ProfileFlags EmbeddedInFile=\"false\" ");	
+	  sprintf(line, "<ProfileFlags EmbeddedInFile=\"false\"");	
 	xml += line;
 
 	if (flags & icUseWithEmbeddedDataOnly)
-		sprintf(line, "UseWithEmbeddedDataOnly=\"true\"");
+		sprintf(line, " UseWithEmbeddedDataOnly=\"true\"");
 	else
-		sprintf(line, "UseWithEmbeddedDataOnly=\"false\"");
+		sprintf(line, " UseWithEmbeddedDataOnly=\"false\"");
 	xml += line;
 
   icUInt32Number otherFlags = ~(icEmbeddedProfileTrue|icUseWithEmbeddedDataOnly);
+
+  if (bUsesMCS) {
+    if (flags & icMCSNeedsSubsetTrue)
+      sprintf(line, " MCSNeedsSubset=\"true\"");
+    else
+      sprintf(line, " MCSNeedsSubset=\"false\"");
+    xml += line;
+
+    otherFlags &= ~icMCSNeedsSubsetTrue;
+  }
+
 
   if (flags & otherFlags) {
     sprintf(line, " VendorFlags=\"%08x\"", flags & otherFlags);

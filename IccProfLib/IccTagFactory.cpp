@@ -509,6 +509,12 @@ const icChar* CIccSpecTagFactory::GetTagSigName(icTagSignature tagSig)
   case icSigReferenceNameTag:
     return "icSigReferenceNameTag";
 
+  case icSigMaterialTypeArrayTag:
+    return "icSigMaterialTypeArrayTag";
+
+  case icSigMaterialDefaultValuesTag:
+    return "icSigMaterialDefaultValuesTag";
+
   default:
     return NULL;
   }

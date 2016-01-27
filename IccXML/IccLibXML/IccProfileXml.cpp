@@ -111,7 +111,7 @@ bool CIccProfileXml::ToXml(std::string &xml)
   }
  
   xml+= "    ";
-  xml+= icGetHeaderFlagsName(m_Header.flags);
+  xml+= icGetHeaderFlagsName(m_Header.flags, m_Header.mcs!=0);
 
   if (m_Header.manufacturer != 0){
 	  sprintf(line, "    <DeviceManufacturer>%s</DeviceManufacturer>\n", icFixXml(fix, icGetSigStr(buf, m_Header.manufacturer)));
@@ -322,6 +322,11 @@ bool CIccProfileXml::ParseBasic(xmlNode *pNode, std::string &parseStr)
       if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
 					m_Header.flags |= icUseWithEmbeddedDataOnly;
 			}
+
+      attr = icXmlFindAttr(pNode, "MCSNeedsSubset");
+      if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
+        m_Header.flags |= icMCSNeedsSubsetTrue;
+      }
 
       attr = icXmlFindAttr(pNode, "VendorFlags");
       if (attr) {

@@ -2061,6 +2061,26 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
       else return true;
     }
 
+  case icSigMaterialTypeArrayTag:
+    {
+      if (typeSig!=icSigTagArrayType || 
+          arraySig!=icSigUtf8TextTypeArray)
+        return false;
+      else
+        return true;
+    }
+
+  case icSigMaterialDefaultValuesTag:
+    {
+      if (typeSig!=icSigUInt8ArrayType &&
+          typeSig!=icSigUInt16ArrayType &&
+          typeSig!=icSigFloat16ArrayType &&
+          typeSig!=icSigFloat32ArrayType)
+        return false;
+      else
+        return true;
+    }
+
   //The Private Tag case
   default:
     {

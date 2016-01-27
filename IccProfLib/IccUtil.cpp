@@ -1225,6 +1225,14 @@ icUInt32Number icGetSpectralSpaceSamples(const icHeader *pHdr)
 }
 
 
+icUInt32Number icGetMaterialColorSpaceSamples(icMaterialColorSignature sig)
+{
+  if (icGetColorSpaceType((icColorSpaceSignature)sig)!=icSigSrcMCSChannelData)
+    return 0;
+
+  return icNumColorSpaceChannels(sig);
+}
+
 bool icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng2)
 {
   return (rng1.start == rng2.start &&
@@ -1527,33 +1535,33 @@ const icChar *CIccInfo::GetColorSpaceSigName(icColorSpaceSignature sig)
   default:
     switch(icGetColorSpaceType(sig)) {
     case icSigNChannelData:
-      sprintf(m_szStr, "%04XChannelData", icNumColorSpaceChannels(sig));
+      sprintf(m_szStr, "0x%04XChannelData", icNumColorSpaceChannels(sig));
       return m_szStr;
 
     case icSigReflectanceSpectralData:
-      sprintf(m_szStr, "%04XChannelReflectanceData", icNumColorSpaceChannels(sig));
+      sprintf(m_szStr, "0x%04XChannelReflectanceData", icNumColorSpaceChannels(sig));
       return m_szStr;
 
     case icSigTransmisionSpectralData:
-      sprintf(m_szStr, "%04XChannelTransmissionData", icNumColorSpaceChannels(sig));
+      sprintf(m_szStr, "0x%04XChannelTransmissionData", icNumColorSpaceChannels(sig));
       return m_szStr;
 
     case icSigRadiantSpectralData:
-      sprintf(m_szStr, "%04XChannelRadiantData", icNumColorSpaceChannels(sig));
+      sprintf(m_szStr, "0x%04XChannelRadiantData", icNumColorSpaceChannels(sig));
       return m_szStr;
 
     case icSigBiSpectralReflectanceData:
-      sprintf(m_szStr, "%04XChannelBiDirReflectanceData", icNumColorSpaceChannels(sig));
+      sprintf(m_szStr, "0x%04XChannelBiDirReflectanceData", icNumColorSpaceChannels(sig));
       return m_szStr;
 
     case icSigSparseMatrixReflectanceData:
-      sprintf(m_szStr, "%04XChannelSparseMatrixReflectanceData", icNumColorSpaceChannels(sig));
+      sprintf(m_szStr, "0x%04XChannelSparseMatrixReflectanceData", icNumColorSpaceChannels(sig));
       return m_szStr;
 
     default:
       icUInt32Number nChan = icGetSpaceSamples(sig);
       if (nChan>0) {
-        sprintf(m_szStr, "%XColorData", nChan);
+        sprintf(m_szStr, "0x%XColorData", nChan);
         return m_szStr;
       }
       return GetUnknownName(sig);
@@ -1568,27 +1576,27 @@ const icChar *CIccInfo::GetSpectralColorSigName(icSpectralColorSignature sig)
     return "NoSpectralData";
 
    case icSigNChannelData:
-     sprintf(m_szStr, "%04XChannelData", icNumColorSpaceChannels(sig));
+     sprintf(m_szStr, "0x%04XChannelData", icNumColorSpaceChannels(sig));
      return m_szStr;
 
    case icSigReflectanceSpectralData:
-     sprintf(m_szStr, "%04XChannelReflectanceData", icNumColorSpaceChannels(sig));
+     sprintf(m_szStr, "0x%04XChannelReflectanceData", icNumColorSpaceChannels(sig));
      return m_szStr;
 
    case icSigTransmisionSpectralData:
-     sprintf(m_szStr, "%04XChannelTransmissionData", icNumColorSpaceChannels(sig));
+     sprintf(m_szStr, "0x%04XChannelTransmissionData", icNumColorSpaceChannels(sig));
      return m_szStr;
 
    case icSigRadiantSpectralData:
-     sprintf(m_szStr, "%04XChannelRadiantData", icNumColorSpaceChannels(sig));
+     sprintf(m_szStr, "0x%04XChannelRadiantData", icNumColorSpaceChannels(sig));
      return m_szStr;
 
    case icSigBiSpectralReflectanceData:
-     sprintf(m_szStr, "%04XChannelBiSpectralReflectanceData", icNumColorSpaceChannels(sig));
+     sprintf(m_szStr, "0x%04XChannelBiSpectralReflectanceData", icNumColorSpaceChannels(sig));
      return m_szStr;
 
    case icSigSparseMatrixReflectanceData:
-     sprintf(m_szStr, "%04XChannelSparseMatrixReflectanceData", icNumColorSpaceChannels(sig));
+     sprintf(m_szStr, "0x%04XChannelSparseMatrixReflectanceData", icNumColorSpaceChannels(sig));
      return m_szStr;
 
   default:

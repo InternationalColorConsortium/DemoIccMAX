@@ -1316,8 +1316,8 @@ bool CIccTagArray::Write(CIccIO *pIO)
             delete [] tagPos;
             return false;
           }
-          pIO->Align32();
           tagPos[i].size =  pIO->Tell() - nTagStart - tagPos[i].offset;
+          pIO->Align32();
         }
       }
       else {
@@ -1398,6 +1398,12 @@ icValidateStatus CIccTagArray::Validate(std::string sigPath, std::string &sRepor
 
   if (m_pArray) {  //Should call GetArrayHandler before validate to get 
     rv = icMaxStatus(rv, m_pArray->Validate(sigPath, sReport, pProfile));
+  }
+  else if (m_sigArrayType==icSigUtf8TextTypeArray) { //UTF8 text arrays are known
+    icUInt32Number i;
+    for (i=0; i<m_nSize; i++) {
+      rv = icMaxStatus(rv, m_TagVals[i].ptr->Validate(sigAryPath, sReport, pProfile));
+    }
   }
   else { 
     icUInt32Number i;
