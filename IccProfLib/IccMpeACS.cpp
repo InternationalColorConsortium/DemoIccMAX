@@ -233,7 +233,7 @@ bool CIccMpeAcs::Write(CIccIO *pIO)
     return false;
 
   if (m_pData && m_nDataSize) {
-    if (!pIO->Write8(m_pData, m_nDataSize)!=m_nDataSize)
+    if (pIO->Write8(m_pData, m_nDataSize)!=m_nDataSize)
       return false;
   }
 
