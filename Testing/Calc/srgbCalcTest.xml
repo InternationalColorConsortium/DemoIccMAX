@@ -137,7 +137,7 @@
 							  <Data>
 									0  2  4
 									2  4  8 
-				        </Data>
+				              </Data>
 							</float32NumberType>
 						</TintArrayElement>
           </SubElements>
@@ -783,14 +783,29 @@ case { pop 27 }
 0 eq
 tput(89)
 
-tget(0,45)
-tget(45,45)
-sum(90)
-90 eq
+env(true) 
+1 1 eq(2) sum(2)
+2 eq
+tput(90)
+
+env(ndef)
+0 0 eq(2) sum(2)
+2 eq
+tput(91)
+
+tget(0,46)
+tget(46,46)
+sum(92)
+92 eq
 if {
-in(0,3)
-curv(1)
-mtx(3)
+env(01020304) if {
+  copy(1,2)
+}
+else {
+  in(0,3)
+  curv(1)
+  mtx(3)
+}
 out(0,3)
 }
 else {

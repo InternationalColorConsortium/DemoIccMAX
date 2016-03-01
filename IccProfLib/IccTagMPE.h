@@ -99,6 +99,8 @@ class CIccMultiProcessElement;
 class CIccApplyTagMpe;
 class CIccApplyMpe;
 
+class IIccCmmEnvVarLookup;
+
 /**
 ****************************************************************************
 * Class: CIccProcessElementPtr
@@ -376,9 +378,10 @@ public:
   CIccMultiProcessElement *GetElement(int nIndex);
   void DeleteElement(int nIndex);
 
-  virtual bool Begin(icElemInterp nInterp=icElemInterpLinear,
+  virtual bool Begin(icElemInterp nInterp = icElemInterpLinear,
                      IIccProfileConnectionConditions *pProfilePCC = NULL,
-                     IIccProfileConnectionConditions *pAppliedPCC = NULL);
+                     IIccProfileConnectionConditions *pAppliedPCC = NULL,
+                     IIccCmmEnvVarLookup *pCmmEnvVarLookup = NULL);
   virtual CIccApplyTagMpe *GetNewApply();
 
   virtual void Apply(CIccApplyTagMpe *pApply, icFloatNumber *pDestPixel, const icFloatNumber *pSrcPixel) const;
@@ -396,6 +399,8 @@ public:
   bool IsLateBindingReflectance() const;
   IIccProfileConnectionConditions *GetProfilePCC() { return m_pProfilePCC; }
   IIccProfileConnectionConditions *GetAppliedPCC() { return m_pAppliedPCC; }
+
+  IIccCmmEnvVarLookup *GetCmmEnvLookup() { return m_pCmmEnvVarLookup; }
  
 protected:
   virtual void Clean();
@@ -420,6 +425,8 @@ protected:
 
   IIccProfileConnectionConditions *m_pProfilePCC;
   IIccProfileConnectionConditions *m_pAppliedPCC;
+
+  IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
 
 

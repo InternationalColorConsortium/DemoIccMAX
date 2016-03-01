@@ -4,6 +4,7 @@
 #include "IccUtil.h"
 #include "IccDefs.h"
 #include "IccApplyBPC.h"
+#include "IccEnvVar.h"
 
 //----------------------------------------------------
 // Function Declarations
@@ -87,7 +88,7 @@ typedef std::list<CIccProfile*> IccProfilePtrList;
 
 void Usage() 
 {
-  printf("Usage: iccApplyNamedCmm data_file_path final_data_encoding interpolation {profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Usage: iccApplyNamedCmm data_file_path final_data_encoding interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
 	printf("  For final_data_encoding:\n");
 	printf("    0 - icEncodeValue (converts to/from lab encoding when samples=3)\n");
 	printf("    1 - icEncodePercent\n");
@@ -119,8 +120,12 @@ void Usage()
 	printf("    40 - Perceptual with BPC\n");
 	printf("    41 - Relative Colorimetric with BPC\n");
 	printf("    42 - Saturation with BPC\n");
-  printf("    50 - MCS connection");
+  printf("    50 - BDRF Model");
+  printf("    60 - BDRF Light");
+  printf("    70 - BDRF Output");
+  printf("    80 - MCS connection");
 }
+
 
 //===================================================
 
@@ -192,28 +197,35 @@ int main(int argc, icChar* argv[])
 
   int nCount;
   bool bUseMPE;
+  icCmmEnvSigMap sigMap;
+
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
-    bUseMPE = true;
-    nIntent = atoi(argv[nCount+1]);
-    nType = abs(nIntent) / 10;
-    nIntent = nIntent % 10;
-    CIccProfile *pPccProfile = NULL;
+    if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
+      icSignature sig = icGetSigVal(argv[nCount]+5);
+      icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
+      
+      sigMap[sig]=val;
+    }
+    else if (stricmp(argv[nCount], "-PCC")) {      //check for -PCC arg to allow for profile connection conditions to be defined
+      bUseMPE = true;
+      nIntent = atoi(argv[nCount+1]);
+      nType = abs(nIntent) / 10;
+      nIntent = nIntent % 10;
+      CIccProfile *pPccProfile = NULL;
 
-		CIccCreateXformHintManager Hint;
+      CIccCreateXformHintManager Hint;
 
-		switch(nType) {
-			case 1:
-				nType = 0;
-				bUseMPE = false;
-				break;
-			case 4:
-				nType = 0;
-				Hint.AddHint(new CIccApplyBPCHint());
-				break;
-		}
+      switch(nType) {
+        case 1:
+          nType = 0;
+          bUseMPE = false;
+          break;
+        case 4:
+          nType = 0;
+          Hint.AddHint(new CIccApplyBPCHint());
+          break;
+      }
 
-    //check for -PCC arg to allow for profile connection conditions to be defined
-    if (stricmp(argv[nCount], "-PCC")) {
       if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {
         pPccProfile = OpenIccProfile(argv[nCount+3]);
         if (!pPccProfile) {
@@ -224,10 +236,15 @@ int main(int argc, icChar* argv[])
         pccList.push_back(pPccProfile);
       }
 
+      if (sigMap.size()>0) {
+        Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
+      }
+
       if (namedCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint)) {
         printf("Invalid Profile:  %s\n", argv[nCount]);
         return -1;
       }
+      sigMap.clear();
     }
   }
 
@@ -281,7 +298,7 @@ int main(int argc, icChar* argv[])
   OutPutData += "\n;Profiles applied\n";
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
     OutPutData += "; ";
-    if (stricmp(argv[nCount], "-PCC")) {
+    if (stricmp(argv[nCount], "-PCC") && strnicmp(argv[nCount], "-ENV:", 5)) {
       if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {
         sprintf(tempBuf, "%s -PCC %s\n", argv[nCount], argv[nCount+3]);
         OutPutData += tempBuf;

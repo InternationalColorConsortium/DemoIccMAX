@@ -1145,6 +1145,7 @@ icUInt32Number icGetSigVal(const icChar *pBuf)
              (((unsigned long)pBuf[1])<<16) +
              v;
 
+    case 8:
     case 9:
       sscanf(pBuf, "%x", &v);
       return v;

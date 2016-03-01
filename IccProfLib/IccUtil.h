@@ -370,6 +370,26 @@ protected:
 
 
 
+/**
+**************************************************************************
+* Type: Class
+* 
+* Purpose: 
+*  Interface for performing Cmm Environment Variable Lookup
+**************************************************************************
+*/
+class ICCPROFLIB_API IIccCmmEnvVarLookup
+{
+public:
+  virtual ~IIccCmmEnvVarLookup() {}
+
+  virtual bool GetEnvVar(icSigCmmEnvVar sig, icFloatNumber &val)=0;
+  virtual bool IndexedEnvVar(icUInt32Number nIndex, icSigCmmEnvVar &sig, icFloatNumber &val)=0;
+};
+
+
+
+
 extern ICCPROFLIB_API CIccInfo icInfo;
 
 #ifdef USEREFICCMAXNAMESPACE

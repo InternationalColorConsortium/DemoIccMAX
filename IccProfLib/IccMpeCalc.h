@@ -126,6 +126,9 @@ typedef enum {
   icSigTempPutChanOp                = 0x74707574,  /* 'tput' */
   icSigTempSaveChanOp               = 0x74736176,  /* 'tsav' */
 
+  //Environment variable operation
+  icSigEnvVarOp                     = 0x656e7620,  /* 'env ' */
+
   //Sub-element operations
   icSigApplyCurvesOp                = 0x63757276,  /* 'curv' */
   icSigApplyMatrixOp                = 0x6d747820,  /* 'mtx ' */
@@ -216,6 +219,8 @@ typedef enum {
 
   //Boolean operation
 }icSigCalcOp;
+
+
 
 /**
 ****************************************************************************
@@ -381,6 +386,7 @@ public:
   icSigCalcOp GetSig();
   bool GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt16Number initV1=0, icUInt16Number initV2=0);
   icFloat32Number GetValue();
+  bool GetEnvSig(icSigCmmEnvVar &envSig);
 
   std::string &GetLast() { return m_token; }
 
@@ -531,6 +537,8 @@ protected:
   CIccMultiProcessElement **m_SubElem;
 
   icCalculatorFuncPtr m_calcFunc;
+
+  IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
 
 
@@ -560,6 +568,8 @@ public:
 
   CIccSubCalcApply* GetApply(icUInt16Number index);
 
+  bool GetEnvVar(icSigCmmEnvVar sigEnv, icFloatNumber &val);
+
 protected:
   CIccApplyMpeCalculator(CIccMultiProcessElement *pElem);
 
@@ -574,6 +584,8 @@ protected:
   //Apply storage for sub-elements
   icUInt32Number m_nSubElem;
   CIccSubCalcApply **m_SubElem;
+
+  IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
 
 //CIccMPElements support  

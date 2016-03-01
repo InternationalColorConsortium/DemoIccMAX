@@ -333,7 +333,7 @@ BOOL WINAPI CMCheckColors(
                           LPBYTE lpaResult            // buffer for results
                           )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
   icFloatNumber srcPixel[MAX_COLOR_CHANNELS], destPixel[MAX_COLOR_CHANNELS];
 
   if (i<256 || i>=256+AVAILABLE_TRANSFORMS || !g_Transforms[i-256]) {
@@ -441,7 +441,7 @@ BOOL WINAPI CMCheckColorsInGamut(
                                  UINT nCount                 // result buffer size
                                 )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
   icFloatNumber srcPixel[MAX_COLOR_CHANNELS], destPixel[MAX_COLOR_CHANNELS];
 
   if (i<256 || i>=256+AVAILABLE_TRANSFORMS || !g_Transforms[i-256]) {
@@ -490,7 +490,7 @@ BOOL WINAPI CMCheckRGBs(
                         ULONG ulCallbackData 
                         )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
   icFloatNumber srcPixel[MAX_COLOR_CHANNELS], destPixel[MAX_COLOR_CHANNELS];
 
   if (i<256 || i>=256+AVAILABLE_TRANSFORMS || !g_Transforms[i-256]) {
@@ -841,7 +841,7 @@ HCMTRANSFORM WINAPI CMCreateMultiProfileTransform(
                                                   DWORD dwFlags             // transform creation flags
                                                  )
 {
-  DWORD rv;
+  size_t rv;
   DWORD i, n=0;
   DWORD dwIntent;
 
@@ -955,7 +955,7 @@ HCMTRANSFORM WINAPI CMCreateTransformExt(
                                          DWORD dwFlags                         // creation flags
                                         )
 {
-  DWORD rv;
+  size_t rv;
 
   for (rv=0; rv<AVAILABLE_TRANSFORMS; rv++) {
     if (!g_Transforms[rv])
@@ -1070,7 +1070,7 @@ HCMTRANSFORM WINAPI CMCreateTransformExtW(
                                           DWORD dwFlags                         // creation flags
                                          )
 {
-  DWORD rv;
+  size_t rv;
 
   for (rv=0; rv<AVAILABLE_TRANSFORMS; rv++) {
     if (!g_Transforms[rv])
@@ -1199,7 +1199,7 @@ BOOL WINAPI CMDeleteTransform(
                               HCMTRANSFORM hcmTransform
                              )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
 
   if (i>256 && i<256+AVAILABLE_TRANSFORMS && g_Transforms[i-256]) {
     delete g_Transforms[i-256];
@@ -1285,7 +1285,7 @@ BOOL WINAPI CMTranslateColors(
                               COLORTYPE ctOutput 
                              )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
   icFloatNumber srcPixel[MAX_COLOR_CHANNELS], destPixel[MAX_COLOR_CHANNELS];
 
   if (i<256 || i>=256+AVAILABLE_TRANSFORMS || !g_Transforms[i-256]) {
@@ -1465,7 +1465,7 @@ BOOL WINAPI CMTranslateRGB(
                            DWORD dwFlags
                           )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
   icFloatNumber srcPixel[MAX_COLOR_CHANNELS], destPixel[MAX_COLOR_CHANNELS];
 
   if (i<256 || i>=256+AVAILABLE_TRANSFORMS || !g_Transforms[i-256]) {
@@ -1522,7 +1522,7 @@ BOOL WINAPI CMTranslateRGBsExt(
                                ULONG ulCallbackData
                               )
 {
-  DWORD i = (DWORD)hcmTransform;
+  size_t i = (size_t)hcmTransform;
   icFloatNumber srcPixel[MAX_COLOR_CHANNELS], destPixel[MAX_COLOR_CHANNELS];
 
   if (i<256 || i>=256+AVAILABLE_TRANSFORMS || !g_Transforms[i-256]) {

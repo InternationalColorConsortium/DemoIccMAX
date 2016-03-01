@@ -699,6 +699,8 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(icUInt16Number nInputChan
 
   m_pAppliedPCC = NULL;
   m_pProfilePCC = NULL;
+
+  m_pCmmEnvVarLookup = NULL;
 }
 
 /**
@@ -739,6 +741,8 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(const CIccTagMultiProcess
 
   m_pAppliedPCC = lut.m_pAppliedPCC;
   m_pProfilePCC = lut.m_pProfilePCC;
+
+  m_pCmmEnvVarLookup = lut.m_pCmmEnvVarLookup;
 }
 
 /**
@@ -781,6 +785,8 @@ CIccTagMultiProcessElement &CIccTagMultiProcessElement::operator=(const CIccTagM
 
   m_pAppliedPCC = lut.m_pAppliedPCC;
   m_pProfilePCC = lut.m_pProfilePCC;
+
+  m_pCmmEnvVarLookup = lut.m_pCmmEnvVarLookup;
 
   return *this;
 }
@@ -1247,7 +1253,8 @@ bool CIccTagMultiProcessElement::IsLateBindingReflectance() const
  ******************************************************************************/
 bool CIccTagMultiProcessElement::Begin(icElemInterp nInterp /*=icElemInterpLinear*/,
                                        IIccProfileConnectionConditions *pProfilePCC /*= NULL*/,
-                                       IIccProfileConnectionConditions *pAppliedPCC /*= NULL*/)
+                                       IIccProfileConnectionConditions *pAppliedPCC /*= NULL*/,
+                                       IIccCmmEnvVarLookup *pCmmEnvVarLookup /*= NULL*/)
 {
   if (!m_list || !m_list->size()) {
     if (m_nInputChannels != m_nOutputChannels)
@@ -1258,6 +1265,7 @@ bool CIccTagMultiProcessElement::Begin(icElemInterp nInterp /*=icElemInterpLinea
 
   m_pProfilePCC = pProfilePCC;
   m_pAppliedPCC = pAppliedPCC;
+  m_pCmmEnvVarLookup = pCmmEnvVarLookup;
 
   CIccMultiProcessElementList::iterator i;
 

@@ -1445,8 +1445,6 @@ bool CIccTagXmlFloatNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parse
   else {
     pNode = pNode->children;  
 
-    A a;
-
     if (!a.ParseArray(pNode) || !a.GetSize()) {   
       return false;
     }

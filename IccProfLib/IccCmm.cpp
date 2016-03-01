@@ -574,6 +574,7 @@ CIccXform::CIccXform()
   m_bSrcPcsConversion = true;
   m_bDstPcsConversion = true;
   m_pConnectionConditions = NULL;
+  m_pCmmEnvVarLookup = NULL;
 }
 
 
@@ -593,6 +594,10 @@ CIccXform::~CIccXform()
 	if (m_pAdjustPCS) {
 		delete m_pAdjustPCS;
 	}
+
+  if (m_pCmmEnvVarLookup) {
+    delete m_pCmmEnvVarLookup;
+  }
 
 }
 
@@ -1041,11 +1046,21 @@ void CIccXform::SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent 
   m_bAbsToRel = bAbsToRel;
   m_nMCS = nMCS;
 
-	IIccCreateXformHint *pHint=NULL;
-	if (pHintManager && (pHint = pHintManager->GetHint("CIccCreateAdjustPCSXformHint"))){
-		CIccCreateAdjustPCSXformHint *pAdjustPCSHint = (CIccCreateAdjustPCSXformHint*)pHint;
-		m_pAdjustPCS = pAdjustPCSHint->GetNewAdjustPCSXform();
-	}
+  if (pHintManager) {
+    IIccCreateXformHint *pHint=NULL;
+
+    pHint = pHintManager->GetHint("CIccCreateAdjustPCSXformHint");
+    if (pHint) {
+		  CIccCreateAdjustPCSXformHint *pAdjustPCSHint = (CIccCreateAdjustPCSXformHint*)pHint;
+		  m_pAdjustPCS = pAdjustPCSHint->GetNewAdjustPCSXform();
+	  }
+
+    pHint = pHintManager->GetHint("CIccCreateCmmEnvVarXformHint");
+    if (pHint) {
+      CIccCreateCmmEnvVarXformHint *pCmmEnvVarHint = (CIccCreateCmmEnvVarXformHint*)pHint;
+      m_pCmmEnvVarLookup = pCmmEnvVarHint->GetNewCmmEnvVarLookup();
+    }
+  }
 }
 
 /**
@@ -6645,7 +6660,7 @@ icStatusCMM CIccXformMpe::Begin()
     return icCmmStatInvalidLut;
   }
 
-  if (!m_pTag->Begin(icElemInterpLinear, GetProfileCC(), GetConnectionConditions())) {
+  if (!m_pTag->Begin(icElemInterpLinear, GetProfileCC(), GetConnectionConditions(), GetCmmEnvVarLookup())) {
     return icCmmStatInvalidProfile;
   }
 

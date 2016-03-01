@@ -5794,8 +5794,8 @@ bool CIccTagFloatNum<T, Tsig>::Read(icUInt32Number size, CIccIO *pIO)
   }
   else {
     if (sizeof(icTagTypeSignature) + 
-      sizeof(icUInt32Number) + 
-      sizeof(T) > size)
+        sizeof(icUInt32Number) + 
+        sizeof(T) > size)
       return false;
   }
 

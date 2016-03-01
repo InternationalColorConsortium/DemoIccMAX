@@ -567,6 +567,16 @@ typedef enum {
 #define icMaxEnumArray    ((icArraySignature) 0xFFFFFFFF)
 
 
+/************************************************************************/
+/* CMM environment variable signatures
+/************************************************************************/
+typedef enum {
+  //Floating point constant operation
+  icSigTrueVar                       = 0x74727565,  /* 'true' */
+  icSigNotDefVar                     = 0x6e646566,  /* 'ndef' */
+}icSigCmmEnvVar;
+
+
 /**
  * Multi-Processing Element type signatures
  */

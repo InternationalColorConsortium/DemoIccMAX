@@ -243,6 +243,34 @@ public:
   }
 };
 
+class CIccOpDefEnvVar : public IIccOpDef
+{
+public:
+  virtual bool Exec(SIccCalcOp *op, SIccOpState &os)
+  {
+    icSigCmmEnvVar sig = (icSigCmmEnvVar) op->data.size;
+    icFloatNumber val=0.0;
+
+    if (sig==icSigTrueVar) {
+      OsPushArg((icFloatNumber)1.0);
+      OsPushArg((icFloatNumber)1.0);
+    }
+    else if (sig==icSigNotDefVar) {
+      OsPushArg((icFloatNumber)0.0);
+      OsPushArg((icFloatNumber)0.0);
+    }
+    else if (os.pApply->GetEnvVar(sig, val)) {
+      OsPushArg((icFloatNumber)val);
+      OsPushArg((icFloatNumber)1.0);
+    }
+    else {
+      OsPushArg((icFloatNumber)0.0);
+      OsPushArg((icFloatNumber)0.0);
+    }
+    return true;
+  }
+};
+
 class CIccOpDefSubElement : public IIccOpDef
 {
 public:
@@ -1634,9 +1662,9 @@ public:
 ******************************************************************************/
 void SIccCalcOp::Describe(std::string &desc)
 { 
-  char buf[30];
+  char buf[300];
   if (sig==icSigDataOp) {
-    sprintf(buf, "%.8f", data.num);
+    sprintf(buf, "%.8g", data.num);
     desc = buf;
     return;
   }
@@ -1664,6 +1692,26 @@ void SIccCalcOp::Describe(std::string &desc)
       else
         sprintf(buf, "[%d,%d]", data.select.v1, data.select.v2+1);
       desc += buf;
+      break;
+
+    case icSigEnvVarOp:
+      {
+        char varName[10];
+        icGetSigStr(varName, (icSignature)data.size);
+        int l=strlen(varName);
+        if (l==9) { //Remove h at end
+          varName[8]=0;
+        }
+        else {
+          for (l--; l>0; l--) {
+            if (varName[l]!=' ')
+              break;
+            varName[l]=0;
+          }
+        }
+        sprintf(buf, "(%s)", varName);
+        desc += buf;
+      }
       break;
     
     case icSigApplyCurvesOp:
@@ -1795,6 +1843,7 @@ CIccCalcOpMgr::CIccCalcOpMgr()
   m_map[icSigTempGetChanOp] = new CIccOpDefTempGetChan();
   m_map[icSigTempPutChanOp] = new CIccOpDefTempPutChan();
   m_map[icSigTempSaveChanOp] = new CIccOpDefTempSaveChan();
+  m_map[icSigEnvVarOp] = new CIccOpDefEnvVar();
   m_map[icSigApplyCurvesOp] = new CIccOpDefSubElement();
   m_map[icSigApplyMatrixOp] = new CIccOpDefSubElement();
   m_map[icSigApplyCLutOp] = new CIccOpDefSubElement();
@@ -1897,6 +1946,7 @@ bool SIccCalcOp::IsValidOp(icSigCalcOp sig)
     case icSigTempGetChanOp:
     case icSigTempPutChanOp:
     case icSigTempSaveChanOp:
+    case icSigEnvVarOp:
     case icSigApplyCurvesOp:
     case icSigApplyMatrixOp:
     case icSigApplyCLutOp:
@@ -2044,6 +2094,7 @@ icUInt16Number SIccCalcOp::ArgsUsed(CIccMpeCalculator *pCalc)
     case icSigNotaNumberOp:
     case icSigInputChanOp:        
     case icSigTempGetChanOp:
+    case icSigEnvVarOp:
       return 0;
 
     case icSigApplyCurvesOp:
@@ -2183,6 +2234,9 @@ icUInt16Number SIccCalcOp::ArgsPushed(CIccMpeCalculator *pCalc)
     case icSigNegInfinityOp:
     case icSigNotaNumberOp:
       return 1;
+
+    case icSigEnvVarOp:
+      return 2;
 
     case icSigInputChanOp:        
     case icSigTempGetChanOp:
@@ -2424,6 +2478,49 @@ bool CIccFuncTokenizer::GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt1
 icFloat32Number CIccFuncTokenizer::GetValue()
 {
   return (icFloat32Number)atof(m_token.c_str());
+}
+
+
+bool CIccFuncTokenizer::GetEnvSig(icSigCmmEnvVar &envSig)
+{
+  const char *pos = GetPos();
+
+  if (!GetNext())
+    return false;
+  const char *szToken = m_token.c_str();
+  int l=strlen(szToken);
+  if ((*szToken=='[' && szToken[l-1]==']') ||
+      (*szToken=='(' && szToken[l-1]==')')) {
+
+    int i;
+
+    icUInt32Number sig = 0;
+    if (l==10) {
+      sscanf(szToken+1, "%x", &sig);
+
+      envSig = (icSigCmmEnvVar)sig;
+      return true;
+    }
+
+    for (i=1; i<=4 && i<l-1; i++) {
+      sig <<= 8;
+      sig |= szToken[i];
+    }
+
+    for (;i<=4; i++) {
+      sig <<= 8;
+      sig |= 0x20;
+    }
+
+    envSig = (icSigCmmEnvVar)sig;
+  }
+  else {
+    SetPos(pos); //Undo get token
+    envSig = (icSigCmmEnvVar)0;
+    return false;
+  }
+
+  return true;
 }
 
 
@@ -2832,6 +2929,16 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
         if (!scan.GetIndex(op.data.select.v1, op.data.select.v2, 0, 1))
           return NULL;
         scanList.push_back(op);
+        break;
+
+      case icSigEnvVarOp:
+        {
+          icSigCmmEnvVar envSig;
+          if (!scan.GetEnvSig(envSig))
+            return NULL;
+          op.data.size = (icUInt32Number)envSig;
+          scanList.push_back(op);
+        }
         break;
 
       case icSigCopyOp:
@@ -3900,6 +4007,7 @@ CIccMpeCalculator::CIccMpeCalculator(icUInt16Number nInputChannels /*=0*/,
   m_nSubElem = 0;
   m_SubElem = NULL;
   m_calcFunc = NULL;
+  m_pCmmEnvVarLookup = NULL;
 }
 
 /**
@@ -3918,6 +4026,8 @@ CIccMpeCalculator::CIccMpeCalculator(const CIccMpeCalculator &channelGen)
 
   m_nInputChannels = channelGen.m_nInputChannels;
   m_nOutputChannels = channelGen.m_nOutputChannels;
+
+  m_pCmmEnvVarLookup = channelGen.m_pCmmEnvVarLookup;
 
   icCalculatorFuncPtr ptr = channelGen.m_calcFunc;
 
@@ -3965,8 +4075,9 @@ CIccMpeCalculator &CIccMpeCalculator::operator=(const CIccMpeCalculator &channel
   SetSize(0,0);
 
   m_nInputChannels= channelGen.m_nInputChannels;
-
   m_nOutputChannels = channelGen.m_nOutputChannels;
+
+  m_pCmmEnvVarLookup = channelGen.m_pCmmEnvVarLookup;
 
   icCalculatorFuncPtr ptr = channelGen.m_calcFunc;
 
@@ -4373,6 +4484,8 @@ bool CIccMpeCalculator::Begin(icElemInterp nInterp, CIccTagMultiProcessElement *
 
   m_nTempChannels = m_calcFunc->GetMaxTemp()+1;
 
+  m_pCmmEnvVarLookup = pMPE->GetCmmEnvLookup();
+
   if (m_nTempChannels>65536)
     return false;
 
@@ -4426,6 +4539,7 @@ CIccApplyMpe *CIccMpeCalculator::GetNewApply(CIccApplyTagMpe *pApplyTag)
   pApply->m_stack = new CIccFloatVector;
   pApply->m_scratch = new CIccFloatVector;
   pApply->m_scratch->resize(50);
+  pApply->m_pCmmEnvVarLookup = m_pCmmEnvVarLookup;
 
   int i;
 
@@ -4677,6 +4791,7 @@ CIccApplyMpeCalculator::CIccApplyMpeCalculator(CIccMultiProcessElement *pElem) :
 
   m_nSubElem = 0;
   m_SubElem = NULL;
+
 }
 
 
@@ -4732,7 +4847,28 @@ CIccSubCalcApply *CIccApplyMpeCalculator::GetApply(icUInt16Number index)
 }
 
 
-//Devine the global g_pIccMatrixSolver variable pointer
+/**
+******************************************************************************
+* Name: CIccApplyMpeCalculator::GetSubApply
+* 
+* Purpose: 
+* 
+* Args: 
+* 
+* Return: 
+******************************************************************************/
+bool CIccApplyMpeCalculator::GetEnvVar(icSigCmmEnvVar sigEnv, icFloatNumber &val)
+{
+  if (!m_pCmmEnvVarLookup) {
+    val = 0;
+    return false;
+  }
+  return m_pCmmEnvVarLookup->GetEnvVar(sigEnv, val);
+}
+
+
+
+//Define the global g_pIccMatrixSolver variable pointer
 IIccMatrixSolver *g_pIccMatrixSolver = NULL;
 
 

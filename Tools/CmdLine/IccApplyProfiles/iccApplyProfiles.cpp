@@ -74,6 +74,7 @@
 #include "IccUtil.h"
 #include "IccDefs.h"
 #include "IccApplyBPC.h"
+#include "IccEnvVar.h"
 #include "TiffImg.h"
 
 static icFloatNumber UnitClip(icFloatNumber v)
@@ -226,16 +227,25 @@ int main(int argc, icChar* argv[])
   int nCount;
   bool bUseMPE;
   icStatusCMM stat;
+  icCmmEnvSigMap sigMap;
+
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
-    bUseMPE = true;
-    nIntent = atoi(argv[nCount+1]);
-    nType = abs(nIntent) / 10;
-    nIntent = nIntent % 10;
-    CIccProfile *pPccProfile = NULL;
+    if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
+      icSignature sig = icGetSigVal(argv[nCount]+5);
+      icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
 
-    CIccCreateXformHintManager Hint;
+      sigMap[sig]=val;
+    }
+    else if (stricmp(argv[nCount], "-PCC")) { //check for -PCC arg to allow for profile connection conditions to be defined
+      bUseMPE = true;
+      nIntent = atoi(argv[nCount+1]);
+      nType = abs(nIntent) / 10;
+      nIntent = nIntent % 10;
+      CIccProfile *pPccProfile = NULL;
 
-    switch(nType) {
+      CIccCreateXformHintManager Hint;
+
+      switch(nType) {
       case 1:
         nType = 0;
         bUseMPE = false;
@@ -244,10 +254,8 @@ int main(int argc, icChar* argv[])
         nType = 0;
         Hint.AddHint(new CIccApplyBPCHint());
         break;
-    }
+      }
 
-    //check for -PCC arg to allow for profile connection conditions to be defined
-    if (stricmp(argv[nCount], "-PCC")) {
       if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {
         pPccProfile = OpenIccProfile(argv[nCount+3]);
         if (!pPccProfile) {
@@ -274,19 +282,29 @@ int main(int argc, icChar* argv[])
           return -1;
         }
 
+        if (sigMap.size()>0) {
+          Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
+        }
+
         stat = theCmm.AddXform(pImgProfile, nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint);
         if (stat) {
           printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
           return -1;
         }
+        sigMap.clear();
       }
       else {
+        if (sigMap.size()>0) {
+          Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
+        }
+
         last_path = &argv[nCount][0];
         stat = theCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint);
         if (stat) {
           printf("Invalid Profile(%d):  %s\n", stat, argv[nCount]);
           return -1;
         }
+        sigMap.clear();
       }
     }
   }

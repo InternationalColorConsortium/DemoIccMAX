@@ -395,6 +395,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IccEnvVar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IccEval.cpp"
 				>
 			</File>
@@ -819,6 +823,10 @@
 			</File>
 			<File
 				RelativePath=".\IccEncoding.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IccEnvVar.h"
 				>
 			</File>
 			<File

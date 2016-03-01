@@ -156,6 +156,7 @@ typedef enum {
   icXformTypeUnknown    = 0x7ffffff,
 } icXformType;
 
+
 /**
 **************************************************************************
 * Type: Class
@@ -167,6 +168,7 @@ typedef enum {
 class ICCPROFLIB_API IIccCreateXformHint
 {
 public:
+  virtual ~IIccCreateXformHint() {}
 	virtual const char *GetHintType() const=0;
 };
 
@@ -236,6 +238,24 @@ public:
 * Type: Class
 * 
 * Purpose: 
+*  Hint for getting CMM environment variable values
+**************************************************************************
+*/
+class ICCPROFLIB_API CIccCreateCmmEnvVarXformHint : public IIccCreateXformHint
+{
+public:
+  virtual ~CIccCreateCmmEnvVarXformHint() {}
+
+  virtual const char *GetHintType() const {return "CIccCreateCmmEnvVarXformHint";}
+  virtual IIccCmmEnvVarLookup *GetNewCmmEnvVarLookup() const=0;
+};
+
+
+/**
+**************************************************************************
+* Type: Class
+* 
+* Purpose: 
 *  Interface for calculating adjust PCS factors
 **************************************************************************
 */
@@ -244,6 +264,7 @@ class ICCPROFLIB_API IIccAdjustPCSXform
 {
 public:
 	virtual ~IIccAdjustPCSXform() {}
+
 	virtual bool CalcFactors(const CIccProfile* pProfile, const CIccXform* pXfm, icFloatNumber* Scale, icFloatNumber* Offset) const=0;
 };
 
@@ -258,10 +279,14 @@ public:
 class ICCPROFLIB_API CIccCreateAdjustPCSXformHint : public IIccCreateXformHint
 {
 public:
+  virtual ~CIccCreateAdjustPCSXformHint() {}
+
 	virtual const char *GetHintType() const {return "CIccCreateAdjustPCSXformHint";}
 	virtual const char *GetAdjustPCSType() const=0;
 	virtual IIccAdjustPCSXform *GetNewAdjustPCSXform() const=0;
 };
+
+
 
 //forward reference to CIccXform used by CIccApplyXform
 class CIccApplyXform;
@@ -366,6 +391,8 @@ public:
 
   virtual IIccProfileConnectionConditions *GetConnectionConditions() const { return m_pConnectionConditions; }
 
+  virtual IIccCmmEnvVarLookup *GetCmmEnvVarLookup() { return m_pCmmEnvVarLookup; }
+
   void DetachAll();
 
 protected:
@@ -398,6 +425,8 @@ protected:
 	icFloatNumber m_PCSOffset[3];
 
   IIccProfileConnectionConditions *m_pConnectionConditions;
+
+  IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
 
 
