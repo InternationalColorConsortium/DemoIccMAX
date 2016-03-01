@@ -11,7 +11,9 @@
 		30369F201C2175F000CE23F5 /* libIccProfLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30369F1F1C2175F000CE23F5 /* libIccProfLib.a */; };
 		30369F231C2176A400CE23F5 /* TiffImg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30369F211C2176A400CE23F5 /* TiffImg.cpp */; };
 		30369F261C21775300CE23F5 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30369F241C21775300CE23F5 /* libtiff.a */; };
-		30369F271C21775300CE23F5 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 30369F251C21775300CE23F5 /* libz.dylib */; };
+		552ACD8D1C7CE53F00E9FB5E /* liblzma.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD8C1C7CE53F00E9FB5E /* liblzma.a */; };
+		552ACD8F1C7CE54700E9FB5E /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD8E1C7CE54700E9FB5E /* libjpeg.a */; };
+		552ACD911C7CE54C00E9FB5E /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD901C7CE54C00E9FB5E /* libz.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,7 +35,9 @@
 		30369F211C2176A400CE23F5 /* TiffImg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TiffImg.cpp; sourceTree = SOURCE_ROOT; };
 		30369F221C2176A400CE23F5 /* TiffImg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiffImg.h; sourceTree = SOURCE_ROOT; };
 		30369F241C21775300CE23F5 /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtiff.a; path = ../../../../../build/XCode/libtiff/libtiff.a; sourceTree = "<group>"; };
-		30369F251C21775300CE23F5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = ../../../../usr/build/XCode/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
+		552ACD8C1C7CE53F00E9FB5E /* liblzma.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblzma.a; path = ../../../../Build/XCode/libtiff/liblzma.a; sourceTree = "<group>"; };
+		552ACD8E1C7CE54700E9FB5E /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../../../../Build/XCode/libtiff/libjpeg.a; sourceTree = "<group>"; };
+		552ACD901C7CE54C00E9FB5E /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../Build/XCode/libtiff/libz.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,9 +45,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				552ACD911C7CE54C00E9FB5E /* libz.a in Frameworks */,
 				30369F261C21775300CE23F5 /* libtiff.a in Frameworks */,
+				552ACD8F1C7CE54700E9FB5E /* libjpeg.a in Frameworks */,
 				30369F201C2175F000CE23F5 /* libIccProfLib.a in Frameworks */,
-				30369F271C21775300CE23F5 /* libz.dylib in Frameworks */,
+				552ACD8D1C7CE53F00E9FB5E /* liblzma.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,12 +75,14 @@
 		30369F151C2175BA00CE23F5 /* IccSpecSepToTiff */ = {
 			isa = PBXGroup;
 			children = (
+				552ACD901C7CE54C00E9FB5E /* libz.a */,
+				552ACD8E1C7CE54700E9FB5E /* libjpeg.a */,
+				552ACD8C1C7CE53F00E9FB5E /* liblzma.a */,
 				30369F1D1C2175C400CE23F5 /* iccSpecSepToTiff.cpp */,
 				30369F211C2176A400CE23F5 /* TiffImg.cpp */,
 				30369F221C2176A400CE23F5 /* TiffImg.h */,
 				30369F1F1C2175F000CE23F5 /* libIccProfLib.a */,
 				30369F241C21775300CE23F5 /* libtiff.a */,
-				30369F251C21775300CE23F5 /* libz.dylib */,
 			);
 			path = IccSpecSepToTiff;
 			sourceTree = "<group>";
@@ -179,10 +187,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Debug;
 		};
@@ -216,9 +224,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Release;
 		};
@@ -233,7 +241,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					../../../Build/Xcode/libtiff,
 					../../../Build/Xcode/lib,
-					/usr/build/XCode/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -250,7 +257,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					../../../Build/Xcode/libtiff,
 					../../../Build/Xcode/lib,
-					/usr/build/XCode/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

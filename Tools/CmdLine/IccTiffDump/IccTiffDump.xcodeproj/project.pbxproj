@@ -10,8 +10,10 @@
 		30369F3C1C2179AB00CE23F5 /* iccTiffDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30369F3B1C2179AB00CE23F5 /* iccTiffDump.cpp */; };
 		30369F3E1C2179D900CE23F5 /* libIccProfLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30369F3D1C2179D900CE23F5 /* libIccProfLib.a */; };
 		30369F411C217A2000CE23F5 /* TiffImg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30369F3F1C217A2000CE23F5 /* TiffImg.cpp */; };
-		30369F441C217A4D00CE23F5 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30369F421C217A4D00CE23F5 /* libtiff.a */; };
-		30369F451C217A4D00CE23F5 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 30369F431C217A4D00CE23F5 /* libz.dylib */; };
+		552ACD851C7CE2F900E9FB5E /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD841C7CE2F900E9FB5E /* libtiff.a */; };
+		552ACD871C7CE30500E9FB5E /* liblzma.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD861C7CE30500E9FB5E /* liblzma.a */; };
+		552ACD891C7CE30A00E9FB5E /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD881C7CE30A00E9FB5E /* libjpeg.a */; };
+		552ACD8B1C7CE30F00E9FB5E /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 552ACD8A1C7CE30F00E9FB5E /* libz.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,8 +34,10 @@
 		30369F3D1C2179D900CE23F5 /* libIccProfLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccProfLib.a; path = ../../../../../../../build/XCode/lib/libIccProfLib.a; sourceTree = "<group>"; };
 		30369F3F1C217A2000CE23F5 /* TiffImg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TiffImg.cpp; sourceTree = SOURCE_ROOT; };
 		30369F401C217A2000CE23F5 /* TiffImg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiffImg.h; sourceTree = SOURCE_ROOT; };
-		30369F421C217A4D00CE23F5 /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtiff.a; path = "/Development/ICC/ICCMax/RefIccMAX-2.0.17/Tools/CmdLine/IccSpecSepToTiff/IccSpecSepToTiff/../../../../../build/XCode/libtiff/libtiff.a"; sourceTree = "<absolute>"; };
-		30369F431C217A4D00CE23F5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = ../../../../usr/build/XCode/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
+		552ACD841C7CE2F900E9FB5E /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtiff.a; path = ../../../../Build/XCode/libtiff/libtiff.a; sourceTree = "<group>"; };
+		552ACD861C7CE30500E9FB5E /* liblzma.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblzma.a; path = ../../../../Build/XCode/libtiff/liblzma.a; sourceTree = "<group>"; };
+		552ACD881C7CE30A00E9FB5E /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../../../../Build/XCode/libtiff/libjpeg.a; sourceTree = "<group>"; };
+		552ACD8A1C7CE30F00E9FB5E /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../Build/XCode/libtiff/libz.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,9 +45,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30369F441C217A4D00CE23F5 /* libtiff.a in Frameworks */,
+				552ACD8B1C7CE30F00E9FB5E /* libz.a in Frameworks */,
+				552ACD851C7CE2F900E9FB5E /* libtiff.a in Frameworks */,
+				552ACD891C7CE30A00E9FB5E /* libjpeg.a in Frameworks */,
 				30369F3E1C2179D900CE23F5 /* libIccProfLib.a in Frameworks */,
-				30369F451C217A4D00CE23F5 /* libz.dylib in Frameworks */,
+				552ACD871C7CE30500E9FB5E /* liblzma.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,12 +75,14 @@
 		30369F331C21799F00CE23F5 /* IccTiffDump */ = {
 			isa = PBXGroup;
 			children = (
+				552ACD8A1C7CE30F00E9FB5E /* libz.a */,
+				552ACD881C7CE30A00E9FB5E /* libjpeg.a */,
+				552ACD861C7CE30500E9FB5E /* liblzma.a */,
+				552ACD841C7CE2F900E9FB5E /* libtiff.a */,
 				30369F3B1C2179AB00CE23F5 /* iccTiffDump.cpp */,
 				30369F3F1C217A2000CE23F5 /* TiffImg.cpp */,
 				30369F401C217A2000CE23F5 /* TiffImg.h */,
 				30369F3D1C2179D900CE23F5 /* libIccProfLib.a */,
-				30369F421C217A4D00CE23F5 /* libtiff.a */,
-				30369F431C217A4D00CE23F5 /* libz.dylib */,
 			);
 			path = IccTiffDump;
 			sourceTree = "<group>";
@@ -179,10 +187,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Debug;
 		};
@@ -216,9 +224,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Release;
 		};
@@ -233,7 +241,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					../../../Build/Xcode/lib,
 					../../../Build/Xcode/libtiff,
-					/usr/build/XCode/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -250,7 +257,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					../../../Build/Xcode/lib,
 					../../../Build/Xcode/libtiff,
-					/usr/build/XCode/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
