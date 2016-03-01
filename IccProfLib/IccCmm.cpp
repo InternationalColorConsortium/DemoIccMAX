@@ -6148,7 +6148,7 @@ icStatusCMM CIccXformNamedColor::Apply(CIccApplyXform* pApply, icFloatNumber *Ds
   else if (m_pTag) {
     const CIccTagNamedColor2 *pTag = m_pTag;
 
-    icUInt32Number j;
+    icInt32Number j;
 
     if (m_nSrcSpace != icSigNamedData)
       return icCmmStatBadSpaceLink;
