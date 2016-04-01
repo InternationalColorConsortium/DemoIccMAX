@@ -40,6 +40,14 @@ echo Test NamedColor with Illuminant A 10degree
 iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-IllumA-Abs_10deg.icc Lab-D50_2deg.icc 3
 
 echo ===========================================================================
+echo Test Grayscale GSDF Display link profile with ambient luminance of 20cd/m^2
+iccApplyNamedCMM Display\GrayTest.txt 3 0 -ENV:ambL 20 Display\GrayGSDF.icc 0
+
+echo ===========================================================================
+echo Test RGB GSDF Display link profile with ambient luminant of 30cd/m^2
+iccApplyNamedCMM Display\RgbTest.txt 3 0 -ENV:ambL 30 Display\RgbGSDF.icc 0
+
+echo ===========================================================================
 echo Test Fluorescent Color under D93
 iccApplyNamedCMM Named\FluorescentNamedColorTest.txt 2 0 Named\FluorescentNamedColor.icc 3 -pcc PCC\Spec400_10_700-D93-Abs_2deg.icc SpecRef\SixChanCameraRef.icc 1
 

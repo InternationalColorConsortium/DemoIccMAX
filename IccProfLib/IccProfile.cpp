@@ -2412,12 +2412,6 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
-        if (!GetTag(icSigProfileSequenceDescTag)) {
-          sReport += icValidateNonCompliantMsg;
-          sReport += "Required tag(s) missing.\r\n";
-          rv = icMaxStatus(rv, icValidateNonCompliant);
-        }
-
         if (icIsSpaceCLR(m_Header.colorSpace)) {
           if (!GetTag(icSigColorantTableTag)) {
             sReport += icValidateNonCompliantMsg;

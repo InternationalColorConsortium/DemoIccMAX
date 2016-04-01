@@ -11,6 +11,8 @@ cd ..\CMYK-3DLUTs
 cd ..\Display
 ..\iccFromXML LaserProjector.xml LaserProjector.icc
 ..\iccFromXML LCDDisplay.xml LCDDisplay.icc
+..\iccFromXML GrayGSDF.xml GrayGSDF.icc
+..\iccFromXML RgbGSDF.xml RgbGSDF.icc
 
 cd ..\Encoding
 ..\iccFromXML ISO22028-Encoded-sRGB.xml ISO22028-Encoded-sRGB.icc
