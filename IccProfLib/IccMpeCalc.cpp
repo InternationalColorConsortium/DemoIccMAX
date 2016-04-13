@@ -82,7 +82,7 @@
 #include <map>
 #include "IccUtil.h"
 
-#define ICC_VERBOSE_CALC_APPLY 0
+//#define ICC_VERBOSE_CALC_APPLY 1
 
 
 #define OsPopArg(X) { \
@@ -1505,7 +1505,7 @@ public:
     for (j=0; j<n; j++) {
       a1 = s[j];
       a2 = s[j+n];
-      s[j] = (fabs(a1-a2)<1.0e-8 ? (icFloatNumber)1.0 : (icFloatNumber)0.0);
+      s[j] = (fabs(a1-a2)<1.0e-5 ? (icFloatNumber)1.0 : (icFloatNumber)0.0);
     }
     OsShrinkArgs(n);
     return true;
@@ -4868,20 +4868,3 @@ bool CIccApplyMpeCalculator::GetEnvVar(icSigCmmEnvVar sigEnv, icFloatNumber &val
 
 
 
-//Define the global g_pIccMatrixSolver variable pointer
-IIccMatrixSolver *g_pIccMatrixSolver = NULL;
-
-
-/**
-****************************************************************************
-* Name:  IccSetMatrixSolver(IIccMatrixSolver *pSolver)
-* 
-* Purpose: 
-*  Global function that can be used by a supporting application to
-*  establish an implementation of a matrix solver object.  
-*****************************************************************************
-*/
-void ICCPROFLIB_API IccSetMatrixSolver(IIccMatrixSolver *pIccMatrixSolver)
-{
-  g_pIccMatrixSolver = pIccMatrixSolver;
-}

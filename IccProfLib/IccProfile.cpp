@@ -934,7 +934,7 @@ void CIccProfile::InitHeader()
   m_Header.spectralRange.start = 0;
   m_Header.spectralRange.end = 0;
   m_Header.spectralRange.steps = 0;
-  m_Header.spectralRange.start = 0;
+  m_Header.biSpectralRange.start = 0;
   m_Header.biSpectralRange.end = 0;
   m_Header.biSpectralRange.steps = 0;
 

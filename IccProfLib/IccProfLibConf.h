@@ -155,20 +155,23 @@ namespace refIccMAX {
 
 // Add comment below if you do not want LAB to XYZ conversions to clip negative XYZ values
 // (Warning! Commenting this may result in incorrect round ripping for some Lab Values)
-#define SAMPLEICC_NOCLIPLABTOXYZ
+#define REFICCMAX_NOCLIPLABTOXYZ
 
-#ifdef SAMPLEICCCMM_EXPORTS
+#ifdef REFICCMAXCMM_EXPORTS
 #define MAKE_A_DLL
 #endif
 
 #ifdef MAKE_A_DLL
-#define SAMPLEICCEXPORT __declspec( dllexport)
+#define REFICCMAXEXPORT __declspec( dllexport)
 #else
-#define SAMPLEICCEXPORT __declspec( dllimport)
+#define REFICCMAXEXPORT __declspec( dllimport)
 #endif
 
 // Uncomment below if you wish to utilize ZLIB for compressed text tag types
 //#define ICC_USE_ZLIB
+
+// Uncomment below if you wish to utilize Eigen library to support matrix solving
+//#define ICC_USE_EIGEN_SOLVER
 
 #ifdef USEREFICCMAXNAMESPACE
 }

@@ -305,6 +305,8 @@ bool icIsIllumD50(icXYZNumber xyz)
 */
 bool icMatrixInvert3x3(icFloatNumber *M)
 {
+  const icFloatNumber epsilon = 1e-8;
+
   icFloatNumber m48 = M[4]*M[8];
   icFloatNumber m75 = M[7]*M[5];
   icFloatNumber m38 = M[3]*M[8];
@@ -316,7 +318,7 @@ bool icMatrixInvert3x3(icFloatNumber *M)
     M[1]*(m38 - m65) + 
     M[2]*(m37 - m64);
 
-  if (!det)
+  if (det>-epsilon && det<epsilon)
     return false;
 
   icFloatNumber Co[9];
