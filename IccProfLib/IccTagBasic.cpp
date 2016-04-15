@@ -5375,6 +5375,28 @@ void CIccTagNum<T, Tsig>::Describe(std::string &sDescription)
   }
 }
 
+template <class T, icTagTypeSignature Tsig>
+icValidateStatus CIccTagNum<T, Tsig>::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const
+{
+  icValidateStatus rv = icValidateOK;
+  //Check # of channels 
+  if (icGetFirstSigPathSig(sigPath) == icSigMaterialDefaultValuesTag && 
+      pProfile &&
+      m_nSize != icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs)) {
+    CIccInfo Info;
+    std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+    sReport += icValidateCriticalErrorMsg;
+    sReport += sSigPathName;
+    sReport += " - Number of material default values does not match MCS in header.\r\n";
+    rv = icMaxStatus(rv, icValidateCriticalError);
+  }
+
+  rv = icMaxStatus(rv, CIccTagNumArray::Validate(sigPath, sReport, pProfile));
+
+  return rv;
+}
+
 // template function specialization to handle need for %llu and %llx for 64-bit ints
 template <>
 void CIccTagNum<icUInt64Number, icSigUInt64ArrayType>::Describe(std::string &sDescription)
@@ -5395,6 +5417,8 @@ void CIccTagNum<icUInt64Number, icSigUInt64ArrayType>::Describe(std::string &sDe
     }
   }
 }
+
+
 
 
 /**
@@ -6009,6 +6033,41 @@ bool CIccTagFloatNum<T, Tsig>::GetValues(icFloatNumber *DstVector, icUInt32Numbe
   }
   return true;
 }
+
+
+/**
+****************************************************************************
+* Name: CIccTagFloatNum::Interpolate
+* 
+* Purpose: Gets values from the num array tag as floating point numbers
+* 
+* Args: 
+*  nSize - number of data entries,
+*  bZeroNew - flag to zero newly formed values
+*****************************************************************************
+*/
+template <class T, icTagTypeSignature Tsig>
+icValidateStatus CIccTagFloatNum<T, Tsig>::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const
+{
+  icValidateStatus rv = icValidateOK;
+  //Check # of channels 
+  if (icGetFirstSigPathSig(sigPath) == icSigMaterialDefaultValuesTag && 
+    pProfile &&
+    m_nSize != icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs)) {
+      CIccInfo Info;
+      std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+      sReport += icValidateCriticalErrorMsg;
+      sReport += sSigPathName;
+      sReport += " - Number of material default values does not match MCS in header.\r\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+  }
+
+  rv = icMaxStatus(rv, CIccTagNumArray::Validate(sigPath, sReport, pProfile));
+
+  return rv;
+}
+
 
 
 /**

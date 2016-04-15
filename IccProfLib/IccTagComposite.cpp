@@ -1400,6 +1400,17 @@ icValidateStatus CIccTagArray::Validate(std::string sigPath, std::string &sRepor
     rv = icMaxStatus(rv, m_pArray->Validate(sigPath, sReport, pProfile));
   }
   else if (m_sigArrayType==icSigUtf8TextTypeArray) { //UTF8 text arrays are known
+    //Check # of channels 
+    if (icGetFirstSigPathSig(sigPath) == icSigMaterialTypeArrayTag && 
+        pProfile &&
+        m_nSize != icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs)) {
+      std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+      sReport += icValidateCriticalErrorMsg;
+      sReport += sSigPathName;
+      sReport += " - Number of material channel names does not match MCS in header.\r\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
     icUInt32Number i;
     for (i=0; i<m_nSize; i++) {
       rv = icMaxStatus(rv, m_TagVals[i].ptr->Validate(sigAryPath, sReport, pProfile));

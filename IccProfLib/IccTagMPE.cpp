@@ -1460,13 +1460,13 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       sReport += icValidateCriticalErrorMsg;
       sReport += sSigPathName;
       sReport += " No processing elements and input and output channels do not match!\r\n";
-      return icValidateCriticalError;
+      rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else {
       sReport += icValidateWarningMsg;
       sReport += sSigPathName;
       sReport += " No processing elements.\r\n";
-      return icValidateWarning;
+      rv = icMaxStatus(rv, icValidateWarning);
     }
   }
 
@@ -1736,6 +1736,10 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       rv = icMaxStatus(rv, icValidateWarning);
       bMatchChannels = false;
       break;
+  }
+
+  if (!m_list || !m_list->size()) {
+    return rv;
   }
 
   CIccMultiProcessElementList::iterator i = m_list->begin();

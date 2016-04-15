@@ -132,6 +132,10 @@ void Usage()
   printf("    40 - Perceptual with BPC\n");
   printf("    41 - Relative Colorimetric with BPC\n");
   printf("    42 - Saturation with BPC\n");
+  printf("    50 - BDRF Model");
+  printf("    60 - BDRF Light");
+  printf("    70 - BDRF Output");
+  printf("    80 - MCS connection");
 }
 
 //===================================================

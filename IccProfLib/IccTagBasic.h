@@ -731,6 +731,7 @@ public:
   virtual bool ValuePos(icFloatNumber&DstPos, icFloatNumber val, bool &bNoZero) const = 0;
 
   virtual bool IsMatrixArray() const = 0;
+
 };
 
 
@@ -914,6 +915,8 @@ public:
 
   virtual bool IsMatrixArray() const { return false; }
 
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
+
 protected:
   T *m_Num;
   icUInt32Number m_nSize;
@@ -1003,6 +1006,8 @@ public:
   virtual bool ValuePos(icFloatNumber&DstPos, icFloatNumber val, bool &bNoZero) const;
 
   virtual bool IsMatrixArray() const { return false; }
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
 protected:
   T *m_Num;

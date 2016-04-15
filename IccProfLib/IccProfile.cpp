@@ -1232,6 +1232,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
+
   if (m_Header.deviceClass==icSigMaterialIdentificationClass ||
       m_Header.deviceClass==icSigMaterialLinkClass ||
       m_Header.deviceClass==icSigMaterialVisualizationClass) {
@@ -1246,7 +1247,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     sReport += " - Invalid MCS designator for device class\r\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
-
+ 
   if (m_Header.colorSpace!=icSigNoColorData ||
         m_Header.version<icVersionNumberV5 || 
         (m_Header.deviceClass!=icSigNamedColorClass &&
@@ -2599,60 +2600,7 @@ icValidateStatus CIccProfile::Validate(std::string &sReport) const
  */
 icUInt16Number CIccProfile::GetSpaceSamples() const
 {
-  switch(m_Header.colorSpace) {
-  case icSigXYZData:
-  case icSigLabData:
-  case icSigLuvData:
-  case icSigYCbCrData:
-  case icSigYxyData:
-  case icSigRgbData:
-  case icSigHsvData:
-  case icSigHlsData:
-  case icSigCmyData:
-  case icSig3colorData:
-    return 3;
-
-  case icSigCmykData:
-  case icSig4colorData:
-    return 4;
-
-  case icSig5colorData:
-    return 5;
-
-  case icSig6colorData:
-    return 6;
-
-  case icSig7colorData:
-    return 7;
-
-  case icSig8colorData:
-    return 8;
-
-  case icSig9colorData:
-    return 9;
-
-  case icSig10colorData:
-    return 10;
-
-  case icSig11colorData:
-    return 11;
-
-  case icSig12colorData:
-    return 12;
-
-  case icSig13colorData:
-    return 13;
-
-  case icSig14colorData:
-    return 14;
-
-  case icSig15colorData:
-    return 15;
-
-  default:
-    return 0;
-  }
-
+  return icGetSpaceSamples(m_Header.colorSpace);
 }
 
 

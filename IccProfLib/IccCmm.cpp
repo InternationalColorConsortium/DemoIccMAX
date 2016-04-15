@@ -3020,11 +3020,13 @@ CIccPcsStepRouteMcs::CIccPcsStepRouteMcs(CIccTagArray *pSrcChannels, CIccTagArra
   }
 
   int i, j;
+  char *szSrc;
 
   for (i=0; i<m_nDstChannels; i++) {
     const icUChar *szDstChan = ((CIccTagUtf8Text*)(pDstChannels->GetIndex(i)))->GetText();
     for (j=0; j<m_nSrcChannels; j++) {
       const icUChar *szSrcChan = ((CIccTagUtf8Text*)(pSrcChannels->GetIndex(j)))->GetText();
+      szSrc = (char*)szSrcChan;
       if (!icUtf8StrCmp(szDstChan, szSrcChan))
         break;
     }
@@ -3034,6 +3036,7 @@ CIccPcsStepRouteMcs::CIccPcsStepRouteMcs(CIccTagArray *pSrcChannels, CIccTagArra
     else {
       m_Index[i] = j;
     }
+    //printf("%d - %d %s\n", m_Index[i], i, szDstChan);
   }
 }
 
@@ -9221,6 +9224,17 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
   CIccXformPtr Xform;
   bool bInput = !m_bLastInput;
   icStatusCMM rv;
+
+  switch(pProfile->m_Header.deviceClass) {
+    case icSigMaterialIdentificationClass:
+    case icSigMaterialVisualizationClass:
+    case icSigMaterialLinkClass:
+      nIntent = icPerceptual;
+      nLutType = icXformLutMCS;
+
+    default:
+      break;
+  }
 
   Xform.ptr = NULL;
   switch (nLutType) {
