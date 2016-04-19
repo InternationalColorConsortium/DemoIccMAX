@@ -5376,7 +5376,7 @@ void CIccTagNum<T, Tsig>::Describe(std::string &sDescription)
 }
 
 template <class T, icTagTypeSignature Tsig>
-icValidateStatus CIccTagNum<T, Tsig>::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const
+icValidateStatus CIccTagNum<T, Tsig>::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile) const
 {
   icValidateStatus rv = icValidateOK;
   //Check # of channels 
@@ -6047,7 +6047,7 @@ bool CIccTagFloatNum<T, Tsig>::GetValues(icFloatNumber *DstVector, icUInt32Numbe
 *****************************************************************************
 */
 template <class T, icTagTypeSignature Tsig>
-icValidateStatus CIccTagFloatNum<T, Tsig>::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const
+icValidateStatus CIccTagFloatNum<T, Tsig>::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile) const
 {
   icValidateStatus rv = icValidateOK;
   //Check # of channels 
