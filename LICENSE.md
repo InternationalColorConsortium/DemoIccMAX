@@ -34,6 +34,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
+
 ====================================================================
 
 This software consists of voluntary contributions made by many
@@ -45,4 +46,4 @@ commercial purposes.
 
   
 For more information on The International Color Consortium, please
-see <http://www.color.org/>.
+see [www.color.org](http://www.color.org).
