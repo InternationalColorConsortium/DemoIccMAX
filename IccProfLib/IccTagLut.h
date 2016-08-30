@@ -429,6 +429,8 @@ public:
 
   virtual void SetColorSpaces(icColorSpaceSignature csInput, icColorSpaceSignature csOutput);
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL);
+  icColorSpaceSignature GetCsInput() { return m_csInput; }
+  icColorSpaceSignature GetCsOutput() { return m_csOutput; }
 
   LPIccCurve* NewCurvesA();
   CIccCLUT*   NewCLUT(icUInt8Number nGridPoints, icUInt8Number nPrecision=2);
