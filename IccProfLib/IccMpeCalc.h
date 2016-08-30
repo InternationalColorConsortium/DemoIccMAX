@@ -75,7 +75,7 @@ Copyright:  (c) see ICC Software License
 #ifndef _ICCELEMCALC_H
 #define _ICCELEMCALC_H
 
-#include "IccTagMpe.h"
+#include "IccTagMPE.h"
 #include "IccSolve.h"
 #include <vector>
 

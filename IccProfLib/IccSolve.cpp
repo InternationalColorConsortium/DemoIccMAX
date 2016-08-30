@@ -70,6 +70,7 @@
 
 #include "IccSolve.h"
 #include "IccUtil.h"
+#include <cstring>
 
 #ifdef ICC_USE_EIGEN_SOLVER
 #include<Eigen/Core>

@@ -73,7 +73,7 @@ Copyright:  (c) see ICC Software License
 #define _ICCSPARSEMATRIX_H
 
 #include "IccDefs.h"
-#include "ICCUtil.h"
+#include "IccUtil.h"
 
 
 class IIccSparseMatrixEntry
