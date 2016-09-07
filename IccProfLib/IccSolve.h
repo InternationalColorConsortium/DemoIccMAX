@@ -113,7 +113,7 @@ public:
 * with the status of false.
 *****************************************************************************
 */
-extern IIccMatrixSolver *g_pIccMatrixSolver;
+ICCPROFLIB_API extern IIccMatrixSolver *g_pIccMatrixSolver;
 
 /**
 ****************************************************************************

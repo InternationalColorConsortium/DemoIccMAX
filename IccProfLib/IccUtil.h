@@ -80,99 +80,99 @@
 namespace refIccMAX {
 #endif
 
-void* ICCPROFLIB_API icRealloc(void *ptr, size_t size);
+ICCPROFLIB_API void* icRealloc(void *ptr, size_t size);
 
 #define icPiNum 3.14159265358979323846
 #define icPosInfinity (std::numeric_limits<icFloatNumber>::infinity()) 
 #define icNegInfinity (-std::numeric_limits<icFloatNumber>::infinity())
 #define icNotANumber (std::numeric_limits<icFloatNumber>::quiet_NaN())
 
-double ICCPROFLIB_API icRoundOffset(double v);
+ICCPROFLIB_API double icRoundOffset(double v);
 
-icValidateStatus ICCPROFLIB_API icMaxStatus(icValidateStatus s1, icValidateStatus s2);
-bool ICCPROFLIB_API icIsSpaceCLR(icColorSpaceSignature sig);
+ICCPROFLIB_API icValidateStatus icMaxStatus(icValidateStatus s1, icValidateStatus s2);
+ICCPROFLIB_API bool  icIsSpaceCLR(icColorSpaceSignature sig);
 
-void ICCPROFLIB_API icColorIndexName(icChar *szName, icColorSpaceSignature csSig,
+ICCPROFLIB_API void icColorIndexName(icChar *szName, icColorSpaceSignature csSig,
                       int nIndex, int nColors, const icChar *szUnknown);
-void ICCPROFLIB_API icColorValue(icChar *szValue, icFloatNumber nValue,
+ICCPROFLIB_API void icColorValue(icChar *szValue, icFloatNumber nValue,
                   icColorSpaceSignature csSig, int nIndex, bool bUseLegacy=false);
 
-bool ICCPROFLIB_API icIsIllumD50(icXYZNumber xyz);
+ICCPROFLIB_API bool icIsIllumD50(icXYZNumber xyz);
 
-bool ICCPROFLIB_API icMatrixInvert3x3(icFloatNumber *matrix);
-void ICCPROFLIB_API icMatrixMultiply3x3(icFloatNumber *result,
+ICCPROFLIB_API bool icMatrixInvert3x3(icFloatNumber *matrix);
+ICCPROFLIB_API void icMatrixMultiply3x3(icFloatNumber *result,
                                         const icFloatNumber *l,
                                         const icFloatNumber *r);
-void ICCPROFLIB_API icVectorApplyMatrix3x3(icFloatNumber *result,
+ICCPROFLIB_API void icVectorApplyMatrix3x3(icFloatNumber *result,
                                            const icFloatNumber *m,
                                            const icFloatNumber *v);
 
-icS15Fixed16Number ICCPROFLIB_API icDtoF(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icFtoD(icS15Fixed16Number num);
+ICCPROFLIB_API icS15Fixed16Number icDtoF(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icFtoD(icS15Fixed16Number num);
 
-icU16Fixed16Number ICCPROFLIB_API icDtoUF(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icUFtoD(icU16Fixed16Number num);
+ICCPROFLIB_API icU16Fixed16Number icDtoUF(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icUFtoD(icU16Fixed16Number num);
 
-icU1Fixed15Number ICCPROFLIB_API icDtoUSF(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icUSFtoD(icU1Fixed15Number num);
+ICCPROFLIB_API icU1Fixed15Number icDtoUSF(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icUSFtoD(icU1Fixed15Number num);
 
-icU8Fixed8Number ICCPROFLIB_API icDtoUCF(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icUCFtoD(icU8Fixed8Number num);
+ICCPROFLIB_API icU8Fixed8Number icDtoUCF(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icUCFtoD(icU8Fixed8Number num);
 
-icFloat32Number ICCPROFLIB_API icF16toF(icFloat16Number num);
-icFloat16Number ICCPROFLIB_API icFtoF16(icFloat32Number num);
+ICCPROFLIB_API icFloat32Number icF16toF(icFloat16Number num);
+ICCPROFLIB_API icFloat16Number icFtoF16(icFloat32Number num);
 
 /*0 to 255 <-> 0.0 to 1.0*/
-icUInt8Number ICCPROFLIB_API icFtoU8(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icU8toF(icUInt8Number num);
+ICCPROFLIB_API icUInt8Number icFtoU8(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icU8toF(icUInt8Number num);
 
 /*0 to 65535 <-> 0.0 to 1.0*/
-icUInt16Number ICCPROFLIB_API icFtoU16(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icU16toF(icUInt16Number num);
+ICCPROFLIB_API icUInt16Number icFtoU16(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icU16toF(icUInt16Number num);
 
 /*0 to 255 <-> -128.0 to 127.0*/
-icUInt8Number ICCPROFLIB_API icABtoU8(icFloatNumber num);
-icFloatNumber ICCPROFLIB_API icU8toAB(icUInt8Number num);
+ICCPROFLIB_API icUInt8Number icABtoU8(icFloatNumber num);
+ICCPROFLIB_API icFloatNumber icU8toAB(icUInt8Number num);
 
-extern ICCPROFLIB_API icFloatNumber icD50XYZ[3];
-extern ICCPROFLIB_API icFloatNumber icD50XYZxx[3];
+ICCPROFLIB_API extern icFloatNumber icD50XYZ[3];
+ICCPROFLIB_API extern icFloatNumber icD50XYZxx[3];
 
-void ICCPROFLIB_API icNormXYZ(icFloatNumber *XYZ, icFloatNumber *WhiteXYZ=NULL);
-void ICCPROFLIB_API icDeNormXYZ(icFloatNumber *XYZ, icFloatNumber *WhiteXYZ=NULL);
+ICCPROFLIB_API void icNormXYZ(icFloatNumber *XYZ, icFloatNumber *WhiteXYZ=NULL);
+ICCPROFLIB_API void icDeNormXYZ(icFloatNumber *XYZ, icFloatNumber *WhiteXYZ=NULL);
 
-icFloatNumber ICCPROFLIB_API icCubeth(icFloatNumber v);
-icFloatNumber ICCPROFLIB_API icICubeth(icFloatNumber v);
+ICCPROFLIB_API icFloatNumber icCubeth(icFloatNumber v);
+ICCPROFLIB_API icFloatNumber icICubeth(icFloatNumber v);
 
-void ICCPROFLIB_API icXYZtoLab(icFloatNumber *Lab, const icFloatNumber *XYZ=NULL, const icFloatNumber *WhiteXYZ=NULL);
-void ICCPROFLIB_API icLabtoXYZ(icFloatNumber *XYZ, const icFloatNumber *Lab=NULL, const icFloatNumber *WhiteXYZ=NULL);
+ICCPROFLIB_API void icXYZtoLab(icFloatNumber *Lab, const icFloatNumber *XYZ=NULL, const icFloatNumber *WhiteXYZ=NULL);
+ICCPROFLIB_API void icLabtoXYZ(icFloatNumber *XYZ, const icFloatNumber *Lab=NULL, const icFloatNumber *WhiteXYZ=NULL);
 
-void ICCPROFLIB_API icLab2Lch(icFloatNumber *Lch, icFloatNumber *Lab=NULL);
-void ICCPROFLIB_API icLch2Lab(icFloatNumber *Lab, icFloatNumber *Lch=NULL);
+ICCPROFLIB_API void icLab2Lch(icFloatNumber *Lch, icFloatNumber *Lab=NULL);
+ICCPROFLIB_API void icLch2Lab(icFloatNumber *Lab, icFloatNumber *Lch=NULL);
 
-icFloatNumber ICCPROFLIB_API icMin(icFloatNumber v1, icFloatNumber v2);
-icFloatNumber ICCPROFLIB_API icMax(icFloatNumber v1, icFloatNumber v2);
+ICCPROFLIB_API icFloatNumber icMin(icFloatNumber v1, icFloatNumber v2);
+ICCPROFLIB_API icFloatNumber icMax(icFloatNumber v1, icFloatNumber v2);
 
-icUInt32Number ICCPROFLIB_API icIntMin(icUInt32Number v1, icUInt32Number v2);
-icUInt32Number ICCPROFLIB_API icIntMax(icUInt32Number v1, icUInt32Number v2);
+ICCPROFLIB_API icUInt32Number icIntMin(icUInt32Number v1, icUInt32Number v2);
+ICCPROFLIB_API icUInt32Number icIntMax(icUInt32Number v1, icUInt32Number v2);
 
-icFloatNumber ICCPROFLIB_API icDeltaE(const icFloatNumber *Lab1, const icFloatNumber *Lab2);
+ICCPROFLIB_API icFloatNumber icDeltaE(const icFloatNumber *Lab1, const icFloatNumber *Lab2);
 
-icFloatNumber ICCPROFLIB_API icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt32Number nSample);
+ICCPROFLIB_API icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt32Number nSample);
 
 /**Floating point encoding of Lab in PCS is in range 0.0 to 1.0 */
 ///Here are some conversion routines to convert to regular Lab encoding
-void ICCPROFLIB_API icLabFromPcs(icFloatNumber *Lab);
-void ICCPROFLIB_API icLabToPcs(icFloatNumber *Lab);
+ICCPROFLIB_API void icLabFromPcs(icFloatNumber *Lab);
+ICCPROFLIB_API void icLabToPcs(icFloatNumber *Lab);
 
 /** Floating point encoding of XYZ in PCS is in range 0.0 to 1.0
  (Note: X=1.0 is encoded as about 0.5)*/
 ///Here are some conversion routines to convert to regular XYZ encoding
-void ICCPROFLIB_API icXyzFromPcs(icFloatNumber *XYZ);
-void ICCPROFLIB_API icXyzToPcs(icFloatNumber *XYZ);
+ICCPROFLIB_API void icXyzFromPcs(icFloatNumber *XYZ);
+ICCPROFLIB_API void icXyzToPcs(icFloatNumber *XYZ);
 
 
-void ICCPROFLIB_API icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum);
-void ICCPROFLIB_API icMatrixDump(std::string &sDump, icS15Fixed16Number *pMatrix);
+ICCPROFLIB_API void icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum);
+ICCPROFLIB_API void icMatrixDump(std::string &sDump, icS15Fixed16Number *pMatrix);
 ICCPROFLIB_API const icChar* icGetSig(icChar *pBuf, icUInt32Number sig, bool bGetHexVal=true);
 ICCPROFLIB_API const icChar* icGetSigStr(icChar *pBuf, icUInt32Number nSig);
 ICCPROFLIB_API const icChar* icGetColorSig(icChar *pBuf, icUInt32Number sig, bool bGetHexVal=true);
@@ -180,14 +180,14 @@ ICCPROFLIB_API const icChar *icGetColorSigStr(icChar *pBuf, icUInt32Number nSig)
 
 #define icUtf8StrCmp(x, y) strcmp((const char*)x, (const char*)y)
 
-std::string ICCPROFLIB_API icGetSigPath(icUInt32Number sig);
-icSignature ICCPROFLIB_API icGetFirstSigPathSig(std::string sigPath);
-icSignature ICCPROFLIB_API icGetSecondSigPathSig(std::string sigPath);
+ICCPROFLIB_API std::string icGetSigPath(icUInt32Number sig);
+ICCPROFLIB_API icSignature icGetFirstSigPathSig(std::string sigPath);
+ICCPROFLIB_API icSignature icGetSecondSigPathSig(std::string sigPath);
 
-icUInt32Number ICCPROFLIB_API icGetSigVal(const icChar *pBuf);
-icUInt32Number ICCPROFLIB_API icGetSpaceSamples(icColorSpaceSignature sig);
-icUInt32Number ICCPROFLIB_API icGetSpectralSpaceSamples(const icHeader *pHdr);
-icUInt32Number ICCPROFLIB_API icGetMaterialColorSpaceSamples(icMaterialColorSignature sig);
+ICCPROFLIB_API icUInt32Number icGetSigVal(const icChar *pBuf);
+ICCPROFLIB_API icUInt32Number icGetSpaceSamples(icColorSpaceSignature sig);
+ICCPROFLIB_API icUInt32Number icGetSpectralSpaceSamples(const icHeader *pHdr);
+ICCPROFLIB_API icUInt32Number icGetMaterialColorSpaceSamples(icMaterialColorSignature sig);
 
 bool ICCPROFLIB_API icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng2);
 
@@ -291,6 +291,8 @@ inline void icSwab64Array(void *pVoid, int num)
  */
 class ICCPROFLIB_API  CIccInfo {
 public:
+  CIccInfo();
+  virtual ~CIccInfo();
   //Signature values
   const icChar *GetVersionName(icUInt32Number val);
   const icChar *GetDeviceAttrName(icUInt64Number val);
@@ -338,7 +340,7 @@ public:
 protected:
   icChar m_szStr[128];
   icChar m_szSigStr[128];
-  std::string m_str;
+  std::string *m_str;
 };
 
 /**

@@ -2600,7 +2600,7 @@ icValidateStatus CIccProfile::Validate(std::string &sReport) const
  */
 icUInt16Number CIccProfile::GetSpaceSamples() const
 {
-  return icGetSpaceSamples(m_Header.colorSpace);
+  return (icUInt16Number)icGetSpaceSamples(m_Header.colorSpace);
 }
 
 

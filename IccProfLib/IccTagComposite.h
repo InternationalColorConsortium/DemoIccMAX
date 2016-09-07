@@ -259,10 +259,10 @@ protected:
   IccTagPtr *m_TagVals;
 };
 
-IIccStruct* ICCPROFLIB_API icGetTagStructHandler(CIccTag* pTag);
-IIccStruct* ICCPROFLIB_API icGetTagStructHandlerOfType(CIccTag* pTag, icStructSignature sig);
-IIccArray* ICCPROFLIB_API icGetTagArrayHandler(CIccTag* pTag);
-IIccArray* ICCPROFLIB_API icGetTagArrayHandlerOfType(CIccTag* pTag, icStructSignature sig);
+ICCPROFLIB_API IIccStruct* icGetTagStructHandler(CIccTag* pTag);
+ICCPROFLIB_API IIccStruct* icGetTagStructHandlerOfType(CIccTag* pTag, icStructSignature sig);
+ICCPROFLIB_API IIccArray* icGetTagArrayHandler(CIccTag* pTag);
+ICCPROFLIB_API IIccArray* icGetTagArrayHandlerOfType(CIccTag* pTag, icStructSignature sig);
 
 
 #ifdef USEREFICCMAXNAMESPACE

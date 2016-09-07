@@ -100,6 +100,8 @@
 ******************************************************************************/
 CIccDictEntry::CIccDictEntry()
 {
+  m_sName = new std::wstring();
+  m_sValue = new std::wstring();
   m_pNameLocalized = NULL;
   m_pValueLocalized = NULL;
   m_bValueSet = false;
@@ -117,9 +119,12 @@ CIccDictEntry::CIccDictEntry()
 ******************************************************************************/
 CIccDictEntry::CIccDictEntry(const CIccDictEntry& IDE)
 {
-  m_sName = IDE.m_sName;
+  m_sName = new std::wstring();
+  m_sValue = new std::wstring();
+
+  *m_sName = *IDE.m_sName;
   m_bValueSet = IDE.m_bValueSet;
-  m_sValue = IDE.m_sValue;
+  *m_sValue = *IDE.m_sValue;
 
   if (IDE.m_pNameLocalized) {
     m_pNameLocalized = (CIccTagMultiLocalizedUnicode*)IDE.m_pNameLocalized->NewCopy();
@@ -152,9 +157,9 @@ CIccDictEntry &CIccDictEntry::operator=(const CIccDictEntry &IDE)
   if (m_pValueLocalized)
     delete m_pValueLocalized;
 
-  m_sName = IDE.m_sName;
+  *m_sName = *IDE.m_sName;
   m_bValueSet = IDE.m_bValueSet;
-  m_sValue = IDE.m_sValue;
+  *m_sValue = *IDE.m_sValue;
 
   if (IDE.m_pNameLocalized) {
     m_pNameLocalized = (CIccTagMultiLocalizedUnicode*)IDE.m_pNameLocalized->NewCopy();
@@ -183,6 +188,8 @@ CIccDictEntry &CIccDictEntry::operator=(const CIccDictEntry &IDE)
 ******************************************************************************/
 CIccDictEntry::~CIccDictEntry()
 {
+  delete m_sName;
+  delete m_sValue;
   delete m_pNameLocalized;
   delete m_pValueLocalized;
 }
@@ -202,10 +209,10 @@ void CIccDictEntry::Describe(std::string &sDescription)
   std::string s;
 
   sDescription += "BEGIN DICT_ENTRY\r\nName=";
-  s.assign(m_sName.begin(), m_sName.end());
+  s.assign(m_sName->begin(), m_sName->end());
   sDescription += s;
   sDescription += "\r\nValue=";
-  s.assign(m_sValue.begin(), m_sValue.end());
+  s.assign(m_sValue->begin(), m_sValue->end());
   sDescription += s;
   sDescription += "\r\n";
 
@@ -245,9 +252,9 @@ icUInt32Number CIccDictEntry::PosRecSize()
 
 bool CIccDictEntry::SetValue(std::wstring sValue)
 {
-  bool rv = m_bValueSet && !m_sValue.empty();
+  bool rv = m_bValueSet && !m_sValue->empty();
 
-  m_sValue = sValue;
+  *m_sValue = sValue;
   m_bValueSet = true;
   return rv;
 }
@@ -600,7 +607,7 @@ bool CIccTagDict::Read(icUInt32Number size, CIccIO *pIO)
           return false;
         }
         str.assign(&buf[0], &buf[num]);
-        ptr.ptr->m_sName = str;
+        ptr.ptr->GetName() = str;
       }
     }
 
@@ -821,7 +828,7 @@ bool CIccTagDict::Write(CIccIO *pIO)
     if (i->ptr) {
       pos[n].posName.offset = pIO->Tell()-m_tagStart;
 
-      for(chrptr = i->ptr->m_sName.begin(); chrptr!=i->ptr->m_sName.end(); chrptr++) {
+      for(chrptr = i->ptr->GetName().begin(); chrptr!=i->ptr->GetName().end(); chrptr++) {
         c=(icUnicodeChar)*chrptr;
         pIO->Write16(&c, 1);
       }
@@ -966,7 +973,7 @@ bool CIccTagDict::AreNamesUnique() const
   for (i=m_Dict->begin(); i!=m_Dict->end(); i++) {
     j=i;
     for (j++; j!= m_Dict->end(); j++) {
-      if (i->ptr->m_sName == j->ptr->m_sName)
+      if (i->ptr->GetName() == j->ptr->GetName())
         return false;
     }
   }
@@ -992,7 +999,7 @@ bool CIccTagDict::AreNamesNonzero() const
   CIccNameValueDict::const_iterator i, j;
 
   for (i=m_Dict->begin(); i!=m_Dict->end(); i++) {
-    if (i->ptr->m_sName.empty())
+    if (i->ptr->GetName().empty())
       return false;
   }
 
@@ -1018,7 +1025,7 @@ CIccDictEntry* CIccTagDict::Get(std::wstring sName) const
   CIccNameValueDict::const_iterator i;
 
   for (i=m_Dict->begin(); i!=m_Dict->end(); i++) {
-    if (i->ptr->m_sName == sName)
+    if (i->ptr->GetName() == sName)
       return i->ptr;
   }
 
@@ -1294,7 +1301,7 @@ bool CIccTagDict::Remove(std::wstring sName)
   CIccNameValueDict::iterator i;
 
   for (i=m_Dict->begin(); i!=m_Dict->end(); i++) {
-    if (i->ptr->m_sName == sName) {
+    if (i->ptr->GetName() == sName) {
       delete i->ptr;
 
       m_Dict->erase(i);
@@ -1376,7 +1383,7 @@ bool CIccTagDict::Set(std::wstring sName, std::wstring sValue, bool bUnSet)
   }
   else {
     de = new CIccDictEntry;
-    de->m_sName = sName;
+    de->GetName() = sName;
 
     CIccDictEntryPtr ptr;
     ptr.ptr = de;
@@ -1429,7 +1436,7 @@ bool CIccTagDict::SetNameLocalized(std::wstring sName, CIccTagMultiLocalizedUnic
 
   if (!de) {
     de = new CIccDictEntry;
-    de->m_sName = sName;
+    de->GetName() = sName;
 
     CIccDictEntryPtr ptr;
     ptr.ptr = de;
@@ -1463,7 +1470,7 @@ bool CIccTagDict::SetValueLocalized(std::wstring sName, CIccTagMultiLocalizedUni
 
   if (!de) {
     de = new CIccDictEntry;
-    de->m_sName = sName;
+    de->GetName() = sName;
 
     CIccDictEntryPtr ptr;
     ptr.ptr = de;

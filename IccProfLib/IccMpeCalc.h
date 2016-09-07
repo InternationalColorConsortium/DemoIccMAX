@@ -319,6 +319,7 @@ class ICCPROFLIB_API CIccFuncTokenizer
 {
 public:
   CIccFuncTokenizer(const char *szText);
+  virtual ~CIccFuncTokenizer();
   
   bool GetNext();
   const char *GetPos() { return m_text; }
@@ -329,7 +330,7 @@ public:
   icFloat32Number GetValue();
   bool GetEnvSig(icSigCmmEnvVar &envSig);
 
-  std::string &GetLast() { return m_token; }
+  std::string &GetLast() { return *m_token; }
 
 protected:
   bool IsWhiteSpace();
@@ -337,7 +338,7 @@ protected:
   void SkipComment();
 
   const char *m_text;
-  std::string m_token;
+  std::string *m_token;
 
 };
 

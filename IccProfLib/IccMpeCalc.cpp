@@ -2342,13 +2342,19 @@ icUInt16Number SIccCalcOp::ArgsPushed(CIccMpeCalculator *pCalc)
 
 CIccFuncTokenizer::CIccFuncTokenizer(const char *szText)
 {
+  m_token = new std::string();
   m_text = szText;
+}
+
+CIccFuncTokenizer::~CIccFuncTokenizer()
+{
+  delete m_token;
 }
 
 
 bool CIccFuncTokenizer::GetNext()
 {
-  m_token.clear();
+  m_token->clear();
 
 try_again:
 
@@ -2361,21 +2367,21 @@ try_again:
   
   if (*m_text == '{') {
     m_text++;
-    m_token = "{";
+    *m_token = "{";
     return true;
   }
 
   if (*m_text == '}') {
     m_text++;
-    m_token = "}";
+    *m_token = "}";
     return true;
   }
 
   if (*m_text == '[') {
     m_text++;
-    m_token = "[";
+    *m_token = "[";
     while (*m_text && *m_text!=']') {
-      m_token += *m_text;
+      *m_token += *m_text;
       m_text++;
     }
     if (!*m_text) {
@@ -2385,9 +2391,9 @@ try_again:
 
   if (*m_text == '(') {
     m_text++;
-    m_token = "(";
+    *m_token = "(";
     while (*m_text && *m_text!=')') {
-      m_token += *m_text;
+      *m_token += *m_text;
       m_text++;
     }
     if (!*m_text) {
@@ -2401,7 +2407,7 @@ try_again:
   }
 
   while (!IsWhiteSpace() && *m_text && *m_text!='{' && *m_text!='['  && *m_text!='(' && *m_text!='}' && !IsComment()) {
-    m_token += *m_text;
+    *m_token += *m_text;
     m_text++;
   }
   return true;
@@ -2410,7 +2416,7 @@ try_again:
 
 icSigCalcOp CIccFuncTokenizer::GetSig()
 {
-  const unsigned char *szToken = (unsigned char*) m_token.c_str();
+  const unsigned char *szToken = (unsigned char*) m_token->c_str();
   int i;
 
   if ((szToken[0]>='0' && szToken[0]<='9') || szToken[0]=='.' || (szToken[0]=='-' && szToken[1]!='I')) {
@@ -2450,19 +2456,19 @@ bool CIccFuncTokenizer::GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt1
     return false;
   iv1=initV1;
   iv2=initV2;
-  const char *szToken = m_token.c_str();
+  const char *szToken = m_token->c_str();
   if (*szToken=='[' || *szToken=='(') {
     if (strchr(szToken, ',')) {
       if (*szToken=='(') 
-        sscanf(m_token.c_str(), "(%u,%u)", &iv1, &iv2);
+        sscanf(m_token->c_str(), "(%u,%u)", &iv1, &iv2);
       else 
-        sscanf(m_token.c_str(), "[%u,%u]", &iv1, &iv2);
+        sscanf(m_token->c_str(), "[%u,%u]", &iv1, &iv2);
     }
     else {
       if (*szToken=='(')
-        sscanf(m_token.c_str(), "(%u)", &iv1);
+        sscanf(m_token->c_str(), "(%u)", &iv1);
       else 
-        sscanf(m_token.c_str(), "[%u]", &iv1);
+        sscanf(m_token->c_str(), "[%u]", &iv1);
     }
   }
   else {
@@ -2477,7 +2483,7 @@ bool CIccFuncTokenizer::GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt1
 
 icFloat32Number CIccFuncTokenizer::GetValue()
 {
-  return (icFloat32Number)atof(m_token.c_str());
+  return (icFloat32Number)atof(m_token->c_str());
 }
 
 
@@ -2487,7 +2493,7 @@ bool CIccFuncTokenizer::GetEnvSig(icSigCmmEnvVar &envSig)
 
   if (!GetNext())
     return false;
-  const char *szToken = m_token.c_str();
+  const char *szToken = m_token->c_str();
   int l=strlen(szToken);
   if ((*szToken=='[' && szToken[l-1]==']') ||
       (*szToken=='(' && szToken[l-1]==')')) {

@@ -73,7 +73,7 @@ bool ParseName(icChar* pName, icChar* pString)
   if(!ptr)
     return false;
 
-  icUInt32Number nNameLen = ptr - (pString+3);
+  icUInt32Number nNameLen = (icUInt32Number)(ptr - (pString+3));
 
   if(!nNameLen)
     return false;

@@ -142,7 +142,7 @@ public:
 * Purpose: Base Class for Multi Process Elements
 *****************************************************************************
 */
-class CIccMultiProcessElement
+class ICCPROFLIB_API CIccMultiProcessElement
 {
 public:
   CIccMultiProcessElement() {}

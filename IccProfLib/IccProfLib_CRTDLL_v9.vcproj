@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug_CRTDLL"
-			IntermediateDirectory=".\Debug_CRTDLL"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -50,10 +50,10 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Debug_CRTDLL/"
-				ObjectFile=".\Debug_CRTDLL/"
-				ProgramDataBaseFileName=".\Debug_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -72,7 +72,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\$(ConfigurationName)_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -93,8 +93,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -120,13 +120,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(EIGEN)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Debug_CRTDLL/"
-				ObjectFile=".\Debug_CRTDLL/"
-				ProgramDataBaseFileName=".\Debug_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -145,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\$(ConfigurationName)_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -166,8 +167,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release_CRTDLL"
-			IntermediateDirectory=".\Release_CRTDLL"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -198,10 +199,10 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Release_CRTDLL/"
-				ObjectFile=".\Release_CRTDLL/"
-				ProgramDataBaseFileName=".\Release_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DisableSpecificWarnings="4996"
@@ -219,7 +220,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\$(ConfigurationName)_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -240,8 +241,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -268,14 +269,15 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;$(EIGEN)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Release_CRTDLL/"
-				ObjectFile=".\Release_CRTDLL/"
-				ProgramDataBaseFileName=".\Release_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DisableSpecificWarnings="4996"
@@ -293,7 +295,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\$(ConfigurationName)_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -314,8 +316,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release with Eigen|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\Release_CRTDLL\"
+			IntermediateDirectory="$(PlatformName)\Release_CRTDLL\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -346,10 +348,10 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Release_CRTDLL/"
-				ObjectFile=".\Release_CRTDLL/"
-				ProgramDataBaseFileName=".\Release_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\Release_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\Release_CRTDLL/"
+				ObjectFile="$(PlatformName)\Release_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\Release_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DisableSpecificWarnings="4996"
@@ -367,7 +369,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\Release_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -388,8 +390,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release with Eigen|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\Release_CRTDLL"
+			IntermediateDirectory="$(PlatformName)\Release_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -416,14 +418,15 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;$(EIGEN)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ICC_USE_EIGEN_SOLVER"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Release_CRTDLL/"
-				ObjectFile=".\Release_CRTDLL/"
-				ProgramDataBaseFileName=".\Release_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\Release_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\Release_CRTDLL/"
+				ObjectFile="$(PlatformName)\Release_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\Release_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DisableSpecificWarnings="4996"
@@ -441,7 +444,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\Release_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -462,8 +465,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug with Eigen|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\Debug_CRTDLL\"
+			IntermediateDirectory="$(PlatformName)\Debug_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -492,10 +495,10 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;ICC_USE_EIGEN_SOLVER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Debug_CRTDLL/"
-				ObjectFile=".\Debug_CRTDLL/"
-				ProgramDataBaseFileName=".\Debug_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\Debug_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\Debug_CRTDLL/"
+				ObjectFile="$(PlatformName)\Debug_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\Debug_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -514,7 +517,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -535,8 +538,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug with Eigen|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\Debug_CRTDLL"
+			IntermediateDirectory="$(PlatformName)\Debug_CRTDLL"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -562,13 +565,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(EIGEN)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;ICC_USE_EIGEN_SOLVER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug_CRTDLL/IccProfLib_CRTDLL.pch"
-				AssemblerListingLocation=".\Debug_CRTDLL/"
-				ObjectFile=".\Debug_CRTDLL/"
-				ProgramDataBaseFileName=".\Debug_CRTDLL/"
+				PrecompiledHeaderFile="$(PlatformName)\Debug_CRTDLL/IccProfLib_CRTDLL.pch"
+				AssemblerListingLocation="$(PlatformName)\Debug_CRTDLL/"
+				ObjectFile="$(PlatformName)\Debug_CRTDLL/"
+				ProgramDataBaseFileName="$(PlatformName)\Debug_CRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -587,7 +591,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
+				OutputFile="$(PlatformName)\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

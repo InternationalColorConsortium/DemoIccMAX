@@ -95,14 +95,14 @@ namespace refIccMAX {
   #define ICC_BYTE_ORDER_LITTLE_ENDIAN
 
   #if defined(ICCPROFLIBDLL_EXPORTS)
-    #define ICCPROFLIB_API _declspec(dllexport)
-    #define ICCPROFLIB_EXTERN
+    #define ICCPROFLIB_API __declspec(dllexport)
+    #define ICCPROFLIB_EXTERN 
   #elif defined(ICCPROFLIBDLL_IMPORTS)
-    #define ICCPROFLIB_API _declspec(dllimport)
+    #define ICCPROFLIB_API __declspec(dllimport)
     #define ICCPROFLIB_EXTERN extern
   #else //just a regular lib
     #define ICCPROFLIB_API
-    #define ICCPROFLIB_EXTERN
+    #define ICCPROFLIB_EXTERN extern
   #endif
 
   //Since msvc doesn't support cbrtf use pow instead

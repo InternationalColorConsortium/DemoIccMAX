@@ -850,7 +850,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
         switch (nType) {
           case icConvert8Bit:
           default:
-            sprintf(str, "%u", buf[i]);
+            sprintf(str, "%u", (icUInt8Number)buf[i]);
             break;
 
           case icConvert16Bit:
@@ -871,7 +871,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
 
           case icConvert16Bit:
           default:
-            sprintf(str, "%u", buf[i]);
+            sprintf(str, "%u", (icUInt16Number)buf[i]);
             break;
 
           case icConvertFloat:
@@ -881,7 +881,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
         break;
 
       case icSigUInt32ArrayType:
-        sprintf(str, "%u", buf[i]);
+        sprintf(str, "%u", (icUInt32Number)buf[i]);
         break;
 
       case icSigFloatArrayType:
@@ -898,7 +898,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
 
           case icConvertFloat:
           default:
-            sprintf(str, "%.8f", buf[i]);
+            sprintf(str, "%.8f", (icFloatNumber)buf[i]);
         }
         break;
     }

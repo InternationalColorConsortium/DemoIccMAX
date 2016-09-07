@@ -53,7 +53,7 @@
 				AdditionalOptions="/EHsc "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\msw&quot;;.;..\..\..\IccProfLib"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\$(PlatformName)\vc_lib\msw&quot;;.;..\..\..\IccProfLib"
 				PreprocessorDefinitions="WIN32;__WXMSW__;_WINDOWS;NOPCH"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -75,7 +75,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="__WXMSW__,_WINDOWS,NOPCH"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\vc_lib\msw;.;$(WXWIN)\samples"
+				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\$(PlatformName)\vc_lib\msw;.;$(WXWIN)\samples"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -86,7 +86,7 @@
 				OutputFile="vc_msw\wxProfileDump.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib"
+				AdditionalLibraryDirectories="$(WXWIN)\lib\$(PlatformName)\vc_lib"
 				ProgramDatabaseFile=".\vc_msw/wxProfileDump.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -151,7 +151,7 @@
 				AdditionalOptions="/EHsc "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\msw&quot;;.;..\..\..\IccProfLib"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\$(PlatformName)\vc_lib\msw&quot;;.;..\..\..\IccProfLib"
 				PreprocessorDefinitions="WIN32;__WXMSW__;_WINDOWS;NOPCH"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -173,18 +173,18 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="__WXMSW__,_WINDOWS,NOPCH"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\vc_lib\msw;.;$(WXWIN)\samples"
+				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\$(PlatformName)\vc_lib\msw;.;$(WXWIN)\samples"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26_core.lib wxbase26.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw$(WXVER)_core.lib wxbase$(WXVER).lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="vc_msw\wxProfileDump.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib"
+				AdditionalLibraryDirectories="$(WXWIN)\lib\$(PlatformName)\vc_lib"
 				ProgramDatabaseFile=".\vc_msw/wxProfileDump.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -248,7 +248,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHsc "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswd&quot;;.;..\..\..\IccProfLib"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\$(PlatformName)\vc_lib\mswd&quot;;.;..\..\..\IccProfLib"
 				PreprocessorDefinitions="WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -270,7 +270,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG,__WXMSW__,__WXDEBUG__,_WINDOWS,NOPCH"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\vc_lib\mswd;.;$(WXWIN)\samples"
+				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\$(PlatformName)\vc_lib\mswd;.;$(WXWIN)\samples"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -281,7 +281,7 @@
 				OutputFile="vc_mswd\wxProfileDump.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib"
+				AdditionalLibraryDirectories="$(WXWIN)\lib\$(PlatformName)\vc_lib"
 				IgnoreDefaultLibraryNames="MSVCP71D.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\vc_mswd/wxProfileDump.pdb"
@@ -347,7 +347,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHsc "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswd&quot;;.;..\..\..\IccProfLib"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\$(PlatformName)\vc_lib\mswd&quot;;.;..\..\..\IccProfLib"
 				PreprocessorDefinitions="WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -369,18 +369,18 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG,__WXMSW__,__WXDEBUG__,_WINDOWS,NOPCH"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\vc_lib\mswd;.;$(WXWIN)\samples"
+				AdditionalIncludeDirectories="$(WXWIN)\include;$(WXWIN)\lib\$(PlatformName)\vc_lib\mswd;.;$(WXWIN)\samples"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26d_core.lib wxbase26d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw$(WXVER)d_core.lib wxbase$(WXVER)d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="vc_mswd\wxProfileDump.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib"
+				AdditionalLibraryDirectories="$(WXWIN)\lib\$(PlatformName)\vc_lib"
 				IgnoreDefaultLibraryNames="MSVCP71D.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\vc_mswd/wxProfileDump.pdb"
@@ -488,10 +488,18 @@
 			Name="Library Files"
 			>
 			<File
-				RelativePath="..\..\..\IccProfLib\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
+				RelativePath="..\..\..\IccProfLib\Win32\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -508,7 +516,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\IccProfLib\Release_CRTDLL\IccProfLib_CRTDLL.lib"
+				RelativePath="..\..\..\IccProfLib\Win32\Release_CRTDLL\IccProfLib_CRTDLL.lib"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -520,6 +528,70 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\IccProfLib\x64\Debug_CRTDLL\IccProfLib_CRTDLL.lib"
+				>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\IccProfLib\x64\Release_CRTDLL\IccProfLib_CRTDLL.lib"
+				>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

@@ -107,6 +107,11 @@ Copyright:  (c) see ICC Software License
 
 #include "wxProfileDump.h"
 
+#if wxMAJOR_VERSION > 2
+#define wxOPEN wxFD_OPEN
+#define wxFILE_MUST_EXIST wxFD_FILE_MUST_EXIST
+#endif
+
 IMPLEMENT_APP(MyApp)
 
 // ---------------------------------------------------------------------------
@@ -695,7 +700,7 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
 	else {
 		std::string sReport;
 		wxBeginBusyCursor();
-		CIccProfile *pIcc = ValidateIccProfile(profilePath, sReport, nStat);
+		CIccProfile *pIcc = ValidateIccProfile(profilePath.mb_str(), sReport, nStat);
 		if (pIcc)
 			delete pIcc;
 		wxEndBusyCursor();

@@ -106,19 +106,19 @@ public: //member functions
   icUInt32Number PosRecSize();
 
   //Data
-  std::wstring m_sName;
+  std::wstring &GetName() { return *m_sName; }
 
-  std::wstring::const_iterator ValueBegin() {return m_sValue.begin();}
-  std::wstring::const_iterator ValueEnd() {return m_sValue.end();}
+  std::wstring::const_iterator ValueBegin() {return m_sValue->begin();}
+  std::wstring::const_iterator ValueEnd() {return m_sValue->end();}
 
-  std::wstring GetValue() { return m_sValue; }
+  std::wstring GetValue() { return *m_sValue; }
   bool IsValueSet() { return m_bValueSet; }
 
   //GetNameLocalized and GetValueLocalized both give direct access to objects owned by the CIccDirEntry object
   CIccTagMultiLocalizedUnicode* GetNameLocalized() { return m_pNameLocalized; }
   CIccTagMultiLocalizedUnicode* GetValueLocalized() { return m_pValueLocalized; }
 
-  void UnsetValue() { m_sValue.clear(); m_bValueSet = false; }
+  void UnsetValue() { m_sValue->clear(); m_bValueSet = false; }
   bool SetValue(std::wstring sValue);
 
   //SetNameLocalized and SetValueLocalized both transfer ownership of the argument to the CIccDirEntry object
@@ -127,7 +127,8 @@ public: //member functions
   bool SetValueLocalized(CIccTagMultiLocalizedUnicode *pValueLocalized);
 
 protected:
-  std::wstring m_sValue; 
+  std::wstring *m_sName;
+  std::wstring *m_sValue;
   bool m_bValueSet;
 
   CIccTagMultiLocalizedUnicode *m_pNameLocalized;

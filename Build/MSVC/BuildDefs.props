@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <EIGEN>E:\AccuRevWS\vendor-vs2008\eigen\eigen-3.2.8</EIGEN>
+	<ICONV>e:\AccuRevWS\vendor-vs2008\iconv\iconv-1.9.2</ICONV>
+    <LIBTIFF_DLIB>libtiff.lib</LIBTIFF_DLIB>
+    <LIBTIFF_INCLUDE>E:\AccuRevWS\vendor-VS2015\libtiff\tiff-4.0.3\libtiff</LIBTIFF_INCLUDE>
+    <LIBTIFF_INCLUDEx64>E:\AccuRevWS\vendor-VS2015\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_INCLUDEx64>
+    <LIBTIFF_LIB>libtiff.lib</LIBTIFF_LIB>
+	<LIBTIFF_LIBDIR>E:\AccuRevWS\vendor-VS2015\libtiff\tiff-4.0.3\libtiff</LIBTIFF_LIBDIR>
+	<LIBTIFF_LIBDIRx64>E:\AccuRevWS\vendor-VS2015\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_LIBDIRx64>
+	<LIBXML2>E:\AccuRevWS\vendor-vs2008\libxml2\libxml2-2.8.0</LIBXML2>
+	<WXVER>30</WXVER>
+	<WXWIN>E:\AccuRevWS\vendor-VS2015\WXWidgets\wxWidgets-3.0.2</WXWIN>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="EIGEN">
+      <Value>$(EIGEN)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ICONV">
+      <Value>$(ICONV)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBTIFF_DLIB">
+      <Value>$(LIBTIFF_DLIB)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBTIFF_INCLUDE">
+      <Value>$(LIBTIFF_INCLUDE)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBTIFF_INCLUDEx64">
+      <Value>$(LIBTIFF_INCLUDEx64)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBTIFF_LIB">
+      <Value>$(LIBTIFF_LIB)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBTIFF_LIBDIR">
+      <Value>$(LIBTIFF_LIBDIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBTIFF_LIBDIRx64">
+      <Value>$(LIBTIFF_LIBDIRx64)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBXML2">
+      <Value>$(LIBXML2)</Value>
+    </BuildMacro>
+    <BuildMacro Include="WXVER">
+      <Value>$(WXVER)</Value>
+    </BuildMacro>
+    <BuildMacro Include="WXWIN">
+      <Value>$(WXWIN)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

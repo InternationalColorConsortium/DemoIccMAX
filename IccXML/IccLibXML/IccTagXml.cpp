@@ -1228,9 +1228,9 @@ bool CIccTagXmlNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/* = "
       xml += " ";
     }
     if (sizeof(T)==16)
-      sprintf(buf, "%lu", this->m_Num[i]);
+      sprintf(buf, "%llu", (icUInt64Number)this->m_Num[i]);
     else
-      sprintf(buf, "%u", this->m_Num[i]);
+      sprintf(buf, "%u", (icUInt32Number)this->m_Num[i]);
     xml += buf;
   }
 
@@ -4070,7 +4070,7 @@ bool CIccTagXmlDict::ToXml(std::string &xml, std::string blanks/* = ""*/)
     std::string bufstr;
 
     xml += blanks + " <DictEntry Name=\"";
-    xml += icFixXml(fix, icUtf16ToUtf8(bufstr, (icUInt16Number*)nv->m_sName.c_str(), (int)nv->m_sName.size()));
+    xml += icFixXml(fix, icUtf16ToUtf8(bufstr, (icUInt16Number*)nv->GetName().c_str(), (int)nv->GetName().size()));
     xml += "\"";
 
     if (nv->IsValueSet()) {
@@ -4129,7 +4129,7 @@ bool CIccTagXmlDict::ParseXml(xmlNode *pNode, std::string &parseStr)
     ptr.ptr = pDesc;
 
     str = icXmlAttrValue(pNode, "Name", "");
-    str.ToWString(pDesc->m_sName);
+    str.ToWString(pDesc->GetName());
 
     pAttr = icXmlFindAttr(pNode, "Value");
     if (pAttr) {
@@ -4411,7 +4411,7 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
         if ( "PrivateType" == tagSig )
           sprintf(line, " <PrivateType type=\"%s\">\n",  icFixXml(fix, icGetSigStr(buf, pTag->GetType())));		
         else
-          sprintf(line, " <%s>\n", tagSig, i); //parent node is the tag type
+          sprintf(line, " <%s index=\"%d\">\n", tagSig, i); //parent node is the tag type
 
         xml += blanks + line; 				
 

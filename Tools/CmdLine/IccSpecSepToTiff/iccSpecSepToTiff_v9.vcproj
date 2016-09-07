@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -42,7 +42,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/iccSpecSepToTiff.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -54,10 +54,10 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/iccSpecSepToTiff.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -77,11 +77,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(LIBTIFF_LIB)"
-				OutputFile=".\Release/iccSpecSepToTiff.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(LIBTIFF_LIBDIR)"
-				ProgramDatabaseFile=".\Release/iccSpecSepToTiff.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -107,13 +107,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Release\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff.exe"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff.exe"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -134,7 +134,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/iccSpecSepToTiff.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -144,10 +144,10 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\Debug/iccSpecSepToTiff.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -168,12 +168,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(LIBTIFF_DLIB)"
-				OutputFile=".\Debug/iccSpecSepToTiff.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(LIBTIFF_LIBDIR)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/iccSpecSepToTiff.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -199,7 +199,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Debug\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff_d.exe&#x0D;&#x0A;copy .\Debug\iccSpecSepToTiff.pdb ..\..\..\Testing&#x0D;&#x0A;"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff_d.exe&#x0D;&#x0A;copy $(PlatformName)\$(ConfigurationName)\iccSpecSepToTiff.pdb ..\..\..\Testing&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -227,22 +227,22 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\Release/iccSpecSepToTiff.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\IccProfLib,$(LIBTIFF_INCLUDE);..\IccApplyProfiles"
+				AdditionalIncludeDirectories="..\..\..\IccProfLib,$(LIBTIFF_INCLUDEx64);..\IccApplyProfiles"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/iccSpecSepToTiff.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -262,11 +262,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(LIBTIFF_LIB)"
-				OutputFile=".\Release/iccSpecSepToTiff.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(LIBTIFF_LIBDIR)"
-				ProgramDatabaseFile=".\Release/iccSpecSepToTiff.pdb"
+				AdditionalLibraryDirectories="$(LIBTIFF_LIBDIRx64)"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -292,7 +292,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Release\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff.exe"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff.exe"
 			/>
 		</Configuration>
 		<Configuration
@@ -320,20 +320,20 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\Debug/iccSpecSepToTiff.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\IccProfLib,$(LIBTIFF_INCLUDE);..\IccApplyProfiles"
+				AdditionalIncludeDirectories="..\..\..\IccProfLib,$(LIBTIFF_INCLUDEx64);..\IccApplyProfiles"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\Debug/iccSpecSepToTiff.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -354,12 +354,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(LIBTIFF_DLIB)"
-				OutputFile=".\Debug/iccSpecSepToTiff.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(LIBTIFF_LIBDIR)"
+				AdditionalLibraryDirectories="$(LIBTIFF_LIBDIRx64)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/iccSpecSepToTiff.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccSpecSepToTiff.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -385,7 +385,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Debug\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff_d.exe&#x0D;&#x0A;copy .\Debug\iccSpecSepToTiff.pdb ..\..\..\Testing&#x0D;&#x0A;"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccSpecSepToTiff.exe ..\..\..\Testing\iccSpecSepToTiff_d.exe&#x0D;&#x0A;copy $(PlatformName)\$(ConfigurationName)\iccSpecSepToTiff.pdb ..\..\..\Testing&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -419,7 +419,35 @@
 			Filter="lib"
 			>
 			<File
-				RelativePath="..\..\..\IccProfLib\Release\IccProfLib.lib"
+				RelativePath="..\..\..\IccProfLib\Win32\Debug\IccProfLib.lib"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\IccProfLib\Win32\Release\IccProfLib.lib"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -437,10 +465,34 @@
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\IccProfLib\Debug\IccProfLib.lib"
+				RelativePath="..\..\..\IccProfLib\x64\Debug\IccProfLib.lib"
 				>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
@@ -449,8 +501,28 @@
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\IccProfLib\x64\Release\IccProfLib.lib"
+				>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

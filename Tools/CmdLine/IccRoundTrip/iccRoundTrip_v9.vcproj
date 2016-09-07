@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -42,7 +42,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/iccRoundTrip.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -54,10 +54,10 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/iccRoundTrip.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -76,10 +76,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Release/iccRoundTrip.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/iccRoundTrip.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -105,13 +105,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Release\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip.exe"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip.exe"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -132,7 +132,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/iccRoundTrip.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -142,10 +142,10 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\Debug/iccRoundTrip.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -165,11 +165,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Debug/iccRoundTrip.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/iccRoundTrip.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -195,7 +195,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Debug\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip_d.exe&#x0D;&#x0A;copy .\Debug\iccRoundTrip.pdb ..\..\..\Testing&#x0D;&#x0A;"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip_d.exe&#x0D;&#x0A;copy $(PlatformName)\$(ConfigurationName)\iccRoundTrip.pdb ..\..\..\Testing&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -223,7 +223,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\Release/iccRoundTrip.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -235,10 +235,10 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/iccRoundTrip.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -257,10 +257,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Release/iccRoundTrip.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/iccRoundTrip.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -286,7 +286,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Release\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip.exe"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip.exe"
 			/>
 		</Configuration>
 		<Configuration
@@ -314,7 +314,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\Debug/iccRoundTrip.tlb"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -324,10 +324,10 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\Debug/iccRoundTrip.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -347,11 +347,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Debug/iccRoundTrip.exe"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/iccRoundTrip.pdb"
+				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/iccRoundTrip.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -377,7 +377,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy .\Debug\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip_d.exe&#x0D;&#x0A;copy .\Debug\iccRoundTrip.pdb ..\..\..\Testing&#x0D;&#x0A;"
+				CommandLine="copy $(PlatformName)\$(ConfigurationName)\iccRoundTrip.exe ..\..\..\Testing\iccRoundTrip_d.exe&#x0D;&#x0A;copy $(PlatformName)\$(ConfigurationName)\iccRoundTrip.pdb ..\..\..\Testing&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -444,10 +444,18 @@
 			Filter="lib"
 			>
 			<File
-				RelativePath="..\..\..\IccProfLib\Debug\IccProfLib.lib"
+				RelativePath="..\..\..\IccProfLib\Win32\Debug\IccProfLib.lib"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -464,7 +472,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\IccProfLib\Release\IccProfLib.lib"
+				RelativePath="..\..\..\IccProfLib\Win32\Release\IccProfLib.lib"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -476,6 +484,70 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\IccProfLib\x64\Debug\IccProfLib.lib"
+				>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\IccProfLib\x64\Release\IccProfLib.lib"
+				>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

@@ -86,9 +86,9 @@
 namespace refIccMAX {
 #endif
 
-const char *icValidateWarningMsg = "Warning! - ";
-const char *icValidateNonCompliantMsg = "NonCompliant! - ";
-const char *icValidateCriticalErrorMsg = "Error! - ";
+ICCPROFLIB_API const char *icValidateWarningMsg = "Warning! - ";
+ICCPROFLIB_API const char *icValidateNonCompliantMsg = "NonCompliant! - ";
+ICCPROFLIB_API const char *icValidateCriticalErrorMsg = "Error! - ";
 
 
 /**
@@ -305,7 +305,7 @@ bool icIsIllumD50(icXYZNumber xyz)
 */
 bool icMatrixInvert3x3(icFloatNumber *M)
 {
-  const icFloatNumber epsilon = 1e-8;
+  const icFloatNumber epsilon = 1e-8f;
 
   icFloatNumber m48 = M[4]*M[8];
   icFloatNumber m75 = M[7]*M[5];
@@ -690,8 +690,8 @@ icFloatNumber icU8toAB(icUInt8Number num)
   return (icFloatNumber)num - 128.0f;
 }
 
-icFloatNumber icD50XYZ[3] = { 0.9642f, 1.0000f, 0.8249f };
-icFloatNumber icD50XYZxx[3] = { 96.42f, 100.00f, 82.49f };
+ICCPROFLIB_API icFloatNumber icD50XYZ[3] = { 0.9642f, 1.0000f, 0.8249f };
+ICCPROFLIB_API icFloatNumber icD50XYZxx[3] = { 96.42f, 100.00f, 82.49f };
 
 void icNormXyz(icFloatNumber *XYZ, icFloatNumber *WhiteXYZ)
 {
@@ -1243,6 +1243,15 @@ bool icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng
           rng1.steps == rng2.steps);
 }
 
+CIccInfo::CIccInfo()
+{
+  m_str = new std::string;
+}
+
+CIccInfo::~CIccInfo()
+{
+  delete m_str;
+}
 
 const icChar *CIccInfo::GetUnknownName(icUInt32Number val)
 {
@@ -1319,16 +1328,16 @@ const icChar *CIccInfo::GetTagSigName(icTagSignature sig)
 
 const icChar *CIccInfo::GetStructSigName(icStructSignature sig)
 {
-  if (CIccStructCreator::GetStructSigName(m_str, sig)) {
-    return m_str.c_str();
+  if (CIccStructCreator::GetStructSigName(*m_str, sig)) {
+    return m_str->c_str();
   }
   return GetUnknownName(sig);
 }
 
 const icChar *CIccInfo::GetArraySigName(icArraySignature sig)
 {
-  if (CIccArrayCreator::GetArraySigName(m_str, sig)) {
-    return m_str.c_str();
+  if (CIccArrayCreator::GetArraySigName(*m_str, sig)) {
+    return m_str->c_str();
   }
   return GetUnknownName(sig);
 }

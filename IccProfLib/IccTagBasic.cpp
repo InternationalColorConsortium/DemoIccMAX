@@ -1661,7 +1661,7 @@ void CIccTagUtf16Text::SetText(const icUChar *szText)
     pos = 1;
   }
 
-  icUInt32Number nSize = str.size()-pos;
+  icUInt32Number nSize = (icUInt32Number)(str.size()-pos);
   icUChar16 *szBuf = GetBuffer(nSize);
 
   if (nSize)
