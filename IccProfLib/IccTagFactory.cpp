@@ -392,8 +392,26 @@ const icChar* CIccSpecTagFactory::GetTagSigName(icTagSignature tagSig)
   case icSigMToB0Tag:
     return "MToB0Tag";
 
+  case icSigMToB1Tag:
+    return "MToB1Tag";
+
+  case icSigMToB2Tag:
+    return "MToB2Tag";
+
+  case icSigMToB3Tag:
+    return "MToB3Tag";
+
   case icSigMToS0Tag:
     return "MToS0Tag";
+
+  case icSigMToS1Tag:
+    return "MToS1Tag";
+
+  case icSigMToS2Tag:
+    return "MToS2Tag";
+
+  case icSigMToS3Tag:
+    return "MToS3Tag";
 
   case icSigNamedColor2Tag:
     return "namedColor2Tag";

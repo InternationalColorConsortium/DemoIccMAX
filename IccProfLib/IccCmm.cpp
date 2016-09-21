@@ -673,7 +673,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
               if (pTag)
                 nTagIntent = icRelativeColorimetric;
             }
-            else if (!pTag && nTagIntent != icAbsoluteColorimetric) {
+            else if (!pTag && nTagIntent == icRelativeColorimetric) {
               pTag = pProfile->FindTag(icSigDToB3Tag);
               if (pTag) {
                 nTagIntent = icAbsoluteColorimetric;
@@ -683,8 +683,22 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
 
             if (pTag)
               bUseSpectralPCS = true;
+
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigDToB0Tag);
+            }
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigDToB1Tag);
+            }
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigDToB3Tag);
+              if (pTag) {
+                nTagIntent = icAbsoluteColorimetric;
+                bAbsToRel = true;
+              }
+            }
           }
-          else {
+          else if (pProfile->m_Header.version < icVersionNumberV5) {
             pTag = pProfile->FindTag(icSigDToB0Tag + nTagIntent);
 
             if (!pTag && nTagIntent ==icAbsoluteColorimetric) {
@@ -697,24 +711,46 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
             if (!pTag && pProfile->m_Header.version >= icVersionNumberV5) {
               pTag = pProfile->FindTag(icSigDToB0Tag);
             }
-
-            //Unsupported elements cause fall back behavior
-            if (pTag && !pTag->IsSupported())
-              pTag = NULL;
           }
         }
 
         if (!pTag) {
-          if (nTagIntent == icAbsoluteColorimetric)
+          pTag = pProfile->FindTag(icSigAToB0Tag+nTagIntent);
+        }
+
+        if (!pTag && nTagIntent == icAbsoluteColorimetric) {
+          pTag = pProfile->FindTag(icSigAToB1Tag);
+          if (pTag)
             nTagIntent = icRelativeColorimetric;
-          pTag = pProfile->FindTag(icSigAToB0Tag + nTagIntent);
+        }
+        else if (!pTag && nTagIntent == icRelativeColorimetric) {
+          pTag = pProfile->FindTag(icSigAToB3Tag);
+          if (pTag) {
+            nTagIntent = icAbsoluteColorimetric;
+            bAbsToRel = true;
+          }
         }
 
         if (!pTag) {
           pTag = pProfile->FindTag(icSigAToB0Tag);
         }
-
         if (!pTag) {
+          pTag = pProfile->FindTag(icSigAToB1Tag);
+        }
+        if (!pTag) {
+          pTag = pProfile->FindTag(icSigAToB3Tag);
+          if (pTag) {
+            nTagIntent = icAbsoluteColorimetric;
+            bAbsToRel = true;
+          }
+        }
+
+        //Unsupported elements cause fall back behavior
+        if (pTag && !pTag->IsSupported())
+          pTag = NULL;
+
+        if (!pTag && pProfile->m_Header.version<icVersionNumberV5) {
+          //Matrix/TRC profiles are deprecated in v5 profiles
           if (pProfile->m_Header.colorSpace == icSigRgbData) {
             rv = CIccXformCreator::CreateXform(icXformTypeMatrixTRC, NULL, pHintManager);
           }
@@ -978,20 +1014,74 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
         else if (pProfile->m_Header.deviceClass==icSigMaterialVisualizationClass) {
           bInput = true;
           nMCS = icFromMCS;
-          if (pProfile->m_Header.spectralPCS && bUseSpectralPCS)
-            pTag = pProfile->FindTag(icSigMToS0Tag);
 
-          if (!pTag) {
-            switch(pProfile->m_Header.pcs) {
-              case icSigXYZPcsData:
-              case icSigLabPcsData:
-                pTag = pProfile->FindTag(icSigMToB0Tag);
-                break;
+          if (pProfile->m_Header.spectralPCS) {
+            pTag = pProfile->FindTag(icSigMToS0Tag + nTagIntent);
 
-              default:
-                break;
+            if (!pTag && nTagIntent == icAbsoluteColorimetric) {
+              pTag = pProfile->FindTag(icSigMToS1Tag);
+              if (pTag)
+                nTagIntent = icRelativeColorimetric;
+            }
+            else if (!pTag && nTagIntent != icAbsoluteColorimetric) {
+              pTag = pProfile->FindTag(icSigMToS3Tag);
+              if (pTag) {
+                nTagIntent = icAbsoluteColorimetric;
+                bAbsToRel = true;
+              }
+            }
+
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigMToS0Tag);
+            }
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigMToS1Tag);
+            }
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigMToS3Tag);
+              if (pTag) {
+                nTagIntent = icAbsoluteColorimetric;
+                bAbsToRel = true;
+              }
+            }
+
+            if (pTag)
+              bUseSpectralPCS = true;
+          }
+          if (!pTag && pProfile->m_Header.pcs!=0) {
+            pTag = pProfile->FindTag(icSigMToB0Tag + nTagIntent);
+
+            if (!pTag && nTagIntent == icAbsoluteColorimetric) {
+              pTag = pProfile->FindTag(icSigMToB1Tag);
+              if (pTag)
+                nTagIntent = icRelativeColorimetric;
+            }
+            else if (!pTag && nTagIntent != icAbsoluteColorimetric) {
+              pTag = pProfile->FindTag(icSigMToB3Tag);
+              if (pTag) {
+                nTagIntent = icAbsoluteColorimetric;
+                bAbsToRel = true;
+              }
+            }
+
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigMToB0Tag);
+            }
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigMToB1Tag);
+            }
+            if (!pTag) {
+              pTag = pProfile->FindTag(icSigMToB3Tag);
+              if (pTag) {
+                nTagIntent = icAbsoluteColorimetric;
+                bAbsToRel = true;
+              }
             }
           }
+
+          //Unsupported elements cause fall back behavior
+          if (pTag && !pTag->IsSupported())
+            pTag = NULL;
         }
         else if (pProfile->m_Header.deviceClass==icSigMaterialLinkClass) {
           bInput = false;
@@ -9227,10 +9317,14 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
 
   switch(pProfile->m_Header.deviceClass) {
     case icSigMaterialIdentificationClass:
-    case icSigMaterialVisualizationClass:
     case icSigMaterialLinkClass:
       nIntent = icPerceptual;
       nLutType = icXformLutMCS;
+      break;
+
+    case icSigMaterialVisualizationClass:
+      nLutType = icXformLutMCS;
+      break;
 
     default:
       break;

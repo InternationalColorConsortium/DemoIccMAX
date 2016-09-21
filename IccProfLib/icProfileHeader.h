@@ -394,7 +394,13 @@ typedef enum {
     icSigMaterialTypeArrayTag              = 0x6d637461,  /* 'mcta' */
     icSigMToA0Tag                          = 0x4d324130,  /* 'M2A0' */
     icSigMToB0Tag                          = 0x4d324230,  /* 'M2B0' */
+    icSigMToB1Tag                          = 0x4d324231,  /* 'M2B1' */
+    icSigMToB2Tag                          = 0x4d324232,  /* 'M2B2' */
+    icSigMToB3Tag                          = 0x4d324233,  /* 'M2B3' */
     icSigMToS0Tag                          = 0x4d325330,  /* 'M2S0' */
+    icSigMToS1Tag                          = 0x4d325331,  /* 'M2S1' */
+    icSigMToS2Tag                          = 0x4d325332,  /* 'M2S2' */
+    icSigMToS3Tag                          = 0x4d325333,  /* 'M2S3' */
     icSigMeasurementTag                    = 0x6D656173,  /* 'meas' */
     icSigMediaBlackPointTag                = 0x626B7074,  /* 'bkpt' */
     icSigMediaWhitePointTag                = 0x77747074,  /* 'wtpt' */

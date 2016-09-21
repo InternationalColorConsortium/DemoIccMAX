@@ -146,7 +146,7 @@ CIccMpeSpectralMatrix::CIccMpeSpectralMatrix(const CIccMpeSpectralMatrix &matrix
     m_pMatrix = NULL;
 
   if (matrix.m_pOffset) {
-    int num = m_nInputChannels*sizeof(icFloatNumber);
+    int num = m_Range.steps * sizeof(icFloatNumber);
     m_pOffset = (icFloatNumber*)malloc(num);
     memcpy(m_pOffset, matrix.m_pOffset, num);
   }
@@ -154,7 +154,7 @@ CIccMpeSpectralMatrix::CIccMpeSpectralMatrix(const CIccMpeSpectralMatrix &matrix
     m_pOffset = NULL;
 
   if (matrix.m_pWhite) {
-    int num = m_Range.steps*sizeof(icFloatNumber);
+    int num = m_Range.steps * sizeof(icFloatNumber);
     m_pWhite = (icFloatNumber*)malloc(num);
     memcpy(m_pWhite, matrix.m_pWhite, num);
   }
@@ -200,7 +200,7 @@ void CIccMpeSpectralMatrix::copyData(const CIccMpeSpectralMatrix &matrix)
     free(m_pOffset);
 
   if (matrix.m_pOffset) {
-    int num = m_nInputChannels*sizeof(icFloatNumber);
+    int num = m_Range.steps * sizeof(icFloatNumber);
     m_pOffset = (icFloatNumber*)malloc(num);
     memcpy(m_pOffset, matrix.m_pOffset, num);
   }
@@ -211,7 +211,7 @@ void CIccMpeSpectralMatrix::copyData(const CIccMpeSpectralMatrix &matrix)
     free(m_pWhite);
 
   if (matrix.m_pWhite) {
-    int num = m_Range.steps*sizeof(icFloatNumber);
+    int num = m_Range.steps * sizeof(icFloatNumber);
     m_pWhite = (icFloatNumber*)malloc(num);
     memcpy(m_pWhite, matrix.m_pWhite, num);
   }

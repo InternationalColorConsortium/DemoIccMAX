@@ -488,7 +488,7 @@ icFloatNumber CIccFormulaCurveSegment::Apply(icFloatNumber v) const
 
   case 0x0003:
     //Y = a * (b * X + c) ^ g  + d        : g a b c d
-    return (m_params[1] * pow(m_params[2] * v + m_params[3], m_params[0]) + m_params[5]);
+    return (m_params[1] * pow(m_params[2] * v + m_params[3], m_params[0]) + m_params[4]);
   }
 
   //Shouldn't get here!

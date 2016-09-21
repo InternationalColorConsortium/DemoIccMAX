@@ -1837,7 +1837,13 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
   case icSigAToM0Tag:
   case icSigMToA0Tag:
   case icSigMToB0Tag:
+  case icSigMToB1Tag:
+  case icSigMToB2Tag:
+  case icSigMToB3Tag:
   case icSigMToS0Tag:
+  case icSigMToS1Tag:
+  case icSigMToS2Tag:
+  case icSigMToS3Tag:
   case icSigBRDFAToB0Tag:
   case icSigBRDFAToB1Tag:
   case icSigBRDFAToB2Tag:
