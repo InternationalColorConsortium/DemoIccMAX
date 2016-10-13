@@ -529,6 +529,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <ClCompile Include="IccWrapper.cpp" />
     <ClCompile Include="IccXformFactory.cpp" />
     <ClCompile Include="md5.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">Disabled</Optimization>
@@ -589,6 +590,7 @@
     <ClInclude Include="IccTagMPE.h" />
     <ClInclude Include="IccTagProfSeqId.h" />
     <ClInclude Include="IccUtil.h" />
+    <ClInclude Include="IccWrapper.h" />
     <ClInclude Include="IccXformFactory.h" />
     <ClInclude Include="icProfileHeader.h" />
     <ClInclude Include="MainPage.h" />

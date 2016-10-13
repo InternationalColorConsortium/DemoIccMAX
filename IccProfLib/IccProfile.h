@@ -76,9 +76,11 @@
 #include <list>
 #include <string>
 
-#ifdef USEREFICCMAXNAMESPACE
+#if defined(__cplusplus) && defined(USEREFICCMAXNAMESPACE)
 namespace refIccMAX {
 #endif
+
+#ifdef __cplusplus
 
 class ICCPROFLIB_API CIccTag;
 class ICCPROFLIB_API CIccIO;
@@ -246,6 +248,8 @@ bool ICCPROFLIB_API CalcProfileID(const icWChar *szFilename, icProfileID *profil
 
 
 typedef CIccProfile* CIccProfilePtr;
+
+#endif //__cplusplus
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX

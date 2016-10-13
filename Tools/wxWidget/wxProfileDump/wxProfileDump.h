@@ -174,7 +174,8 @@ protected:
     wxStaticText *m_textSpectralWavelengths;
     wxStaticText *m_textMaterialColorSpace;
 		wxStaticText *m_textSize;
-		wxStaticText *m_textType;
+		wxStaticText *m_textClass;
+    wxStaticText *m_textSubClass;
 		wxStaticText *m_textVersion;
 
 		wxSizer *CreateSizerWithText(const wxString &labelText, wxStaticText **ppText);

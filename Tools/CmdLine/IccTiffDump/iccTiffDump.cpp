@@ -129,7 +129,7 @@ void Usage()
 int main(int argc, icChar* argv[])
 {
   int minargs = 1; // minimum number of arguments
-  if(argc<minargs) {
+  if(argc<=minargs) {
     Usage();
     return -1;
   }

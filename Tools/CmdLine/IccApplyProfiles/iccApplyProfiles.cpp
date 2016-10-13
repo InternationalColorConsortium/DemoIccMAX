@@ -12,7 +12,7 @@
  * The ICC Software License, Version 0.2
  *
  *
- * Copyright (c) 2003-2010 The International Color Consortium. All rights 
+ * Copyright (c) 2003-2016 The International Color Consortium. All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
+// -Modification to support iccMAX by Max Derhak in 2014
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -91,7 +92,7 @@ typedef std::list<CIccProfile*> IccProfilePtrList;
 
 void Usage() 
 {
-  printf("Usage: iccApplyProfiles src_tiff_file dst_tiff_file dst_sample_encoding interpolation dst_compression dst_planar dst_embed_icc {profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Usage: iccApplyProfiles src_tiff_file dst_tiff_file dst_sample_encoding interpolation dst_compression dst_planar dst_embed_icc {{-ENV:sig value} profile_file_path rendering_intent {-PCC connection_conditions_path}}\n\n");
   printf("  For dst_sample_encoding:\n");
   printf("    0 - Same as src\n");
   printf("    1 - icEncode8Bit\n");
@@ -114,7 +115,7 @@ void Usage()
   printf("    0 - Do not Embed\n");
   printf("    1 - Embed Last ICC\n\n");
 
-  printf("  For Rendering_intent:\n");
+  printf("  For rendering_intent:\n");
   printf("    0 - Perceptual\n");
   printf("    1 - Relative Colorimetric\n");
   printf("    2 - Saturation\n");
@@ -132,10 +133,10 @@ void Usage()
   printf("    40 - Perceptual with BPC\n");
   printf("    41 - Relative Colorimetric with BPC\n");
   printf("    42 - Saturation with BPC\n");
-  printf("    50 - BDRF Model");
-  printf("    60 - BDRF Light");
-  printf("    70 - BDRF Output");
-  printf("    80 - MCS connection");
+  printf("    50 - BDRF Model\n");
+  printf("    60 - BDRF Light\n");
+  printf("    70 - BDRF Output\n");
+  printf("    80 - MCS connection\n");
 }
 
 //===================================================
@@ -151,6 +152,7 @@ int main(int argc, icChar* argv[])
   int nNumProfiles, temp;
   temp = argc - minargs;
 
+  //remaining arguments must be in pairs
   if(temp%2 != 0) {
     printf("\nMissing arguments!\n");
     Usage();
@@ -159,26 +161,24 @@ int main(int argc, icChar* argv[])
 
   nNumProfiles = temp/2;
 
-
-  unsigned long i, j, k, sn, sphoto, photo, space, bps, dbps;
+  unsigned long i, j, k, sn, sphoto, photo, bps, dbps;
   CTiffImg SrcImg, DstImg;
-  CIccCmm cmm;
   unsigned char *sptr, *dptr;
   bool bSuccess = true;
   bool bConvert = false;
   char *last_path = NULL;
 
+  //Open source image file and get information from it
   if (!SrcImg.Open(argv[1])) {
     printf("\nFile [%s] cannot be opened.\n", argv[1]);
     return false;
   }
   sn = SrcImg.GetSamples();
   sphoto = SrcImg.GetPhoto();
-  space = cmm.GetSourceSpace();
   bps = SrcImg.GetBitsPerSample();
 
+  //Setup source encoding based on bits per sample (bps) in source image
   icFloatColorEncoding srcEncoding, destEncoding;
-
   switch(bps) {
     case 8:
       srcEncoding = icEncode8Bit;
@@ -190,11 +190,11 @@ int main(int argc, icChar* argv[])
       srcEncoding = icEncodeFloat;
       break;
     default:
-      printf("Source bit depth / color data encoding not recognized.\n");
+      printf("Source bit depth / color data encoding not supported.\n");
       return false;
   }
 
-
+  //Setup destination encoding based on command line argument
   destEncoding = (icFloatColorEncoding)atoi(argv[3]);
   switch(destEncoding) {
     case 0:
@@ -217,38 +217,47 @@ int main(int argc, icChar* argv[])
       printf("Source color data encoding not recognized.\n");
       return false;
   }
-  icXformInterp nInterp = (icXformInterp)atoi(argv[4]);
 
+  //Retrieve command line arguments
+  icXformInterp nInterp = (icXformInterp)atoi(argv[4]);
   bool bCompress = atoi(argv[5])!=0;
   bool bSeparation = atoi(argv[6])!=0;
   bool bEmbed = atoi(argv[7])!=0;
 
   int nIntent, nType;
-  //CIccNamedColorCmm theCmm(icSigUnknownData, icSigUnknownData, true);
+
+  //Allocate a CIccCmm to use to apply profiles. 
+  //Let profiles determine starting and ending color spaces.
+  //Third argument indicates that Input transform from first profile should be used.
   CIccCmm theCmm(icSigUnknownData, icSigUnknownData, true);
+  
+  //PCC profiles need to stay around until the CMM has been completely initialized to apply transforms.  
+  //TheCmm doesn't own them so keep a list so they can be released when they aren't needed any more.
   IccProfilePtrList pccList;
 
   int nCount;
   bool bUseMPE;
-  icStatusCMM stat;
-  icCmmEnvSigMap sigMap;
+  icStatusCMM stat;       //status variable for CMM operations
+  icCmmEnvSigMap sigMap;  //Keep track of CMM Environment for each profile
 
+  //Remaining arguments define a sequence of profiles to be applied.  
+  //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
-    if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
+    if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for CMM Environment variables to be defined for next transform
       icSignature sig = icGetSigVal(argv[nCount]+5);
       icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
 
       sigMap[sig]=val;
     }
-    else if (stricmp(argv[nCount], "-PCC")) { //check for -PCC arg to allow for profile connection conditions to be defined
+    else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
       bUseMPE = true;
       nIntent = atoi(argv[nCount+1]);
       nType = abs(nIntent) / 10;
       nIntent = nIntent % 10;
       CIccProfile *pPccProfile = NULL;
 
+      //Adjust type and hint information based on rendering intent
       CIccCreateXformHintManager Hint;
-
       switch(nType) {
       case 1:
         nType = 0;
@@ -260,7 +269,8 @@ int main(int argc, icChar* argv[])
         break;
       }
 
-      if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {
+      // Use of following -PCC arg allows for profile connection conditions to be defined
+      if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {  
         pPccProfile = OpenIccProfile(argv[nCount+3]);
         if (!pPccProfile) {
           printf("Unable to open Profile Connections Conditions from '%s'\n", argv[nCount+3]);
@@ -279,17 +289,19 @@ int main(int argc, icChar* argv[])
           return -1;
         }
 
+        //Read and validate profile from memory
         CIccProfile *pImgProfile = OpenIccProfile(pProfile, len);
-
         if (!pImgProfile) {
           printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
           return -1;
         }
 
+        //CMM Environment variables are passed in as a Hint to the Xform associated with the profile
         if (sigMap.size()>0) {
           Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
         }
 
+        //Add embedded profile to theCmm (transferring ownership)
         stat = theCmm.AddXform(pImgProfile, nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint);
         if (stat) {
           printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
@@ -297,12 +309,16 @@ int main(int argc, icChar* argv[])
         }
         sigMap.clear();
       }
-      else {
+      else { //Non embedded profile case
+        //CMM Environment variables are passed in as a Hint to the Xform associated with the profile
         if (sigMap.size()>0) {
           Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
         }
 
+        //Remember last profile path so it can be embedded
         last_path = &argv[nCount][0];
+
+        //Read profile from path and add it to theCmm
         stat = theCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint);
         if (stat) {
           printf("Invalid Profile(%d):  %s\n", stat, argv[nCount]);
@@ -313,6 +329,7 @@ int main(int argc, icChar* argv[])
     }
   }
 
+  //All profiles have been added to CMM.  Tell CMM that we are ready to begin applying colors/pixels
   if((stat=theCmm.Begin())) {
     printf("Error %d - Unable to begin profile application - Possibly invalid or incompatible profiles\n", stat);
     return -1;
@@ -320,13 +337,13 @@ int main(int argc, icChar* argv[])
 
   //Now we can release the pccProfile nodes.
   IccProfilePtrList::iterator pcc;
-
   for (pcc=pccList.begin(); pcc!=pccList.end(); pcc++) {
     CIccProfile *pPccProfile = *pcc;
     delete pPccProfile;
   }
   pccList.clear();
 
+  //Get and validate the source color space from theCmm.
   icColorSpaceSignature SrcspaceSig = theCmm.GetSourceSpace();
   int nSrcSamples = icGetSpaceSamples(SrcspaceSig);
 
@@ -335,6 +352,7 @@ int main(int argc, icChar* argv[])
     return -1;
   }
 
+  //Get and validate the destination color space from theCmm.
   icColorSpaceSignature DestspaceSig = theCmm.GetDestSpace();
   int nDestSamples = icGetSpaceSamples(DestspaceSig);
 
@@ -369,11 +387,13 @@ int main(int argc, icChar* argv[])
   unsigned long sbpp = (nSrcSamples * bps + 7) / 8;
   unsigned long dbpp = (nDestSamples * dbps  + 7)/ 8;
 
+  //Open up output image using information from SrcImg and theCmm
   if (!DstImg.Create(argv[2], SrcImg.GetWidth(), SrcImg.GetHeight(), dbps, photo, nDestSamples, SrcImg.GetXRes(), SrcImg.GetYRes(), bCompress, bSeparation)) {
     printf("Unable to create Tiff file - '%s'\n", argv[2]);
     return false;
   }
 
+  //Embed the last profile into output image as needed
   if (bEmbed) {
     unsigned long length = 0;
     icUInt8Number *pDestProfile = NULL;
@@ -391,25 +411,27 @@ int main(int argc, icChar* argv[])
     }
   }
 
+  //Allocate buffer for reading source image pixels
   unsigned char *pSBuf = (unsigned char *)malloc(SrcImg.GetBytesPerLine());  
-
   if (!pSBuf) {
     printf("Out of Memory!\n");
     return false;
   }
 
+  //Allocate buffer for putting color managed pixels into that will be sent to output tiff image
   unsigned char *pDBuf = (unsigned char *)malloc(DstImg.GetBytesPerLine());
-
   if (!pDBuf) {
     printf("Out of Memory!\n");
     free(pSBuf);
     return false;
   }
 
+  //Allocate pixel buffers for performing encoding transformations
   CIccPixelBuf SrcPixel(nSrcSamples+16), DestPixel(nDestSamples+16), Pixel(icIntMax(nSrcSamples, nDestSamples)+16);
   int lastPer = -1;
   int curper;
 
+  //Read each line
   for (i=0; i<SrcImg.GetHeight(); i++) {
     if (!SrcImg.ReadLine(pSBuf)) {
       bSuccess = false;
@@ -417,6 +439,7 @@ int main(int argc, icChar* argv[])
     }
     for (sptr=pSBuf, dptr=pDBuf, j=0; j<SrcImg.GetWidth(); j++, sptr+=sbpp, dptr+=dbpp) {
 
+      //Special conversions need to be made to convert CIELAB and CIEXYZ to internal PCS encoding
       switch(bps) {
         case 8:
           if (sphoto==PHOTO_CIELAB) {
@@ -475,21 +498,21 @@ int main(int argc, icChar* argv[])
           printf("Invalid source bit depth\n");
           return -1;
       }
-
-      if (SrcspaceSig==icSigXYZData) {
+      if (sphoto == PHOTO_CIELAB && SrcspaceSig==icSigXYZData) {
         icLabFromPcs(SrcPixel);
         icLabtoXYZ(SrcPixel);
         icXyzToPcs(SrcPixel);
       }
 
-      theCmm.Apply(DestPixel, SrcPixel);
+      //Use CMM to convert SrcPixel to DestPixel
+     theCmm.Apply(DestPixel, SrcPixel);
 
-      if (DestspaceSig==icSigXYZData) {
+      //Special conversions need to be made to convert from internal PCS encoding CIELAB
+      if (photo==PHOTO_CIELAB && DestspaceSig==icSigXYZData) {
         icXyzFromPcs(DestPixel);
         icXYZtoLab(DestPixel);
         icLabToPcs(DestPixel);
       }
-
       switch(dbps) {
         case 8:
           if (photo==PHOTO_CIELAB) {
@@ -549,10 +572,14 @@ int main(int argc, icChar* argv[])
           return -1;
       }
     }
+
+    //Output the converted pixels to the destination image
     if (!DstImg.WriteLine(pDBuf)) {
       bSuccess = false;
       break;
     }
+
+    //Display status of how much we have accomplished
     curper = (int)((float)(i+1)*100.0f/(float)SrcImg.GetHeight());
     if (curper !=lastPer) {
       printf("\r%d%%", curper);
@@ -561,9 +588,7 @@ int main(int argc, icChar* argv[])
   }
   printf("\n");
 
-  if (last_path && last_path[0] && theCmm.IsLastOutPut()) {
-  }
-
+  //Clean everything up by closeing files and freeing buffers
   SrcImg.Close();
 
   free(pSBuf);

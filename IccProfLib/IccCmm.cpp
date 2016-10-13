@@ -6716,8 +6716,26 @@ void CIccXformMpe::SetAppliedCC(IIccProfileConnectionConditions *pPCC)
     bool bReflectance = m_pTag->IsLateBindingReflectance();
 
     if (pPCC != (IIccProfileConnectionConditions *)m_pProfile) {
-      m_pAppliedPCC = new CIccCombinedConnectionConditions(m_pProfile, pPCC, bReflectance); 
-      m_bDeleteAppliedPCC = true;
+      if (!bReflectance) {
+        const CIccTagSpectralViewingConditions *pViewPCC = pPCC ? pPCC->getPccViewingConditions() : NULL;
+        const CIccTagSpectralViewingConditions *pViewProfile = m_pProfile ? m_pProfile->getPccViewingConditions() : NULL;
+
+        if (pViewPCC && pViewProfile &&
+          pViewPCC->m_stdIlluminant == pViewProfile->m_stdIlluminant &&
+          pViewPCC->m_colorTemperature == pViewProfile->m_colorTemperature &&
+          pViewPCC->m_stdIlluminant != icIlluminantUnknown) {
+          m_pAppliedPCC = pPCC;
+          m_bDeleteAppliedPCC = false;
+        }
+        else {
+          m_pAppliedPCC = new CIccCombinedConnectionConditions(m_pProfile, pPCC, bReflectance);
+          m_bDeleteAppliedPCC = true;
+        }
+      }
+      else {
+        m_pAppliedPCC = new CIccCombinedConnectionConditions(m_pProfile, pPCC, bReflectance);
+        m_bDeleteAppliedPCC = true;
+      }
     }
     else {
       m_pAppliedPCC = NULL;

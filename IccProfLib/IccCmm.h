@@ -81,11 +81,10 @@
 #include <cstring>
 #include <cstdlib>
 
-#ifdef USEREFICCMAXNAMESPACE
+#if defined(__cpluplus) && defined(USEREFICCMAXNAMESPACE)
 namespace refIccMAX {
 #endif
-
-
+  
 /// CMM return status values
 typedef enum {
   icCmmStatBad                = -1,
@@ -132,7 +131,7 @@ typedef enum {
   icXformLutBRDFLight          = 6,
   icXformLutBRDFOutput         = 7,
   icXformLutMCS                = 8,
-  } icXformLutType;
+ } icXformLutType;
 
 #define icPerceptualRefBlackX 0.00336
 #define icPerceptualRefBlackY 0.0034731
@@ -156,6 +155,8 @@ typedef enum {
   icXformTypeUnknown    = 0x7ffffff,
 } icXformType;
 
+
+#ifdef __cplusplus
 
 /**
 **************************************************************************
@@ -1817,7 +1818,9 @@ protected:
 
 };
 
-#ifdef USEREFICCMAXNAMESPACE
+#endif //__cplusplus
+
+#if defined(__cplusplus) && defined(USEREFICCMAXNAMESPACE)
 }; //namespace refIccMAX
 #endif
 

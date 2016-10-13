@@ -1,3 +1,3 @@
 #ifndef ICCPROFLIBVER
-#define ICCPROFLIBVER "2.1.4"
+#define ICCPROFLIBVER "2.1.5"
 #endif

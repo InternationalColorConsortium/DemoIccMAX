@@ -1428,7 +1428,7 @@ bool CIccMpeXmlTintArray::ParseXml(xmlNode *pNode, std::string &parseStr)
     }
   }
   else {
-    parseStr += "Tint Array missing tit values\n";
+    parseStr += "Tint Array missing tint values\n";
     return false;
   }
   return true;

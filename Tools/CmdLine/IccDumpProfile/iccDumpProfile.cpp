@@ -131,44 +131,74 @@ print_usage:
     CIccInfo Fmt;
     char buf[64];
 
-    printf("Profile:          '%s'\n", argv[nArg]);
+    printf("Profile:            '%s'\n", argv[nArg]);
     if(Fmt.IsProfileIDCalculated(&pHdr->profileID))
-      printf("Profile ID:        %s\n", Fmt.GetProfileID(&pHdr->profileID));
+      printf("Profile ID:          %s\n", Fmt.GetProfileID(&pHdr->profileID));
     else
-      printf("Profile ID:       Profile ID not calculated.\n");
-    printf("Size:             %d(0x%x) bytes\n", pHdr->size, pHdr->size);
+      printf("Profile ID:         Profile ID not calculated.\n");
+    printf("Size:               %d(0x%x) bytes\n", pHdr->size, pHdr->size);
 
     printf("\nHeader\n");
     printf(  "------\n");
-    printf("Attributes:       %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
-    printf("Cmm:              %s\n", Fmt.GetCmmSigName((icCmmSignature)(pHdr->cmmId)));
-    printf("Creation Date:    %d/%d/%d  %02u:%02u:%02u\n",
-                              pHdr->date.month, pHdr->date.day, pHdr->date.year,
-                              pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
-    printf("Creator:          %s\n", icGetSig(buf, pHdr->creator));
-    printf("Data Color Space: %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
-    printf("Flags             %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
-    printf("PCS Color Space:  %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
-    printf("Platform:         %s\n", Fmt.GetPlatformSigName(pHdr->platform));
-    printf("Rendering Intent: %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
-    printf("Type:             %s\n", Fmt.GetProfileClassSigName(pHdr->deviceClass));
-    printf("Version:          %s\n", Fmt.GetVersionName(pHdr->version));
-    printf("Illuminant:       X=%.4lf, Y=%.4lf, Z=%.4lf\n",
-                            icFtoD(pHdr->illuminant.X),
-                            icFtoD(pHdr->illuminant.Y),
-                            icFtoD(pHdr->illuminant.Z));
+    printf("Attributes:         %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
+    printf("Cmm:                %s\n", Fmt.GetCmmSigName((icCmmSignature)(pHdr->cmmId)));
+    printf("Creation Date:      %d/%d/%d  %02u:%02u:%02u\n",
+                               pHdr->date.month, pHdr->date.day, pHdr->date.year,
+                               pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
+    printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
+    printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
+    printf("Flags               %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
+    printf("PCS Color Space:    %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
+    printf("Platform:           %s\n", Fmt.GetPlatformSigName(pHdr->platform));
+    printf("Rendering Intent:   %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
+    printf("Profile Class:      %s\n", Fmt.GetProfileClassSigName(pHdr->deviceClass));
+    if (pHdr->deviceSubClass)
+      printf("Profile SubClass:   %s\n", icGetSig(buf, pHdr->deviceSubClass));
+    else
+      printf("Profile SubClass:   Not Defined\n");
+    printf("Version:            %s\n", Fmt.GetVersionName(pHdr->version));
+    printf("Illuminant:         X=%.4lf, Y=%.4lf, Z=%.4lf\n",
+                                icFtoD(pHdr->illuminant.X),
+                                icFtoD(pHdr->illuminant.Y),
+                                icFtoD(pHdr->illuminant.Z));
+    printf("Spectral PCS:       %s\n", Fmt.GetSpectralColorSigName(pHdr->spectralPCS));
+    if (pHdr->spectralRange.start || pHdr->spectralRange.end || pHdr->spectralRange.steps) {
+      printf("Spectral PCS Range: start=%.1fnm, end=%.1fnm, steps=%d\n",
+             icF16toF(pHdr->spectralRange.start),
+             icF16toF(pHdr->spectralRange.end),
+             pHdr->spectralRange.steps);
+    }
+    else {
+      printf("Spectral PCS Range: Not Defined\n");
+    }
+
+    if (pHdr->biSpectralRange.start || pHdr->biSpectralRange.end || pHdr->biSpectralRange.steps) {
+      printf("BiSpectral Range:     start=%.1fnm, end=%.1fnm, steps=%d\n",
+        icF16toF(pHdr->biSpectralRange.start),
+        icF16toF(pHdr->biSpectralRange.end),
+        pHdr->biSpectralRange.steps);
+    }
+    else {
+      printf("BiSpectral Range:   Not Defined\n");
+    }
+    if (pHdr->mcs) {
+      printf("MCS Color Space:    %s\n", Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
+    }
+    else {
+      printf("MCS Color Space:    Not Defined\n");
+    }
 
     printf("\nProfile Tags\n");
     printf(  "------------\n");
 
-    printf("%25s    ID    %8s\t%8s\n", "Tag", "Offset", "Size");
-    printf("%25s  ------  %8s\t%8s\n", "----", "------", "----");
+    printf("%28s    ID    %8s\t%8s\n", "Tag", "Offset", "Size");
+    printf("%28s  ------  %8s\t%8s\n", "----", "------", "----");
 
     int n;
     TagEntryList::iterator i;
 
     for (n=0, i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++, n++) {
-      printf("%25s  %s  %8d\t%8d\n", Fmt.GetTagSigName(i->TagInfo.sig),
+      printf("%28s  %s  %8d\t%8d\n", Fmt.GetTagSigName(i->TagInfo.sig),
                                    icGetSig(buf, i->TagInfo.sig, false), 
                                    i->TagInfo.offset, i->TagInfo.size);
     }

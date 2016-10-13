@@ -120,10 +120,10 @@ void Usage()
 	printf("    40 - Perceptual with BPC\n");
 	printf("    41 - Relative Colorimetric with BPC\n");
 	printf("    42 - Saturation with BPC\n");
-  printf("    50 - BDRF Model");
-  printf("    60 - BDRF Light");
-  printf("    70 - BDRF Output");
-  printf("    80 - MCS connection");
+  printf("    50 - BDRF Model\n");
+  printf("    60 - BDRF Light\n");
+  printf("    70 - BDRF Output\n");
+  printf("    80 - MCS connection\n");
 }
 
 
@@ -165,10 +165,9 @@ int main(int argc, icChar* argv[])
   for (;i<7; i++)
     ColorSig[i] = '\0';
 
-
+  //Init source number of samples from color signature is source data file
   icColorSpaceSignature SrcspaceSig = (icColorSpaceSignature)icGetSigVal(ColorSig);
   int nSamples = icGetSpaceSamples(SrcspaceSig);
-
   if(SrcspaceSig != icSigNamedData) {
     if(!nSamples) {
       printf("Source color space signature not recognized.\n");
@@ -181,17 +180,20 @@ int main(int argc, icChar* argv[])
 
   icFloatColorEncoding srcEncoding, destEncoding;
 
+  //Setup source encoding
   srcEncoding = CIccCmm::GetFloatColorEncoding(tempBuf);
-
   if(srcEncoding == icEncodeUnknown) {
     printf("Source color data encoding not recognized.\n");
     return false;
   }
 
+  //Setup destination encoding
   destEncoding = (icFloatColorEncoding)atoi(argv[2]);
 	icXformInterp nInterp = (icXformInterp)atoi(argv[3]);
 
   int nIntent, nType;
+
+  //Allocate a CIccCmm to use to apply profiles
   CIccNamedColorCmm namedCmm(SrcspaceSig, icSigUnknownData, !IsSpacePCS(SrcspaceSig));
   IccProfilePtrList pccList;
 
@@ -199,6 +201,8 @@ int main(int argc, icChar* argv[])
   bool bUseMPE;
   icCmmEnvSigMap sigMap;
 
+  //Remaining arguments define a sequence of profiles to be applied.  
+  //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
     if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
       icSignature sig = icGetSigVal(argv[nCount]+5);
@@ -206,15 +210,15 @@ int main(int argc, icChar* argv[])
       
       sigMap[sig]=val;
     }
-    else if (stricmp(argv[nCount], "-PCC")) {      //check for -PCC arg to allow for profile connection conditions to be defined
+    else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
       bUseMPE = true;
       nIntent = atoi(argv[nCount+1]);
       nType = abs(nIntent) / 10;
       nIntent = nIntent % 10;
       CIccProfile *pPccProfile = NULL;
 
+      //Adjust type and hint information based on rendering intent
       CIccCreateXformHintManager Hint;
-
       switch(nType) {
         case 1:
           nType = 0;
@@ -226,6 +230,7 @@ int main(int argc, icChar* argv[])
           break;
       }
 
+      // Use of following -PCC arg allows for profile connection conditions to be defined
       if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {
         pPccProfile = OpenIccProfile(argv[nCount+3]);
         if (!pPccProfile) {
@@ -236,10 +241,12 @@ int main(int argc, icChar* argv[])
         pccList.push_back(pPccProfile);
       }
 
+      //CMM Environment variables are passed in as a Hint to the Xform associated with the profile
       if (sigMap.size()>0) {
         Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
       }
 
+      //Read profile from path and add it to namedCmm
       if (namedCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint)) {
         printf("Invalid Profile:  %s\n", argv[nCount]);
         return -1;
@@ -249,6 +256,8 @@ int main(int argc, icChar* argv[])
   }
 
   icStatusCMM stat;
+
+  //All profiles have been added to CMM.  Tell CMM that we are ready to begin applying colors/pixels
   if((stat=namedCmm.Begin())) {
     printf("Error %d - Unable to begin profile application - Possibly invalid or incompatible profiles\n", stat);
     return -1;
@@ -256,23 +265,26 @@ int main(int argc, icChar* argv[])
 
   //Now we can release the pccProfile nodes.
   IccProfilePtrList::iterator pcc;
-
   for (pcc=pccList.begin(); pcc!=pccList.end(); pcc++) {
     CIccProfile *pPccProfile = *pcc;
     delete pPccProfile;
   }
   pccList.clear();
 
+  //Get and validate the source color space from namedCmm.
   SrcspaceSig = namedCmm.GetSourceSpace();
   int nSrcSamples = icGetSpaceSamples(SrcspaceSig);
 
+  //Get and validate the destination color space from namedCmm.
   icColorSpaceSignature DestspaceSig = namedCmm.GetDestSpace();
   int nDestSamples = icGetSpaceSamples(DestspaceSig);
   
+  //Allocate pixel buffers for performing encoding transformations
   std::string OutPutData;
   char SrcNameBuf[256], DestNameBuf[256];
   CIccPixelBuf SrcPixel(nSrcSamples+16), DestPixel(nDestSamples+16), Pixel(icIntMax(nSrcSamples, nDestSamples)+16);
 
+  //output header of results
   sprintf(tempBuf,"%s\t; ", icGetColorSig(tempBuf, DestspaceSig, false));
   OutPutData += tempBuf;
   OutPutData += "Data Format\n";
@@ -315,8 +327,10 @@ int main(int argc, icChar* argv[])
   
   fwrite(OutPutData.c_str(), 1, OutPutData.length(), stdout);
 
+  //Apply profiles to each input color
   while(!InputData.eof()) {
 
+    //Are names coming is as an input?
     if(SrcspaceSig==icSigNamedData) {
       InputData.getline(tempBuf, sizeof(tempBuf));
       if(!ParseName(SrcNameBuf, tempBuf))
@@ -380,7 +394,7 @@ int main(int argc, icChar* argv[])
 
       OutPutData += tempBuf;
     }
-    else {
+    else { //pixel sample data coming in as input
       InputData.getline(tempBuf, sizeof(tempBuf));
       if(!ParseNumbers(Pixel, tempBuf, nSamples))
         continue;

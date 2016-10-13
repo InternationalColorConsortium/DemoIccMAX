@@ -468,8 +468,9 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 		sizerBox->Add(CreateSizerWithText(_("Size:"), &m_textSize), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Suggested CMM:"), &m_textCMM), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Version:"), &m_textVersion), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Type of Profile:"), &m_textType), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Data Color Space:"), &m_textColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
+		sizerBox->Add(CreateSizerWithText(_("Profile Class:"), &m_textClass), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Profile SubClass:"), &m_textSubClass), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Data Color Space:"), &m_textColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Creation Date:"), &m_textCreationDate), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Primary Platform:"), &m_textPlatform), wxSizerFlags().Expand().Border(wxALL, 0));
@@ -535,7 +536,12 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 		m_textPlatform->SetLabel(Fmt.GetPlatformSigName(pHdr->platform));
 		m_textRenderingIntent->SetLabel(Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
 		m_textSize->SetLabel(wxString::Format(_T("%d(0x%x) bytes"), pHdr->size, pHdr->size));
-		m_textType->SetLabel(Fmt.GetProfileClassSigName(pHdr->deviceClass));
+		m_textClass->SetLabel(Fmt.GetProfileClassSigName(pHdr->deviceClass));
+    if (pHdr->deviceSubClass) 
+      m_textSubClass->SetLabel(icGetSig(buf, pHdr->deviceSubClass));
+    else
+      m_textSubClass->SetLabel(_T("Not Defined"));
+
 		m_textVersion->SetLabel(Fmt.GetVersionName(pHdr->version));
 		m_textIlluminant->SetLabel(wxString::Format(_T("X=%.4lf, Y=%.4lf, Z=%.4lf"),
 			icFtoD(pHdr->illuminant.X),
