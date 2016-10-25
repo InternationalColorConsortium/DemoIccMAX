@@ -204,7 +204,11 @@ int main(int argc, icChar* argv[])
   //Remaining arguments define a sequence of profiles to be applied.  
   //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
+#if defined(_WIN32) || defined(_WIN64)
     if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
+#else
+    if (!strncasecmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
+#endif
       icSignature sig = icGetSigVal(argv[nCount]+5);
       icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
       
@@ -310,7 +314,11 @@ int main(int argc, icChar* argv[])
   OutPutData += "\n;Profiles applied\n";
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
     OutPutData += "; ";
+#if defined(_WIN32) || defined(_WIN64)
     if (stricmp(argv[nCount], "-PCC") && strnicmp(argv[nCount], "-ENV:", 5)) {
+#else
+    if (stricmp(argv[nCount], "-PCC") && strncasecmp(argv[nCount], "-ENV:", 5)) {
+#endif
       if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {
         sprintf(tempBuf, "%s -PCC %s\n", argv[nCount], argv[nCount+3]);
         OutPutData += tempBuf;

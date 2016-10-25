@@ -45,3 +45,6 @@ cp build/$config/IccToXml ../../../Testing
 
 cd ../../../Tools/MacOS-X/RefIccMAXCmm
 xcodebuild -target RefIccMAXCmm -configuration "$config"
+
+cd ../../wxWidget/wxProfileDump/
+xcodebuild -target wxProfileDump -configuration "$config"
