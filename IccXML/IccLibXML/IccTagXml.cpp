@@ -4601,7 +4601,7 @@ bool CIccTagXmlGamutBoundaryDesc::ParseXml(xmlNode *pNode, std::string &parseStr
     if (!m_PCSValues)
       return false;
 
-    memcpy(m_PCSValues, vals.GetBuf(), m_NumberOfVertices * m_nPCSChannels);
+    memcpy(m_PCSValues, vals.GetBuf(), m_NumberOfVertices * m_nPCSChannels*sizeof(icFloatNumber));
   }
   else {
     parseStr += "Cannot find PCSValues\n";
@@ -4636,7 +4636,7 @@ bool CIccTagXmlGamutBoundaryDesc::ParseXml(xmlNode *pNode, std::string &parseStr
     if (!m_DeviceValues)
       return false;
 
-    memcpy(m_DeviceValues, vals.GetBuf(), m_NumberOfVertices * m_nDeviceChannels);
+    memcpy(m_DeviceValues, vals.GetBuf(), m_NumberOfVertices * m_nDeviceChannels * sizeof(icFloatNumber));
   }
   else
     m_NumberOfVertices = 0;
