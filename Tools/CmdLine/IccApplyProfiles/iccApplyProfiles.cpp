@@ -243,7 +243,11 @@ int main(int argc, icChar* argv[])
   //Remaining arguments define a sequence of profiles to be applied.  
   //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
+#if defined(_WIN32) || defined(_WIN64)
     if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for CMM Environment variables to be defined for next transform
+#else
+    if (!strncasecmp(argv[nCount], "-ENV:", 5)) {
+#endif
       icSignature sig = icGetSigVal(argv[nCount]+5);
       icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
 

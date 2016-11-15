@@ -26,3 +26,27 @@
 *.exe
 *.out
 *.app
+
+# Testing icc
+Testing/*/*.icc
+Testing/IccApplyNamedCmm
+Testing/IccApplyProfiles
+Testing/IccDumpProfile
+Testing/IccFromXml
+Testing/IccRoundTrip
+Testing/IccSpecSepToTiff
+Testing/IccTiffDump
+Testing/IccToXml
+
+# Xcode deps
+Build/XCode/libtiff/*.h*
+Build/XCode/libxml/*.h*
+# Xcode build files
+**/build
+**/xcuserdata
+
+# copied code
+Tools/CmdLine/IccSpecSepToTiff/TiffImg.cpp
+Tools/CmdLine/IccSpecSepToTiff/TiffImg.h
+Tools/CmdLine/IccTiffDump/TiffImg.cpp
+Tools/CmdLine/IccTiffDump/TiffImg.h
