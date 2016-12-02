@@ -174,10 +174,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>IccProfLib_CRTDLL.lib;wxmsw$(WXVER)_core.lib;wxbase$(WXVER).lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregex.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;oleacc.lib;odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>vc_msw\wxProfileDump.exe</OutputFile>
+      <OutputFile>$(OutDir)\wxProfileDump.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration)_CRTDLL;$(WXWIN)\lib\$(Platform)\vc_lib;$(WXWIN)\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\vc_msw/wxProfileDump.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\wxProfileDump.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
@@ -272,12 +272,12 @@ copy .\vc_mswd\wxProfileDump.pdb ..\..\..\Testing
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>IccProfLib_CRTDLL.lib;wxmsw$(WXVER)d_core.lib;wxbase$(WXVER)d.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexd.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;oleacc.lib;odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>vc_mswd\wxProfileDump.exe</OutputFile>
+      <OutputFile>$(OutDir)\wxProfileDump.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration)_CRTDLL;$(WXWIN)\lib\$(Platform)\vc_lib;$(WXWIN)\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCP71D.dll;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\vc_mswd/wxProfileDump.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\wxProfileDump.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />

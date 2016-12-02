@@ -332,6 +332,14 @@ public:
                            bool bUseD2BTags=true, 
                            CIccCreateXformHintManager *pHintManager=NULL);
 
+  ///Note: The returned CIccXform will own the profile.
+  static CIccXform *Create(CIccProfile *pProfile, CIccTag *pXformTag, bool bInput = true,
+                           icRenderingIntent nIntent = icUnknownIntent,
+                           icXformInterp nInterp = icInterpLinear,
+                           IIccProfileConnectionConditions *pPcc = NULL,
+                           bool bUseSpectralPCS = false,
+                           CIccCreateXformHintManager *pHintManager = NULL);
+
   virtual icStatusCMM Begin();
 
   virtual CIccApplyXform *GetNewApply(icStatusCMM &status);
@@ -1536,6 +1544,13 @@ public:
                                icXformLutType nLutType=icXformLutColor,
                                bool bUseMpeTags=true, 
                                CIccCreateXformHintManager *pHintManager=NULL);  //Note the profile will be copied
+  virtual icStatusCMM AddXform(CIccProfile *pProfile,
+                               CIccTag *pXformTag,
+                               icRenderingIntent nIntent = icUnknownIntent,
+                               icXformInterp nInterp = icInterpLinear,
+                               IIccProfileConnectionConditions *pPcc = NULL,
+                               bool bUseSpectralPCS=false,
+                               CIccCreateXformHintManager *pHintManager = NULL);  //Note: profile will be owned by the CMM
 
   //The Begin function should be called before Apply or GetNewApplyCmm()
   virtual icStatusCMM Begin(bool bAllocNewApply=true, bool bUsePcsConversion=false);

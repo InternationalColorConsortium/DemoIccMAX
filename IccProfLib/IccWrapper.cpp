@@ -113,10 +113,10 @@ bool CIccCmmEnvVarsWrapper::IndexedEnvVar(icUInt32Number nIndex, icSigCmmEnvVar 
   return false;
 }
 
-class CIccCmmEnvVarHint : public CIccCreateCmmEnvVarXformHint
+class CIccCmmEnvVarWrapperHint : public CIccCreateCmmEnvVarXformHint
 {
 public:
-  CIccCmmEnvVarHint(SIccCmmEnvVars *pVars) { m_pVars = pVars; }
+  CIccCmmEnvVarWrapperHint(SIccCmmEnvVars *pVars) { m_pVars = pVars; }
 
   virtual IIccCmmEnvVarLookup *GetNewCmmEnvVarLookup() const { return new CIccCmmEnvVarsWrapper(m_pVars); }
 protected:
@@ -152,7 +152,7 @@ icStatusCMM ICCPROFLIB_API IccCmmAttachProfileFile(CIccCmmHandle *pCmm,
   }
 
   if (pVars) {
-    hint.AddHint(new CIccCmmEnvVarHint(pVars));
+    hint.AddHint(new CIccCmmEnvVarWrapperHint(pVars));
     bUseHint = true;
   }
 
@@ -184,7 +184,7 @@ icStatusCMM IccCmmAttachProfileHandle(CIccCmmHandle *pCmm,
   }
 
   if (pVars) {
-    hint.AddHint(new CIccCmmEnvVarHint(pVars));
+    hint.AddHint(new CIccCmmEnvVarWrapperHint(pVars));
     bUseHint = true;
   }
 

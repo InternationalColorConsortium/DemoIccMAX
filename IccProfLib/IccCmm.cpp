@@ -1111,6 +1111,100 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
 }
 
 /**
+**************************************************************************
+* Name: CIccXform::Create
+*
+* Purpose:
+*  This is a static Creation function that creates derived CIccXform objects and
+*  initializes them.
+*
+* Args:
+*  pProfile = pointer to a CIccProfile object that will be owned by the transform.  This object will
+*   be destroyed when the returned CIccXform object is destroyed.  The means that the CIccProfile
+*   object needs to be allocated on the heap.
+*  pTag = tag that specifies transform to use.  It is assumed to use colorimetric PCS and have a lut type of icXformLutColor.
+*  bInput = flag to indicate whether to use the input or output side of the profile,
+*  nIntent = the rendering intent to apply to the profile,
+*  nInterp = the interpolation algorithm to use for N-D luts.
+*  pPcc = pointer to profile connection conditions to associate with transform
+*  pHintManager = pointer to object that contains xform creation hints
+*
+* Return:
+*  A suitable pXform object
+**************************************************************************
+*/
+CIccXform *CIccXform::Create(CIccProfile *pProfile,
+                             CIccTag *pTag,
+                             bool bInput/* =true */,
+                             icRenderingIntent nIntent/* =icUnknownIntent */,
+                             icXformInterp nInterp/* =icInterpLinear */,
+                             IIccProfileConnectionConditions *pPcc/*=NULL*/,
+                             bool bUseSpectralPCS/* =false*/,
+                             CIccCreateXformHintManager *pHintManager/* =NULL */)
+{
+  CIccXform *rv = NULL;
+  icRenderingIntent nTagIntent = nIntent;
+  bool bAbsToRel = false;
+  bool bRelToAbs = false;
+  icMCSConnectionType nMCS = icNoMCS;
+
+  if (pProfile->m_Header.deviceClass == icSigEncodingClass) {
+    return NULL;
+  }
+
+  if (pProfile->m_Header.deviceClass == icSigLinkClass/* && nIntent==icAbsoluteColorimetric*/) {
+    nIntent = icPerceptual;
+  }
+
+  if (nTagIntent == icUnknownIntent)
+    nTagIntent = icPerceptual;
+
+  //Unsupported elements cause fall back behavior
+  if (pTag && !pTag->IsSupported())
+    return NULL;
+
+  if (pTag->GetType() == icSigMultiProcessElementType) {
+    rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag, pHintManager);
+  }
+  else {
+    switch (pProfile->m_Header.colorSpace) {
+    case icSigXYZData:
+    case icSigLabData:
+    case icSigLuvData:
+    case icSigYCbCrData:
+    case icSigYxyData:
+    case icSigRgbData:
+    case icSigHsvData:
+    case icSigHlsData:
+    case icSigCmyData:
+    case icSig3colorData:
+      rv = CIccXformCreator::CreateXform(icXformType3DLut, pTag, pHintManager);
+      break;
+
+    case icSigCmykData:
+    case icSig4colorData:
+      rv = CIccXformCreator::CreateXform(icXformType4DLut, pTag, pHintManager);
+      break;
+
+    default:
+      rv = CIccXformCreator::CreateXform(icXformTypeNDLut, pTag, pHintManager);
+      break;
+    }
+  }
+
+  if (rv) {
+    if (pPcc)
+      rv->m_pConnectionConditions = pPcc;
+    else
+      rv->m_pConnectionConditions = pProfile;
+
+    rv->SetParams(pProfile, bInput, nIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel, nMCS);
+  }
+
+  return rv;
+}
+
+/**
  ******************************************************************************
  * Name: CIccXform::SetParams
  * 
@@ -6926,6 +7020,7 @@ CIccApplyCmm::CIccApplyCmm(CIccCmm *pCmm)
   m_Xforms->clear();
 
   m_Pixel = NULL;
+  m_Pixel2 = NULL;
 }
 
 /**
@@ -7485,6 +7580,124 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
   return icCmmStatOk;
 }
 
+/**
+**************************************************************************
+* Name: CIccCmm::AddXform
+*
+* Purpose:
+*  Adds a profile at the end of the Xform list
+*
+* Args:
+*  pProfile = pointer to the CIccProfile object to be added,
+*  nIntent = rendering intent to be used with the profile,
+*  nInterp = type of interpolation to be used with the profile,
+*  nLutType = selection of which transform lut to use
+*  bUseMpeTags = flag to indicate the use MPE flags if available
+*  pHintManager = hints for creating the xform
+*
+* Return:
+*  icCmmStatOk, if the profile was added to the list succesfully
+**************************************************************************
+*/
+icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
+                              CIccTag *pXformTag,
+                              icRenderingIntent nIntent/*= icUnknownIntent*/,
+                              icXformInterp nInterp /*=icInterpLinear*/,
+                              IIccProfileConnectionConditions *pPcc/*=NULL*/,
+                              bool bUseSpectralPCS /*=false*/,
+                              CIccCreateXformHintManager *pHintManager /*=NULL*/)
+{
+  icColorSpaceSignature nSrcSpace, nDstSpace;
+  bool bInput = !m_bLastInput;
+
+  if (!pProfile)
+    return icCmmStatInvalidProfile;
+
+  switch (pProfile->m_Header.deviceClass) {
+  case icSigMaterialIdentificationClass:
+  case icSigMaterialVisualizationClass:
+  case icSigMaterialLinkClass:
+    return icCmmStatBadLutType;
+
+  default:
+    break;
+  }
+
+  //Check pProfile if nIntent and input can be found.
+  if (bInput) {
+    nSrcSpace = pProfile->m_Header.colorSpace;
+
+    if (bUseSpectralPCS && pProfile->m_Header.spectralPCS)
+      nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
+    else {
+      nDstSpace = pProfile->m_Header.pcs;
+      bUseSpectralPCS = false;
+    }
+  }
+  else {
+    if (pProfile->m_Header.deviceClass == icSigLinkClass) {
+      return icCmmStatBadSpaceLink;
+    }
+    if (pProfile->m_Header.deviceClass == icSigAbstractClass) {
+      bInput = true;
+      nIntent = icPerceptual; // Note: icPerceptualIntent = 0
+    }
+
+    if (bUseSpectralPCS && pProfile->m_Header.spectralPCS)
+      nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
+    else {
+      nSrcSpace = pProfile->m_Header.pcs;
+      bUseSpectralPCS = false;
+    }
+
+    nDstSpace = pProfile->m_Header.colorSpace;
+  }
+
+  //Make sure colorspaces match with previous xforms
+  if (!m_Xforms->size()) {
+    if (m_nSrcSpace == icSigUnknownData) {
+      m_nLastSpace = nSrcSpace;
+      m_nSrcSpace = nSrcSpace;
+    }
+    else if (!IsCompatSpace(m_nSrcSpace, nSrcSpace)) {
+      return icCmmStatBadSpaceLink;
+    }
+  }
+  else if (!IsCompatSpace(m_nLastSpace, nSrcSpace)) {
+    return icCmmStatBadSpaceLink;
+  }
+
+  if (nSrcSpace == icSigNamedData)
+    return icCmmStatBadSpaceLink;
+
+  //Automatic creation of intent from header/last profile
+  if (nIntent == icUnknownIntent) {
+    if (bInput) {
+      nIntent = (icRenderingIntent)pProfile->m_Header.renderingIntent;
+    }
+    else {
+      nIntent = m_nLastIntent;
+    }
+    if (nIntent == icUnknownIntent)
+      nIntent = icPerceptual;
+  }
+
+  CIccXformPtr Xform;
+
+  Xform.ptr = CIccXform::Create(pProfile, pXformTag, bInput, nIntent, nInterp, pPcc, bUseSpectralPCS, pHintManager);
+
+  if (!Xform.ptr) {
+    return icCmmStatBadXform;
+  }
+
+  m_nLastSpace = nDstSpace;
+  m_nLastIntent = nIntent;
+  m_bLastInput = bInput;
+
+  m_Xforms->push_back(Xform);
+
+  return icCmmStatOk;
+}
 
 /**
  **************************************************************************
