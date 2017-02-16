@@ -2639,7 +2639,7 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
       m->m_ptr = NULL;
     }
 
-#if 1
+#if 0
     FILE *ff = fopen("flatfunc.txt", "wb");
     fwrite(flatFunc.c_str(), flatFunc.size(), 1, ff);
     fclose(ff);
