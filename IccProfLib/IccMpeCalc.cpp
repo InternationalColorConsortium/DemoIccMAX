@@ -2340,10 +2340,11 @@ icUInt16Number SIccCalcOp::ArgsPushed(CIccMpeCalculator *pCalc)
   }
 }
 
-CIccFuncTokenizer::CIccFuncTokenizer(const char *szText)
+CIccFuncTokenizer::CIccFuncTokenizer(const char *szText, bool bAllowNamedReferences)
 {
   m_token = new std::string();
   m_text = szText;
+  m_bUseRefs = bAllowNamedReferences;
 }
 
 CIccFuncTokenizer::~CIccFuncTokenizer()
@@ -2352,7 +2353,7 @@ CIccFuncTokenizer::~CIccFuncTokenizer()
 }
 
 
-bool CIccFuncTokenizer::GetNext()
+bool CIccFuncTokenizer::GetNext(bool bForceNoRefs)
 {
   m_token->clear();
 
@@ -2365,40 +2366,43 @@ try_again:
     return false;
   }
   
-  if (*m_text == '{') {
-    m_text++;
-    *m_token = "{";
-    return true;
-  }
-
-  if (*m_text == '}') {
-    m_text++;
-    *m_token = "}";
-    return true;
-  }
-
-  if (*m_text == '[') {
-    m_text++;
-    *m_token = "[";
-    while (*m_text && *m_text!=']') {
-      *m_token += *m_text;
+  if (!m_bUseRefs || bForceNoRefs) {
+    if (*m_text == '{') {
       m_text++;
+      *m_token = "{";
+      return true;
     }
-    if (!*m_text) {
-      return false;
+
+    if (*m_text == '}') {
+      m_text++;
+      *m_token = "}";
+      return true;
+    }
+
+    if (*m_text == '[') {
+      m_text++;
+      *m_token = "[";
+      while (*m_text && *m_text != ']') {
+        *m_token += *m_text;
+        m_text++;
+      }
+    }
+
+    if (*m_text == '(') {
+      m_text++;
+      *m_token = "(";
+      while (*m_text && *m_text != ')') {
+        *m_token += *m_text;
+        m_text++;
+      }
+      if (!*m_text) {
+        return false;
+      }
     }
   }
 
-  if (*m_text == '(') {
-    m_text++;
-    *m_token = "(";
-    while (*m_text && *m_text!=')') {
-      *m_token += *m_text;
-      m_text++;
-    }
-    if (!*m_text) {
-      return false;
-    }
+  if (!*m_text) {
+    return false;
   }
 
   if (IsComment()) {
@@ -2406,9 +2410,18 @@ try_again:
     goto try_again;
   }
 
-  while (!IsWhiteSpace() && *m_text && *m_text!='{' && *m_text!='['  && *m_text!='(' && *m_text!='}' && !IsComment()) {
-    *m_token += *m_text;
-    m_text++;
+  if (m_bUseRefs && !bForceNoRefs) {
+    while (!IsWhiteSpace() && *m_text && !IsComment()) {
+      *m_token += *m_text;
+      m_text++;
+    }
+  }
+  else {
+    while (!IsWhiteSpace() && *m_text && *m_text != '{' && *m_text != '[' &&
+           *m_text != '(' &&  *m_text != '}' && !IsComment()) {
+      *m_token += *m_text;
+      m_text++;
+    }
   }
   return true;
 }
@@ -2446,13 +2459,41 @@ icSigCalcOp CIccFuncTokenizer::GetSig()
   return (icSigCalcOp)sig;
 }
 
+std::string CIccFuncTokenizer::GetName() const
+{
+  std::string rv;
+  const char *pos = m_token->c_str();
+
+  while (*pos && *pos != '{' && *pos != '[' && *pos != '(') {
+    rv += *pos;
+    pos++;
+  }
+
+  return rv;
+}
+
+std::string CIccFuncTokenizer::GetReference() const
+{
+  const char *pos = strchr(m_token->c_str(), '{');
+  if (!m_bUseRefs || !pos)
+    return "";
+
+  std::string rv;
+  pos++;
+  while (*pos && *pos != '}') {
+    rv += *pos;
+    pos++;
+  }
+
+  return rv;
+}
 
 bool CIccFuncTokenizer::GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt16Number initV1, icUInt16Number initV2)
 {
   unsigned int iv1, iv2;
   const char *pos = GetPos();
 
-  if (!GetNext())
+  if (!GetNext(true))
     return false;
   iv1=initV1;
   iv2=initV2;

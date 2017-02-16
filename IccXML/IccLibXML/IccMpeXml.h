@@ -71,6 +71,7 @@ Copyright:  (c) see ICC Software License
 #include "IccMpeSpectral.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <map>
 
 class CIccMpeXml : public IIccExtensionMpe
 {
@@ -225,17 +226,89 @@ public:
   virtual bool ParseXml(xmlNode *pNode, std::string &parseStr);
 };
 
-class CIccMpeXmlCalculator : public CIccMpeCalculator , public CIccMpeXml
+class CIccMpePtr
 {
 public:
-  virtual ~CIccMpeXmlCalculator() {}
+  CIccMpePtr(CIccMultiProcessElement *pMpe = NULL, int nIndex = -1) { m_ptr = pMpe; m_nIndex = nIndex; }
+  CIccMpePtr(const CIccMpePtr &mptr) { m_ptr = mptr.m_ptr; m_nIndex = m_nIndex; }
+  
+  CIccMultiProcessElement *m_ptr;
+  int m_nIndex;
+};
+
+typedef std::map<std::string, CIccMpePtr> MpePtrMap;
+typedef std::list<CIccMpePtr> MpePtrList;
+
+class CIccTempVar
+{
+public:
+  CIccTempVar(std::string name = "", int pos = -1, icUInt16Number size = 1) { m_name = name; m_pos = pos; m_size = size;}
+  CIccTempVar(const CIccTempVar &temp) { m_name = temp.m_name; m_pos = temp.m_pos; m_size = temp.m_size; }
+  std::string m_name;
+  int m_pos;
+  icUInt16Number m_size;
+};
+
+typedef std::map<std::string, CIccTempVar> TempVarMap;
+typedef std::list<CIccTempVar> TempVarList;
+typedef std::map<std::string, int> ChanVarMap;
+
+class CIccTempDeclVar
+{
+public:
+  CIccTempDeclVar(std::string name = "", int pos = -1, icUInt16Number size = 1) { m_name = ""; m_pos = pos; m_size = size; }
+  CIccTempDeclVar(const CIccTempDeclVar &temp) { m_name = temp.m_name; m_pos = temp.m_pos; m_size = temp.m_size; m_members = temp.m_members; }
+  std::string m_name;
+  int m_pos;
+  icUInt16Number m_size;
+
+  TempVarList m_members;
+};
+
+typedef std::map<std::string, CIccTempDeclVar> TempDeclVarMap;
+
+typedef std::map<std::string, std::string> MacroMap;
+
+class CIccMpeXmlCalculator : public CIccMpeCalculator, public CIccMpeXml
+{
+public:
+  CIccMpeXmlCalculator() { m_sImport = "*"; }
+  virtual ~CIccMpeXmlCalculator() {  clean(); }
 
   virtual const char *GetClassName() { return "CIccMpeXmlCalculator"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
-  virtual bool ToXml(std::string &xml, std::string blanks="");
+  virtual bool ToXml(std::string &xml, std::string blanks = "");
   virtual bool ParseXml(xmlNode *pNode, std::string &parseStr);
+
+  bool ParseImport(xmlNode *pNode, std::string importPath, std::string &parseStr);
+
+protected:
+  void clean();
+  static bool validNameChar(char c, bool bFirst);
+  static bool validName(const char *saName);
+  bool ValidMacroCalls(const char *szMacroText, std::string macroStack, std::string &parseStr) const;
+  bool ValidateMacroCalls(std::string &parseStr) const;
+  bool Flatten(std::string &flatStr, std::string macroName, const char *szFunc, std::string &parseStr, icUInt32Number nLocalsOffset=0);
+  bool UpdateLocals(std::string &func, std::string szFunc, std::string &parseStr, int nLocalsOffset);
+  bool ParseChanMap(ChanVarMap& chanMap, const char *szNames, int nChannels);
+
+  ChanVarMap m_inputMap;
+  ChanVarMap m_outputMap;
+
+  std::string m_sImport;
+
+  TempDeclVarMap m_declVarMap;
+  int m_nNextVar;
+  TempVarMap m_varMap;
+
+  MpePtrMap m_mpeMap;
+  int m_nNextMpe;
+  MpePtrList m_mpeList;
+
+  MacroMap m_macroMap;
+  TempDeclVarMap m_macroLocalMap;
 };
 
 class CIccMpeXmlEmissionMatrix : public CIccMpeEmissionMatrix, public CIccMpeXml

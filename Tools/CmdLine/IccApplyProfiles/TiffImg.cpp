@@ -238,13 +238,14 @@ bool CTiffImg::Open(const char *szFname)
   icUInt16Number nPlanar=PLANARCONFIG_CONTIG;
   icUInt16Number nOrientation=ORIENTATION_TOPLEFT;
   icUInt16Number nSampleFormat=SAMPLEFORMAT_UINT;
+  icUInt16Number *nSampleInfo=NULL;
 
   TIFFGetField(m_hTif, TIFFTAG_IMAGEWIDTH, &m_nWidth);
   TIFFGetField(m_hTif, TIFFTAG_IMAGELENGTH, &m_nHeight);
   TIFFGetField(m_hTif, TIFFTAG_PHOTOMETRIC, &m_nPhoto);
   TIFFGetField(m_hTif, TIFFTAG_PLANARCONFIG, &m_nPlanar);
   TIFFGetField(m_hTif, TIFFTAG_SAMPLESPERPIXEL, &m_nSamples);
-  TIFFGetField(m_hTif, TIFFTAG_EXTRASAMPLES, &m_nExtraSamples);
+  TIFFGetField(m_hTif, TIFFTAG_EXTRASAMPLES, &m_nExtraSamples, &nSampleInfo);
   TIFFGetField(m_hTif, TIFFTAG_BITSPERSAMPLE, &m_nBitsPerSample);
   TIFFGetField(m_hTif, TIFFTAG_SAMPLEFORMAT, &nSampleFormat);
   TIFFGetField(m_hTif, TIFFTAG_ROWSPERSTRIP, &m_nRowsPerStrip);

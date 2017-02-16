@@ -88,7 +88,7 @@ public:
   CIccUTF16String& operator=(const char *szStr);
   CIccUTF16String& operator=(const icUInt16Number *uzStr);
 
-  icUInt16Number operator[](size_t nIndex) { return m_str[nIndex]; }
+  icUInt16Number operator[](size_t m_nIndex) { return m_str[m_nIndex]; }
 
   const icUInt16Number *c_str() { return m_str; }
 

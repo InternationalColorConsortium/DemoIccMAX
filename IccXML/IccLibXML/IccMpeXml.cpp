@@ -82,7 +82,7 @@ namespace refIccMAX {
 
 bool CIccMpeXmlUnknown::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
-  icUInt8Number *ptr = m_pData;
+  icUInt8Number *m_ptr = m_pData;
 
   char line[256];
   char buf[256];
@@ -380,7 +380,7 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       else if (storageType == icValueTypeUInt16){
         icUInt32Number num = file->GetLength() / sizeof(icUInt16Number);
         icUInt16Number value;
-        icUInt8Number *ptr = (icUInt8Number*)&value;
+        icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
@@ -399,9 +399,9 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
 #else
           if (!little_endian) {
 #endif
-            icUInt8Number t = ptr[0];
-            ptr[0] = ptr[1];
-            ptr[1] = t;
+            icUInt8Number t = m_ptr[0];
+            m_ptr[0] = m_ptr[1];
+            m_ptr[1] = t;
           }
           *dst++ = (icFloatNumber)value / 65535.0f;
         }
@@ -411,7 +411,7 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       else if (storageType == icValueTypeFloat16){
         icUInt32Number num = file->GetLength() / sizeof(icFloat16Number);
         icFloat16Number value;
-        icUInt8Number *ptr = (icUInt8Number*)&value;
+        icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
@@ -430,9 +430,9 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
 #else
           if (!little_endian) {
 #endif
-            icUInt8Number t = ptr[0];
-            ptr[0] = ptr[1];
-            ptr[1] = t;
+            icUInt8Number t = m_ptr[0];
+            m_ptr[0] = m_ptr[1];
+            m_ptr[1] = t;
           }
           *dst++ = icF16toF(value);
         }
@@ -442,7 +442,7 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       else if (storageType == icValueTypeFloat32) {
         icUInt32Number num = file->GetLength()/sizeof(icFloat32Number);
         icFloat32Number value;
-        icUInt8Number *ptr = (icUInt8Number*)&value;
+        icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
@@ -463,8 +463,8 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           if (!little_endian) {
 #endif
             icUInt8Number tmp;
-            tmp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = tmp;
-            tmp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = tmp;
+            tmp = m_ptr[0]; m_ptr[0] = m_ptr[3]; m_ptr[3] = tmp;
+            tmp = m_ptr[1]; m_ptr[1] = m_ptr[2]; m_ptr[2] = tmp;
           }
           *dst++ = value;
         }        
@@ -740,7 +740,7 @@ bool CIccSingleCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       else if (m_storageType == icValueTypeUInt16){
         icUInt32Number num = file->GetLength() / sizeof(icUInt16Number);
         icUInt16Number value;
-        icUInt8Number *ptr = (icUInt8Number*)&value;
+        icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
@@ -759,9 +759,9 @@ bool CIccSingleCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
 #else
           if (!little_endian) {
 #endif
-            icUInt8Number t = ptr[0];
-            ptr[0] = ptr[1];
-            ptr[1] = t;
+            icUInt8Number t = m_ptr[0];
+            m_ptr[0] = m_ptr[1];
+            m_ptr[1] = t;
           }
           *dst++ = (icFloatNumber)value / 65535.0f;
         }
@@ -771,7 +771,7 @@ bool CIccSingleCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       else if (m_storageType == icValueTypeFloat16){
         icUInt32Number num = file->GetLength() / sizeof(icFloat16Number);
         icFloat16Number value;
-        icUInt8Number *ptr = (icUInt8Number*)&value;
+        icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
@@ -790,9 +790,9 @@ bool CIccSingleCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
 #else
           if (!little_endian) {
 #endif
-            icUInt8Number t = ptr[0];
-            ptr[0] = ptr[1];
-            ptr[1] = t;
+            icUInt8Number t = m_ptr[0];
+            m_ptr[0] = m_ptr[1];
+            m_ptr[1] = t;
           }
           *dst++ = icF16toF(value);
         }
@@ -802,7 +802,7 @@ bool CIccSingleCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       else if (m_storageType == icValueTypeFloat32) {
         icUInt32Number num = file->GetLength()/sizeof(icFloat32Number);
         icFloat32Number value;
-        icUInt8Number *ptr = (icUInt8Number*)&value;
+        icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
@@ -823,8 +823,8 @@ bool CIccSingleCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           if (!little_endian) {
 #endif
             icUInt8Number tmp;
-            tmp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = tmp;
-            tmp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = tmp;
+            tmp = m_ptr[0]; m_ptr[0] = m_ptr[3]; m_ptr[3] = tmp;
+            tmp = m_ptr[1]; m_ptr[1] = m_ptr[2]; m_ptr[2] = tmp;
           }
           *dst++ = value;
         }        
@@ -949,9 +949,9 @@ bool CIccMpeXmlCurveSet::ToXml(std::string &xml, std::string blanks/* = ""*/)
   int i;
 
   for (i=0; i<NumInputChannels(); i++) {
-    CIccSegmentedCurveXml *ptr = (CIccSegmentedCurveXml*)m_curve[i];
+    CIccSegmentedCurveXml *m_ptr = (CIccSegmentedCurveXml*)m_curve[i];
     
-    if (!(ptr->ToXml(xml, blanks+"  ")))
+    if (!(m_ptr->ToXml(xml, blanks+"  ")))
       return false;
   }
 
@@ -970,21 +970,21 @@ bool CIccMpeXmlCurveSet::ParseXml(xmlNode *pNode, std::string &parseStr)
   }
 
   SetSize(nChannels);
-  int nIndex = 0;
-  for (pNode = icXmlFindNode(pNode->children, "SegmentedCurve"), nIndex = 0;
-       pNode && nIndex<nChannels;
-       pNode=icXmlFindNode(pNode->next,"SegmentedCurve"), nIndex++) {
+  int m_nIndex = 0;
+  for (pNode = icXmlFindNode(pNode->children, "SegmentedCurve"), m_nIndex = 0;
+       pNode && m_nIndex<nChannels;
+       pNode=icXmlFindNode(pNode->next,"SegmentedCurve"), m_nIndex++) {
     CIccSegmentedCurveXml *pCurve = new CIccSegmentedCurveXml();
 
     if (!pCurve->ParseXml(pNode, parseStr)) {
       delete pCurve;
       return false;
     }
-    if (!SetCurve(nIndex, pCurve))
+    if (!SetCurve(m_nIndex, pCurve))
       return false;
   }
 
-  if (!pNode && nIndex == nChannels)
+  if (!pNode && m_nIndex == nChannels)
     return true;
 
   return false;
@@ -1529,7 +1529,7 @@ bool CIccMpeXmlBAcs::ToXml(std::string &xml, std::string blanks/* = ""*/)
   }
 
   if (m_pData && m_nDataSize) {
-    icUInt8Number *ptr = m_pData;
+    icUInt8Number *m_ptr = m_pData;
 
     xml += ">\n";
   
@@ -1585,7 +1585,7 @@ bool CIccMpeXmlEAcs::ToXml(std::string &xml, std::string blanks/* = ""*/)
   }
 
   if (m_pData && m_nDataSize) {
-    icUInt8Number *ptr = m_pData;
+    icUInt8Number *m_ptr = m_pData;
 
     xml += ">\n";
     icXmlDumpHexData(xml, blanks+"  ", m_pData, m_nDataSize);
@@ -1847,7 +1847,7 @@ bool CIccMpeXmlCalculator::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
   if (m_SubElem && m_nSubElem) {
     xml += blanks2 + "<SubElements>\n";
-    for (i=0; i<m_nSubElem; i++) {
+    for (i=0; i<(int)m_nSubElem; i++) {
       if (m_SubElem[i]) {
         IIccExtensionMpe *pExt = m_SubElem[i]->GetExtension();
         if (pExt && !strcmp(pExt->GetExtClassName(), "CIccMpeXml")) {
@@ -1880,23 +1880,263 @@ bool CIccMpeXmlCalculator::ToXml(std::string &xml, std::string blanks/* = ""*/)
   return true;
 }
 
-bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
+bool CIccMpeXmlCalculator::validNameChar(char c, bool bFirst)
+{
+  if (bFirst && !((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c == '_')))
+    return false;
+  else if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c == '_')))
+    return false;
+
+  return true;
+}
+
+bool CIccMpeXmlCalculator::validName(const char *szName)
+{
+  const char *ptr;
+  if (!szName || !*szName) {
+    return false;
+  }
+
+  for (ptr = szName; *ptr; ptr++) {
+    if (!validNameChar(*ptr, ptr == szName))
+      return false;
+  }
+
+  return true;
+}
+
+bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, std::string &parseStr)
 {
   xmlNode *pChild, *pNext;
-  int n;
-  
-  SetSize(atoi(icXmlAttrValue(pNode, "InputChannels")),
-          atoi(icXmlAttrValue(pNode, "OutputChannels")));
+  xmlAttr *attr;
+
+  pChild = icXmlFindNode(pNode->children, "Imports");
+  if (pChild) {
+    for (pNext = pChild->children; pNext; pNext = pNext->next) {
+      if (pNext->type == XML_ELEMENT_NODE) {
+        if (!strcmp((icChar*)pNext->name, "import")) {
+          if ((attr = icXmlFindAttr(pNext, "file"))) {
+            std::string file = icXmlAttrValue(attr);
+            xmlDoc *doc = NULL;
+            xmlNode *root_element = NULL;
+
+            std::string look = "*";
+            look += file;
+            look += "*";
+
+            if (strstr(importPath.c_str(), look.c_str())) {
+              //Already imported this file
+              continue;
+            }
+
+            /*parse the file and get the DOM */
+            doc = xmlReadFile(file.c_str(), NULL, 0);
+
+            if (doc == NULL) {
+              parseStr += "Unable to import '";
+              parseStr += file;
+              parseStr += '\n';
+              return false;
+            }
+
+            /*Get the root element node */
+            root_element = xmlDocGetRootElement(doc);
+            if (strcmp((icChar*)root_element->name, "IccCalcImport")) {
+              parseStr += "Invalid calc element import file '" + file + "'\n";
+              return false;
+            }
+
+            bool rv = ParseImport(root_element, importPath+file+"*", parseStr);
+
+            xmlFreeDoc(doc);
+          }
+          else {
+            parseStr += "Missing import file specifier\n";
+            return false;
+          }
+        }
+        else {
+          parseStr += "Invalid import specifier\n";
+          return false;
+        }
+      }
+    }
+  }
+
+  pChild = icXmlFindNode(pNode->children, "Variables");
+  if (pChild) {
+    for (pNext = pChild->children; pNext; pNext = pNext->next) {
+      if (pNext->type == XML_ELEMENT_NODE) {
+        if (!strcmp((icChar*)pNext->name, "declare")) {
+          if ((attr = icXmlFindAttr(pNext, "name"))) {
+            std::string name = icXmlAttrValue(attr);
+            if (!validName(name.c_str())) {
+              parseStr += "Invalid calc element variable name '" + name + "'\n'";
+              return false;
+            }
+
+            TempDeclVarMap::iterator v = m_declVarMap.find(name);
+            if (v != m_declVarMap.end()) {
+              parseStr += "Calc element variable '" + name + "' was previously declared\n";
+              return false;
+            }
+            int offset = -1;
+            icUInt16Number size = 1;
+
+            if ((attr = icXmlFindAttr(pNext, "offset"))) {
+              offset = atoi(icXmlAttrValue(attr));
+              if (offset && importPath != "*") {
+                parseStr += "Offset cannot be specified for imported variables";
+                return false;
+              }
+            }
+            if ((attr = icXmlFindAttr(pNext, "size"))) {
+              size = (icUInt16Number)atoi(icXmlAttrValue(attr));
+            }
+            if (size < 1) size = 1;
+
+            CIccTempDeclVar var = CIccTempDeclVar(name, offset, size);
+            if (pNext->children && pNext->children->content) {
+              CIccFuncTokenizer parse((icChar*)pNext->children->content);
+              offset = 0;
+
+              while (parse.GetNext()) {
+                icUInt16Number extra = 0;
+                std::string member = parse.GetName();
+                if (!validName(member.c_str())) {
+                  parseStr += "Invalid member name '" + member + "' for calc element variable '" + name + "'\n";
+                  return false;
+                }
+                size = 0; extra = 0;
+                parse.GetIndex(size, extra, 1, 0);
+                size++;
+                if (size < 1) 
+                  size = 1;
+
+                var.m_members.push_back(CIccTempVar(member, offset, size));
+                offset += size;
+              }
+              if (var.m_size < offset)
+                var.m_size = offset;
+            }
+            m_declVarMap[name] = var;
+          }
+          else {
+            parseStr += "Missing calc element variable name definition\n";
+            return false;
+          }
+        }
+        else {
+          parseStr += "Invalid calc element variable declaration\n";
+          return false;
+        }
+      }
+    }
+  }
+
+  pChild = icXmlFindNode(pNode->children, "Macros");
+  if (pChild) {
+    for (pNext = pChild->children; pNext; pNext = pNext->next) {
+      if (pNext->type == XML_ELEMENT_NODE) {
+        if (!strcmp((icChar*)pNext->name, "macro")) {
+          if ((attr = icXmlFindAttr(pNext, "name"))) {
+            std::string name = icXmlAttrValue(attr);
+            if (!validName(name.c_str())) {
+              parseStr += "Invalid Macro name '" + name + "'\n'";
+              return false;
+            }
+            if (!pNext->children || !pNext->children->content || !pNext->children->content[0]) {
+              parseStr += "Missing content for macro '" + name + "'\n'";
+              return false;
+            }
+            MacroMap::iterator m = m_macroMap.find(name);
+            if (m != m_macroMap.end()) {
+              if (!strcmp(m->second.c_str(), (icChar*)pNext->children->content))
+                continue;
+              parseStr += "Calc Element macro '" + name + "' was previously defined differently\n";
+              return false;
+            }
+            m_macroMap[name] = (icChar*)(pNext->children->content);
+
+            if ((attr = icXmlFindAttr(pNext, "local"))) {
+              icUInt16Number offset, size;
+              CIccTempDeclVar var = CIccTempDeclVar(name, 0, 0);
+              std::string locals = icXmlAttrValue(attr);
+              CIccFuncTokenizer parse(locals.c_str());
+              offset = 0;
+
+              while (parse.GetNext()) {
+                icUInt16Number extra = 0;
+                std::string member = parse.GetName();
+                if (!validName(member.c_str())) {
+                  parseStr += "Invalid local name '" + member + "' for calc element macro '" + name + "'\n";
+                  return false;
+                }
+                size = 0; extra = 0;
+                parse.GetIndex(size, extra, 1, 0);
+                size++;
+                if (size < 1)
+                  size = 1;
+
+                var.m_members.push_back(CIccTempVar(member, offset, size));
+                offset += size;
+              }
+              if (var.m_size < offset)
+                var.m_size = offset;
+
+              m_macroLocalMap[name] = var;
+            }
+          }
+          else {
+            parseStr += "Missing macro name\n";
+            return false;
+          }
+        }
+        else {
+          parseStr += "Invalid macro declaration\n";
+          return false;
+        }
+      }
+    }
+  }
 
   pChild = icXmlFindNode(pNode->children, "SubElements");
   if (pChild) {
-    for (n=0, pNext=pChild->children; pNext; pNext = pNext->next) {
+    for (pNext = pChild->children; pNext; pNext = pNext->next) {
       if (pNext->type == XML_ELEMENT_NODE) {
+        std::string name;
+
+        if ((attr = icXmlFindAttr(pNext, "name"))) {
+          name = icXmlAttrValue(attr);
+          if (!validName(name.c_str())) {
+            parseStr += "Invalid SubElement name '" + name + "'\n'";
+            return false;
+          }
+        }
+        if (name.empty()) {
+          if (importPath != "*") {
+            parseStr += "Imported Calc SubElments must be named.";
+            return false;
+          }
+        }
+        else {
+          MpePtrMap::iterator se = m_mpeMap.find(name);
+          if (se != m_mpeMap.end()) {
+            parseStr += "Duplicate declaration of SubElement '" + name + "'\n";
+            return false;
+          }
+        }
+
         CIccMultiProcessElement *pMpe = CIccTagXmlMultiProcessElement::CreateElement((const icChar*)pNext->name);
 
         if (!pMpe) {
           parseStr += std::string("Unknown Sub-Element Type (") + (const icChar*)pNext->name + ")\n";
           return false;
+        }
+
+        if (!strcmp(pMpe->GetClassName(), "CIccMpeXmlCalculator")) {
+          CIccMpeXmlCalculator *pSubCalc = (CIccMpeXmlCalculator*)pMpe;
+          pSubCalc->m_sImport = importPath;
         }
 
         xmlAttr *attr;
@@ -1907,12 +2147,16 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
             CIccMpeXml* pXmlMpe = (CIccMpeXml*)pExt;
 
             if (pXmlMpe->ParseXml(pNext, parseStr)) {
-              if ((attr=icXmlFindAttr(pNode, "Reserved"))) {
+              if ((attr = icXmlFindAttr(pNode, "Reserved"))) {
                 sscanf(icXmlAttrValue(attr), "%u", &pMpe->m_nReserved);
               }
 
-              if (!SetSubElem(n, pMpe)) {
-                parseStr += "Unable to embed SubElement in Calculator Element";
+              if (name.empty()) {
+                m_mpeList.push_back(CIccMpePtr(pMpe, m_nNextMpe));
+                m_nNextMpe++;
+              }
+              else {
+                m_mpeMap[name] = CIccMpePtr(pMpe);
               }
             }
             else {
@@ -1932,19 +2176,480 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
           delete pMpe;
           return false;
         }
-        n++;
       }
     }
+  }
+  return true;
+}
+
+bool CIccMpeXmlCalculator::ValidMacroCalls(const char *szMacroText, std::string macroStack, std::string &parseStr) const
+{
+  const char *ptr;
+  for (ptr = strstr(szMacroText, "call{"); ptr; ptr = strstr(ptr, "call{")) {
+    CIccFuncTokenizer parse(ptr, true);
+    parse.GetNext();
+
+    std::string name = parse.GetReference();
+    MacroMap::const_iterator m = m_macroMap.find(name);
+    if (m == m_macroMap.cend()) {
+      parseStr += "Call to undefined macro '" + name + "'\n";
+      return false;
+    }
+    std::string sm = "*";
+    sm += name + "*";
+    if (strstr(macroStack.c_str(), sm.c_str())) {
+      parseStr += "Macro recursion detected in call to '" + name + "'\n";
+      return false;
+    }
+    if (!ValidMacroCalls(m->second.c_str(), macroStack + name + "*", parseStr)) {
+      return false;
+    }
+    ptr++;
+  }
+  return true;
+}
+
+bool CIccMpeXmlCalculator::ValidateMacroCalls(std::string &parseStr) const
+{
+  MacroMap::const_iterator m;
+
+  for (m = m_macroMap.cbegin(); m != m_macroMap.cend(); m++) {
+    if (!ValidMacroCalls(m->second.c_str(), "*", parseStr)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, const char *szFunc, std::string &parseStr, icUInt32Number nLocalsOffset)
+{
+  CIccFuncTokenizer parse(szFunc, true);
+
+  while (parse.GetNext()) {
+    std::string token = parse.GetLast();
+    const char *tok = token.c_str();
+    if (!strncmp(tok, "call{", 5) ||
+        tok[0] == '#') {
+      std::string nameiter;
+      std::string name;
+
+      if (tok[0] == '#')
+        nameiter = token.substr(1);
+      else
+        nameiter = parse.GetReference();
+
+      const char *ptr;
+      for (ptr = nameiter.c_str(); *ptr && *ptr != '[' && *ptr != '('; ptr++) name += *ptr;
+      int iter = 1;
+//       if (*ptr) {
+//         iter = atoi(ptr + 1);
+//         if (iter < 1)
+//           iter = 1;
+//         else if (iter>1024)
+//           iter = 1024;
+//       }
+
+      MacroMap::iterator m = m_macroMap.find(name.c_str());
+      if (m != m_macroMap.end()) {
+        icUInt16Number nLocalsSize = 0;
+        TempDeclVarMap::iterator locals = m_macroLocalMap.find(macroName);
+        if (locals != m_macroLocalMap.end()) {
+          nLocalsSize = locals->second.m_size;
+        }
+        
+        int i;
+        for (i = 0; i < iter; i++) {
+          Flatten(flatStr, name, m->second.c_str(), parseStr, nLocalsOffset+nLocalsSize);
+        }
+      }
+      else {
+        parseStr += "Call to undefined macro '" + name + "'\n";
+        return false;
+      }
+    }
+    else if (!strncmp(tok, "in{", 3) ||
+             !strncmp(tok, "out{", 4)) {
+      std::string op = parse.GetName();
+      std::string ref = parse.GetReference();
+      std::string refroot;
+      for (const char *ptr = ref.c_str(); *ptr && *ptr != ','; ptr++) refroot += *ptr;
+
+      ChanVarMap *pMap;
+      int nChan;
+      if (op == "in") {
+        pMap = &m_inputMap;
+        nChan = m_nInputChannels;
+      }
+      else {
+        pMap = &m_outputMap;
+        nChan = m_nOutputChannels;
+      }
+
+      ChanVarMap::iterator ci = pMap->find(refroot);
+      if (ci == pMap->end()) {
+        parseStr += "Invalid '" + op + "' operation channel reference '" + refroot + "'\n";
+        return false;
+      }
+      if (refroot != ref) {
+        int size = atoi(ref.substr(refroot.size() + 1).c_str());
+        if (size < 0 || ci->second + size >= m_nInputChannels) {
+          parseStr += "Invalid '" + op + "' operation channel size '" + refroot + "'\n";
+          return false;
+        }
+        char index[80];
+        sprintf(index, "(%d,%d)", ci->second, size);
+        flatStr += op + index + " ";
+      }
+      else {
+        char index[80];
+        sprintf(index, "(%d)", ci->second);
+        flatStr += op + index + " ";
+      }
+    }
+    else if (!strncmp(tok, "tget{", 5) ||
+             !strncmp(tok, "tput{", 5) ||
+             !strncmp(tok, "tsav{", 5)) {
+      std::string op = parse.GetName();
+      std::string ref = parse.GetReference();
+      std::string refroot;
+      for (const char *ptr = ref.c_str(); *ptr && *ptr != '[' && *ptr != '('; ptr++) refroot += *ptr;
+
+      if (macroName.size() && refroot.size() && refroot[0] == '@') {
+        std::string localName = refroot.substr(1);
+        TempDeclVarMap::iterator locals = m_macroLocalMap.find(macroName);
+        if (locals == m_macroLocalMap.end()) {
+          parseStr += "Reference to undeclared local variable '" + localName + "' in macro '" + macroName + "'\n";
+          return false;
+        }
+
+        unsigned long nLocalOffset = 0;
+        unsigned long nLocalSize = 0;
+        TempVarList::iterator m = locals->second.m_members.begin();
+        for (; m != locals->second.m_members.end(); m++) {
+          if (localName == m->m_name) {
+            nLocalOffset = m->m_pos;
+            nLocalSize = m->m_size;
+            break;
+          }
+        }
+        if (m == locals->second.m_members.end()) {
+          parseStr += "Reference to undeclared local variable '" + localName + "' in macro '" + macroName + "'\n";
+          return false;
+        }
+        int voffset, vsize;
+
+        if (ref != refroot) {
+          CIccFuncTokenizer p2(ref.c_str());
+          p2.GetNext();
+          icUInt16Number _voffset = 0, _vsize = 1;
+          p2.GetIndex(_voffset, _vsize, 0, 1);
+          voffset = _voffset;
+          vsize = _vsize + 1;
+        }
+        else {
+          voffset = 0;
+          vsize = nLocalSize;
+        }
+
+        if (voffset + vsize > (int)nLocalSize) {
+          parseStr += "Out of bounds indexing of local '" + refroot + "' in macro '" + macroName + "'\n";
+          return false;
+        }
+
+        if (nLocalsOffset + nLocalOffset + voffset + vsize > 65536) {
+          parseStr += "Temporary variable addressing out of bounds\n";
+          return false;
+        }
+        char idx[80];
+        if (vsize == 1) {
+          sprintf(idx, "[%d]", nLocalsOffset + nLocalOffset + voffset);
+        }
+        else {
+          sprintf(idx, "[%d,%d]", nLocalsOffset + nLocalOffset + voffset, vsize);
+        }
+        flatStr += "l";
+        flatStr += op.substr(1);
+        flatStr += idx;
+        flatStr += " ";
+      }
+      else {
+        TempVarMap::iterator var = m_varMap.find(refroot);
+        if (var == m_varMap.end()) {
+          std::string root;
+          for (const char *ptr = refroot.c_str(); *ptr && *ptr != '.'; ptr++) root += *ptr;
+
+          TempVarMap::iterator rootVar = m_varMap.find(root);
+          if (refroot != root && rootVar == m_varMap.end()) {
+            parseStr += "Reference to undeclared variable '" + ref + "'\n";
+            return false;
+          }
+
+          TempDeclVarMap::iterator decl = m_declVarMap.find(root);
+          if (decl == m_declVarMap.end()) {
+            parseStr += "Reference to undeclared variable '" + ref + "'\n";
+            return false;
+          }
+          bool incNext = false;
+          if (decl->second.m_pos < 0) {
+            m_varMap[root] = CIccTempVar(root, m_nNextVar, decl->second.m_size);
+            incNext = true;
+          }
+          if (strchr(refroot.c_str(), '.')) {
+            TempVarList::iterator m = decl->second.m_members.begin();
+            for (; m != decl->second.m_members.end(); m++) {
+              std::string vm = root + "." + m->m_name;
+              m_varMap[vm] = CIccTempVar(vm, m_nNextVar + m->m_pos, m->m_size);
+            }
+          }
+
+          if (m_nNextVar + decl->second.m_size > 65536) {
+            parseStr += "Temporary variable addressing out of bounds\n";
+            return false;
+          }
+          if (incNext)
+            m_nNextVar += decl->second.m_size;
+
+          var = m_varMap.find(refroot);
+          if (var == m_varMap.end()) {
+            parseStr += "Reference to undeclared variable '" + refroot + "'\n";
+            return false;
+          }
+        }
+        int voffset, vsize;
+
+        if (ref != refroot) {
+          CIccFuncTokenizer p2(ref.c_str());
+          p2.GetNext();
+          icUInt16Number _voffset = 0, _vsize = 1;
+          p2.GetIndex(_voffset, _vsize, 0, 1);
+          voffset = _voffset;
+          vsize = _vsize + 1;
+        }
+        else {
+          voffset = 0;
+          vsize = var->second.m_size;
+        }
+
+        if (voffset + vsize > var->second.m_size) {
+          parseStr += "Out of bounds indexing of '" + refroot + "'\n";
+          return false;
+        }
+        if (var->second.m_pos + voffset + vsize > 65536) {
+          parseStr += "Temporary variable addressing out of bounds\n";
+          return false;
+        }
+        char idx[80];
+        if (vsize == 1) {
+          sprintf(idx, "[%d]", var->second.m_pos + voffset);
+        }
+        else {
+          sprintf(idx, "[%d,%d]", var->second.m_pos + voffset, vsize);
+        }
+        flatStr += op + idx + " ";
+      }
+    }
+    else if (!strncmp(tok, "elem{", 5) ||
+             !strncmp(tok, "curv{", 5) ||
+             !strncmp(tok, "clut{", 5) ||
+             !strncmp(tok, "mtx{", 4) ||
+             !strncmp(tok, "fJab{", 5) ||
+             !strncmp(tok, "tJab{", 5) ||
+             !strncmp(tok, "calc{", 5) ||
+             !strncmp(tok, "tint{", 5)) {
+      std::string op = parse.GetName();
+      std::string ref = parse.GetReference();
+      MpePtrMap::iterator e = m_mpeMap.find(ref);
+      if (e == m_mpeMap.end()) {
+        parseStr += "Unknown sub element reference to " + token + "\n";
+        return false;
+      }
+      if (e->second.m_nIndex<0) {
+        if (e->second.m_ptr) {
+          m_mpeList.push_back(CIccMpePtr(e->second.m_ptr, m_nNextMpe));
+          e->second.m_ptr = NULL;
+          e->second.m_nIndex = m_nNextMpe;
+          m_nNextMpe++;
+        }
+        else {
+          parseStr += "Invalid sub-element reference:  " + token + "\n";
+          return false;
+        }
+      }
+      char idx[80];
+      sprintf(idx, "(%d)", e->second.m_nIndex);
+      flatStr += op + idx + " ";
+    }
+    else {
+      flatStr += tok;
+      flatStr += " ";
+    }
+  }
+ 
+  return true;
+}
+
+bool CIccMpeXmlCalculator::UpdateLocals(std::string &func, std::string sFunc, std::string &parseStr, int nLocalsOffset)
+{
+  func.clear();
+  CIccFuncTokenizer parse(sFunc.c_str(), true);
+
+  while (parse.GetNext()) {
+    std::string token = parse.GetLast();
+    const char *tok = token.c_str();
+
+    if (!strncmp(tok, "lget[", 5) ||
+        !strncmp(tok, "lput[", 5) ||
+        !strncmp(tok, "lsav[", 5)) {
+      std::string op = parse.GetName();
+      int voffset, vsize;
+
+      CIccFuncTokenizer p2(tok+4);
+      icUInt16Number _voffset = 0, _vsize = 1;
+      p2.GetIndex(_voffset, _vsize, 0, 1);
+      voffset = _voffset + nLocalsOffset;
+      vsize = _vsize + 1;
+
+      if (voffset + vsize > 65535) {
+        parseStr += "Local variable out of bounds - too many variables.\n";
+        return false;
+      }
+
+      char idx[80];
+      if (vsize == 1) {
+        sprintf(idx, "[%d]", voffset);
+      }
+      else {
+        sprintf(idx, "[%d,%d]", voffset, vsize);
+      }
+      func +="t";
+      func += op.substr(1);
+      func += idx;
+      func += " ";
+    }
+    else {
+      func += tok;
+      func += " ";
+    }
+  }
+
+  return true;
+}
+void CIccMpeXmlCalculator::clean()
+{
+  m_sImport = "*";
+  m_declVarMap.clear();
+  m_varMap.clear();
+  m_macroMap.clear();
+
+  MpePtrList::iterator ml;
+  for (ml = m_mpeList.begin(); ml != m_mpeList.end(); ml++) {
+    if (ml->m_ptr)
+      delete ml->m_ptr;
+  }
+  m_mpeList.clear();
+
+  MpePtrMap::iterator mm;
+  for (mm = m_mpeMap.begin(); mm != m_mpeMap.end(); mm++) {
+    if (mm->second.m_ptr)
+      delete mm->second.m_ptr;
+  }
+  m_mpeMap.clear();
+  m_nNextVar = 0;
+  m_nNextMpe = 0;
+}
+
+bool CIccMpeXmlCalculator::ParseChanMap(ChanVarMap& chanMap, const char *szNames, int nChannels)
+{
+  chanMap.clear();
+
+  if (!szNames)
+    return false;
+
+  int i;
+  const char *ptr;
+  std::string name;
+  for (i = 0, ptr = szNames; *ptr && i < nChannels; ptr++) {
+    bool bFirst = name.empty();
+    if (*ptr == ' ') {
+      if (!bFirst) {
+        chanMap[name] = i++;
+        name.clear();
+      }
+    }
+    else if (validNameChar(*ptr, bFirst)) {
+      name += *ptr;
+    }
+    else {
+      return false;
+    }
+  }
+  if (!name.empty() && i < nChannels)
+    chanMap[name] = i;
+
+  return true;
+}
+
+bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
+{
+  xmlNode *pChild;
+  
+  SetSize(atoi(icXmlAttrValue(pNode, "InputChannels")),
+          atoi(icXmlAttrValue(pNode, "OutputChannels")));
+
+  clean();
+
+  if (!ParseChanMap(m_inputMap, icXmlAttrValue(pNode, "InputNames"), m_nInputChannels)) {
+    parseStr += "Invalid name for InputChannels";
+    return false;
+  }
+
+  if (!ParseChanMap(m_outputMap, icXmlAttrValue(pNode, "OutputNames"), m_nOutputChannels)) {
+    parseStr += "Invalid name for InputChannels";
+    return false;
+  }
+
+  if (!ParseImport(pNode, "*", parseStr))
+    return false;
+
+  if (!ValidateMacroCalls(parseStr)) {
+    return false;
   }
 
   pChild = icXmlFindNode(pNode->children, "MainFunction");
   if (pChild && pNode->children && pChild->children->content) {
     char *content = (char*)pChild->children->content;
-    icFuncParseStatus stat = SetCalcFunc(content, parseStr);
+    std::string flatFunc;
+
+    if (!Flatten(flatFunc, "", content, parseStr, 0)) {
+      return false;
+    }
+
+    if (m_macroLocalMap.size()) {
+      std::string localFunc;
+      if (!UpdateLocals(localFunc, flatFunc, parseStr, m_nNextVar)) {
+        return false;
+      }
+      flatFunc = localFunc;
+    }
+    //copy MPE subelmeents used by Main Function to returned object
+    int n;
+    MpePtrList::iterator m;
+    for (m = m_mpeList.begin(), n = 0; m != m_mpeList.end(); m++, n++) {
+      this->SetSubElem(n, m->m_ptr);
+      m->m_ptr = NULL;
+    }
+
+#if 1
+    FILE *ff = fopen("flatfunc.txt", "wb");
+    fwrite(flatFunc.c_str(), flatFunc.size(), 1, ff);
+    fclose(ff);
+#endif
+
+    icFuncParseStatus stat = SetCalcFunc(flatFunc.c_str(), parseStr);
     if (stat!=icFuncParseNoError) {
       char buf[65];
-      int len = icIntMin(64, (int)strlen(content));
-      strncpy(buf, content, len);
+      int len = icIntMin(64, (int)strlen(flatFunc.c_str()));
+      strncpy(buf, flatFunc.c_str(), len);
       buf[len]=0;
 
       switch(stat) {
@@ -1968,6 +2673,7 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
       return false;
     }
   }
+  clean();
 
   return true;
 }

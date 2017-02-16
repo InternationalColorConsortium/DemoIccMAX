@@ -105,9 +105,12 @@ static __inline bool IsSpaceSpectralPCS(icUInt32Number sig)
 }
 
 #define IsSpaceColorimetricPCS(x) ((x)==icSigXYZPcsData || (x)==icSigLabPcsData)
+#define IsSpaceNChannel(x) (icGetColorSpaceType(x)==icSigNChannelData)
 #define IsSpacePCS(x) (IsSpaceColorimetricPCS(x) || IsSpaceSpectralPCS(x))
 #define IsSpaceMCS(x) (icGetColorSpaceType(x)==icSigSrcMCSChannelData)
 #define IsSpaceCMYK(x) ((x)==icSigCmykData || (x)==icSig4colorData)
+
+#define IsNChannelCompat(x, y) ((IsSpaceNChannel(x) && icNumColorSpaceChannels(x)==icGetSpaceSamples(y)) || (IsSpaceNChannel(y) && icNumColorSpaceChannels(y)==icGetSpaceSamples(x)))
 
 #define IsCompatSpace(x, y) ((x)==(y) || (IsSpacePCS(x) && IsSpacePCS(y)) || (IsSpaceMCS(x) && IsSpaceMCS(y))/* || (IsSpaceCMYK(x) && IsSpaceCMYK(y))*/)
 
@@ -8375,7 +8378,7 @@ icStatusCMM CIccCmm::FromInternalEncoding(icColorSpaceSignature nSpace, icFloatC
     return icCmmStatAllocErr;
 
   memcpy(pInput, pInternal, nSamples*sizeof(icFloatNumber));
-  bool bCLRspace = icIsSpaceCLR(nSpace);
+  bool bCLRspace = (icIsSpaceCLR(nSpace) || (nSpace == icSigDevLabData) || (nSpace==icSigDevXYZData));
 
   switch(nSpace) {
 
@@ -8425,7 +8428,7 @@ icStatusCMM CIccCmm::FromInternalEncoding(icColorSpaceSignature nSpace, icFloatC
       }
 
     case icSigXYZData:
-      {
+    {
         switch(nEncode) {
         case icEncodeValue:
           {
@@ -9715,11 +9718,11 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
       m_nLastSpace = nSrcSpace;
       m_nSrcSpace = nSrcSpace;
     }
-    else if (!IsCompatSpace(m_nSrcSpace, nSrcSpace)) {
+    else if (!IsCompatSpace(m_nSrcSpace, nSrcSpace) && !IsNChannelCompat(m_nSrcSpace, nSrcSpace)) {
       return icCmmStatBadSpaceLink;
     }
   }
-  else if (!IsCompatSpace(m_nLastSpace, nSrcSpace))  {
+  else if (!IsCompatSpace(m_nLastSpace, nSrcSpace) && !IsNChannelCompat(m_nSrcSpace, nSrcSpace))  {
       return icCmmStatBadSpaceLink;
   }
 

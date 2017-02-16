@@ -349,36 +349,36 @@ const char *icFixXml(std::string &buf, const char *szStr)
 
 const char *icFixXml(char *szDest, const char *szStr)
 {
-  char *ptr = szDest; 
+  char *m_ptr = szDest; 
 
   while (*szStr) {
     switch (*szStr) {
     case '\'':
-      strcpy(ptr, "&apos;");
-      ptr += 6;
+      strcpy(m_ptr, "&apos;");
+      m_ptr += 6;
       break;
     case '&':
-      strcpy(ptr, "&amp;");
-      ptr += 5;
+      strcpy(m_ptr, "&amp;");
+      m_ptr += 5;
       break;
     case '\"':
-      strcpy(ptr, "&quot;");
-      ptr += 6;
+      strcpy(m_ptr, "&quot;");
+      m_ptr += 6;
       break;
     case '<':
-      strcpy(ptr, "&lt;");
-      ptr += 4;
+      strcpy(m_ptr, "&lt;");
+      m_ptr += 4;
       break;
     case '>':
-      strcpy(ptr, "&gt;");
-      ptr += 4;
+      strcpy(m_ptr, "&gt;");
+      m_ptr += 4;
       break;
     default:
-      *ptr++ = *szStr;
+      *m_ptr++ = *szStr;
     }
     szStr++;
   }
-  *ptr = '\0';
+  *m_ptr = '\0';
 
   return szDest;
 }
@@ -683,17 +683,17 @@ icUInt32Number icXmlGetHexDataSize(const char *szText)
 
 icUInt32Number icXmlDumpHexData(std::string &xml, std::string blanks, void *pBuf, icUInt32Number nBufSize)
 {
-  icUInt8Number *ptr = (icUInt8Number *)pBuf;
+  icUInt8Number *m_ptr = (icUInt8Number *)pBuf;
   char buf[15];
   icUInt32Number i;
 
-  for (i=0; i<nBufSize; i++, ptr++) {
+  for (i=0; i<nBufSize; i++, m_ptr++) {
     if (!(i%32)) {
       if (i)
         xml += "\n";
       xml += blanks;
     }
-    sprintf(buf, "%02x", *ptr);
+    sprintf(buf, "%02x", *m_ptr);
     xml += buf; 
   }
   if (i) {

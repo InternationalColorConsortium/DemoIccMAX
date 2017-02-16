@@ -318,10 +318,10 @@ typedef enum {
 class ICCPROFLIB_API CIccFuncTokenizer
 {
 public:
-  CIccFuncTokenizer(const char *szText);
+  CIccFuncTokenizer(const char *szText, bool bAllowReferences = false);
   virtual ~CIccFuncTokenizer();
   
-  bool GetNext();
+  bool GetNext(bool bForceNoRefs = false);
   const char *GetPos() { return m_text; }
   void SetPos(const char *szText) { m_text = szText; }
   
@@ -329,6 +329,10 @@ public:
   bool GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt16Number initV1=0, icUInt16Number initV2=0);
   icFloat32Number GetValue();
   bool GetEnvSig(icSigCmmEnvVar &envSig);
+
+  //The following are used by XML variable and macro parsing
+  std::string GetName() const;
+  std::string GetReference() const;
 
   std::string &GetLast() { return *m_token; }
 
@@ -340,6 +344,7 @@ protected:
   const char *m_text;
   std::string *m_token;
 
+  bool m_bUseRefs;
 };
 
 class CIccApplyMpeCalculator;
