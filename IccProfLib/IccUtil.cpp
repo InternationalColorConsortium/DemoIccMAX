@@ -1640,8 +1640,8 @@ const icChar *CIccInfo::GetProfileClassSigName(icProfileClassSignature sig)
   case icSigNamedColorClass:
     return "NamedColorClass";
 
-  case icSigEncodingClass:
-    return "EncodingClass";
+  case icSigColorEncodingClass:
+    return "ColorEncodingClass";
 
   case icSigMaterialIdentificationClass:
     return "MaterialIdentificationClass";

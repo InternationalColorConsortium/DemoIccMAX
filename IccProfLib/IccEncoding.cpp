@@ -534,7 +534,7 @@ icStatusEncConvert icConvertEncodingProfile(CIccProfilePtr &newIcc, CIccProfile 
 {
   newIcc = NULL;
 
-  if (!pEncodeIcc || pEncodeIcc->m_Header.deviceClass!=icSigEncodingClass)
+  if (!pEncodeIcc || pEncodeIcc->m_Header.deviceClass!=icSigColorEncodingClass)
     return icEncConvertBadProfile;
 
   CIccTag *pTag;

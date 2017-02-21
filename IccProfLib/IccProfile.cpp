@@ -875,7 +875,7 @@ bool CIccProfile::Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId)
     case icNeverWriteID:
       bWriteId = false;
   }
-  if (m_Header.deviceClass==icSigEncodingClass) {
+  if (m_Header.deviceClass==icSigColorEncodingClass) {
     bWriteId = false;
   }
 
@@ -1211,7 +1211,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
   case icSigNamedColorClass:
     break;
 
-  case icSigEncodingClass:
+  case icSigColorEncodingClass:
   case icSigMaterialIdentificationClass:
   case icSigMaterialVisualizationClass:
   case icSigMaterialLinkClass:
@@ -1272,7 +1272,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
-  else if (m_Header.deviceClass==icSigEncodingClass) {
+  else if (m_Header.deviceClass==icSigColorEncodingClass) {
     if (m_Header.cmmId ||
       m_Header.pcs ||
       m_Header.date.day || m_Header.date.month || m_Header.date.year ||
@@ -1542,7 +1542,7 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
   icChar buf[128];
   sprintf(buf, "%s", Info.GetSigName(m_Header.deviceClass));
   if (m_Header.deviceClass!=icSigInputClass && m_Header.deviceClass!=icSigDisplayClass &&
-      m_Header.deviceClass != icSigEncodingClass) {
+      m_Header.deviceClass != icSigColorEncodingClass) {
     if (GetTag(icSigGrayTRCTag) || GetTag(icSigRedTRCTag) || GetTag(icSigGreenTRCTag) ||
        GetTag(icSigBlueTRCTag) || GetTag(icSigRedColorantTag) || GetTag(icSigGreenColorantTag) ||
        GetTag(icSigBlueColorantTag))
@@ -2120,7 +2120,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
 
   icProfileClassSignature sig = m_Header.deviceClass;
 
-  if (m_Header.deviceClass==icSigEncodingClass) {
+  if (m_Header.deviceClass==icSigColorEncodingClass) {
     if (!GetTag(icSigReferenceNameTag)) {
       sReport += icValidateNonCompliantMsg;
       sReport += "Required tags missing.\r\n";

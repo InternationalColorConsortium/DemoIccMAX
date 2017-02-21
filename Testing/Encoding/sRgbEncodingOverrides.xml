@@ -2,7 +2,7 @@
 <IccProfile>
   <Header>
     <ProfileVersion>5.0</ProfileVersion>
-    <ProfileDeviceClass>enc3</ProfileDeviceClass>
+    <ProfileDeviceClass>cenc</ProfileDeviceClass>
 	<DataColourSpace>RGB </DataColourSpace>
   </Header>
   <Tags>

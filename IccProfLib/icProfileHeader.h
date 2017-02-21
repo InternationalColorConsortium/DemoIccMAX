@@ -810,7 +810,7 @@ typedef enum {
     icSigAbstractClass                  = 0x61627374,  /* 'abst' */
     icSigColorSpaceClass                = 0x73706163,  /* 'spac' */
     icSigNamedColorClass                = 0x6e6d636c,  /* 'nmcl' */
-    icSigEncodingClass                  = 0x656e6333,  /* 'enc3' */
+    icSigColorEncodingClass             = 0x63656e63,  /* 'cenc' */
     icSigMaterialIdentificationClass    = 0x6D696420,  /* 'mid ' */
     icSigMaterialLinkClass              = 0x6d6c6e6b,  /* 'mlnk' */
     icSigMaterialVisualizationClass     = 0x6d766973,  /* 'mvis' */

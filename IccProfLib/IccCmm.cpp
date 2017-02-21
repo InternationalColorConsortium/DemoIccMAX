@@ -649,7 +649,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
   bool bRelToAbs = false;
   icMCSConnectionType nMCS = icNoMCS;
 
-  if (pProfile->m_Header.deviceClass==icSigEncodingClass) {
+  if (pProfile->m_Header.deviceClass==icSigColorEncodingClass) {
     CIccProfile *pEncProfile;
     if (icConvertEncodingProfile(pEncProfile, pProfile)!=icEncConvertOk)
       return NULL;
@@ -1151,7 +1151,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
   bool bRelToAbs = false;
   icMCSConnectionType nMCS = icNoMCS;
 
-  if (pProfile->m_Header.deviceClass == icSigEncodingClass) {
+  if (pProfile->m_Header.deviceClass == icSigColorEncodingClass) {
     return NULL;
   }
 
