@@ -15,8 +15,8 @@ cd ..\Display
 ..\iccFromXML RgbGSDF.xml RgbGSDF.icc
 
 cd ..\Encoding
+..\iccFromXML ISO22028-Encoded-bg-sRGB.xml ISO22028-Encoded-bg-sRGB.icc
 ..\iccFromXML ISO22028-Encoded-sRGB.xml ISO22028-Encoded-sRGB.icc
-..\iccFromXML ISO22028EncodedsRGB.xml ISO22028EncodedsRGB.icc
 ..\iccFromXML sRgbEncoding.xml sRgbEncoding.icc
 ..\iccFromXML sRgbEncodingOverrides.xml sRgbEncodingOverrides.icc
 

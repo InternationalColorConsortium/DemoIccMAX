@@ -1,7 +1,12 @@
-2017-2-16 Max Derhak
+2017-2-21 Max Derhak
  * 2.1.7 Release of IccProfLib and related tools
  * 2.1.7 Release of IccLibXML and related tools
- * IccLibXML: Added extensions to CalcElement parsing to support Macros, named variables,
-   named sub-lements, naming of input/output channels, and importing from IccCalcImport files
- * iccApplyProfiles: Fixed bug in TiffImg.cpp related to parsing Extra Sample count from tiff header
- * IccProfLib: modified CIccCmm::FromInternalEncoding to allow NC0004 to be matched with CMYK color space
+ * IccLibXML: Added extensions to CalcElement parsing to support
+   Macros, named variables, named sub-lements, naming of input/output
+   channels, and importing from IccCalcImport files
+ * iccApplyProfiles: Fixed bug in TiffImg.cpp related to parsing 
+   Extra Sample count from tiff header
+ * IccProfLib: modified CIccCmm::FromInternalEncoding to allow NC0004
+   to be matched with CMYK color space
+ * Modified IccProflib and profiles to support ColorEncoding Class 
+   signature 'cenc' instead of pre-release 'enc3'
