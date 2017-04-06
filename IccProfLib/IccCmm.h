@@ -1706,7 +1706,7 @@ public:
 
   ///Must be called before calling Apply() or GetNewApply()
   //The Begin function should be called before Apply or GetNewApplyCmm()
-  virtual icStatusCMM Begin(bool bAllocNewApply=true, bool bUsePcsConversion=true);
+  virtual icStatusCMM Begin(bool bAllocNewApply=true, bool bUsePcsConversion=false);
 
   virtual CIccApplyCmm *GetNewApplyCmm(icStatusCMM &status); 
 

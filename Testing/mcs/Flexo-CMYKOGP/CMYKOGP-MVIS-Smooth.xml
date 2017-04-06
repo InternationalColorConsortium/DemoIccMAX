@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>mvis</ProfileDeviceClass>
+    <ProfileDeviceSubClass>osim</ProfileDeviceSubClass>
+    <DataColourSpace></DataColourSpace>
+	<PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false" MCSNeedsSubset="false" />
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.9642" Y="1.00000000" Z="0.8249"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+	<MCS>mc0007</MCS>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[CMYK + Orange + Green + Purple Overprint Visualization using MCS]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <multiProcessElementType>
+      <TagSignature>M2B0</TagSignature>
+	  <MultiProcessElements InputChannels="7" OutputChannels="3">
+		<CalculatorElement InputChannels="7" OutputChannels="3" InputNames="Cyan Magenta Yellow Black Orange Green Purple">
+			<SubElements>
+				<TintArrayElement Name="CyanScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="cyan-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="CyanOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="cyan-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="MagentaScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="magenta-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="MagentaOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="magenta-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="YellowScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="yellow-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="YellowOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="yellow-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="BlackScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="black-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="BlackOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="black-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="GreenScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="green-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="GreenOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="green-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="OrangeScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="orange-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="OrangeOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="orange-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="PurpleScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="purple-SmoothScaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="PurpleOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="purple-SmoothOffsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+        	</SubElements>
+			<MainFunction>
+{
+;default background is D50 for relative white point
+env(bkgX) not if {pop 0.9642}
+env(bkgY) not if {pop 1.000000}
+env(bkgZ) not if {pop 0.8249}
+in{Yellow} 0 gt if {
+  in{Yellow} tint{YellowScale} mul(3)
+  in{Yellow} tint{YellowOffset} add(3)
+}
+in{Orange} 0 gt if {
+  in{Orange} tint{OrangeScale} mul(3)
+  in{Orange} tint{OrangeOffset} add(3)
+}
+in{Magenta} 0 gt if {
+  in{Magenta} tint{MagentaScale} mul(3)
+  in{Magenta} tint{MagentaOffset} add(3)
+}
+in{Green} 0 gt if {
+  in{Green} tint{GreenScale} mul(3)
+  in{Green} tint{GreenOffset} add(3)
+}
+in{Cyan} 0 gt if {
+  in{Cyan} tint{CyanScale} mul(3)
+  in{Cyan} tint{CyanOffset} add(3)
+}
+in{Purple} 0 gt if {
+  in{Purple} tint{PurpleScale} mul(3)
+  in{Purple} tint{PurpleOffset} add(3)
+}
+in{Black} 0 gt if {
+  in{Black} tint{BlackScale} mul(3)
+  in{Black} tint{BlackOffset} add(3)
+}
+out(0,3)
+}
+        	</MainFunction>					
+		</CalculatorElement>
+	  </MultiProcessElements>
+	</multiProcessElementType>
+
+	<tagArrayType>
+	  <TagSignature>mcta</TagSignature>
+	  <ArraySignature>utf8</ArraySignature>
+	  <ArrayTags>
+		<utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Magenta</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Yellow</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Black</TextData></utf8TextType>
+		<utf8TextType><TextData>Plus Orange</TextData></utf8TextType>
+		<utf8TextType><TextData>Plus Green</TextData></utf8TextType>
+		<utf8TextType><TextData>Plus Purple</TextData></utf8TextType>
+	  </ArrayTags>
+	</tagArrayType>
+
+	<uInt16NumberType>
+	  <TagSignature>mdv </TagSignature>
+	  <Data>0 0 0 0 0 0 0</Data>
+	</uInt16NumberType>
+
+    <XYZType>
+      <TagSignature>wtpt</TagSignature>
+      <XYZNumber X="0.9642" Y="1.00000000" Z="0.8249"/>
+    </XYZType>
+		
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2017 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+  </Tags>
+</IccProfile>

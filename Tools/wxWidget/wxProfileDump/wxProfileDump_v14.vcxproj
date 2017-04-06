@@ -22,6 +22,7 @@
     <ProjectName>wxProfileDump</ProjectName>
     <ProjectGuid>{8A0DC808-518D-4E2D-BD57-D7619D1CB7C3}</ProjectGuid>
     <RootNamespace>wxProfileDump</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -77,8 +78,8 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>.\vc_msw_x64\</OutDir>
+    <IntDir>.\vc_msw_x64\wxProfileDump\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -87,8 +88,8 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>.\vc_mswd_x64\</OutDir>
+    <IntDir>.\vc_mswd_x64\wxProfileDump\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -184,7 +185,7 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy .\vc_msw\wxProfileDump.exe ..\..\..\Testing\wxProfileDump.exe</Command>
+      <Command>copy .\vc_msw_x64\wxProfileDump.exe ..\..\..\Testing\wxProfileDump.exe</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -284,8 +285,8 @@ copy .\vc_mswd\wxProfileDump.pdb ..\..\..\Testing
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy .\vc_mswd\wxProfileDump.exe ..\..\..\Testing\wxProfileDump_d.exe
-copy .\vc_mswd\wxProfileDump.pdb ..\..\..\Testing
+      <Command>copy .\vc_mswd_x64\wxProfileDump.exe ..\..\..\Testing\wxProfileDump_d.exe
+copy .\vc_mswd_x64\wxProfileDump.pdb ..\..\..\Testing
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

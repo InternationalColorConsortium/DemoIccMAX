@@ -1914,8 +1914,8 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
   if (pChild) {
     for (pNext = pChild->children; pNext; pNext = pNext->next) {
       if (pNext->type == XML_ELEMENT_NODE) {
-        if (!strcmp((icChar*)pNext->name, "import")) {
-          if ((attr = icXmlFindAttr(pNext, "file"))) {
+        if (!strcmp((icChar*)pNext->name, "Import")) {
+          if ((attr = icXmlFindAttr(pNext, "Filename"))) {
             std::string file = icXmlAttrValue(attr);
             xmlDoc *doc = NULL;
             xmlNode *root_element = NULL;
@@ -1967,8 +1967,8 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
   if (pChild) {
     for (pNext = pChild->children; pNext; pNext = pNext->next) {
       if (pNext->type == XML_ELEMENT_NODE) {
-        if (!strcmp((icChar*)pNext->name, "declare")) {
-          if ((attr = icXmlFindAttr(pNext, "name"))) {
+        if (!strcmp((icChar*)pNext->name, "Declare")) {
+          if ((attr = icXmlFindAttr(pNext, "Name"))) {
             std::string name = icXmlAttrValue(attr);
             if (!validName(name.c_str())) {
               parseStr += "Invalid calc element variable name '" + name + "'\n'";
@@ -1983,14 +1983,14 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
             int offset = -1;
             icUInt16Number size = 1;
 
-            if ((attr = icXmlFindAttr(pNext, "offset"))) {
+            if ((attr = icXmlFindAttr(pNext, "Position"))) {
               offset = atoi(icXmlAttrValue(attr));
               if (offset && importPath != "*") {
-                parseStr += "Offset cannot be specified for imported variables";
+                parseStr += "Position cannot be specified for imported variables";
                 return false;
               }
             }
-            if ((attr = icXmlFindAttr(pNext, "size"))) {
+            if ((attr = icXmlFindAttr(pNext, "Size"))) {
               size = (icUInt16Number)atoi(icXmlAttrValue(attr));
             }
             if (size < 1) size = 1;
@@ -2038,8 +2038,8 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
   if (pChild) {
     for (pNext = pChild->children; pNext; pNext = pNext->next) {
       if (pNext->type == XML_ELEMENT_NODE) {
-        if (!strcmp((icChar*)pNext->name, "macro")) {
-          if ((attr = icXmlFindAttr(pNext, "name"))) {
+        if (!strcmp((icChar*)pNext->name, "Macro")) {
+          if ((attr = icXmlFindAttr(pNext, "Name"))) {
             std::string name = icXmlAttrValue(attr);
             if (!validName(name.c_str())) {
               parseStr += "Invalid Macro name '" + name + "'\n'";
@@ -2058,7 +2058,7 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
             }
             m_macroMap[name] = (icChar*)(pNext->children->content);
 
-            if ((attr = icXmlFindAttr(pNext, "local"))) {
+            if ((attr = icXmlFindAttr(pNext, "Local"))) {
               icUInt16Number offset, size;
               CIccTempDeclVar var = CIccTempDeclVar(name, 0, 0);
               std::string locals = icXmlAttrValue(attr);
@@ -2106,7 +2106,7 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
       if (pNext->type == XML_ELEMENT_NODE) {
         std::string name;
 
-        if ((attr = icXmlFindAttr(pNext, "name"))) {
+        if ((attr = icXmlFindAttr(pNext, "Name"))) {
           name = icXmlAttrValue(attr);
           if (!validName(name.c_str())) {
             parseStr += "Invalid SubElement name '" + name + "'\n'";
@@ -2389,25 +2389,39 @@ bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, 
             parseStr += "Reference to undeclared variable '" + ref + "'\n";
             return false;
           }
-          bool incNext = false;
+
           if (decl->second.m_pos < 0) {
             m_varMap[root] = CIccTempVar(root, m_nNextVar, decl->second.m_size);
-            incNext = true;
+
+            if (strchr(refroot.c_str(), '.')) {
+              TempVarList::iterator m = decl->second.m_members.begin();
+              for (; m != decl->second.m_members.end(); m++) {
+                std::string vm = root + "." + m->m_name;
+                m_varMap[vm] = CIccTempVar(vm, m_nNextVar + m->m_pos, m->m_size);
+              }
+            }
+
+            if (m_nNextVar + decl->second.m_size > 65536) {
+              parseStr += "Temporary variable addressing out of bounds\n";
+              return false;
+            }
+            m_nNextVar += decl->second.m_size;
           }
-          if (strchr(refroot.c_str(), '.')) {
-            TempVarList::iterator m = decl->second.m_members.begin();
-            for (; m != decl->second.m_members.end(); m++) {
-              std::string vm = root + "." + m->m_name;
-              m_varMap[vm] = CIccTempVar(vm, m_nNextVar + m->m_pos, m->m_size);
+          else {
+            m_varMap[root] = CIccTempVar(root, decl->second.m_pos, decl->second.m_size);
+
+            if (strchr(refroot.c_str(), '.')) {
+              TempVarList::iterator m = decl->second.m_members.begin();
+              for (; m != decl->second.m_members.end(); m++) {
+                std::string vm = root + "." + m->m_name;
+                m_varMap[vm] = CIccTempVar(vm, decl->second.m_pos + m->m_pos, m->m_size);
+              }
+            }
+            if (decl->second.m_pos + decl->second.m_size > 65536) {
+              parseStr += "Temporary variable addressing out of bounds\n";
+              return false;
             }
           }
-
-          if (m_nNextVar + decl->second.m_size > 65536) {
-            parseStr += "Temporary variable addressing out of bounds\n";
-            return false;
-          }
-          if (incNext)
-            m_nNextVar += decl->second.m_size;
 
           var = m_varMap.find(refroot);
           if (var == m_varMap.end()) {

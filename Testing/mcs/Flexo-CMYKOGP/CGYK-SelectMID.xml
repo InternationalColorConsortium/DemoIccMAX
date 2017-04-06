@@ -5,7 +5,7 @@
     <ProfileVersion>5.00</ProfileVersion>
     <ProfileDeviceClass>mid </ProfileDeviceClass>
     <ProfileDeviceSubClass>nink</ProfileDeviceSubClass>
-    <DataColourSpace>nc0006</DataColourSpace>
+    <DataColourSpace>nc0004</DataColourSpace>
 	<PCS></PCS>
     <CreationDateTime>now</CreationDateTime>
     <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false" MCSNeedsSubset="false" />
@@ -16,26 +16,17 @@
     </PCSIlluminant>
     <ProfileCreator></ProfileCreator>
     <ProfileID>1</ProfileID>
-	<MCS>mc0006</MCS>
+	<MCS>mc0004</MCS>
   </Header>
   <Tags>
     <multiLocalizedUnicodeType>
       <TagSignature>desc</TagSignature>
-      <LocalizedText LanguageCountry="enUS"><![CDATA[Channel selection for Photoshop CMYKSS image using MCS]]></LocalizedText>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[CGYK Channel selection for Photoshop CMYK image using MCS]]></LocalizedText>
     </multiLocalizedUnicodeType>
 
     <multiProcessElementType>
       <TagSignature>A2M0</TagSignature>
-	  <MultiProcessElements InputChannels="6" OutputChannels="6">
-	  <!-- Photoshop inverts the spot samples so invert them to be channel indepenent -->
-		<CalculatorElement InputChannels="6" OutputChannels="6">
-			<SubElements/>
-			<MainFunction>
-			{ in(0,4) out(0,4)
-			1 in(4) sub out(4)
-			1 in(5) sub out(5) }
-			</MainFunction>
-		</CalculatorElement>
+	  <MultiProcessElements InputChannels="4" OutputChannels="4">
 	  </MultiProcessElements>
 	</multiProcessElementType>
 
@@ -44,11 +35,9 @@
 	  <ArraySignature>utf8</ArraySignature>
 	  <ArrayTags>
 	    <utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
-		<utf8TextType><TextData>Violet</TextData></utf8TextType>
-		<utf8TextType><TextData>Orange</TextData></utf8TextType>
-		<utf8TextType><TextData>Process Black</TextData></utf8TextType>
-		<utf8TextType><TextData>Blue</TextData></utf8TextType>
-		<utf8TextType><TextData>Gold</TextData></utf8TextType>
+	    <utf8TextType><TextData>Plus Green</TextData></utf8TextType>
+	    <utf8TextType><TextData>Process Yellow</TextData></utf8TextType>
+	    <utf8TextType><TextData>Process Black</TextData></utf8TextType>
 	  </ArrayTags>
 	</tagArrayType>
 

@@ -3,6 +3,7 @@ cd Calc
 ..\iccFromXML ElevenChanKubelkaMunk.xml ElevenChanKubelkaMunk.icc
 ..\iccFromXML RGBWProjector.xml RGBWProjector.icc
 ..\iccFromXML srgbCalcTest.xml srgbCalcTest.icc
+..\iccFromXML srgbCalc++Test.xml srgbCalc++Test.icc
 
 cd ..\CMYK-3DLUTs
 ..\iccFromXML CMYK-3DLUTs.xml CMYK-3DLUTs.icc
