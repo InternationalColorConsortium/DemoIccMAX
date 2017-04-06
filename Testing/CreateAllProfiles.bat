@@ -29,9 +29,19 @@ cd ..\Named
 
 cd ..\mcs
 ..\iccFromXML 17ChanWithSpots-MVIS.xml 17ChanWithSpots-MVIS.icc
+..\iccFromXML 18ChanWithSpots-MVIS.xml 18ChanWithSpots-MVIS.icc
 ..\iccFromXML 6ChanSelect-MID.xml 6ChanSelect-MID.icc
 
-cd ..\PCC
+cd ..\mcs\Flexo-CMYKOGP
+..\..\iccFromXML CMYKOGP-MVIS-Smooth.xml CMYKOGP-MVIS-Smooth.icc
+..\..\iccFromXML 4ChanSelect-MID.xml 4ChanSelect-MID.icc
+..\..\iccFromXML 7ChanSelect-MID.xml 7ChanSelect-MID.icc
+..\..\iccFromXML CGYK-SelectMID.xml CGYK-SelectMID.icc
+..\..\iccFromXML CMPK-SelectMID.xml CMPK-SelectMID.icc
+..\..\iccFromXML CMYK-SelectMID.xml CMYK-SelectMID.icc
+..\..\iccFromXML OMYK-SelectMID.xml OMYK-SelectMID.icc
+
+cd ..\..\PCC
 ..\iccFromXML Lab-D50_2deg.xml Lab-D50_2deg.icc
 ..\iccFromXML Lab-D93_2deg.xml Lab-D93_2deg.icc
 ..\iccFromXML Spec400_10_700-B-Abs_2deg.xml Spec400_10_700-B-Abs_2deg.icc
