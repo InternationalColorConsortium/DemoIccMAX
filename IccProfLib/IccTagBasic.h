@@ -225,6 +225,9 @@ public:
   virtual icTagTypeSignature GetType() const { return m_nType; }
   virtual const icChar *GetClassName() const { return "CIccTagUnknown"; }
 
+  virtual icUInt32Number GetSize() const { return m_nSize; }
+  virtual const icUInt8Number* GetData() const { return m_pData; }
+
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 

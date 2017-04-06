@@ -239,7 +239,7 @@ CIccStructNamedColor* CIccArrayNamedColor::FindColor(const icChar *szColor) cons
   if (i!=m_list->end())
     return i->second;
 
-  return false;
+  return NULL;
 }
 
 CIccStructNamedColor* CIccArrayNamedColor::FindDeviceColor(const icFloatNumber *pDevColor) const
