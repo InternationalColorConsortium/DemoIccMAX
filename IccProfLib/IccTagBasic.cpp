@@ -3189,7 +3189,8 @@ bool CIccTagNamedColor2::GetColorName(std::string &sColorName, icInt32Number ind
     return false;
 
   sColorName += m_szPrefix;
-  sColorName += m_NamedColor[index].rootName;
+  SIccNamedColorEntry * pNamedColor = (SIccNamedColorEntry*)((icChar*)m_NamedColor + m_nColorEntrySize * index);
+  sColorName += pNamedColor->rootName;
   sColorName += m_szSufix;
 
   return true;
