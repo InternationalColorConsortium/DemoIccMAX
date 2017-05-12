@@ -2524,7 +2524,10 @@ bool CIccFuncTokenizer::GetIndex(icUInt16Number &v1, icUInt16Number &v2, icUInt1
 
 icFloat32Number CIccFuncTokenizer::GetValue()
 {
-  return (icFloat32Number)atof(m_token->c_str());
+  const char * ascii = m_token->c_str();
+  char * p = NULL;
+  double d = strtod( ascii, &p );
+  return (icFloat32Number)d;
 }
 
 
