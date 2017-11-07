@@ -1077,7 +1077,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss - n];
     for (j = 0; j < n; j++) {
       a1 = s[j];
-      s[j] = (a1 < 0 ? -1 : (a1 > 0 ? 1 : 0));
+      s[j] = (icFloatNumber)(a1 < 0 ? -1 : (a1 > 0 ? 1 : 0));
     }
     return true;
   }
@@ -3378,7 +3378,7 @@ bool CIccCalculatorFunc::Begin(const CIccMpeCalculator *pChannelCalc, CIccTagMul
  ******************************************************************************/
 bool CIccCalculatorFunc::InitSelectOps()
 {
-  int i;
+  icUInt32Number i;
 
   for (i=0; i<m_nOps; i++) {
     if (m_Op[i].sig==icSigSelectOp) {
@@ -3409,7 +3409,8 @@ bool CIccCalculatorFunc::InitSelectOp(SIccCalcOp *ops, icUInt32Number nOps)
   if (ops->extra)
     return true;
 
-  int i, n, pos;
+
+  icUInt32Number i, n, pos;
   for (n=0; n<nOps && ops[n+1].sig==icSigCaseOp; n++);
   ops->extra=n;
   if (ops[n+1].sig==icSigDefaultOp) {
@@ -3526,11 +3527,11 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
         return false;
       }
       
-      int nDefOff = os.idx+1 + op->extra;
+      icUInt32Number nDefOff = os.idx+1 + op->extra;
       if (nDefOff >= nOps)
         return false;
 
-      if (nSel<0 || nSel>=op->extra) {
+      if (nSel<0 || (icUInt32Number)nSel>=op->extra) {
 
         if (ops[nDefOff].sig==icSigDefaultOp) {
           if (os.idx+1 + ops[nDefOff].extra >= nOps)
@@ -3541,7 +3542,7 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
         }
       }
       else {
-        int nOff = os.idx+1 + nSel;
+        icUInt32Number nOff = os.idx+1 + nSel;
 
         if (nOff >= nOps) 
           return false;
@@ -3893,7 +3894,7 @@ int CIccCalculatorFunc::CheckUnderflowOverflow(SIccCalcOp *op, icUInt32Number nO
       }
     }
     else if (op[i].sig == icSigSelectOp) {
-      int n;
+      icUInt32Number n;
       nSelArgs = nArgs;
 
       for (n=1; i+n<nOps; ) {
@@ -3911,7 +3912,7 @@ int CIccCalculatorFunc::CheckUnderflowOverflow(SIccCalcOp *op, icUInt32Number nO
       if (!n)
         return -1;
 
-      int pos = i+1 + n;
+      icUInt32Number pos = i+1 + n;
       for (p=0; p<n; p++) {
         SIccCalcOp *sop = &op[i+1+p];
         int len = sop->data.size;
@@ -4112,7 +4113,7 @@ CIccMpeCalculator::CIccMpeCalculator(const CIccMpeCalculator &channelGen)
     m_calcFunc = NULL;
 
   if (channelGen.m_nSubElem) {
-    int i;
+    icUInt32Number i;
 
     m_SubElem = (CIccMultiProcessElement**)calloc(m_nSubElem, sizeof(CIccMultiProcessElement*));
     if (m_SubElem) {
@@ -4162,7 +4163,7 @@ CIccMpeCalculator &CIccMpeCalculator::operator=(const CIccMpeCalculator &channel
     m_calcFunc = NULL;
 
   if (channelGen.m_nSubElem) {
-    int i;
+    icUInt32Number i;
 
     m_SubElem = (CIccMultiProcessElement**)calloc(m_nSubElem, sizeof(CIccMultiProcessElement*));
     if (m_SubElem) {
@@ -4215,7 +4216,7 @@ void CIccMpeCalculator::SetSize(icUInt16Number nInputChannels, icUInt16Number nO
     delete m_calcFunc;
     m_calcFunc = NULL;
   }
-  int i;
+  icUInt32Number i;
 
   if (m_SubElem) {
     for (i=0; i<m_nSubElem; i++) {
@@ -4304,7 +4305,7 @@ void CIccMpeCalculator::Describe(std::string &sDescription)
     sDescription += buf;
 
     if (m_nSubElem && m_SubElem) {
-      int i;
+      icUInt32Number i;
       for (i=0; i<m_nSubElem; i++) {
         sprintf(buf, "BEGIN_SUBCALCELEM %u\r\n", i);
         sDescription += buf;
@@ -4580,7 +4581,7 @@ bool CIccMpeCalculator::Begin(icElemInterp nInterp, CIccTagMultiProcessElement *
   if (!m_calcFunc->Begin(this, pMPE))
     return false;
 
-  int n;
+  icUInt32Number n;
   for (n=0; n<m_nSubElem; n++) {
     if (m_SubElem[n] && !m_SubElem[n]->Begin(nInterp, pMPE))
       return false;
@@ -4616,7 +4617,7 @@ CIccApplyMpe *CIccMpeCalculator::GetNewApply(CIccApplyTagMpe *pApplyTag)
   pApply->m_scratch->resize(50);
   pApply->m_pCmmEnvVarLookup = m_pCmmEnvVarLookup;
 
-  int i;
+  icUInt32Number i;
 
   pApply->m_nSubElem = m_nSubElem;
   if(m_nSubElem) {
@@ -4687,7 +4688,7 @@ icValidateStatus CIccMpeCalculator::Validate(std::string sigPath, std::string &s
   std::string mpeSigPath = sigPath + icGetSigPath(GetType());
   icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE);
 
-  int i;
+  icUInt32Number i;
 
   if (m_SubElem) {
     for (i=0; i<m_nSubElem; i++) {
@@ -4729,7 +4730,7 @@ icValidateStatus CIccMpeCalculator::Validate(std::string sigPath, std::string &s
  ******************************************************************************/
 bool CIccMpeCalculator::IsLateBinding() const
 {
-  int i;
+  icUInt32Number i;
 
   if (m_SubElem) {
     for (i=0; i<m_nSubElem; i++) {
@@ -4753,7 +4754,7 @@ bool CIccMpeCalculator::IsLateBinding() const
  ******************************************************************************/
 bool CIccMpeCalculator::IsLateBindingReflectance() const
 {
-  int i;
+  icUInt32Number i;
 
   if (m_SubElem) {
     for (i=0; i<m_nSubElem; i++) {
@@ -4820,7 +4821,7 @@ bool CIccMpeCalculator::SetElem(icUInt32Number idx, CIccMultiProcessElement *pEl
       if (!(*pArray))
         return false;
 
-      int i;
+      icUInt32Number i;
       for (i=count; i<=idx; i++) {
         (*pArray)[i] = NULL;
       }
@@ -4893,7 +4894,7 @@ CIccApplyMpeCalculator::~CIccApplyMpeCalculator()
     free(m_temp);
   }
 
-  int i;
+  icUInt32Number i;
 
   if (m_SubElem) {
     for (i=0; i<m_nSubElem; i++) {

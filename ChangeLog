@@ -20,6 +20,7 @@
  * IccProfLib: Completed implementation of BRDF tags and structure
    elements
  * IccProfLib: Various improvements to profile validation and reporting
+ * IccProfLib: Cleanup of some type conversion warnings
  * IccApplyNamedCmm: Added option for precision in reporting and option
    for luminance matching
  * IccApplyProfiles: Added option for luminance matching

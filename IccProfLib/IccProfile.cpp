@@ -2807,9 +2807,9 @@ bool CIccProfile::calcLumIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectio
 
     obs->VectorScale(pCond->m_illuminant);
 
-    pXYZ[0] = 683.0 * obs->RowSum(0);
-    pXYZ[1] = 683.0 * obs->RowSum(1);
-    pXYZ[2] = 683.0 * obs->RowSum(2);
+    pXYZ[0] = 683.0f * obs->RowSum(0);
+    pXYZ[1] = 683.0f * obs->RowSum(1);
+    pXYZ[2] = 683.0f * obs->RowSum(2);
 
     delete obs;
 
