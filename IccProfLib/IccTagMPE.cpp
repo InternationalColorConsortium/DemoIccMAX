@@ -399,7 +399,7 @@ bool CIccMpeUnknown::Write(CIccIO *pIO)
   if (!pIO->Write16(&m_nInputChannels))
     return false;
 
-  if (!pIO->Write16(&m_nInputChannels))
+  if (!pIO->Write16(&m_nOutputChannels))
     return false;
 
   if (m_nSize) {
