@@ -14,6 +14,10 @@ cd ..\Display
 ..\iccFromXML LCDDisplay.xml LCDDisplay.icc
 ..\iccFromXML GrayGSDF.xml GrayGSDF.icc
 ..\iccFromXML RgbGSDF.xml RgbGSDF.icc
+..\iccFromXML sRGB_D65_colorimetric.xml sRGB_D65_colorimetric.icc
+..\iccFromXML sRGB_D65_MAT.xml sRGB_D65_MAT.icc
+..\iccFromXML sRGB_D65_MAT-300lx.xml sRGB_D65_MAT-300lx.icc
+..\iccFromXML sRGB_D65_MAT-500lx.xml sRGB_D65_MAT-500lx.icc
 
 cd ..\Encoding
 ..\iccFromXML ISO22028-Encoded-bg-sRGB.xml ISO22028-Encoded-bg-sRGB.icc
