@@ -74,3 +74,11 @@ iccApplyNamedCMM SpecRef\sixChanTest.txt 3 0 SpecRef\SixChanCameraRef.icc 3 PCC\
 echo ===========================================================================
 echo Test Six Channel Reflectance Camera reflectance under D93 to Lab
 iccApplyNamedCMM SpecRef\sixChanTest.txt 3 0 SpecRef\SixChanCameraRef.icc 3 -pcc PCC\Spec400_10_700-D93-Abs_2deg.icc PCC\Lab-D50_2deg.icc 3
+
+echo ===========================================================================
+echo Test 380_5_780 Reflectance under D50 to XYZ
+iccApplyNamedCmm.exe ApplyDataFiles\cc_ref-380_5_780.txt 1 0 pcc\Spec380_5_780-D50_2deg.icc 3 pcc\XYZ-D50_2deg.icc 3
+
+echo ===========================================================================
+echo Test 380_10_730 Reflectance under D50 to XYZ
+iccApplyNamedCmm.exe ApplyDataFiles\cc_ref-380_10_730.txt 1 0 pcc\Spec380_10_730-D50_2deg.icc 3 pcc\XYZ-D50_2deg.icc 3

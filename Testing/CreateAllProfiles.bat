@@ -42,6 +42,7 @@ cd ..\mcs\Flexo-CMYKOGP
 ..\..\iccFromXML OMYK-SelectMID.xml OMYK-SelectMID.icc
 
 cd ..\..\PCC
+..\iccFromXML XYZ-D50_2deg.xml XYZ-D50_2deg.icc
 ..\iccFromXML Lab-D50_2deg.xml Lab-D50_2deg.icc
 ..\iccFromXML Lab-D93_2deg.xml Lab-D93_2deg.icc
 ..\iccFromXML Spec400_10_700-B-Abs_2deg.xml Spec400_10_700-B-Abs_2deg.icc
@@ -50,6 +51,9 @@ cd ..\..\PCC
 ..\iccFromXML Spec400_10_700-D50-Abs_2deg.xml Spec400_10_700-D50-Abs_2deg.icc
 ..\iccFromXML Spec400_10_700-D50-Abs_10deg.xml Spec400_10_700-D50-Abs_10deg.icc
 ..\iccFromXML Spec400_10_700-D50_10deg.xml Spec400_10_700-D50_10deg.icc
+..\iccFromXML Spec400_10_700-D50_2deg.xml Spec400_10_700-D50_2deg.icc
+..\iccFromXML Spec380_5_780-D50_2deg.xml Spec380_5_780-D50_2deg.icc
+..\iccFromXML Spec380_10_730-D50_2deg.xml Spec380_10_730-D50_2deg.icc
 ..\iccFromXML Spec400_10_700-D50_2deg.xml Spec400_10_700-D50_2deg.icc
 ..\iccFromXML Spec400_10_700-D65-Abs_2deg.xml Spec400_10_700-D65-Abs_2deg.icc
 ..\iccFromXML Spec400_10_700-D65-Abs_10deg.xml Spec400_10_700-D65-Abs_10deg.icc
