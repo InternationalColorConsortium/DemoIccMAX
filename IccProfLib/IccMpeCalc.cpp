@@ -1064,6 +1064,25 @@ public:
   }
 };
 
+class CIccOpDefSign : public IIccOpDef
+{
+public:
+  virtual bool Exec(SIccCalcOp *op, SIccOpState &os)
+  {
+    int j, n = op->data.select.v1 + 1;
+    icFloatNumber a1;
+    size_t ss = os.pStack->size();
+    if (n > (int)ss)
+      return false;
+    icFloatNumber *s = &(*os.pStack)[ss - n];
+    for (j = 0; j < n; j++) {
+      a1 = s[j];
+      s[j] = (a1 < 0 ? -1 : (a1 > 0 ? 1 : 0));
+    }
+    return true;
+  }
+};
+
 class CIccOpDefAbsoluteVal : public IIccOpDef
 {
 public:
@@ -1785,7 +1804,8 @@ void SIccCalcOp::Describe(std::string &desc)
     case icSigSquareOp:       
     case icSigSquareRootOp:       
     case icSigCubeOp:       
-    case icSigCubeRootOp:       
+    case icSigCubeRootOp:
+    case icSigSignOp:
     case icSigAbsoluteValOp:
     case icSigTruncateOp:
     case icSigFloorOp:
@@ -1881,7 +1901,8 @@ CIccCalcOpMgr::CIccCalcOpMgr()
   m_map[icSigSquareRootOp] = new CIccOpDefSquareRoot();       
   m_map[icSigCubeOp] = new CIccOpDefCube();       
   m_map[icSigCubeRootOp] = new CIccOpDefCubeRoot();       
-  m_map[icSigAbsoluteValOp] = new CIccOpDefAbsoluteVal();      
+  m_map[icSigSignOp] = new CIccOpDefSign();
+  m_map[icSigAbsoluteValOp] = new CIccOpDefAbsoluteVal();
   m_map[icSigTruncateOp] = new CIccOpDefTruncate();      
   m_map[icSigFloorOp] = new CIccOpDefFloor();      
   m_map[icSigCeilingOp] = new CIccOpDefCeiling();      
@@ -1983,7 +2004,8 @@ bool SIccCalcOp::IsValidOp(icSigCalcOp sig)
     case icSigSquareOp:       
     case icSigSquareRootOp:       
     case icSigCubeOp:       
-    case icSigCubeRootOp:       
+    case icSigCubeRootOp:
+    case icSigSignOp:
     case icSigAbsoluteValOp:
     case icSigTruncateOp:
     case icSigFloorOp:
@@ -2170,7 +2192,8 @@ icUInt16Number SIccCalcOp::ArgsUsed(CIccMpeCalculator *pCalc)
     case icSigSquareOp:       
     case icSigSquareRootOp:       
     case icSigCubeOp:       
-    case icSigCubeRootOp:       
+    case icSigCubeRootOp:
+    case icSigSignOp:
     case icSigAbsoluteValOp:
     case icSigTruncateOp:
     case icSigFloorOp:
@@ -2296,7 +2319,8 @@ icUInt16Number SIccCalcOp::ArgsPushed(CIccMpeCalculator *pCalc)
     case icSigSquareOp:       
     case icSigSquareRootOp:       
     case icSigCubeOp:       
-    case icSigCubeRootOp:       
+    case icSigCubeRootOp:
+    case icSigSignOp:
     case icSigAbsoluteValOp:
     case icSigTruncateOp:
     case icSigFloorOp:
@@ -3057,7 +3081,8 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
       case icSigSquareOp:       
       case icSigSquareRootOp:       
       case icSigCubeOp:       
-      case icSigCubeRootOp:       
+      case icSigCubeRootOp:
+      case icSigSignOp:
       case icSigAbsoluteValOp:
       case icSigTruncateOp:
       case icSigFloorOp:

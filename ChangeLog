@@ -10,3 +10,17 @@
    to be matched with CMYK color space
  * Modified IccProflib and profiles to support ColorEncoding Class 
    signature 'cenc' instead of pre-release 'enc3'
+   
+ 2017-11-7 Max Derhak
+ * 2.1.8 Release of IccProfLib and related tools
+ * 2.1.8 Release of IccLibXML and related tools
+ * Syncronization with ICC.2:20107
+ * IccProfLib: Added support for 'sign' calc element operator
+ * IccProfLib: Added support for Luminance matching PCS adjustement
+ * IccProfLib: Completed implementation of BRDF tags and structure
+   elements
+ * IccProfLib: Various improvements to profile validation and reporting
+ * IccApplyNamedCmm: Added option for precision in reporting and option
+   for luminance matching
+ * IccApplyProfiles: Added option for luminance matching
+  

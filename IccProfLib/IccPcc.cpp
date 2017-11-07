@@ -306,9 +306,12 @@ CIccCombinedConnectionConditions::CIccCombinedConnectionConditions(CIccProfile *
     m_pPCC = pAppliedPCC;
     m_pViewingConditions = NULL;
 
-    m_illuminantXYZ[0] = pView->m_illuminantXYZ.X;
-    m_illuminantXYZ[1] = pView->m_illuminantXYZ.Y;
-    m_illuminantXYZ[2] = pView->m_illuminantXYZ.Z;
+    m_illuminantXYZ[0] = pView->m_illuminantXYZ.X / pView->m_illuminantXYZ.Y;
+    m_illuminantXYZ[1] = pView->m_illuminantXYZ.Y / pView->m_illuminantXYZ.Y;
+    m_illuminantXYZ[2] = pView->m_illuminantXYZ.Z / pView->m_illuminantXYZ.Y;
+    m_illuminantXYZLum[0] = pView->m_illuminantXYZ.X;
+    m_illuminantXYZLum[1] = pView->m_illuminantXYZ.Y;
+    m_illuminantXYZLum[2] = pView->m_illuminantXYZ.Z;
     m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, pAppliedPCC);
   }
   else if (pView) {
@@ -326,6 +329,7 @@ CIccCombinedConnectionConditions::CIccCombinedConnectionConditions(CIccProfile *
     }
 
     pProfile->calcNormIlluminantXYZ(m_illuminantXYZ, this);
+    pProfile->calcLumIlluminantXYZ(m_illuminantXYZLum, this);
     m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, this);
     
   }
@@ -368,6 +372,11 @@ CIccTagMultiProcessElement *CIccCombinedConnectionConditions::getStandardToCusto
 void CIccCombinedConnectionConditions::getNormIlluminantXYZ(icFloatNumber *pXYZ)
 {
   memcpy(pXYZ, m_illuminantXYZ, 3*sizeof(icFloatNumber));
+}
+
+void CIccCombinedConnectionConditions::getLumIlluminantXYZ(icFloatNumber *pXYZLum)
+{
+  memcpy(pXYZLum, m_illuminantXYZLum, 3 * sizeof(icFloatNumber));
 }
 
 bool CIccCombinedConnectionConditions::getMediaWhiteXYZ(icFloatNumber *pXYZ)

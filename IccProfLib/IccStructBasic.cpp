@@ -346,10 +346,6 @@ std::string CIccStructBRDF::GetElemName(icSignature sigElem) const
       return "NumParamsSubTag";
     case icSigTransformBrdfMember:
       return "TransformSubTag";
-    case icSigLightTransformBrdfMember:
-      return "LightTransformSubTag";
-    case icSigOutputTransformBrdfMember:
-      return "OutputTransformSubTag";
     default:
       break;
   }

@@ -88,7 +88,7 @@ typedef std::list<CIccProfile*> IccProfilePtrList;
 
 void Usage() 
 {
-  printf("Usage: iccApplyNamedCmm data_file_path final_data_encoding interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Usage: iccApplyNamedCmm data_file_path final_data_encoding{:FmtPrecision{:FmtDigits}} interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
 	printf("  For final_data_encoding:\n");
 	printf("    0 - icEncodeValue (converts to/from lab encoding when samples=3)\n");
 	printf("    1 - icEncodePercent\n");
@@ -98,23 +98,26 @@ void Usage()
 	printf("    5 - icEncode16Bit\n");
   printf("    6 - icEncode16BitV2\n\n");
 
+  printf("    FmtPrecision - formatting for # of digits after decimal (default=4)\n");
+  printf("    FmtDigits - formatting for total # of digits (default=5+FmtPrecision)\n\n");
+
 	printf("  For interpolation:\n");
 	printf("    0 - Linear\n");
 	printf("    1 - Tetrahedral\n\n");
 
 	printf("  For Rendering_intent:\n");
 	printf("    0 - Perceptual\n");
-	printf("    1 - Relative Colorimetric\n");
+	printf("    1 - Relative\n");
 	printf("    2 - Saturation\n");
-	printf("    3 - Absolute Colorimetric\n");
-	printf("    10 - Perceptual without MPE\n");
-	printf("    11 - Relative Colorimetric without MPE\n");
-	printf("    12 - Saturation without MPE\n");
-	printf("    13 - Absolute Colorimetric without MPE \n");
+	printf("    3 - Absolute\n");
+	printf("    10 - Perceptual without D2Bx/B2Dx\n");
+	printf("    11 - Relative without D2Bx/B2Dx\n");
+	printf("    12 - Saturation without D2Bx/B2Dx\n");
+	printf("    13 - Absolute without D2Bx/B2Dx \n");
 	printf("    20 - Preview Perceptual\n");
-	printf("    21 - Preview Relative Colorimetric\n");
+	printf("    21 - Preview Relative\n");
 	printf("    22 - Preview Saturation\n");
-	printf("    23 - Preview Absolute Colorimetric\n");
+	printf("    23 - Preview Absolute\n");
 	printf("    30 - Gamut\n");
   printf("    33 - Gamut Absolute\n");
 	printf("    40 - Perceptual with BPC\n");
@@ -124,6 +127,14 @@ void Usage()
   printf("    60 - BDRF Light\n");
   printf("    70 - BDRF Output\n");
   printf("    80 - MCS connection\n");
+  printf("    100 - Luminance based Perceptual\n");
+  printf("    101 - Luminance based Relative Colorimetric\n");
+  printf("    102 - Luminance based Saturation\n");
+  printf("    103 - Luminance based Absolute Colorimetric\n");
+  printf("    110 - Luminance based Perceptual without D2Bx/B2Dx\n");
+  printf("    111 - Luminance based Relative Colorimetric without D2Bx/B2Dx\n");
+  printf("    112 - Luminance based Saturation without D2Bx/B2Dx\n");
+  printf("    113 - Luminance based Absolute Colorimetric without D2Bx/B2Dx \n");
 }
 
 
@@ -187,11 +198,30 @@ int main(int argc, icChar* argv[])
     return false;
   }
 
+  
+
   //Setup destination encoding
   destEncoding = (icFloatColorEncoding)atoi(argv[2]);
+  
+  int nDigits = 9;
+  int nPrecision = 4;
+  char precisionStr[30], *colon;
+
+  colon = strchr(argv[2], ':');
+  if (colon) {
+    colon++;
+    nPrecision = atoi(colon);
+    nDigits = 5 + nPrecision;
+    colon = strchr(colon, ':');
+    if (colon) {
+      nDigits = atoi(colon);
+    }
+  }
+  sprintf(precisionStr, "%%%d.%dlf ", nDigits, nPrecision);
+
 	icXformInterp nInterp = (icXformInterp)atoi(argv[3]);
 
-  int nIntent, nType;
+  int nIntent, nType, nLuminance;
 
   //Allocate a CIccCmm to use to apply profiles
   CIccNamedColorCmm namedCmm(SrcspaceSig, icSigUnknownData, !IsSpacePCS(SrcspaceSig));
@@ -217,6 +247,8 @@ int main(int argc, icChar* argv[])
     else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
       bUseMPE = true;
       nIntent = atoi(argv[nCount+1]);
+      nLuminance = nIntent / 100;
+      nIntent = nIntent % 100;
       nType = abs(nIntent) / 10;
       nIntent = nIntent % 10;
       CIccProfile *pPccProfile = NULL;
@@ -232,6 +264,10 @@ int main(int argc, icChar* argv[])
           nType = 0;
           Hint.AddHint(new CIccApplyBPCHint());
           break;
+      }
+
+      if (nLuminance) {
+        Hint.AddHint(new CIccLuminanceMatchingHint());
       }
 
       // Use of following -PCC arg allows for profile connection conditions to be defined
@@ -426,7 +462,7 @@ int main(int argc, icChar* argv[])
             }
 
             for(i = 0; i<nDestSamples; i++) {
-              sprintf(tempBuf, "%9.4lf ", DestPixel[i]);
+              sprintf(tempBuf, precisionStr, DestPixel[i]);
               OutPutData += tempBuf;
             }
             OutPutData += "\t; ";
@@ -451,7 +487,7 @@ int main(int argc, icChar* argv[])
 
 
       for(i = 0; i<nSamples; i++) {
-        sprintf(tempBuf, "%9.4lf ", Pixel[i]);
+        sprintf(tempBuf, precisionStr, Pixel[i]);
         OutPutData += tempBuf;
       }
 

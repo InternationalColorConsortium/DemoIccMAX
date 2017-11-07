@@ -832,6 +832,12 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
           pTag = pProfile->FindTag(icSigBToA0Tag + nTagIntent);
         }
 
+				if (!pTag && nTagIntent == icAbsoluteColorimetric) {
+					pTag = pProfile->FindTag(icSigBToA1Tag);
+					if (pTag)
+						nTagIntent = icRelativeColorimetric;
+				}
+
         if (!pTag) {
           pTag = pProfile->FindTag(icSigBToA0Tag);
         }
@@ -953,57 +959,162 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
       }
       break;
 
-    case icXformLutBRDFModel:
-    case icXformLutBRDFLight:
-    case icXformLutBRDFOutput:
-      {
-        // get the correct tag first
+    case icXformLutBRDFParam:
+    {
+      // get the correct tag first
 
-        CIccTag *pTag = NULL;
-        if (bUseD2BTags) {
-          if (pProfile->m_Header.spectralPCS) {
+      CIccTag *pTag = NULL;
+      if (bUseD2BTags) {
+        if (pProfile->m_Header.spectralPCS) {
 
-            pTag = pProfile->FindTag(icSigBRDFDToB0Tag + nTagIntent);
+          pTag = pProfile->FindTag(icSigBrdfSpectralParameter0Tag + nTagIntent);
 
-            if (pTag)
-              bUseSpectralPCS = true;
-          }
-        }
-        else
-        {
-          pTag = pProfile->FindTag(icSigBRDFAToB0Tag + nTagIntent);
-
-          //Unsupported elements cause fall back behavior
-          if (pTag && !pTag->IsSupported())
-            pTag = NULL;
-        }
-
-        // now extract the correct part from the structure
-        CIccStructBRDF* pStructTag = dynamic_cast<CIccStructBRDF*>(pTag);
-
-        if (pStructTag != NULL)
-        {
-          CIccTag *pTag2 = NULL;
-
-            switch (nLutType) {
-              case icXformLutBRDFModel:
-                pTag2 = pStructTag->GetElem(icSigTransformBrdfMember);
-                break;
-              case icXformLutBRDFLight:
-                pTag2 = pStructTag->GetElem(icSigLightTransformBrdfMember);
-                break;
-              case icXformLutBRDFOutput:
-                pTag2 = pStructTag->GetElem(icSigOutputTransformBrdfMember);
-                break;
-              default:
-                // can't get here, get rid of warning
-                break;
-            }
-            if (pTag2)
-              rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag2, pHintManager);
+          if (pTag)
+            bUseSpectralPCS = true;
         }
       }
-      break;
+      else
+      {
+        pTag = pProfile->FindTag(icSigBrdfColorimetricParameter0Tag + nTagIntent);
+
+        //Unsupported elements cause fall back behavior
+        if (pTag && !pTag->IsSupported())
+          pTag = NULL;
+      }
+
+      // now extract the correct part from the structure
+      CIccStructBRDF* pStructTag = dynamic_cast<CIccStructBRDF*>(pTag);
+
+      if (pStructTag != NULL)
+      {
+        CIccTag *pTag2 = NULL;
+
+          switch (nLutType) {
+            case icXformLutBRDFParam:
+              pTag2 = pStructTag->GetElem(icSigTransformBrdfMember);
+              break;
+            default:
+              // can't get here, get rid of warning
+              break;
+          }
+          if (pTag2)
+            rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag2, pHintManager);
+      }
+    }
+    break;
+
+    case icXformLutBRDFDirect:
+    {
+      // get the correct tag first
+
+      CIccTag *pTag = NULL;
+      if (bUseD2BTags) {
+        if (pProfile->m_Header.spectralPCS) {
+
+          pTag = pProfile->FindTag(icSigBRDFDToB0Tag + nTagIntent);
+
+          if (pTag)
+            bUseSpectralPCS = true;
+        }
+      }
+      else
+      {
+        pTag = pProfile->FindTag(icSigBRDFAToB0Tag + nTagIntent);
+
+        //Unsupported elements cause fall back behavior
+        if (pTag && !pTag->IsSupported())
+          pTag = NULL;
+      }
+
+      if (pTag != NULL)
+      {
+        rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag, pHintManager);
+      }
+    }
+    break;
+
+    case icXformLutBRDFMcsParam:
+    {
+      CIccTag *pTag = NULL;
+      if (pProfile->m_Header.deviceClass == icSigMaterialVisualizationClass) {
+        bInput = true;
+        nMCS = icFromMCS;
+
+        if (pProfile->m_Header.spectralPCS) {
+          pTag = pProfile->FindTag(icSigBRDFMToS0Tag + nTagIntent);
+
+          if (!pTag && nTagIntent == icAbsoluteColorimetric) {
+            pTag = pProfile->FindTag(icSigBRDFMToS1Tag);
+            if (pTag)
+              nTagIntent = icRelativeColorimetric;
+          }
+          else if (!pTag && nTagIntent != icAbsoluteColorimetric) {
+            pTag = pProfile->FindTag(icSigBRDFMToS3Tag);
+            if (pTag) {
+              nTagIntent = icAbsoluteColorimetric;
+              bAbsToRel = true;
+            }
+          }
+
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigBRDFMToS0Tag);
+          }
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigBRDFMToS1Tag);
+          }
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigBRDFMToS3Tag);
+            if (pTag) {
+              nTagIntent = icAbsoluteColorimetric;
+              bAbsToRel = true;
+            }
+          }
+
+          if (pTag)
+            bUseSpectralPCS = true;
+        }
+        if (!pTag && pProfile->m_Header.pcs != 0) {
+          pTag = pProfile->FindTag(icSigBRDFMToB0Tag + nTagIntent);
+
+          if (!pTag && nTagIntent == icAbsoluteColorimetric) {
+            pTag = pProfile->FindTag(icSigBRDFMToB1Tag);
+            if (pTag)
+              nTagIntent = icRelativeColorimetric;
+          }
+          else if (!pTag && nTagIntent != icAbsoluteColorimetric) {
+            pTag = pProfile->FindTag(icSigBRDFMToB3Tag);
+            if (pTag) {
+              nTagIntent = icAbsoluteColorimetric;
+              bAbsToRel = true;
+            }
+          }
+
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigBRDFMToB0Tag);
+          }
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigBRDFMToB1Tag);
+          }
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigBRDFMToB3Tag);
+            if (pTag) {
+              nTagIntent = icAbsoluteColorimetric;
+              bAbsToRel = true;
+            }
+          }
+        }
+
+        //Unsupported elements cause fall back behavior
+        if (pTag && !pTag->IsSupported())
+          pTag = NULL;
+      }
+      if (pTag && pProfile->m_Header.mcs) {
+        rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag, pHintManager);
+      }
+      else
+        rv = NULL;
+    }
+    break;
 
     case icXformLutMCS:
       {
@@ -1232,6 +1343,7 @@ void CIccXform::SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent 
   m_bUseSpectralPCS = bUseSpectralPCS;
   m_bAbsToRel = bAbsToRel;
   m_nMCS = nMCS;
+  m_bLuminanceMatching = false;
 
   if (pHintManager) {
     IIccCreateXformHint *pHint=NULL;
@@ -1246,6 +1358,11 @@ void CIccXform::SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent 
     if (pHint) {
       CIccCreateCmmEnvVarXformHint *pCmmEnvVarHint = (CIccCreateCmmEnvVarXformHint*)pHint;
       m_pCmmEnvVarLookup = pCmmEnvVarHint->GetNewCmmEnvVarLookup();
+    }
+
+    pHint = pHintManager->GetHint("CIccLuminanceMatchingHint");
+    if (pHint) {
+      m_bLuminanceMatching = true;
     }
   }
 }
@@ -2510,7 +2627,7 @@ void CIccPcsXform::pushXyzToXyzIn()
 
 /**
  **************************************************************************
- * Name: CIccPcsXform::pushXyzToXyzIn
+ * Name: CIccPcsXform::pushXyzInToXyz
  * 
  * Purpose: 
  *  Insert PCS step that converts from internal XYZ to actual XYZ
@@ -2519,6 +2636,44 @@ void CIccPcsXform::pushXyzToXyzIn()
 void CIccPcsXform::pushXyzInToXyz()
 {
   icFloatNumber scale = (icFloatNumber) (65535.0 / 32768.0);
+  return pushScale3(scale, scale, scale);
+}
+
+
+/**
+**************************************************************************
+* Name: CIccPcsXform::pushXyzToXyzLum
+*
+* Purpose:
+*  Insert PCS step that converts from normalized XYZ to XYZ Luminance
+**************************************************************************
+*/
+void CIccPcsXform::pushXyzToXyzLum(IIccProfileConnectionConditions *pPCC)
+{
+  icFloatNumber XYZLum[3];
+  pPCC->getLumIlluminantXYZ(&XYZLum[0]);
+
+  icFloatNumber scale = XYZLum[1];
+
+  return pushScale3(scale, scale, scale);
+}
+
+
+/**
+**************************************************************************
+* Name: CIccPcsXform::pushXyzLumToXyz
+*
+* Purpose:
+*  Insert PCS step that converts from XYZ Luminance to normalized XYZ
+**************************************************************************
+*/
+void CIccPcsXform::pushXyzLumToXyz(IIccProfileConnectionConditions *pPCC)
+{
+  icFloatNumber XYZLum[3];
+  pPCC->getLumIlluminantXYZ(&XYZLum[0]);
+
+  icFloatNumber scale = 1.0f / XYZLum[1];
+
   return pushScale3(scale, scale, scale);
 }
 
@@ -2602,6 +2757,7 @@ void CIccPcsXform::pushMatrix(icUInt16Number nRows, icUInt16Number nCols, icFloa
  * Purpose: 
  *  Insert PCS step that converts from source XYZ colorimetry to dest XYZ
  *  colorimetry accounting for possible changes in illuminant and/or observer.
+ *  Luminance matching is also accounted for.
  **************************************************************************
  */
 icStatusCMM CIccPcsXform::pushXYZConvert(CIccXform *pFromXform, CIccXform *pToXform)
@@ -2713,6 +2869,13 @@ icStatusCMM CIccPcsXform::pushXYZConvert(CIccXform *pFromXform, CIccXform *pToXf
     }
  
     m_list->push_back(ptr);
+  }
+
+  if (pFromXform->LuminanceMatching()) {
+    pushXyzToXyzLum(pSrcPcc);
+  }
+  if (pToXform->LuminanceMatching()) {
+    pushXyzLumToXyz(pDstPcc);
   }
   
   return icCmmStatOk;
@@ -7454,7 +7617,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
       bInput = true;
       break;
 
-    case icXformLutBRDFModel:
+    case icXformLutBRDFParam:
       if (!bInput)
         return icCmmStatBadSpaceLink;
       nSrcSpace = pProfile->m_Header.colorSpace;
@@ -7462,20 +7625,19 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
       bInput = true;
       break;
 
-    case icXformLutBRDFOutput:
+    case icXformLutBRDFDirect:
       if (!bInput)
         return icCmmStatBadSpaceLink;
-      nSrcSpace = icSigBRDFOutput;
+      nSrcSpace = icSigBRDFDirect;
       nDstSpace = pProfile->m_Header.pcs;
       bInput = true;
       break;
 
-    case icXformLutBRDFLight:
-      if (bInput)
+    case icXformLutBRDFMcsParam:
+      if (!bInput)
         return icCmmStatBadSpaceLink;
-      nSrcSpace = pProfile->m_Header.pcs;
-      nDstSpace = icSigBRDFInput;
-      bInput = true;
+      nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.mcs;
+      nDstSpace = icSigBRDFParameters;
       break;
 
     case icXformLutMCS:
@@ -9672,9 +9834,12 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
       bInput = true;
       break;
 
-    case icXformLutBRDFModel:
-    case icXformLutBRDFLight:
-    case icXformLutBRDFOutput:
+    case icXformLutBRDFParam:
+      nSrcSpace = pProfile->m_Header.colorSpace;
+      nDstSpace = icSigUnknownData;
+      break;
+
+    case icXformLutBRDFDirect:
       nSrcSpace = pProfile->m_Header.colorSpace;
       nDstSpace = icSigUnknownData;
       break;
@@ -10035,12 +10200,167 @@ CIccApplyCmm *CIccMruCmm::GetNewApplyCmm(icStatusCMM &status)
   return rv;
 }
 
-
-CIccApplyMruCmm::CIccApplyMruCmm(CIccMruCmm *pCmm) : CIccApplyCmm(pCmm)
+/**
+****************************************************************************
+* Name: CIccMruCache::CIccMruCache
+*
+* Purpose: constructor
+*****************************************************************************
+*/
+template<class T>
+CIccMruCache<T>::CIccMruCache()
 {
   m_cache = NULL;
 
   m_pixelData = NULL;
+}
+
+/**
+****************************************************************************
+* Name: CIccMruCache::~CIccMruCache
+*
+* Purpose: destructor
+*****************************************************************************
+*/
+template<class T>
+CIccMruCache<T>::~CIccMruCache()
+{
+  if (m_cache)
+    delete[] m_cache;
+
+  if (m_pixelData)
+    free(m_pixelData);
+}
+
+/**
+****************************************************************************
+* Name: CIccMruCache::Init
+*
+* Purpose: Initialize the object and set up the cache
+*
+* Args:
+*  pCmm - pointer to cmm object that we are attaching to.
+*  nCacheSize - number of most recently used transformations to cache
+*
+* Return:
+*  true if successful
+*****************************************************************************
+*/
+template<class T>
+bool CIccMruCache<T>::Init(icUInt16Number nSrcSamples, icUInt16Number nDstSamples, icUInt16Number nCacheSize)
+{
+  m_nSrcSamples = nSrcSamples;
+  m_nSrcSize = nSrcSamples * sizeof(T);
+  m_nDstSize = nDstSamples * sizeof(T);
+
+  m_nTotalSamples = m_nSrcSamples + nDstSamples;
+
+  m_nNumPixel = 0;
+  m_nCacheSize = nCacheSize;
+
+  m_pFirst = NULL;
+  m_cache = new CIccMruPixel<T>[nCacheSize];
+
+  if (!m_cache)
+    return false;
+
+  m_pixelData = (T*)malloc(nCacheSize * m_nTotalSamples * sizeof(T));
+
+  if (!m_pixelData)
+    return false;
+
+  return true;
+}
+
+template<class T>
+CIccMruCache<T> *CIccMruCache<T>::NewMruCache(icUInt16Number nSrcSamples, icUInt16Number nDstSamples, icUInt16Number nCacheSize /* = 4 */)
+{
+  CIccMruCache<T> *rv = new CIccMruCache<T>;
+
+  if (!rv->Init(nSrcSamples, nDstSamples, nCacheSize)) {
+    delete rv;
+    return NULL;
+  }
+
+  return rv;
+}
+
+/**
+****************************************************************************
+* Name: CIccMruCache::Apply
+*
+* Purpose: Apply a transformation to a pixel.
+*
+* Args:
+*  DstPixel - Location to store pixel results
+*  SrcPixel - Location to get pixel values from
+*
+* Return:
+*  true if SrcPixel found in cache and DstPixel initialized with value
+*  fails if SrcPixel not found (DstPixel not touched)
+*****************************************************************************
+*/
+template<class T>
+bool CIccMruCache<T>::Apply(T *DstPixel, const T *SrcPixel)
+{
+  CIccMruPixel<T> *ptr, *prev = NULL, *last = NULL;
+  int i;
+  T *pixel;
+
+  for (ptr = m_pFirst, i = 0; ptr; ptr = ptr->pNext, i++) {
+    if (!memcmp(SrcPixel, ptr->pPixelData, m_nSrcSize)) {
+      memcpy(DstPixel, &ptr->pPixelData[m_nSrcSamples], m_nDstSize);
+      return true;
+    }
+    prev = last;
+    last = ptr;
+  }
+
+  //If we get here SrcPixel is not in the cache
+  if (i < m_nCacheSize) {
+    pixel = &m_pixelData[i*m_nTotalSamples];
+
+    ptr = &m_cache[i];
+    ptr->pPixelData = pixel;
+
+    if (!last) {
+      m_pFirst = ptr;
+    }
+    else {
+
+      last->pNext = ptr;
+    }
+  }
+  else {  //Reuse oldest value and put it at the front of the list
+    prev->pNext = NULL;
+    last->pNext = m_pFirst;
+
+    m_pFirst = last;
+    pixel = last->pPixelData;
+  }
+  T *dest = &pixel[m_nSrcSamples];
+
+  memcpy(pixel, SrcPixel, m_nSrcSize);
+
+  return false;
+}
+
+template<class T>
+void CIccMruCache<T>::Update(T* DstPixel)
+{
+  memcpy(&m_pFirst->pPixelData[m_nSrcSamples], DstPixel, m_nDstSize);
+}
+
+//Make sure typedef classes get built
+template class CIccMruCache<icFloatNumber>;
+template class CIccMruCache<icUInt8Number>;
+template class CIccMruCache<icUInt16Number>;
+
+
+CIccApplyMruCmm::CIccApplyMruCmm(CIccMruCmm *pCmm) : CIccApplyCmm(pCmm)
+{
+  m_pCachedCmm = NULL;
+  m_pCache = NULL;
 }
 
 /**
@@ -10052,11 +10372,9 @@ CIccApplyMruCmm::CIccApplyMruCmm(CIccMruCmm *pCmm) : CIccApplyCmm(pCmm)
 */
 CIccApplyMruCmm::~CIccApplyMruCmm()
 {
-  if (m_cache)
-    delete [] m_cache;
+  if (m_pCache)
+    delete m_pCache;
 
-  if (m_pixelData)
-    free(m_pixelData);
 }
 
 /**
@@ -10077,24 +10395,9 @@ bool CIccApplyMruCmm::Init(CIccCmm *pCachedCmm, icUInt16Number nCacheSize)
 {
   m_pCachedCmm = pCachedCmm;
 
-  m_nSrcSamples = m_pCmm->GetSourceSamples();
-  m_nSrcSize = m_nSrcSamples * sizeof(icFloatNumber);
-  m_nDstSize = m_pCmm->GetDestSamples() * sizeof(icFloatNumber);
+  m_pCache = CIccMruCacheFloat::NewMruCache(m_pCmm->GetSourceSamples(), m_pCmm->GetDestSamples(), nCacheSize);
 
-  m_nTotalSamples = m_nSrcSamples + m_pCmm->GetDestSamples();
-
-  m_nNumPixel = 0;
-  m_nCacheSize = nCacheSize;
-
-  m_pFirst = NULL;
-  m_cache = new CIccMruPixel[nCacheSize];
-
-  if (!m_cache)
-    return false;
-
-  m_pixelData = (icFloatNumber*)malloc(nCacheSize * m_nTotalSamples * sizeof(icFloatNumber));
-
-  if (!m_pixelData)
+  if (!m_pCache)
     return false;
 
   return true;
@@ -10116,48 +10419,17 @@ bool CIccApplyMruCmm::Init(CIccCmm *pCachedCmm, icUInt16Number nCacheSize)
 */
 icStatusCMM CIccApplyMruCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *SrcPixel)
 {
-  CIccMruPixel *ptr, *prev=NULL, *last=NULL;
-  int i;
-  icFloatNumber *pixel;
+#if defined(_DEBUG)
+  if (!m_pCache)
+    return icCmmStatInvalidLut;
+#endif
 
-  for (ptr = m_pFirst, i=0; ptr; ptr=ptr->pNext, i++) {
-    if (!memcmp(SrcPixel, ptr->pPixelData, m_nSrcSize)) {
-      memcpy(DstPixel, &ptr->pPixelData[m_nSrcSamples], m_nDstSize);
-      return icCmmStatOk;
-    }
-    prev = last;
-    last = ptr;
+  if (!m_pCache->Apply(DstPixel, SrcPixel)) {
+
+    m_pCachedCmm->Apply(DstPixel, SrcPixel);
+
+    m_pCache->Update(DstPixel);
   }
-
-  //If we get here SrcPixel is not in the cache
-  if (i<m_nCacheSize) {
-    pixel = &m_pixelData[i*m_nTotalSamples];
-
-    ptr = &m_cache[i];
-    ptr->pPixelData = pixel;
-
-    if (!last) {
-      m_pFirst = ptr;
-    }
-    else {
-
-      last->pNext =  ptr;
-    }
-  }
-  else {  //Reuse oldest value and put it at the front of the list
-    prev->pNext = NULL;
-    last->pNext = m_pFirst;
-
-    m_pFirst = last;
-    pixel = last->pPixelData;
-  }
-  icFloatNumber *dest = &pixel[m_nSrcSamples];
-
-  memcpy(pixel, SrcPixel, m_nSrcSize);
-
-  m_pCachedCmm->Apply(dest, pixel);
-
-  memcpy(DstPixel, dest, m_nDstSize);
 
   return icCmmStatOk;
 }
@@ -10179,57 +10451,25 @@ icStatusCMM CIccApplyMruCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber 
 */
 icStatusCMM CIccApplyMruCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *SrcPixel, icUInt32Number nPixels)
 {
-  CIccMruPixel *ptr, *prev=NULL, *last=NULL;
-  int i;
-  icFloatNumber *pixel, *dest;
   icUInt32Number k;
 
-  for (k=0; k<nPixels;) {
-    for (ptr = m_pFirst, i=0; ptr; ptr=ptr->pNext, i++) {
-      if (!memcmp(SrcPixel, ptr->pPixelData, m_nSrcSize)) {
-        memcpy(DstPixel, &ptr->pPixelData[m_nSrcSamples], m_nDstSize);
-        goto next_k;
-      }
-      prev = last;
-      last = ptr;
+#if defined(_DEBUG)
+  if (!m_pCache)
+    return icCmmStatInvalidLut;
+#endif
+
+  for (k=0; k<nPixels;k++) {
+    if (!m_pCache->Apply(DstPixel, SrcPixel)) {
+      m_pCachedCmm->Apply(DstPixel, SrcPixel);
+      m_pCache->Update(DstPixel);
     }
-
-    //If we get here SrcPixel is not in the cache
-    if (i<m_nCacheSize) {
-      pixel = &m_pixelData[i*m_nTotalSamples];
-
-      ptr = &m_cache[i];
-      ptr->pPixelData = pixel;
-
-      if (!last) {
-        m_pFirst = ptr;
-      }
-      else {
-
-        last->pNext =  ptr;
-      }
-    }
-    else {  //Reuse oldest value and put it at the front of the list
-      prev->pNext = NULL;
-      last->pNext = m_pFirst;
-
-      m_pFirst = last;
-      pixel = last->pPixelData;
-    }
-    dest = &pixel[m_nSrcSamples];
-
-    memcpy(pixel, SrcPixel, m_nSrcSize);
-
-    m_pCachedCmm->Apply(dest, pixel);
-
-    memcpy(DstPixel, dest, m_nDstSize);
-
-next_k:
-    k++;
+    SrcPixel += m_pCmm->GetSourceSamples();
+    DstPixel += m_pCmm->GetDestSamples();
   }
 
   return icCmmStatOk;
 }
+
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX

@@ -3326,6 +3326,7 @@ icValidateStatus CIccTagNamedColor2::Validate(std::string sigPath, std::string &
     }
   }
 
+
   return rv;
 }
 
@@ -10549,13 +10550,16 @@ icValidateStatus CIccTagSpectralViewingConditions::Validate(std::string sigPath,
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-  rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantXYZ));
-  rv = icMaxStatus(rv, Info.CheckData(sReport, m_surroundXYZ));
+  rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantXYZ, sSigPathName+":>illuminantXYZ"));
+  rv = icMaxStatus(rv, Info.CheckData(sReport, m_surroundXYZ, sSigPathName + ":>surroundXYZ"));
+
+  rv = icMaxStatus(rv, Info.CheckLuminance(sReport, m_illuminantXYZ, sSigPathName + ":>illuminantXYZ"));
+  rv = icMaxStatus(rv, Info.CheckLuminance(sReport, m_surroundXYZ, sSigPathName + ":>surroundXYZ"));
 
   if (m_observerRange.steps)
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_observerRange));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_observerRange, sSigPathName + ":>observerRange"));
   if (m_illuminantRange.steps)
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantRange));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantRange, sSigPathName + ":>illuminantRange"));
 
   return rv;
 }

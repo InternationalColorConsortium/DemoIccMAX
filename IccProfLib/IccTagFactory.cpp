@@ -248,41 +248,77 @@ const icChar* CIccSpecTagFactory::GetTagSigName(icTagSignature tagSig)
   case icSigBlueTRCTag:
     return "blueTRCTag";
 
-  case icSigBRDF0Tag:
-    return "BRDF0Tag";
+  case icSigBrdfColorimetricParameter0Tag:
+    return "brdfColorimetricParameter0Tag";
 
-  case icSigBRDF1Tag:
-    return "BRDF1Tag";
+  case icSigBrdfColorimetricParameter1Tag:
+    return "brdfColorimetricParameter1Tag";
 
-  case icSigBRDF2Tag:
-    return "BRDF2Tag";
+  case icSigBrdfColorimetricParameter2Tag:
+    return "brdfColorimetricParameter2Tag";
 
-  case icSigBRDF3Tag:
-    return "BRDF3Tag";
+  case icSigBrdfColorimetricParameter3Tag:
+    return "brdfColorimetricParameter3Tag";
+
+  case icSigBrdfSpectralParameter0Tag:
+    return "brdfSpectralParameter0Tag";
+
+  case icSigBrdfSpectralParameter1Tag:
+    return "brdfSpectralParameter1Tag";
+
+  case icSigBrdfSpectralParameter2Tag:
+    return "brdfSpectralParameter2Tag";
+
+  case icSigBrdfSpectralParameter3Tag:
+    return "brdfSpectralParameter3Tag";
 
   case icSigBRDFAToB0Tag:
-    return "BRDFAToB0Tag";
+    return "brdfAToB0Tag";
 
   case icSigBRDFAToB1Tag:
-    return "BRDFAToB1Tag";
+    return "brdfAToB1Tag";
 
   case icSigBRDFAToB2Tag:
-    return "BRDFAToB2Tag";
+    return "brdfAToB2Tag";
 
   case icSigBRDFAToB3Tag:
-    return "BRDFAToB3Tag";
+    return "brdfAToB3Tag";
 
   case icSigBRDFDToB0Tag:
-    return "BRDFDToB0Tag";
+    return "brdfDToB0Tag";
 
   case icSigBRDFDToB1Tag:
-    return "BRDFDToB1Tag";
+    return "brdfDToB1Tag";
 
   case icSigBRDFDToB2Tag:
-    return "BRDFDToB2Tag";
+    return "brdfDToB2Tag";
 
   case icSigBRDFDToB3Tag:
-    return "BRDFDToB3Tag";
+    return "brdfDToB3Tag";
+
+  case icSigBRDFMToB0Tag:
+    return "brdfMToB0Tag";
+
+  case icSigBRDFMToB1Tag:
+    return "brdfMToB1Tag";
+
+  case icSigBRDFMToB2Tag:
+    return "brdfMToB2Tag";
+
+  case icSigBRDFMToB3Tag:
+    return "brdfMToB3Tag";
+
+  case icSigBRDFMToS0Tag:
+    return "brdfMToS0Tag";
+
+  case icSigBRDFMToS1Tag:
+    return "brdfMToS1Tag";
+
+  case icSigBRDFMToS2Tag:
+    return "brdfMToS2Tag";
+
+  case icSigBRDFMToS3Tag:
+    return "brdfMToS3Tag";
 
   case icSigBToA0Tag:
     return "BToA0Tag";

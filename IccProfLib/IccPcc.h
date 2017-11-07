@@ -115,6 +115,7 @@ public:
   icStandardObserver getPccObserver();
 
   virtual void getNormIlluminantXYZ(icFloatNumber *pXYZ)=0;
+  virtual void getLumIlluminantXYZ(icFloatNumber *pXYZ)=0;
   virtual bool getMediaWhiteXYZ(icFloatNumber *pXYZ)=0;
 };
 
@@ -141,11 +142,13 @@ public:
   virtual CIccTagMultiProcessElement *getStandardToCustomPcc();
 
   virtual void getNormIlluminantXYZ(icFloatNumber *pXYZ);
+  virtual void getLumIlluminantXYZ(icFloatNumber *pXYZLum);
   virtual bool getMediaWhiteXYZ(icFloatNumber *pXYZ);
 
 protected:
   CIccTagSpectralViewingConditions *m_pViewingConditions;
   icFloatNumber m_illuminantXYZ[3];
+  icFloatNumber m_illuminantXYZLum[3];
   icFloatNumber m_mediaXYZ[3];
   IIccProfileConnectionConditions *m_pPCC;
   bool m_bValidMediaXYZ;

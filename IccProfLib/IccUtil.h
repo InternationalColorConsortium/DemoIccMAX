@@ -329,10 +329,12 @@ public:
   const icChar *GetColorantEncoding(icColorantEncoding colorant);
   
   bool IsProfileIDCalculated(icProfileID *profileID);
-  icValidateStatus CheckData(std::string &sReport, const icDateTimeNumber &dateTime);
-  icValidateStatus CheckData(std::string &sReport, const icXYZNumber &XYZ);
-  icValidateStatus CheckData(std::string &sReport, const icFloatXYZNumber &XYZ);
-  icValidateStatus CheckData(std::string &sReport, const icSpectralRange &range);
+  icValidateStatus CheckData(std::string &sReport, const icDateTimeNumber &dateTime, std::string sDesc="");
+  icValidateStatus CheckData(std::string &sReport, const icXYZNumber &XYZ, std::string sDesc="");
+  icValidateStatus CheckData(std::string &sReport, const icFloatXYZNumber &XYZ, std::string sDesc="");
+  icValidateStatus CheckData(std::string &sReport, const icSpectralRange &range, std::string sDesc="");
+
+  icValidateStatus CheckLuminance(std::string &sReport, const icFloatXYZNumber &XYZ, std::string sDesc="");
 
   bool IsValidSpace(icColorSpaceSignature sig);
   bool IsValidSpectralSpace(icColorSpaceSignature sig);

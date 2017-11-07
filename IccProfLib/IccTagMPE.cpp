@@ -1603,16 +1603,6 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
             nInput = nOutput = 0;
             break;
 
-          case icSigLightTransformBrdfMember:
-            //TODO: Initialize input and output
-            nInput = nOutput = 0;
-            break;
-
-          case icSigOutputTransformBrdfMember:
-            //TODO: Initialize input and output
-            nInput = nOutput = 0;
-            break;
-
           default:
             break;
         }
@@ -1625,16 +1615,6 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         switch(icGetFirstSigPathSig(sigPath)) {
           case icSigTransformBrdfMember:
-            //TODO: Initialize input and output
-            nInput = nOutput = 0;
-            break;
-
-          case icSigLightTransformBrdfMember:
-            //TODO: Initialize input and output
-            nInput = nOutput = 0;
-            break;
-
-          case icSigOutputTransformBrdfMember:
             //TODO: Initialize input and output
             nInput = nOutput = 0;
             break;

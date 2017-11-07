@@ -336,10 +336,14 @@ typedef enum {
     icSigBlueColorantTag                   = 0x6258595A,  /* 'bXYZ' */
     icSigBlueMatrixColumnTag               = 0x6258595A,  /* 'bXYZ' */
     icSigBlueTRCTag                        = 0x62545243,  /* 'bTRC' */
-    icSigBRDF0Tag                          = 0x42524430,  /* 'BRD0' */
-    icSigBRDF1Tag                          = 0x42524431,  /* 'BRD1' */
-    icSigBRDF2Tag                          = 0x42524432,  /* 'BRD2' */
-    icSigBRDF3Tag                          = 0x42524433,  /* 'BRD3' */
+    icSigBrdfColorimetricParameter0Tag     = 0x62637030,  /* 'bcp0' */
+    icSigBrdfColorimetricParameter1Tag     = 0x62637031,  /* 'bcp1' */
+    icSigBrdfColorimetricParameter2Tag     = 0x62637032,  /* 'bcp2' */
+    icSigBrdfColorimetricParameter3Tag     = 0x62637033,  /* 'bcp3' */
+    icSigBrdfSpectralParameter0Tag         = 0x62737030,  /* 'bsp0' */
+    icSigBrdfSpectralParameter1Tag         = 0x62737031,  /* 'bsp1' */
+    icSigBrdfSpectralParameter2Tag         = 0x62737032,  /* 'bsp2' */
+    icSigBrdfSpectralParameter3Tag         = 0x62737033,  /* 'bsp3' */
     icSigBRDFAToB0Tag                      = 0x62414230,  /* 'bAB0' */
     icSigBRDFAToB1Tag                      = 0x62414231,  /* 'bAB1' */
     icSigBRDFAToB2Tag                      = 0x62414232,  /* 'bAB2' */
@@ -348,6 +352,14 @@ typedef enum {
     icSigBRDFDToB1Tag                      = 0x62444231,  /* 'bDB1' */
     icSigBRDFDToB2Tag                      = 0x62444232,  /* 'bDB2' */
     icSigBRDFDToB3Tag                      = 0x62444233,  /* 'bDB3' */
+    icSigBRDFMToB0Tag                      = 0x624D4230,  /* 'bMB0' */
+    icSigBRDFMToB1Tag                      = 0x624D4231,  /* 'bMB1' */
+    icSigBRDFMToB2Tag                      = 0x624D4232,  /* 'bMB2' */
+    icSigBRDFMToB3Tag                      = 0x624D4233,  /* 'bMB3' */
+    icSigBRDFMToS0Tag                      = 0x624D5330,  /* 'bMS0' */
+    icSigBRDFMToS1Tag                      = 0x624D5331,  /* 'bMS1' */
+    icSigBRDFMToS2Tag                      = 0x624D5332,  /* 'bMS2' */
+    icSigBRDFMToS3Tag                      = 0x624D5333,  /* 'bMS3' */
     icSigBToA0Tag                          = 0x42324130,  /* 'B2A0' */
     icSigBToA1Tag                          = 0x42324131,  /* 'B2A1' */
     icSigBToA2Tag                          = 0x42324132,  /* 'B2A2' */
@@ -635,18 +647,31 @@ typedef enum {
   icSigFunctionBrdfMember             = 0x66756e63,  /* 'func' */
   icSigNumParamsBrdfMember            = 0x6e756d70,  /* 'nump' */
   icSigTransformBrdfMember            = 0x7866726d,  /* 'xfrm' */
-  icSigLightTransformBrdfMember       = 0x6c747866,  /* 'ltxf' */
-  icSigOutputTransformBrdfMember      = 0x6f757478,  /* 'outx' */ /* Note: converts the output of the BRDF model to PCS */
 } icBrdfMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
 #define icSigUnknownBrdfMember    ((icBrdfMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxBrdfMamber           ((icBrdfMemberSignature) 0xFFFFFFFF)
+#define icMaxBrdfMember           ((icBrdfMemberSignature) 0xFFFFFFFF)
 
 /**
  * BRDF type signatures
  */
 typedef enum {
-  icSigBRDFTypeWard               = 0x77617264    /* 'ward' */
+  icSigBrdfTypeBlinnPhongMono         = 0x42506830  /* 'BPh0' */,
+  icSigBrdfTypeBlinnPhongColor        = 0x42506831  /* 'BPh1' */,
+  icSigBrdfTypeCookTorranceMono1Lobe  = 0x43543130  /* 'CT10' */,
+  icSigBrdfTypeCookTorranceMono2Lobe  = 0x43543230  /* 'CT20' */,
+  icSigBrdfTypeCookTorranceMono3Lobe  = 0x43543330  /* 'CT30' */,
+  icSigBrdfTypeCookTorranceColor1Lobe = 0x43543131  /* 'CT11' */,
+  icSigBrdfTypeCookTorranceColor2Lobe = 0x43543231  /* 'CT21' */,
+  icSigBrdfTypeCookTorranceColor3Lobe = 0x43543331  /* 'CT31' */,
+  icSigBrdfTypeWardMono               = 0x57617230  /* 'War0' */,
+  icSigBrdfTypeWardColor              = 0x57617230  /* 'War1' */,
+  icSigBrdfTypeLafortuneMono1Lobe     = 0x4c613130  /* 'La10' */,
+  icSigBrdfTypeLafortuneMono2Lobe     = 0x4c613230  /* 'La20' */,
+  icSigBrdfTypeLafortuneMono3Lobe     = 0x4c613330  /* 'La30' */,
+  icSigBrdfTypeLafortuneColor1Lobe    = 0x4c613131  /* 'La11' */,
+  icSigBrdfTypeLafortuneColor2Lobe    = 0x4c613231  /* 'La21' */,
+  icSigBrdfTypeLafortuneColor3Lobe    = 0x4c613331  /* 'La31' */,
 } icSigBRDFType;
 
 /**
@@ -752,12 +777,10 @@ typedef enum {
 
 /** Convenience Enum Definitions - Not defined in ICC specification*/
 #define icSigGamutData      ((icColorSpaceSignature) 0x67616D74)  /* 'gamt' */
-#define icSigBRDFParameters ((icColorSpaceSignature) 0x42524446)  /* 'BRDF' */
-#define icSigBRDFInput      ((icColorSpaceSignature) 0x42524449)  /* 'BRDI' */
-#define icSigBRDFOutput     ((icColorSpaceSignature) 0x4252444f)  /* 'BRDO' */
+#define icSigBRDFParameters ((icColorSpaceSignature) 0x62700000)  /* "bp0000" */
+#define icSigBRDFDirect     ((icColorSpaceSignature) 0x62640000)  /* "bd0000" */
 #define icSigUnknownData    ((icColorSpaceSignature) 0x3f3f3f3f)  /* '????' */
 #define icMaxEnumData       ((icColorSpaceSignature) 0xFFFFFFFF)
-
 
 /** icSpectralColorSignature enumerations */
 typedef enum {
@@ -800,6 +823,8 @@ typedef enum {
 #define icSigBiDirReflectanceSpectralPcsData ((icColorSpaceSignature)icSigBiSpectralReflectanceData)
 #define icSigSparseMatrixSpectralPcsData ((icColorSpaceSignature)icSigSparseMatrixReflectanceData)
 
+/* Default luminance (cd/m^2) for converting between Luminance based and Normalized colorimetry */
+#define icDefaultLuminance 160
 
 /** profileClass enumerations */
 typedef enum {

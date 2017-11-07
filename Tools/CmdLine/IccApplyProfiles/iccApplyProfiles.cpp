@@ -117,26 +117,34 @@ void Usage()
 
   printf("  For rendering_intent:\n");
   printf("    0 - Perceptual\n");
-  printf("    1 - Relative Colorimetric\n");
+  printf("    1 - Relative\n");
   printf("    2 - Saturation\n");
-  printf("    3 - Absolute Colorimetric\n");
-  printf("    10 - Perceptual without Spectral/MPE\n");
-  printf("    11 - Relative Colorimetric without Spectral/MPE\n");
-  printf("    12 - Saturation without Spectral/MPE\n");
-  printf("    13 - Absolute Colorimetric without Spectral/MPE \n");
+  printf("    3 - Absolute\n");
+  printf("    10 - Perceptual without D2Bx/B2Dx\n");
+  printf("    11 - Relative without D2Bx/B2Dx\n");
+  printf("    12 - Saturation without D2Bx/B2Dx\n");
+  printf("    13 - Absolute without D2Bx/B2Dx\n");
   printf("    20 - Preview Perceptual\n");
-  printf("    21 - Preview Relative Colorimetric\n");
+  printf("    21 - Preview Relative\n");
   printf("    22 - Preview Saturation\n");
-  printf("    23 - Preview Absolute Colorimetric\n");
+  printf("    23 - Preview Absolute\n");
   printf("    30 - Gamut\n");
   printf("    33 - Gamut Absolute\n");
   printf("    40 - Perceptual with BPC\n");
   printf("    41 - Relative Colorimetric with BPC\n");
   printf("    42 - Saturation with BPC\n");
-  printf("    50 - BDRF Model\n");
-  printf("    60 - BDRF Light\n");
-  printf("    70 - BDRF Output\n");
+  printf("    50 - BDRF Parameters\n");
+  printf("    60 - BDRF Direct\n");
+  printf("    70 - BDRF MCS Parameters\n");
   printf("    80 - MCS connection\n");
+  printf("    100 - Luminance based Perceptual\n");
+  printf("    101 - Luminance based Relative Colorimetric\n");
+  printf("    102 - Luminance based Saturation\n");
+  printf("    103 - Luminance based Absolute Colorimetric\n");
+  printf("    110 - Luminance based Perceptual without D2Bx/B2Dx\n");
+  printf("    111 - Luminance based Relative Colorimetric without D2Bx/B2Dx\n");
+  printf("    112 - Luminance based Saturation without D2Bx/B2Dx\n");
+  printf("    113 - Luminance based Absolute Colorimetric without D2Bx/B2Dx \n");
 }
 
 //===================================================
@@ -224,7 +232,7 @@ int main(int argc, icChar* argv[])
   bool bSeparation = atoi(argv[6])!=0;
   bool bEmbed = atoi(argv[7])!=0;
 
-  int nIntent, nType;
+  int nIntent, nType, nLuminance;
 
   //Allocate a CIccCmm to use to apply profiles. 
   //Let profiles determine starting and ending color spaces.
@@ -256,6 +264,8 @@ int main(int argc, icChar* argv[])
     else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
       bUseMPE = true;
       nIntent = atoi(argv[nCount+1]);
+      nLuminance = nIntent / 100;
+      nIntent = nIntent % 100;
       nType = abs(nIntent) / 10;
       nIntent = nIntent % 10;
       CIccProfile *pPccProfile = NULL;
@@ -271,6 +281,10 @@ int main(int argc, icChar* argv[])
         nType = 0;
         Hint.AddHint(new CIccApplyBPCHint());
         break;
+      }
+
+      if (nLuminance) {
+        Hint.AddHint(new CIccLuminanceMatchingHint());
       }
 
       // Use of following -PCC arg allows for profile connection conditions to be defined

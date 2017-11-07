@@ -196,9 +196,11 @@ public:
   virtual icFloatNumber getPccCCT();
   virtual icStandardObserver getPccObserver();
   virtual void getNormIlluminantXYZ(icFloatNumber *pXYZ);
+  virtual void getLumIlluminantXYZ(icFloatNumber *pXYZ);
   virtual bool getMediaWhiteXYZ(icFloatNumber *pXYZ);
-
+  
   bool calcNormIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC);
+  bool calcLumIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC);
   bool calcMediaWhiteXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC);
 
 protected:

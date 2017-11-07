@@ -166,6 +166,7 @@ typedef enum {
   icSigSquareRootOp                 = 0x73717274,  /* 'sqrt' */
   icSigCubeOp                       = 0x63622020,  /* 'cb  ' */
   icSigCubeRootOp                   = 0x63627274,  /* 'cbrt' */
+  icSigSignOp                       = 0x7369676e,  /* 'sign' */
   icSigAbsoluteValOp                = 0x61627320,  /* 'abs ' */
   icSigFloorOp                      = 0x666c6f72,  /* 'flor' */
   icSigCeilingOp                    = 0x6365696c,  /* 'ceil' */

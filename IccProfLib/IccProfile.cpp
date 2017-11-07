@@ -1309,13 +1309,6 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     else {
       switch(m_Header.pcs) {
         case icSigNoColorData:
-          if (m_Header.version<icVersionNumberV5) {
-            sReport += icValidateCriticalErrorMsg;
-            sprintf(buf, " - %s: Invalid pcs color space!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
-            sReport += buf;
-            rv = icMaxStatus(rv, icValidateCriticalError);
-            break;
-          }
           break;
 
         case icSigXYZData:
@@ -1872,11 +1865,15 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
       return true;
     }
 
-  case icSigBRDF0Tag:
-  case icSigBRDF1Tag:
-  case icSigBRDF2Tag:
-  case icSigBRDF3Tag:
-    {
+  case icSigBrdfColorimetricParameter0Tag:
+  case icSigBrdfColorimetricParameter1Tag:
+  case icSigBrdfColorimetricParameter2Tag:
+  case icSigBrdfColorimetricParameter3Tag:
+  case icSigBrdfSpectralParameter0Tag:
+  case icSigBrdfSpectralParameter1Tag:
+  case icSigBrdfSpectralParameter2Tag:
+  case icSigBrdfSpectralParameter3Tag:
+  {
       if (structSig==icSigBRDFStruct)
         return true;
       else
@@ -2718,6 +2715,40 @@ void CIccProfile::getNormIlluminantXYZ(icFloatNumber *pXYZ)
 }
 
 /**
+****************************************************************************
+* Name: CIccProfile::getLumIlluminantXYZ
+*
+* Purpose: Get the XYZ Luminance coordinates (in cd/m^2 units) for the
+* illuminant and observer associated with profile connection.
+*
+*****************************************************************************
+*/
+void CIccProfile::getLumIlluminantXYZ(icFloatNumber *pXYZ)
+{
+  const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();
+  if (!pCond) { 
+    const CIccTagXYZ *pXYZTag = (CIccTagXYZ*) FindTagOfType(icSigLuminanceTag, icSigXYZType);
+    if (pXYZTag) {
+      icFloatNumber Y = icFtoD((*pXYZTag)[0].Y);
+
+      pXYZ[0] = icFtoD(m_Header.illuminant.X) * Y;
+      pXYZ[1] = icFtoD(m_Header.illuminant.Y) * Y;
+      pXYZ[2] = icFtoD(m_Header.illuminant.Z) * Y;
+    }
+    else { // No Luminance Tag so just use default luminance
+      pXYZ[0] = icFtoD(m_Header.illuminant.X) * icDefaultLuminance;
+      pXYZ[1] = icFtoD(m_Header.illuminant.Y) * icDefaultLuminance;
+      pXYZ[2] = icFtoD(m_Header.illuminant.Z) * icDefaultLuminance;
+    }
+  }
+  else {
+    pXYZ[0] = pCond->m_illuminantXYZ.X;
+    pXYZ[1] = pCond->m_illuminantXYZ.Y;
+    pXYZ[2] = pCond->m_illuminantXYZ.Z;
+  }
+}
+
+/**
  ****************************************************************************
  * Name: CIccProfile::getMediaWhiteXYZ
  * 
@@ -2751,11 +2782,57 @@ bool CIccProfile::getMediaWhiteXYZ(icFloatNumber *pXYZ)
  ****************************************************************************
  * Name: CIccProfile::calcNormIlluminantXYZ
  * 
- * Purpose: Get the Normalized XYZ coordinates for the illuminant and observer
- *  associated with profile connection.
+ * Purpose: Get the  XYZ Luminance coordinates (in cd/m^2 units) for the
+ * illuminant and observer associated with profile connection.
+ *
+ * This assumes that the illuminant is not normalized and values for each
+ * wavelength are expressed in terms of (cd/m^2)
  * 
  *****************************************************************************
  */
+bool CIccProfile::calcLumIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC)
+{
+  const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();
+
+  if (pCond) {
+    CIccMatrixMath *obs = pCond->getObserverMatrix(pCond->m_illuminantRange);
+
+    if (!obs) {
+      pXYZ[0] = icFtoD(m_Header.illuminant.X) * icDefaultLuminance;
+      pXYZ[1] = icFtoD(m_Header.illuminant.Y) * icDefaultLuminance;
+      pXYZ[2] = icFtoD(m_Header.illuminant.Z) * icDefaultLuminance;
+
+      return false;
+    }
+
+    obs->VectorScale(pCond->m_illuminant);
+
+    pXYZ[0] = 683.0 * obs->RowSum(0);
+    pXYZ[1] = 683.0 * obs->RowSum(1);
+    pXYZ[2] = 683.0 * obs->RowSum(2);
+
+    delete obs;
+
+    return true;
+  }
+  else {
+    pXYZ[0] = icFtoD(m_Header.illuminant.X) * icDefaultLuminance;
+    pXYZ[1] = icFtoD(m_Header.illuminant.Y) * icDefaultLuminance;
+    pXYZ[2] = icFtoD(m_Header.illuminant.Z) * icDefaultLuminance;
+
+    return false;
+  }
+}
+
+/**
+****************************************************************************
+* Name: CIccProfile::calcLumIlluminantXYZ
+*
+* Purpose: Get the Normalized XYZ coordinates for the illuminant and observer
+*  associated with profile connection.
+*
+*****************************************************************************
+*/
 bool CIccProfile::calcNormIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC)
 {
   const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();

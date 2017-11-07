@@ -127,9 +127,9 @@ typedef enum {
   icXformLutPreview            = 2,
   icXformLutGamut              = 3,
   icXformLutBPC                = 4,
-  icXformLutBRDFModel          = 5,
-  icXformLutBRDFLight          = 6,
-  icXformLutBRDFOutput         = 7,
+  icXformLutBRDFParam          = 5,
+  icXformLutBRDFDirect         = 6,
+  icXformLutBRDFMcsParam       = 7,
   icXformLutMCS                = 8,
  } icXformLutType;
 
@@ -287,6 +287,20 @@ public:
 	virtual IIccAdjustPCSXform *GetNewAdjustPCSXform() const=0;
 };
 
+/**
+**************************************************************************
+* Type: Class
+*
+* Purpose:
+*		 Hint for using Luminance Matching colorimetric PCS processing
+**************************************************************************
+*/
+class ICCPROFLIB_API CIccLuminanceMatchingHint : public IIccCreateXformHint
+{
+public:
+  virtual const char *GetHintType() const { return "CIccLuminanceMatchingHint"; }
+};
+
 
 
 //forward reference to CIccXform used by CIccApplyXform
@@ -397,6 +411,7 @@ public:
   void SetSrcPCSConversion(bool bPcsConvert) { m_bSrcPcsConversion = bPcsConvert; }
   void SetDstPCSConversion(bool bPcsConvert) { m_bDstPcsConversion = bPcsConvert; }
   bool NeedAdjustPCS() { return m_bAdjustPCS; }
+  bool LuminanceMatching() { return m_bLuminanceMatching; }
 
   virtual IIccProfileConnectionConditions *GetConnectionConditions() const { return m_pConnectionConditions; }
 
@@ -422,6 +437,7 @@ protected:
   bool m_bUseSpectralPCS;
   bool m_bAbsToRel;
   icMCSConnectionType m_nMCS;
+  bool m_bLuminanceMatching;
   
   //Temporary field
   bool m_bSrcPcsConversion;
@@ -966,6 +982,8 @@ protected:
   void pushXyzToLab(IIccProfileConnectionConditions *pPCC);
   void pushXyzToXyzIn();
   void pushXyzInToXyz();
+  void pushXyzToXyzLum(IIccProfileConnectionConditions *pPCC);
+  void pushXyzLumToXyz(IIccProfileConnectionConditions *pPCC);
   void pushScale3(icFloatNumber v1, icFloatNumber v2, icFloatNumber v3);
   void pushOffset3(icFloatNumber v1, icFloatNumber v2, icFloatNumber v3, bool bConvertIntXyzOffset=true);
   void pushRef2Xyz(CIccProfile *pProfile, IIccProfileConnectionConditions *pPcc);
@@ -1727,18 +1745,64 @@ protected:
   icApplyInterface m_nApplyInterface;
 };
 
-
+template<class T>
 class ICCPROFLIB_API CIccMruPixel
 {
 public:
   CIccMruPixel() { pPixelData = NULL; pNext = NULL; }
 
-  icFloatNumber *pPixelData;
+  T *pPixelData;
   CIccMruPixel *pNext;
 };
 
-//Forward Class for CIccApplyNamedColorCmm
-class CIccMruCmm;
+typedef CIccMruPixel<icFloatNumber> CIccMruPixelFloat;
+typedef CIccMruPixel<icUInt8Number> CIccMruPixel8;
+typedef CIccMruPixel<icUInt16Number> CIccMruPixel16;
+
+/**
+**************************************************************************
+* Type: Class
+*
+* Purpose: Defines a class that provides and interface for caching
+* application pf pixel transformations through a CMM.
+*
+**************************************************************************
+*/
+template <class T>
+class ICCPROFLIB_API CIccMruCache
+{
+public:
+  static CIccMruCache<T> *NewMruCache(icUInt16Number nSrcSamples, icUInt16Number nDstSamples, icUInt16Number nCacheSize = 4);
+
+  virtual ~CIccMruCache();
+
+  virtual bool Apply(T *DstPixel, const T *SrcPixel);
+  virtual void Update(T *DstPixel);
+
+protected:
+  CIccMruCache();
+  bool Init(icUInt16Number nSrcSamples, icUInt16Number nDstSamples, icUInt16Number nCacheSize = 4);
+
+  icUInt16Number m_nCacheSize;
+
+  T *m_pixelData;
+
+  CIccMruPixel<T> *m_pFirst;
+  CIccMruPixel<T> *m_cache;
+
+  icUInt16Number m_nNumPixel;
+
+  icUInt32Number m_nTotalSamples;
+  icUInt32Number m_nSrcSamples;
+
+  icUInt32Number m_nSrcSize;
+  icUInt32Number m_nDstSize;
+};
+
+typedef CIccMruCache<icFloatNumber> CIccMruCacheFloat;
+typedef CIccMruCache<icUInt8Number> CIccMruCache8;
+typedef CIccMruCache<icUInt16Number> CIccMruCache16;
+
 /**
 **************************************************************************
 * Type: Class 
@@ -1766,22 +1830,7 @@ protected:
   bool Init(CIccCmm *pCachedCmm, icUInt16Number nCacheSize);
 
   CIccCmm *m_pCachedCmm;
-
-  icUInt16Number m_nCacheSize;
-
-  icFloatNumber *m_pixelData;
-
-  CIccMruPixel *m_pFirst;
-  CIccMruPixel *m_cache;
-
-  icUInt16Number m_nNumPixel;
-
-  icUInt32Number m_nTotalSamples;
-  icUInt32Number m_nSrcSamples;
-
-  icUInt32Number m_nSrcSize;
-  icUInt32Number m_nDstSize;
-
+  CIccMruCacheFloat *m_pCache;
 };
 
 /**
