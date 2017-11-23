@@ -26,6 +26,18 @@ option(ENABLE_TOOLS "Build tools" ON)
 option(ENABLE_SHARED_LIBS "Build dynamic link libs" ON)
 option(ENABLE_STATIC_LIBS "Build static libs" ON)
 
+IF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+  OPTION(ENABLE_INSTALL_RIM "Install files" ON)
+ELSE()
+  MESSAGE( "-- RefIccMAX: compile as subproject - skip install (ENABLE_INSTALL_RIM=OFF)" )
+  # disable install and build of shared libs for fallback subproject
+  IF(NOT ENABLE_INSTALL_RIM)
+    SET(ENABLE_INSTALL_RIM OFF)
+  ENDIF(NOT ENABLE_INSTALL_RIM)
+  SET(ENABLE_STATIC_LIBS ON)
+  SET(ENABLE_SHARED_LIBS OFF)
+ENDIF()
+
 IF( ENABLE_TESTS )
   SET(ENABLE_STATIC_LIBS ON)
 ENDIF()
