@@ -104,7 +104,7 @@ SET (TARGET_DOCUMENTATION_FOLDER
 #cmake settings for use by find_package
 CONFIGURE_FILE (
 		"${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.cmake"
+		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 		@ONLY
 	)
 
