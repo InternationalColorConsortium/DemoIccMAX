@@ -70,7 +70,7 @@ ADD_CUSTOM_TARGET( uninstall
 #
 
 SET (TARGET_INCLUDE_FOLDER
-		${PROJECT_DOWN_NAME}
+		${PROJECT_NAME}
 		CACHE STRING
 		"Optional folder below system include folder to install include files."
     )
