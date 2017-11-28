@@ -104,7 +104,7 @@
     <ClCompile Include="IccXformFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="md5.cpp">
+    <ClCompile Include="IccMD5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -223,7 +223,7 @@
     <ClInclude Include="MainPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="md5.h">
+    <ClInclude Include="IccMD5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,7 +24,7 @@ These notices must be retained in any copies of any part of this
 documentation and/or software.
  */
 
-#include "md5.h"
+#include "IccMD5.h"
 #include <memory.h>
 #include <string.h>
 

@@ -73,8 +73,8 @@
 		30FD94111AA4905D0072608A /* IccXformFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CA1AA4905D0072608A /* IccXformFactory.h */; };
 		30FD94121AA4905D0072608A /* icProfileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CB1AA4905D0072608A /* icProfileHeader.h */; };
 		30FD94131AA4905D0072608A /* MainPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CC1AA4905D0072608A /* MainPage.h */; };
-		30FD94141AA4905D0072608A /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93CF1AA4905D0072608A /* md5.cpp */; };
-		30FD94151AA4905D0072608A /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93D01AA4905D0072608A /* md5.h */; };
+		30FD94141AA4905D0072608A /* IccMD5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93CF1AA4905D0072608A /* IccMD5.cpp */; };
+		30FD94151AA4905D0072608A /* IccMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93D01AA4905D0072608A /* IccMD5.h */; };
 		30FD94161AA4905D0072608A /* IccApplyBPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93821AA4905D0072608A /* IccApplyBPC.cpp */; };
 		30FD94171AA4905D0072608A /* IccApplyBPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93831AA4905D0072608A /* IccApplyBPC.h */; };
 		30FD94181AA4905D0072608A /* IccArrayBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93841AA4905D0072608A /* IccArrayBasic.cpp */; };
@@ -141,8 +141,8 @@
 		30FD94561AA4905D0072608A /* IccXformFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CA1AA4905D0072608A /* IccXformFactory.h */; };
 		30FD94571AA4905D0072608A /* icProfileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CB1AA4905D0072608A /* icProfileHeader.h */; };
 		30FD94581AA4905D0072608A /* MainPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CC1AA4905D0072608A /* MainPage.h */; };
-		30FD94591AA4905D0072608A /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93CF1AA4905D0072608A /* md5.cpp */; };
-		30FD945A1AA4905D0072608A /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93D01AA4905D0072608A /* md5.h */; };
+		30FD94591AA4905D0072608A /* IccMD5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93CF1AA4905D0072608A /* IccMD5.cpp */; };
+		30FD945A1AA4905D0072608A /* IccMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93D01AA4905D0072608A /* IccMD5.h */; };
 		30FD945B1AA4905D0072608A /* IccApplyBPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93821AA4905D0072608A /* IccApplyBPC.cpp */; };
 		30FD945C1AA4905D0072608A /* IccApplyBPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93831AA4905D0072608A /* IccApplyBPC.h */; };
 		30FD945D1AA4905D0072608A /* IccArrayBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93841AA4905D0072608A /* IccArrayBasic.cpp */; };
@@ -209,8 +209,8 @@
 		30FD949B1AA4905D0072608A /* IccXformFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CA1AA4905D0072608A /* IccXformFactory.h */; };
 		30FD949C1AA4905D0072608A /* icProfileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CB1AA4905D0072608A /* icProfileHeader.h */; };
 		30FD949D1AA4905D0072608A /* MainPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93CC1AA4905D0072608A /* MainPage.h */; };
-		30FD949E1AA4905D0072608A /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93CF1AA4905D0072608A /* md5.cpp */; };
-		30FD949F1AA4905D0072608A /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93D01AA4905D0072608A /* md5.h */; };
+		30FD949E1AA4905D0072608A /* IccMD5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30FD93CF1AA4905D0072608A /* IccMD5.cpp */; };
+		30FD949F1AA4905D0072608A /* IccMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 30FD93D01AA4905D0072608A /* IccMD5.h */; };
 		5593C5931CC6CAC3007F5186 /* IccEnvVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5593C58F1CC6CAC3007F5186 /* IccEnvVar.cpp */; };
 		5593C5941CC6CAC3007F5186 /* IccEnvVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5593C58F1CC6CAC3007F5186 /* IccEnvVar.cpp */; };
 		5593C5951CC6CAC3007F5186 /* IccEnvVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5593C58F1CC6CAC3007F5186 /* IccEnvVar.cpp */; };
@@ -325,8 +325,8 @@
 		30FD93CC1AA4905D0072608A /* MainPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPage.h; sourceTree = SOURCE_ROOT; };
 		30FD93CD1AA4905D0072608A /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = SOURCE_ROOT; };
 		30FD93CE1AA4905D0072608A /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = SOURCE_ROOT; };
-		30FD93CF1AA4905D0072608A /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = SOURCE_ROOT; };
-		30FD93D01AA4905D0072608A /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = SOURCE_ROOT; };
+		30FD93CF1AA4905D0072608A /* IccMD5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccMD5.cpp; sourceTree = SOURCE_ROOT; };
+		30FD93D01AA4905D0072608A /* IccMD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccMD5.h; sourceTree = SOURCE_ROOT; };
 		5593C58F1CC6CAC3007F5186 /* IccEnvVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccEnvVar.cpp; sourceTree = SOURCE_ROOT; };
 		5593C5901CC6CAC3007F5186 /* IccEnvVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccEnvVar.h; sourceTree = SOURCE_ROOT; };
 		5593C5911CC6CAC3007F5186 /* IccSolve.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccSolve.cpp; sourceTree = SOURCE_ROOT; };
@@ -456,8 +456,8 @@
 				30FD93CC1AA4905D0072608A /* MainPage.h */,
 				30FD93CD1AA4905D0072608A /* Makefile.am */,
 				30FD93CE1AA4905D0072608A /* Makefile.in */,
-				30FD93CF1AA4905D0072608A /* md5.cpp */,
-				30FD93D01AA4905D0072608A /* md5.h */,
+				30FD93CF1AA4905D0072608A /* IccMD5.cpp */,
+				30FD93D01AA4905D0072608A /* IccMD5.h */,
 			);
 			name = IccProfLib;
 			path = ../../IccProfLib;
@@ -516,7 +516,7 @@
 				30FD94121AA4905D0072608A /* icProfileHeader.h in Headers */,
 				30FD94131AA4905D0072608A /* MainPage.h in Headers */,
 				5593C5971CC6CAC3007F5186 /* IccEnvVar.h in Headers */,
-				30FD94151AA4905D0072608A /* md5.h in Headers */,
+				30FD94151AA4905D0072608A /* IccMD5.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,7 +562,7 @@
 				30FD949C1AA4905D0072608A /* icProfileHeader.h in Headers */,
 				30FD949D1AA4905D0072608A /* MainPage.h in Headers */,
 				5593C5981CC6CAC3007F5186 /* IccEnvVar.h in Headers */,
-				30FD949F1AA4905D0072608A /* md5.h in Headers */,
+				30FD949F1AA4905D0072608A /* IccMD5.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,7 +608,7 @@
 				30FD94571AA4905D0072608A /* icProfileHeader.h in Headers */,
 				30FD94581AA4905D0072608A /* MainPage.h in Headers */,
 				5593C5961CC6CAC3007F5186 /* IccEnvVar.h in Headers */,
-				30FD945A1AA4905D0072608A /* md5.h in Headers */,
+				30FD945A1AA4905D0072608A /* IccMD5.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -734,7 +734,7 @@
 				30FD940C1AA4905D0072608A /* IccTagProfSeqId.cpp in Sources */,
 				30FD940E1AA4905D0072608A /* IccUtil.cpp in Sources */,
 				30FD94101AA4905D0072608A /* IccXformFactory.cpp in Sources */,
-				30FD94141AA4905D0072608A /* md5.cpp in Sources */,
+				30FD94141AA4905D0072608A /* IccMD5.cpp in Sources */,
 				5593C5941CC6CAC3007F5186 /* IccEnvVar.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -774,7 +774,7 @@
 				30FD94961AA4905D0072608A /* IccTagProfSeqId.cpp in Sources */,
 				30FD94981AA4905D0072608A /* IccUtil.cpp in Sources */,
 				30FD949A1AA4905D0072608A /* IccXformFactory.cpp in Sources */,
-				30FD949E1AA4905D0072608A /* md5.cpp in Sources */,
+				30FD949E1AA4905D0072608A /* IccMD5.cpp in Sources */,
 				5593C5951CC6CAC3007F5186 /* IccEnvVar.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -814,7 +814,7 @@
 				30FD94511AA4905D0072608A /* IccTagProfSeqId.cpp in Sources */,
 				30FD94531AA4905D0072608A /* IccUtil.cpp in Sources */,
 				30FD94551AA4905D0072608A /* IccXformFactory.cpp in Sources */,
-				30FD94591AA4905D0072608A /* md5.cpp in Sources */,
+				30FD94591AA4905D0072608A /* IccMD5.cpp in Sources */,
 				5593C5931CC6CAC3007F5186 /* IccEnvVar.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

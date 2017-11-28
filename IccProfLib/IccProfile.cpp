@@ -79,7 +79,7 @@
 #include "IccIO.h"
 #include "IccUtil.h"
 #include "IccMatrixMath.h"
-#include "md5.h"
+#include "IccMD5.h"
 
 
 #ifdef USEREFICCMAXNAMESPACE

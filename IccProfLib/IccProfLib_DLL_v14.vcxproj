@@ -531,7 +531,7 @@
     </ClCompile>
     <ClCompile Include="IccWrapper.cpp" />
     <ClCompile Include="IccXformFactory.cpp" />
-    <ClCompile Include="md5.cpp">
+    <ClCompile Include="IccMD5.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">EnableFastChecks</BasicRuntimeChecks>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -594,7 +594,7 @@
     <ClInclude Include="IccXformFactory.h" />
     <ClInclude Include="icProfileHeader.h" />
     <ClInclude Include="MainPage.h" />
-    <ClInclude Include="md5.h" />
+    <ClInclude Include="IccMD5.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

@@ -1331,7 +1331,7 @@
 				>
 			</File>
 			<File
-				RelativePath="md5.cpp"
+				RelativePath="IccMD5.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1576,7 +1576,7 @@
 				>
 			</File>
 			<File
-				RelativePath="md5.h"
+				RelativePath="IccMD5.h"
 				>
 			</File>
 		</Filter>
