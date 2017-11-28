@@ -35,6 +35,52 @@ SET( CFILES
 	${SRC_PATH}/IccProfLib/md5.cpp
    )
 
+IF(ENABLE_INSTALL_RIM)
+  SET( HEADERS_PUBLIC
+    ${SRC_PATH}/IccProfLib/IccApplyBPC.h
+    ${SRC_PATH}/IccProfLib/IccArrayBasic.h
+    ${SRC_PATH}/IccProfLib/IccArrayFactory.h
+    ${SRC_PATH}/IccProfLib/IccCAM.h
+    ${SRC_PATH}/IccProfLib/IccCmm.h
+    ${SRC_PATH}/IccProfLib/IccConvertUTF.h
+    ${SRC_PATH}/IccProfLib/IccDefs.h
+    ${SRC_PATH}/IccProfLib/IccEncoding.h
+    ${SRC_PATH}/IccProfLib/IccEnvVar.h
+    ${SRC_PATH}/IccProfLib/IccEval.h
+    ${SRC_PATH}/IccProfLib/IccIO.h
+    ${SRC_PATH}/IccProfLib/IccMatrixMath.h
+    ${SRC_PATH}/IccProfLib/IccMpeACS.h
+    ${SRC_PATH}/IccProfLib/IccMpeBasic.h
+    ${SRC_PATH}/IccProfLib/IccMpeCalc.h
+    ${SRC_PATH}/IccProfLib/IccMpeFactory.h
+    ${SRC_PATH}/IccProfLib/IccMpeSpectral.h
+    ${SRC_PATH}/IccProfLib/IccPcc.h
+    ${SRC_PATH}/IccProfLib/IccPrmg.h
+    ${SRC_PATH}/IccProfLib/IccProfile.h
+    ${SRC_PATH}/IccProfLib/IccProfLibConf.h
+    ${SRC_PATH}/IccProfLib/IccProfLibVer.h
+    ${SRC_PATH}/IccProfLib/IccSolve.h
+    ${SRC_PATH}/IccProfLib/IccSparseMatrix.h
+    ${SRC_PATH}/IccProfLib/IccStructBasic.h
+    ${SRC_PATH}/IccProfLib/IccStructFactory.h
+    ${SRC_PATH}/IccProfLib/IccTagBasic.h
+    ${SRC_PATH}/IccProfLib/IccTagComposite.h
+    ${SRC_PATH}/IccProfLib/IccTagDict.h
+    ${SRC_PATH}/IccProfLib/IccTagFactory.h
+    ${SRC_PATH}/IccProfLib/IccTag.h
+    ${SRC_PATH}/IccProfLib/IccTagLut.h
+    ${SRC_PATH}/IccProfLib/IccTagMPE.h
+    ${SRC_PATH}/IccProfLib/IccTagProfSeqId.h
+    ${SRC_PATH}/IccProfLib/IccUtil.h
+    ${SRC_PATH}/IccProfLib/IccWrapper.h
+    ${SRC_PATH}/IccProfLib/IccXformFactory.h
+    ${SRC_PATH}/IccProfLib/icProfileHeader.h
+  )
+  INSTALL( FILES
+	     ${HEADERS_PUBLIC}
+	     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TARGET_INCLUDE_FOLDER}/IccProfLib )
+ENDIF(ENABLE_INSTALL_RIM)
+
 SET( SOURCES ${CFILES} )
 
 IF(APPLE)
