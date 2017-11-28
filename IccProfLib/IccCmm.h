@@ -1803,6 +1803,8 @@ typedef CIccMruCache<icFloatNumber> CIccMruCacheFloat;
 typedef CIccMruCache<icUInt8Number> CIccMruCache8;
 typedef CIccMruCache<icUInt16Number> CIccMruCache16;
 
+// forward class CIccMruCmm used by CIccApplyMruCmm
+class CIccMruCmm;
 /**
 **************************************************************************
 * Type: Class 
