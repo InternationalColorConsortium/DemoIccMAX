@@ -79,16 +79,20 @@ SET (TARGET_DOCUMENTATION_FOLDER
 		"The folder below system prefix where to install api documentation files."
     )
 
+#additional cmake modules for loading libraries
+SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/Modules/")
 
 FIND_PROGRAM(CMAKE_AR_TMP NAMES ar)
 
 SET( TOP_SOURCE_DIR ../.. )
 INCLUDE_DIRECTORIES ( ${TOP_SOURCE_DIR}/IccProfLib/ )
+INCLUDE_DIRECTORIES ( ${TOP_SOURCE_DIR}/IccXML/IccLibXML/ )
 
 #
 # All directories
 #
 ADD_SUBDIRECTORY( IccProfLib )
+ADD_SUBDIRECTORY( IccXML )
 IF(ENABLE_TOOLS)
   ADD_SUBDIRECTORY( Tools/IccDumpProfile )
 ENDIF(ENABLE_TOOLS)
