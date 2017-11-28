@@ -65,7 +65,7 @@
 #include "IccMpeXml.h"
 #include "IccUtilXml.h"
 #include "IccIoXml.h"
-#include "IccCam.h"
+#include "IccCAM.h"
 
 #include <cstring> /* C strings strcpy, memcpy ... */
 
