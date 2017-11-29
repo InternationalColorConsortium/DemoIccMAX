@@ -546,6 +546,7 @@ icFloatNumber ICCPROFLIB_API icF16toF(icFloat16Number num)
   icUInt16Number numsgn, numexp, nummnt;
   icUInt32Number rv, rvsgn, rvexp, rvmnt;
   icInt32Number tmpexp;
+  icFloatNumber * rvfp, rvf;
   int exp;
 
   if (!(num & 0x7FFF)) {
@@ -579,17 +580,20 @@ icFloatNumber ICCPROFLIB_API icF16toF(icFloat16Number num)
       rv = (rvsgn | rvexp | rvmnt);
     }
   }
-  return *((icFloatNumber*)&rv);
+  rvfp = (icFloatNumber*)&rv;
+  rvf = *rvfp;
+  return rvf;
 }
 
 icFloat16Number ICCPROFLIB_API icFtoF16(icFloat32Number num)
 {
   icUInt16Number rv;
   icUInt16Number rvsgn, rvexp, rvmnt;
-  icUInt32Number flt, fltsgn, fltexp, fltmnt;
+  icUInt32Number flt, *fltp, fltsgn, fltexp, fltmnt;
   int exp;
 
-  flt = *((icUInt32Number*)&num);
+  fltp = (icUInt32Number*)&num;
+  flt = *fltp;
   if (!(flt & 0x7FFFFFFF)) {
     rv = (icUInt16Number) (flt >> 16);
   } else { 
