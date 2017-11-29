@@ -1,7 +1,7 @@
 
 /** @file
  
-md5.H - header file for md5.cpp
+IccMD5.H - header file for IccMD5.cpp
 
 Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
 rights reserved.

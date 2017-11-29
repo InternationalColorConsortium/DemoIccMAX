@@ -32,7 +32,7 @@ SET( CFILES
 	${SRC_PATH}/IccProfLib/IccTagProfSeqId.cpp
 	${SRC_PATH}/IccProfLib/IccUtil.cpp
 	${SRC_PATH}/IccProfLib/IccXformFactory.cpp
-	${SRC_PATH}/IccProfLib/md5.cpp
+	${SRC_PATH}/IccProfLib/IccMD5.cpp
    )
 
 IF(ENABLE_INSTALL_RIM)
