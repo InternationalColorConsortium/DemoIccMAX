@@ -2191,7 +2191,7 @@ bool CIccMpeXmlCalculator::ValidMacroCalls(const char *szMacroText, std::string 
 
     std::string name = parse.GetReference();
     MacroMap::const_iterator m = m_macroMap.find(name);
-    if (m == m_macroMap.cend()) {
+    if (m == m_macroMap.end()) {
       parseStr += "Call to undefined macro '" + name + "'\n";
       return false;
     }
@@ -2213,7 +2213,7 @@ bool CIccMpeXmlCalculator::ValidateMacroCalls(std::string &parseStr) const
 {
   MacroMap::const_iterator m;
 
-  for (m = m_macroMap.cbegin(); m != m_macroMap.cend(); m++) {
+  for (m = m_macroMap.begin(); m != m_macroMap.end(); m++) {
     if (!ValidMacroCalls(m->second.c_str(), "*", parseStr)) {
       return false;
     }
