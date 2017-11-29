@@ -1124,13 +1124,13 @@ template class CIccXmlArrayType<icFloat64Number, icSigFloat64ArrayType>;
 
 const icRenderingIntent icGetRenderingIntentValue (icChar *szRenderingIntent)
 {
-  if (szRenderingIntent == "Perceptual")
+  if (!strcmp(szRenderingIntent, "Perceptual"))
 	  return icPerceptual;
-  else if (szRenderingIntent == "Media-relative colorimetric")
+  else if (!strcmp(szRenderingIntent, "Media-relative colorimetric"))
 	  return icRelativeColorimetric;
-  else if (szRenderingIntent == "Saturation")
+  else if (!strcmp(szRenderingIntent, "Saturation"))
 	  return icSaturation;
-  else if (szRenderingIntent == "ICC-absolute colorimetric")
+  else if (!strcmp(szRenderingIntent, "ICC-absolute colorimetric"))
 	  return icAbsoluteColorimetric;
   
   return icPerceptual;
