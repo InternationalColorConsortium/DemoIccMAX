@@ -1,4 +1,4 @@
-SET( TARGET_NAME IccProfLib)
+SET( TARGET_NAME IccProfLib2)
 
 SET( SRC_PATH ../../.. )
 SET( CFILES
