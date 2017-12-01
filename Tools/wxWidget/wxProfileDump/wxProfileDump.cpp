@@ -112,6 +112,8 @@ Copyright:  (c) see ICC Software License
 #define wxFILE_MUST_EXIST wxFD_FILE_MUST_EXIST
 #endif
 
+#define wxT(x) x
+
 IMPLEMENT_APP(MyApp)
 
 // ---------------------------------------------------------------------------
@@ -304,7 +306,8 @@ void MyFrame::OpenFile(wxString profilePath)
   wxFileName filepath(profilePath);
   wxString profileTitle = filepath.GetName();
 
-  CIccProfile *pIcc = OpenIccProfile((icChar*)profilePath.wx_str());
+  char * pPath = strdup( profilePath.mb_str() );
+  CIccProfile *pIcc = OpenIccProfile(pPath);
 
   if (!pIcc) {
     (void)wxMessageBox(wxString(_T("Unable to open profile '")) + profilePath + _T("'"),
@@ -706,7 +709,8 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
 	else {
 		std::string sReport;
 		wxBeginBusyCursor();
-		CIccProfile *pIcc = ValidateIccProfile(profilePath.mb_str(), sReport, nStat);
+    char * pPath = strdup( profilePath.mb_str() );
+		CIccProfile *pIcc = ValidateIccProfile(pPath, sReport, nStat);
 		if (pIcc)
 			delete pIcc;
 		wxEndBusyCursor();
@@ -819,7 +823,8 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   else
     report += wxString::Format("Rendering Intent: %s\n", info.GetRenderingIntentName(nIntent));
 
-  icStatusCMM stat = eval.EvaluateProfile(profilePath, 0, nIntent, icInterpTetrahedral, bUseMPE);
+  char * pPath = strdup( profilePath.mb_str() );
+  icStatusCMM stat = eval.EvaluateProfile( (const icChar*) pPath, 0, nIntent, icInterpTetrahedral, bUseMPE);
 
   if (stat!=icCmmStatOk) {
     report += wxString::Format("  Unable to perform round trip on '%s'\n", profilePath.c_str());
@@ -830,7 +835,7 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
 
   CIccPRMG prmg;
 
-  stat = prmg.EvaluateProfile(profilePath, nIntent, icInterpTetrahedral, bUseMPE);
+  stat = prmg.EvaluateProfile( (const icChar*) pPath, nIntent, icInterpTetrahedral, bUseMPE);
 
   if (stat!=icCmmStatOk) {
     report += wxString::Format("  Unable to perform PRMG analysis on '%s'\n", profilePath.c_str());
