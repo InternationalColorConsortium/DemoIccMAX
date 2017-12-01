@@ -214,7 +214,7 @@ authorization from SunSoft Inc.
 #define icUseAnywhere                   0x00000000     /* Bit position 1 */
 #define icUseWithEmbeddedDataOnly       0x00000002     /* Bit position 1 */
 #define icMCSNeedsSubsetFalse           0x00000000     /* Bit Position 2 */
-#define icMCSNeedsSubsetTrue            0x00000004     /* Bit Position 2
+#define icMCSNeedsSubsetTrue            0x00000004     /* Bit Position 2 */
 
 /** 
  * Define used to indicate that this is a variable length array
@@ -585,9 +585,9 @@ typedef enum {
 #define icMaxEnumArray    ((icArraySignature) 0xFFFFFFFF)
 
 
-/************************************************************************/
-/* CMM environment variable signatures
-/************************************************************************/
+/************************************************************************
+ * CMM environment variable signatures
+ ************************************************************************/
 typedef enum {
   //Floating point constant operation
   icSigTrueVar                       = 0x74727565,  /* 'true' */
