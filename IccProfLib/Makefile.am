@@ -51,7 +51,7 @@ libSampleICCinclude_HEADERS = \
 	IccTagProfSeqId.h \
 	IccUtil.h \
 	icProfileHeader.h \
-	md5.h
+	IccMD5.h
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/SampleICC
 

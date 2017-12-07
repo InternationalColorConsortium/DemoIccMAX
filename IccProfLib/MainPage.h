@@ -35,7 +35,7 @@
  *      (selectable at time profile is attached to the CMM).
  *    - Greater than three dimensional interpolation uses linear interpolation
  *  - Matrix/TRC support
- *  - Calculation of Profile ID using the MD5 fingerprinting method (see md5.h)
+ *  - Calculation of Profile ID using the MD5 fingerprinting method (see IccMD5.h)
  *  - Dynamic creation and seemless use of private CIccTag derived objects that are implemented
  *    outside of IccProfLib (IE inside a private library or application that links with
  *    IccProfLib).
