@@ -102,9 +102,13 @@ public:
   virtual bool Describe(std::string &sDescription) const;
 
   virtual const icChar *GetClassName() const = 0;
-  virtual std::string GetElemName(icSignature sigElem) const = 0;
+  virtual const icChar *GetDisplayName() const = 0;
 
   CIccTagStruct* GetTagStruct() { return m_pTagStruct; }
+
+  virtual std::string GetElemName(icSignature sigElem) const = 0;
+  virtual icSignature GetElemSig(const icChar *szElemName) const = 0;
+
 protected:
   CIccTagStruct *m_pTagStruct;
 };

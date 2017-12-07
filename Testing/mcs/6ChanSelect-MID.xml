@@ -27,7 +27,7 @@
     <multiProcessElementType>
       <TagSignature>A2M0</TagSignature>
 	  <MultiProcessElements InputChannels="6" OutputChannels="6">
-	  <!-- Photoshop inverts the spot samples so invert them to be channel indepenent -->
+	  <!-- Photoshop inverts the spot samples so invert them to match MCS requirements -->
 		<CalculatorElement InputChannels="6" OutputChannels="6">
 			<SubElements/>
 			<MainFunction>
@@ -43,12 +43,12 @@
 	  <TagSignature>mcta</TagSignature>
 	  <ArraySignature>utf8</ArraySignature>
 	  <ArrayTags>
-	    <utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
-		<utf8TextType><TextData>Violet</TextData></utf8TextType>
-		<utf8TextType><TextData>Orange</TextData></utf8TextType>
-		<utf8TextType><TextData>Process Black</TextData></utf8TextType>
-		<utf8TextType><TextData>Blue</TextData></utf8TextType>
-		<utf8TextType><TextData>Gold</TextData></utf8TextType>
+	    <utf8TextType><TextData>Process Yellow</TextData></utf8TextType>
+			<utf8TextType><TextData>Violet</TextData></utf8TextType>
+			<utf8TextType><TextData>Orange</TextData></utf8TextType>
+			<utf8TextType><TextData>White</TextData></utf8TextType>
+			<utf8TextType><TextData>Blue</TextData></utf8TextType>
+			<utf8TextType><TextData>Gold</TextData></utf8TextType>
 	  </ArrayTags>
 	</tagArrayType>
 

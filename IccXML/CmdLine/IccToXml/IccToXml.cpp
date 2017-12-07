@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     return -1;
   }
 
-  if (!dstIO.Open(argv[2], "w")) {
+  if (!dstIO.Open(argv[2], "wb")) {
     printf("unable to open '%s'\n", argv[2]);
     return -1;
   }

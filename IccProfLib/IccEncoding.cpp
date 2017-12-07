@@ -122,7 +122,7 @@ public:
   virtual icStatusEncConvert ConvertFromParams(CIccProfilePtr &newIcc, CIccTagStruct *pParams, icHeader *pHeader);
 };
 
-static icFloatNumber icGetParamFloatNum(CIccTagStruct *pParams, icCeptMemberSignature sig, icFloatNumber defaultValue=0)
+static icFloatNumber icGetParamFloatNum(CIccTagStruct *pParams, icColorEncodingParamsMemberSignature sig, icFloatNumber defaultValue=0)
 {
   CIccTagFloat32 *pTag = (CIccTagFloat32*)pParams->FindElemOfType(sig, icSigFloat32ArrayType);
 
@@ -146,8 +146,8 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   if (!pParams || pParams->GetTagStructType()!= icSigColorEncodingParamsSruct || !pHeader)
     return icEncConvertBadParams;
 
-  CIccTagFloat32 *pWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icWhitePointChromaticityCeptMember, icSigFloat32ArrayType);
-  CIccTagFloat32 *pMediaWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icMediumWhitePointChromaticityCeptMember, icSigFloat32ArrayType);
+  CIccTagFloat32 *pWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptWhitePointChromaticityMbr, icSigFloat32ArrayType);
+  CIccTagFloat32 *pMediaWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptMediumWhitePointChromaticityMbr, icSigFloat32ArrayType);
 
   if (!pWhitePt || pWhitePt->GetNumValues()<2) {
     return icEncConvertBadParams;
@@ -207,7 +207,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   pMpeTag->SetChannels(3, 3);
 
   CIccMpeMatrix *pMtx;
-  CIccTagFloat32 *pLumMtx = (CIccTagFloat32*)pParams->FindElemOfType(icLumaChromaMatrixCeptMember, icSigFloat32ArrayType);
+  CIccTagFloat32 *pLumMtx = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptLumaChromaMatrixMbr, icSigFloat32ArrayType);
   icFloatNumber lumMtx[9];
   bool bHaveLumMtx = false;
   if (pLumMtx) {
@@ -232,7 +232,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
     bHaveLumMtx = true;
   }
 
-  CIccTagSegmentedCurve *pSegCurve = (CIccTagSegmentedCurve*)pParams->FindElemOfType(icTransferFunctionCeptMember, icSigSegmentedCurveType);
+  CIccTagSegmentedCurve *pSegCurve = (CIccTagSegmentedCurve*)pParams->FindElemOfType(icSigCeptTransferFunctionMbr, icSigSegmentedCurveType);
   if (pSegCurve && pSegCurve->GetCurve()) {
     CIccSegmentedCurve *pCurve = pSegCurve->GetCurve();
     CIccMpeCurveSet *pCurves = (CIccMpeCurveSet*)CIccMultiProcessElement::Create(icSigCurveSetElemType);
@@ -263,7 +263,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   }
   icFloatNumber *mtx=pMtx->GetMatrix();
   
-  pxy = (CIccTagFloat32*)pParams->FindElemOfType(icRedPrimaryXYZCeptMember, icSigFloat32ArrayType);
+  pxy = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptRedPrimaryXYZMbr, icSigFloat32ArrayType);
   if (!pxy || pxy->GetSize()<2) {
     delete pMpeTag;
     delete pIcc;
@@ -273,7 +273,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   mtx[3]=(*pxy)[1] * XYZMedia[1];
   mtx[6]=(1.0f - (*pxy)[0] - (*pxy)[1]) * XYZMedia[2];
 
-  pxy = (CIccTagFloat32*)pParams->FindElemOfType(icGreenPrimaryXYZCeptMember, icSigFloat32ArrayType);
+  pxy = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptGreenPrimaryXYZMbr, icSigFloat32ArrayType);
   if (!pxy || pxy->GetSize()<2) {
     delete pMpeTag;
     delete pIcc;
@@ -283,7 +283,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   mtx[4]=(*pxy)[1] * XYZMedia[1];
   mtx[7]=(1.0f - (*pxy)[0] - (*pxy)[1]) * XYZMedia[2];
 
-  pxy = (CIccTagFloat32*)pParams->FindElemOfType(icBluePrimaryXYZCeptMember, icSigFloat32ArrayType);
+  pxy = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptBluePrimaryXYZMbr, icSigFloat32ArrayType);
   if (!pxy || pxy->GetSize()<2) {
     delete pMpeTag;
     delete pIcc;
@@ -316,7 +316,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
 
   pMpeTag->Attach(pMtx2);
 
-  pSegCurve = (CIccTagSegmentedCurve*)pParams->FindElemOfType(icInverseTransferFunctionCeptMember, icSigSegmentedCurveType);
+  pSegCurve = (CIccTagSegmentedCurve*)pParams->FindElemOfType(icSigCeptInverseTransferFunctionMbr, icSigSegmentedCurveType);
   if (pSegCurve && pSegCurve->GetCurve()) {
     CIccSegmentedCurve *pCurve = pSegCurve->GetCurve();
     CIccMpeCurveSet *pCurves = (CIccMpeCurveSet*)CIccMultiProcessElement::Create(icSigCurveSetElemType);
@@ -361,14 +361,14 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
     }
 
     icFloatNumber illXYZ[3];
-    icFloatNumber Lw = pParams->GetElemNumberValue(icWhitePointLuminanceCeptMember, 100);
+    icFloatNumber Lw = pParams->GetElemNumberValue(icSigCeptWhitePointLuminanceMbr, 100);
     pCond->m_stdIlluminant = icIlluminantCustom;
     illXYZ[0] = pCond->m_illuminantXYZ.X = XYZWhite[0];
     illXYZ[1] = pCond->m_illuminantXYZ.Y = XYZWhite[1];
     illXYZ[2] = pCond->m_illuminantXYZ.Z = XYZWhite[2];
 
-    icFloatNumber La = pParams->GetElemNumberValue(icAmbientWhitePointLuminanceCeptMember, Lw/5.0f);
-    CIccTagFloat32 *pSurround = (CIccTagFloat32*)pParams->FindElemOfType(icAmbientWhitePointChromaticityCeptMember, icSigFloat32ArrayType);
+    icFloatNumber La = pParams->GetElemNumberValue(icSigCeptAmbientWhitePointLuminanceMbr, Lw/5.0f);
+    CIccTagFloat32 *pSurround = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptAmbientWhitePointChromaticityMbr, icSigFloat32ArrayType);
     if (pSurround && pSurround->GetSize()>=2) {
       icFloatNumber XYZSurround[3];
       icYxy2XYZVector(XYZSurround, 1, &(*pSurround)[0], 1);
@@ -384,7 +384,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
 
     pIcc->AttachTag(icSigSpectralViewingConditionsTag, pCond);
 
-    icFloatNumber Lsw=pParams->GetElemNumberValue(icViewingSurroundCeptMember, Lw/5.0f - 0.001f);
+    icFloatNumber Lsw=pParams->GetElemNumberValue(icSigCeptViewingSurroundMbr, Lw/5.0f - 0.001f);
     CIccCamConverter *pCstmConvert = new CIccCamConverter();
     if (!pCstmConvert) {
       delete pIcc;

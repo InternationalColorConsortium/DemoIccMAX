@@ -9,35 +9,35 @@ iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 sRGB_v4_ICC
 
 echo ===========================================================================
 echo Test NamedColor with D93 2degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D93-Abs_2deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D93-Abs_2deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with D93 10degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D93-Abs_10deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D93-Abs_10deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with D65 2degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D65-Abs_2deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D65-Abs_2deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with D65 10degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D65-Abs_10deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D65-Abs_10deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with D50 2degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D50-Abs_2deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D50-Abs_2deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with D50 10degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D50-Abs_10deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-D50-Abs_10deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with Illuminant A 2degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-IllumA-Abs_2deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-IllumA-Abs_2deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test NamedColor with Illuminant A 10degree
-iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-IllumA-Abs_10deg.icc Lab-D50_2deg.icc 3
+iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 -pcc PCC\Spec400_10_700-IllumA-Abs_10deg.icc PCC\Lab-D50_2deg.icc 3
 
 echo ===========================================================================
 echo Test Grayscale GSDF Display link profile with ambient luminance of 20cd/m^2

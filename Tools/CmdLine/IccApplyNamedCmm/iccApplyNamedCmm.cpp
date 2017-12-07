@@ -166,7 +166,7 @@ int main(int argc, icChar* argv[])
     return false;
   }
 
-  icChar ColorSig[7], tempBuf[5000];
+  icChar ColorSig[7], tempBuf[20000];
   InputData.getline(tempBuf, sizeof(tempBuf));
 
   int i;
@@ -197,9 +197,7 @@ int main(int argc, icChar* argv[])
     printf("Source color data encoding not recognized.\n");
     return false;
   }
-
   
-
   //Setup destination encoding
   destEncoding = (icFloatColorEncoding)atoi(argv[2]);
   

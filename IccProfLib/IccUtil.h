@@ -86,6 +86,7 @@ ICCPROFLIB_API void* icRealloc(void *ptr, size_t size);
 #define icPosInfinity (std::numeric_limits<icFloatNumber>::infinity()) 
 #define icNegInfinity (-std::numeric_limits<icFloatNumber>::infinity())
 #define icNotANumber (std::numeric_limits<icFloatNumber>::quiet_NaN())
+#define icNotZero(v) ((v)>1.0e-8 || (v)<-1.0e-8)
 
 ICCPROFLIB_API double icRoundOffset(double v);
 

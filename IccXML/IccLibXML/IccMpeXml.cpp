@@ -2392,6 +2392,7 @@ bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, 
 
           if (decl->second.m_pos < 0) {
             m_varMap[root] = CIccTempVar(root, m_nNextVar, decl->second.m_size);
+            decl->second.m_pos = m_nNextVar;
 
             if (strchr(refroot.c_str(), '.')) {
               TempVarList::iterator m = decl->second.m_members.begin();

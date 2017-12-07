@@ -82,15 +82,26 @@ namespace refIccMAX {
 IIccStruct* CIccBasicStructFactory::CreateStruct(icStructSignature structTypeSig, CIccTagStruct *pTagStruct)
 {
   switch(structTypeSig) {
-    case icSigNamedColorStruct:
-    case icSigZeroTintStruct:
-      return new CIccStructNamedColor(pTagStruct);
-
     case icSigBRDFStruct:
       return new CIccStructBRDF(pTagStruct);
 
+    case icSigColorantInfoStruct:
+      return new CIccStructColorantInfo(pTagStruct);
+
     case icSigColorEncodingParamsSruct:
       return new CIccStructColorEncodingParams(pTagStruct);
+
+    case icSigMeasurementInfoStruct:
+      return new CIccStructMeasurementInfo(pTagStruct);
+
+    case icSigNamedColorStruct:
+      return new CIccStructNamedColor(pTagStruct);
+
+    case icSigProfileInfoStruct:
+      return new CIccStructProfileInfo(pTagStruct);
+
+    case icSigTintZeroStruct:
+      return new CIccStructTintZero(pTagStruct);
 
     default:
       return new CIccStructUnknown(pTagStruct);
@@ -99,25 +110,41 @@ IIccStruct* CIccBasicStructFactory::CreateStruct(icStructSignature structTypeSig
 
 bool CIccBasicStructFactory::GetStructSigName(std::string &structName, icStructSignature structTypeSig)
 {
+  char sig[20];
   switch(structTypeSig) {
-    case icSigNamedColorStruct:
-      structName = "Named Color Struct";
-      break;
-
-    case icSigZeroTintStruct:
-      structName = "Zero Tint Struct";
-      break;
-
     case icSigBRDFStruct:
-      structName = "BRDF Struct";
+      structName = "brfdfTransformStructure";
+      break;
+
+    case icSigColorantInfoStruct:
+      structName = "colorantInfoStruct";
       break;
 
     case icSigColorEncodingParamsSruct:
-      structName = "Color Encoding Params Struct";
+      structName = "colorEncodingParamsStruct";
       break;
 
+    case icSigMeasurementInfoStruct:
+      structName = "measurementInfoStruct";
+      break;
+
+    case icSigNamedColorStruct:
+        structName = "namedColorStructure";
+        break;
+
+    case icSigProfileInfoStruct:
+      structName = "profileInfoStruct";
+      break;
+  
+    case icSigTintZeroStruct:
+      structName = "tintZeroStructure";
+      break;
+
+
     default:
-      structName = "Unknown Struct Type";
+      structName = "UnknownStruct_";
+      icGetSigStr(sig, structTypeSig);
+      structName += sig;
       break;
   }
 

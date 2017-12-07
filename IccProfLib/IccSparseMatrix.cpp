@@ -247,7 +247,7 @@ bool CIccSparseMatrix::FillFromFullMatrix(icFloatNumber *pData)
   for (r=0; r<(int)m_nRows; r++) {
     m_RowStart[r] = (icUInt16Number)nEntry;
     for (c=0; c<(int)m_nCols; c++) {
-      if (*pData != 0.0f) {
+      if (icNotZero(*pData)) {
         if (nEntry+1 > m_nMaxEntries)
           return false;
         m_ColumnIndices[nEntry] = c;

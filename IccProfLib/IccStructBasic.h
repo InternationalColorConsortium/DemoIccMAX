@@ -79,6 +79,12 @@
 namespace refIccMAX {
 #endif
 
+struct ICCPROFLIB_API SIccElemNameSig
+{
+  icSignature nSig;
+  icChar *szName;
+};
+
 /**
 ****************************************************************************
 * Class: CIccStructUnknown
@@ -96,12 +102,16 @@ public:
   virtual bool Describe(std::string &sDescription) const;
 
   virtual const icChar *GetClassName() const { return "CIccStructUnknown"; }
+  virtual const icChar *GetDisplayName() const { return "privateStruct"; }
+
   virtual std::string GetElemName(icSignature sigElem) const;
+  virtual icSignature GetElemSig(const icChar *szElemName) const;
 
   CIccTag *GetElem(icSignature sigElem) const;
 
 protected:
   CIccTagStruct *m_pTag;
+  SIccElemNameSig *m_pElemNameSigTable;
   
 };
 
@@ -119,10 +129,8 @@ public:
   virtual ~CIccStructNamedColor();
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
 
-  virtual bool Describe(std::string &sDescription) const;
-
   virtual const icChar *GetClassName() const { return "CIccStructNamedColor"; }
-  virtual std::string GetElemName(icSignature sigElem) const;
+  virtual const icChar *GetDisplayName() const { return "namedColorStructure"; }
 
   std::string getName() const;
 
@@ -153,10 +161,8 @@ public:
   virtual ~CIccStructBRDF();
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
 
-  virtual bool Describe(std::string &sDescription) const;
-
   virtual const icChar *GetClassName() const { return "CIccStructBRDF"; }
-  virtual std::string GetElemName(icSignature sigElem) const;
+  virtual const icChar *GetDisplayName() const { return "brdfTransformStructure"; }
 
   virtual icSigBRDFType GetBRDFType() const;
 
@@ -171,7 +177,7 @@ protected:
 ****************************************************************************
 * Class: CIccStructColorEncodingParams
 * 
-* Purpose: The Named Color struct handler
+* Purpose: The colorEncodingParamsStructure handler
 *****************************************************************************
 */
 class ICCPROFLIB_API CIccStructColorEncodingParams : public CIccStructUnknown
@@ -181,12 +187,96 @@ public:
   virtual ~CIccStructColorEncodingParams();
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
 
-  virtual bool Describe(std::string &sDescription) const;
-
   virtual const icChar *GetClassName() const { return "CIccStructColorEncodingParams"; }
-  virtual std::string GetElemName(icSignature sigElem) const;
+  virtual const icChar *GetDisplayName() const { return "colorEncodingParamsStructure"; }
 
-  std::string getName() const;
+protected:
+
+};
+
+
+/**
+****************************************************************************
+* Class: CIccStructColorantInfo
+*
+* Purpose: The Named Color struct handler
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccStructColorantInfo : public CIccStructUnknown
+{
+public:
+  CIccStructColorantInfo(CIccTagStruct *pTagStruct = NULL);
+  virtual ~CIccStructColorantInfo();
+  virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
+
+  virtual const icChar *GetClassName() const { return "CIccStructColorantInfo"; }
+  virtual const icChar *GetDisplayName() const { return "colorantInfoStructure"; }
+
+protected:
+
+};
+
+
+/**
+****************************************************************************
+* Class: CIccStructMeasurementInfo
+*
+* Purpose: The Named Color struct handler
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccStructMeasurementInfo : public CIccStructUnknown
+{
+public:
+  CIccStructMeasurementInfo(CIccTagStruct *pTagStruct = NULL);
+  virtual ~CIccStructMeasurementInfo();
+  virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
+
+  virtual const icChar *GetClassName() const { return "CIccStructMeasurementInfo"; }
+  virtual const icChar *GetDisplayName() const { return "measurementInfoStructure"; }
+
+protected:
+
+};
+
+
+/**
+****************************************************************************
+* Class: CIccStructProfileInfo
+*
+* Purpose: The Named Color struct handler
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccStructProfileInfo : public CIccStructUnknown
+{
+public:
+  CIccStructProfileInfo(CIccTagStruct *pTagStruct = NULL);
+  virtual ~CIccStructProfileInfo();
+  virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
+
+  virtual const icChar *GetClassName() const { return "CIccStructProfileInfo"; }
+  virtual const icChar *GetDisplayName() const { return "profileInfoStructure"; }
+
+protected:
+
+};
+
+
+/**
+****************************************************************************
+* Class: CIccStructTintZero
+*
+* Purpose: The Named Color struct handler
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccStructTintZero : public CIccStructNamedColor
+{
+public:
+  CIccStructTintZero(CIccTagStruct *pTagStruct = NULL);
+  virtual ~CIccStructTintZero();
+  virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
+
+  virtual const icChar *GetClassName() const { return "CIccStructTintZero"; }
+  virtual const icChar *GetDisplayName() const { return "tintZeroStructure"; }
 
 protected:
 

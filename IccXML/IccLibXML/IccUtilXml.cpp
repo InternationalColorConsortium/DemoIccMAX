@@ -64,6 +64,7 @@
 #include <time.h>
 #include "IccUtilXml.h"
 #include "IccConvertUTF.h"
+#include "IccTagFactory.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -73,55 +74,6 @@
 #endif
 #include <cstring> /* C strings strcpy, memcpy ... */
 
-icTagSigType tagSignatureMap[] ={
-	{ icSigChromaticityType			        , "chromaticityType"},
-	{ icSigColorantOrderType		        , "colorantOrderType"},
-	{ icSigColorantTableType            , "colorantTableType"},
-	{ icSigCurveType                    , "curveType"},
-  { icSigSegmentedCurveType           , "segmentedCurveType"},
-	{ icSigDataType                     , "dataType"},
-	{ icSigDateTimeType                 , "dateTimeType"},
-  { icSigDictType                     , "dictType"},
-  { icSigFloat16ArrayType             , "float16NumberType"},
-  { icSigFloat32ArrayType             , "float32NumberType"},
-  { icSigFloat64ArrayType             , "float64NumberType"},
-  { icSigGamutBoundaryDescType        , "gamutBoundaryDescType"},
-	{ icSigLut16Type                    , "lut16Type"},
-	{ icSigLut8Type                     , "lut8Type"},
-	{ icSigLutAtoBType                  , "lutAtoBType"},
-	{ icSigLutBtoAType                  , "lutBtoAType"},
-	{ icSigMeasurementType              , "measurementType"},
-	{ icSigMultiLocalizedUnicodeType    , "multiLocalizedUnicodeType"},
-	{ icSigMultiProcessElementType      , "multiProcessElementType"},
-	{ icSigNamedColor2Type              , "namedColor2Type"},
-	{ icSigParametricCurveType          , "parametricCurveType"},
-	{ icSigProfileSequenceDescType      , "profileSequenceDescType"},
-	{ icSigProfileSequceIdType          , "profileSequenceIdentifierType"},
-	{ icSigResponseCurveSet16Type       , "responseCurveSet16Type"},
-	{ icSigS15Fixed16ArrayType          , "s15Fixed16NumberType"},
-	{ icSigSignatureType                , "signatureType"},
-  { icSigSparseMatrixArrayType        , "sparseMatrixArrayType"},
-  { icSigSpectralDataInfoType         , "spectralDataInfoType"},
-  { icSigSpectralViewingConditionsType, "spectralViewingConditionsType"},
-  { icSigTagArrayType                 , "tagArrayType"},
-  { icSigTagStructType                , "tagStructureType"},
-	{ icSigTextType                     , "textType"},
-	{ icSigTextDescriptionType          , "textDescriptionType"},
-	{ icSigU16Fixed16ArrayType          , "u16Fixed16NumberType"},
-	{ icSigUInt16ArrayType              , "uInt16NumberType"},
-	{ icSigUInt32ArrayType              , "uInt32NumberType"},
-	{ icSigUInt64ArrayType              , "uInt64NumberType"},
-	{ icSigUInt8ArrayType               , "uInt8NumberType"},
-  { icSigUtf8TextType                 , "utf8TextType"},
-  { icSigUtf16TextType                , "utf16TextType"},
-	{ icSigViewingConditionsType        , "viewingConditionsType"},
-	{ icSigXYZType                      , "XYZType"},
-	{ icSigXYZArrayType                 , "XYZType"},
-  { icSigZipUtf8TextType              , "zipUtf8TextType"},
-  { icSigZipXmlType                   , "zipXmlType"},
-	{ icSigUnknownType				          , "PrivateType"}
-};
-#define tagSignatureMapSize (sizeof(tagSignatureMap)/sizeof(tagSignatureMap[0]))
 
 
 CIccUTF16String::CIccUTF16String()
@@ -1136,29 +1088,39 @@ const icRenderingIntent icGetRenderingIntentValue (icChar *szRenderingIntent)
   return icPerceptual;
 }
 
-const icChar* icGetTagSigTypeName(icTagTypeSignature tagSig)
+const icChar* icGetTagSigTypeName(icTagTypeSignature tagTypeSig)
 {
-  //loop through the list of all tag signatures
-  for (int i=0; i<tagSignatureMapSize; i++) {
-	if ( tagSignatureMap[i].tagSig == tagSig )
-		return tagSignatureMap[i].szTagType;
-  } 
+  const icChar *rv = CIccTagCreator::GetTagTypeSigName(tagTypeSig);
   
   // if  the tag signature is not found, it is a custom type.
-  return "PrivateType";
+  if (!rv)
+    return "PrivateType";
+
+  return rv;
 }
 
-const icTagTypeSignature icGetTypeNameTagSig(const icChar* szTagType)
+icTagTypeSignature icGetTypeNameTagSig(const icChar* szTagType)
 {	
-  //loop through the list of all tag signatures
-  for (int i=0; i<tagSignatureMapSize; i++) {
-   if (!strcmp((const char*)tagSignatureMap[i].szTagType, szTagType))  
-	 return tagSignatureMap[i].tagSig;
-  }
+  return CIccTagCreator::GetTagTypeNameSig(szTagType);
 
-   // if  the tag signature is not found, it is a custom type.
-  return icSigUnknownType;
 }
+
+const icChar* icGetTagSigName(icTagSignature tagTypeSig)
+{
+  const icChar *rv = CIccTagCreator::GetTagSigName(tagTypeSig);
+
+  // if  the tag signature is not found, it is a custom type.
+  if (!rv)
+    return "PrivateTag";
+
+  return rv;
+}
+
+icTagSignature icGetTagNameSig(const icChar *szName)
+{
+  return CIccTagCreator::GetTagNameSig(szName);
+}
+
 
 icStandardObserver icGetNamedStandardObserverValue(const icChar* str)
 {

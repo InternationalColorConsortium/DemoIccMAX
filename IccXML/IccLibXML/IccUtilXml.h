@@ -178,8 +178,10 @@ typedef CIccXmlArrayType<icFloatNumber, icSigFloatArrayType> CIccFloatArray;
 typedef CIccXmlArrayType<icFloat32Number, icSigFloat32ArrayType> CIccFloat32Array;
 typedef CIccXmlArrayType<icFloat64Number, icSigFloat64ArrayType> CIccFloat64Array;
 
-const icChar* icGetTagSigTypeName(icTagTypeSignature tagSig);
-const icTagTypeSignature icGetTypeNameTagSig(const icChar *szTagType);
+const icChar* icGetTagSigTypeName(icTagTypeSignature tagTypeSig);
+icTagTypeSignature icGetTypeNameTagSig(const icChar *szTagType);
+const icChar* icGetTagSigName(icTagSignature tagSig);
+icTagSignature icGetTagNameSig(const icChar *szTagName);
 const icRenderingIntent icGetRenderingIntentValue (const icChar *szRenderingIntent);
 icStandardObserver icGetNamedStandardObserverValue(const icChar *str);
 icMeasurementGeometry icGeNamedtMeasurementGeometryValue(const icChar *str);
@@ -194,10 +196,6 @@ const std::string icGetDeviceAttrName(icUInt64Number devAttr);
 const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS=false);
 const std::string icGetPadSpace(double value);
 
-typedef struct {	
-	icTagTypeSignature		tagSig;
-	icChar*					szTagType;	
-} icTagSigType;
 
 
 

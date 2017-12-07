@@ -129,6 +129,18 @@ public:
   virtual const icChar* GetTagSigName(icTagSignature tagSig)=0;
 
   /**
+  * Function: GetTagNameSig(szTagName)
+  *  Get signature from tag display name.
+  *
+  * Parameter(s):
+  *  szTagName = name of tag
+  *
+  * Returns tag signature of tag if tag name is recognized
+  * by the factory, icSigUnknownTag if the tag name is not recognized.
+  */
+  virtual icTagSignature GetTagNameSig(const icChar *szTagName) = 0;
+
+  /**
   * Function: GetTagTypeSigName(tagTypeSig)
   *  Get display name of tagTypeSig.
   *
@@ -139,6 +151,19 @@ public:
   * by the factory, NULL if the factory doesn't create tagTypeSig tags.
   */
   virtual const icChar* GetTagTypeSigName(icTagTypeSignature tagTypeSig)=0;
+
+  /**
+  * Function: GetTagTypeNameSig(szTypeName)
+  *  Get signature based on display name of tag type.
+  *
+  * Parameter(s):
+  *  szTypeName = name of the ICC tag type to get a signature for
+  *
+  * Returns tag type signature of tag type name if type name is recognized
+  * by the factory, icSigUnknownType  if the type name is not recognized.
+  */
+  virtual icTagTypeSignature GetTagTypeNameSig(const icChar* szTypeName) = 0;
+
 };
 
 
@@ -185,6 +210,18 @@ public:
   virtual const icChar* GetTagSigName(icTagSignature tagSig);
 
   /**
+  * Function: GetTagNameSig(szTagName)
+  *  Get signature from tag display name.
+  *
+  * Parameter(s):
+  *  szTagName = name of tag
+  *
+  * Returns tag signature of tag if tag name is recognized
+  * by the factory, icSigUnknownTag if the tag name is not recognized.
+  */
+  virtual icTagSignature GetTagNameSig(const icChar *szTagName);
+
+  /**
   * Function: GetTagTypeSigName(tagTypeSig)
   *  Get display name of tagTypeSig.
   *
@@ -196,6 +233,18 @@ public:
   * by the factory, NULL if the factory doesn't create tagTypeSig tags.
   */
   virtual const icChar* GetTagTypeSigName(icTagTypeSignature tagTypeSig);
+
+  /**
+  * Function: GetTagTypeNameSig(szTypeName)
+  *  Get signature based on display name of tag type.
+  *
+  * Parameter(s):
+  *  szTypeName = name of the ICC tag type to get a signature for
+  *
+  * Returns tag type signature of tag type name if type name is recognized
+  * by the factory, icSigUnknownType  if the type name is not recognized.
+  */
+  virtual icTagTypeSignature GetTagTypeNameSig(const icChar* szTypeName);
 };
 
 class CIccTagCreator;
@@ -245,6 +294,22 @@ public:
 
 
   /**
+  * Function: GetTagNameSig(szTagName)
+  *  Get signature from tag display name.
+  *
+  * Parameter(s):
+  *  szTagName = name of tag
+  *
+  * Returns tag signature of tag if tag name is recognized
+  * by the factory, icSigUnknownTag if the tag name is not recognized.
+  */
+  static icTagSignature GetTagNameSig(const icChar *szName)
+  {
+    return CIccTagCreator::GetInstance()->DoGetTagNameSig(szName);
+  }
+
+
+  /**
   * Function: GetTagTypeSigName(tagTypeSig)
   *  Get display name of tagTypeSig.
   *
@@ -256,6 +321,21 @@ public:
   */
   static const icChar* GetTagTypeSigName(icTagTypeSignature tagTypeSig)
       { return CIccTagCreator::GetInstance()->DoGetTagTypeSigName(tagTypeSig); }
+
+  /**
+  * Function: GetTagTypeNameSig(szTypeName)
+  *  Get signature based on display name of tag type.
+  *
+  * Parameter(s):
+  *  szTypeName = name of the ICC tag type to get a signature for
+  *
+  * Returns tag type signature of tag type name if type name is recognized
+  * by the factory, icSigUnknownType  if the type name is not recognized.
+  */
+  static icTagTypeSignature GetTagTypeNameSig(const icChar *szName)
+  {
+    return CIccTagCreator::GetInstance()->DoGetTagTypeNameSig(szName);
+  }
 
   /**
   * Function: PushFactory(pFactory)
@@ -306,7 +386,9 @@ private:
 
   CIccTag* DoCreateTag(icTagTypeSignature tagTypeSig);
   const icChar *DoGetTagSigName(icTagSignature tagSig);
+  icTagSignature DoGetTagNameSig(const icChar *szName);
   const icChar *DoGetTagTypeSigName(icTagTypeSignature tagTypeSig);
+  icTagTypeSignature DoGetTagTypeNameSig(const icChar *szName);
   void DoPushFactory(IIccTagFactory *pFactory);
   IIccTagFactory* DoPopFactory(bool bAll=false);
 

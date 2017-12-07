@@ -67,6 +67,9 @@
 #include "IccArrayBasic.h"
 #include <set>
 #include <cstring> /* C strings strcpy, memcpy ... */
+#include <map>
+
+typedef  std::map<icUInt32Number, icTagSignature> IccOffsetTagSigMap;
 
 bool CIccProfileXml::ToXml(std::string &xml)
 { 
@@ -193,6 +196,8 @@ bool CIccProfileXml::ToXml(std::string &xml)
   xml += "  <Tags>\n";
   TagEntryList::iterator i, j;
   std::set<icTagSignature> sigSet;
+  CIccInfo Fmt;
+  IccOffsetTagSigMap offsetTags;
 
   for (i=m_Tags->begin(); i!=m_Tags->end(); i++) {
     if (sigSet.find(i->TagInfo.sig)==sigSet.end()) {
@@ -201,46 +206,81 @@ bool CIccProfileXml::ToXml(std::string &xml)
       if (pTag) {
         CIccTagXml *pTagXml = (CIccTagXml*)(pTag->GetExtension());
         if (pTagXml) {
-          const icChar* tagSig = icGetTagSigTypeName(pTag->GetType());
-		  
-	        // PrivateType - a type that does not belong to the list in the icc specs - custom for vendor.
-	        if ( "PrivateType" == tagSig )
-		       sprintf(line, "    <PrivateType type=\"%s\">\n",  icFixXml(fix, icGetSigStr(buf, pTag->GetType())));		
-	        else
-		      sprintf(line, "    <%s>\n",  tagSig); //parent node is the tag type
-    		  
-	        xml += line; 				
-              j=i;          
-	        // print out the tag signature (there is at least one)
-          sprintf(line, "      <TagSignature>%s</TagSignature>\n", icFixXml(fix, icGetSigStr(buf, i->TagInfo.sig)));
-          xml += line;
+          IccOffsetTagSigMap::iterator prevTag = offsetTags.find(i->TagInfo.offset);
+          const icChar *tagName = Fmt.GetTagSigName(i->TagInfo.sig);
+          if (prevTag == offsetTags.end()) {
+            const icChar* tagSig = icGetTagSigTypeName(pTag->GetType());
 
-          sigSet.insert(i->TagInfo.sig);
-
-		       // print out the rest of the tag signatures
-          for (j++; j!=m_Tags->end(); j++) {
-            if (j->pTag == i->pTag || j->TagInfo.offset == i->TagInfo.offset) {
-              sprintf(line, "      <TagSignature>%s</TagSignature>\n", icFixXml(fix, icGetSigStr(buf, j->TagInfo.sig)));
-              xml += line;
-              sigSet.insert(j->TagInfo.sig);        
+            if (tagName && strncmp(tagName, "Unknown ", 8)) {
+              sprintf(line, "    <%s> ", icFixXml(fix, tagName));
             }
-          }
+            else {
+              sprintf(line, "    <PrivateTag TagSignature=\"%s\"> ", icFixXml(fix, icGetSigStr(buf, i->TagInfo.sig)));
+              tagName = "PrivateTag";
+            }
+            xml += line;
+            // PrivateType - a type that does not belong to the list in the icc specs - custom for vendor.
+            if ("PrivateType" == tagSig)
+              sprintf(line, "<PrivateType type=\"%s\">\n", icFixXml(fix, icGetSigStr(buf, pTag->GetType())));
+            else
+              sprintf(line, "<%s>\n", tagSig); //parent node is the tag type
 
-    		  //convert the rest of the tag to xml
-          if (!pTagXml->ToXml(xml, "      ")) {
-            printf("Unable to output tag with type %s\n", icGetSigStr(buf, i->TagInfo.sig));
-            return false;
+            xml += line;
+            j = i;
+#if 0
+            // print out the tag signature (there is at least one)
+            sprintf(line, "      <TagSignature>%s</TagSignature>\n", icFixXml(fix, icGetSigStr(buf, i->TagInfo.sig)));
+            xml += line;
+
+            sigSet.insert(i->TagInfo.sig);
+
+            // print out the rest of the tag signatures
+            for (j++; j != m_Tags->end(); j++) {
+              if (j->pTag == i->pTag || j->TagInfo.offset == i->TagInfo.offset) {
+                sprintf(line, "      <TagSignature>%s</TagSignature>\n", icFixXml(fix, icGetSigStr(buf, j->TagInfo.sig)));
+                xml += line;
+                sigSet.insert(j->TagInfo.sig);
+              }
+            }
+#endif
+            //convert the rest of the tag to xml
+            if (!pTagXml->ToXml(xml, "      ")) {
+              printf("Unable to output tag with type %s\n", icGetSigStr(buf, i->TagInfo.sig));
+              return false;
+            }
+            sprintf(line, "    </%s> </%s>\n\n", tagSig, tagName);
+            xml += line;
+            offsetTags[i->TagInfo.offset] = i->TagInfo.sig;
           }
-          sprintf(line, "    </%s>\n",  tagSig);
-		      xml += line; 	
+          else {
+            const icChar *prevTagName = Fmt.GetTagSigName(prevTag->second);
+            char nameBuf[200], fix2[200];
+            if (!prevTagName || !strncmp(prevTagName, "Unknown ", 8)) {
+              strcpy(nameBuf, "PrivateTag");
+              prevTagName = nameBuf;
+            }
+
+            if (tagName && strncmp(tagName, "Unknown ", 8))
+              sprintf(line, "    <%s SameAs=\"%s\"", icFixXml(fix, tagName), icFixXml(fix2, prevTagName)); //parent node is the tag type
+            else
+              sprintf(line, "    <PrivateTag TagSignature=\"%s\" SameAs=\"%s\"", icFixXml(fix2, icGetSigStr(buf, i->TagInfo.sig)), icFixXml(fix, prevTagName));
+            
+            xml += line;
+            if (prevTagName == nameBuf) {
+              sprintf(line, " SameAsSignature=\"%s\"", icFixXml(fix2, icGetSigStr(buf, prevTag->second)));
+              xml += line;
+            }
+
+            xml += "/>\n\n";
+          }
         }
         else {
-          printf("Non XML tag in list with type %s!\n", icGetSigStr(buf, i->TagInfo.sig));
+          printf("Non XML tag in list with tag %s!\n", icGetSigStr(buf, i->TagInfo.sig));
           return false;
         }
       }
       else {
-        printf("Unable to find tag with type %s!\n", icGetSigStr(buf, i->TagInfo.sig));
+        printf("Unable to find tag with tag %s!\n", icGetSigStr(buf, i->TagInfo.sig));
         return false;
       }
     }
@@ -463,61 +503,164 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
   }
 
   CIccTag *pTag = NULL;
-  icSignature sigTag = (icSignature)0;
+ 
+  std::string nodeName = (icChar*)pNode->name; 
+  icTagSignature sigTag = icGetTagNameSig(nodeName.c_str());
 
- // get the tag signature
-  std::string nodeName = (icChar*) pNode->name;
-  icTagTypeSignature sigType = icGetTypeNameTagSig (nodeName.c_str());
-  
-  if (sigType==icSigUnknownType){
-	  xmlAttr *attr = icXmlFindAttr(pNode, "type");
-	  sigType = (icTagTypeSignature)icGetSigVal((icChar*) icXmlAttrValue(attr));
+  if (sigTag != icSigUnknownTag || nodeName == "PrivateTag") { //Parsing of XML tags by name
+    if (nodeName == "PrivateTag") {
+      const char *tagSig = icXmlAttrValue(pNode, "TagSignature", "");
+      if (tagSig[0]) {
+        sigTag = (icTagSignature)icGetSigVal(tagSig);
+      }
+      else {
+        parseStr += "Invalid TagSignature for PrivateTag\n";
+        return false;
+      }
+    }
+
+    const char *sameAs = icXmlAttrValue(pNode, "SameAs", "");
+
+    if (sameAs[0]) {
+      icTagSignature sigParentTag = icGetTagNameSig(sameAs);
+      if (!strcmp(sameAs, "PrivateTag") || sigParentTag == icSigUnknownTag) {
+        const char *sameAsSig = icXmlAttrValue(pNode, "SameAsSignature", "");
+        if (sameAsSig[0]) {
+          sigParentTag = (icTagSignature)icGetSigVal(sameAsSig);
+        }
+        else {
+          parseStr += "Invalid SameAsSignature for PrivateTag\n";
+          return false;
+        }
+      }
+      pTag = this->FindTag(sigParentTag);
+      if (pTag) {
+        AttachTag(sigTag, pTag);
+      }
+      else {
+        parseStr += "SameAs tag ";
+        parseStr += sameAs;
+        parseStr += " for ";
+        parseStr += nodeName + " does not exist\n";
+        return false;
+      }
+
+      return true;
+    }
+    else { //Parse the type node as the first child
+      xmlNode *pTypeNode;
+      for (pTypeNode = pNode->children; pTypeNode; pTypeNode = pTypeNode->next) {
+        if (pTypeNode->type == XML_ELEMENT_NODE) {
+          break;
+        }
+      }
+
+      if (!pTypeNode) {
+        parseStr += "No tag type node defined for ";
+        parseStr += nodeName;
+        parseStr += "\n";
+        return false;
+      }
+
+      // get the tag type signature
+      icTagTypeSignature sigType = icGetTypeNameTagSig((const icChar*)pTypeNode->name);
+
+      if (sigType == icSigUnknownType) {
+        xmlAttr *attr = icXmlFindAttr(pTypeNode, "type");
+        sigType = (icTagTypeSignature)icGetSigVal((icChar*)icXmlAttrValue(attr));
+      }
+
+      CIccInfo info;
+
+      // create a tag based on the signature
+      pTag = CIccTag::Create(sigType);
+
+      IIccExtensionTag *pExt;
+
+      if (pTag && (pExt = pTag->GetExtension()) && !strcmp(pExt->GetExtClassName(), "CIccTagXml")) {
+        CIccTagXml* pXmlTag = (CIccTagXml*)pExt;
+
+        if (pXmlTag->ParseXml(pTypeNode->children, parseStr)) {
+          if ((attr = icXmlFindAttr(pTypeNode, "reserved"))) {
+            sscanf(icXmlAttrValue(attr), "%u", &pTag->m_nReserved);
+          }
+          AttachTag(sigTag, pTag);
+        }
+        else {
+          parseStr += "Unable to Parse \"";
+          parseStr += (const char*)pTypeNode->name;
+          parseStr += "\" (";
+          parseStr += nodeName;
+          parseStr += ") Tag\n";
+          return false;
+        }
+      }
+      else {
+        parseStr += "Invalid tag extension for \"";
+        parseStr += (const char*)pTypeNode->name;
+        parseStr += "\" (";
+        parseStr += nodeName;
+        parseStr += ") Tag\n";
+        return false;
+      }
+    }
   }
+  else {  //Legacy parsing of XML tags by type
+    sigTag = (icTagSignature)0;
+    // get the tag type signature
+    icTagTypeSignature sigType = icGetTypeNameTagSig(nodeName.c_str());
 
-  CIccInfo info;
+    if (sigType == icSigUnknownType) {
+      xmlAttr *attr = icXmlFindAttr(pNode, "type");
+      sigType = (icTagTypeSignature)icGetSigVal((icChar*)icXmlAttrValue(attr));
+    }
 
-  // create a tag based on the signature
-  pTag = CIccTag::Create(sigType);
-  
-  IIccExtensionTag *pExt;
+    CIccInfo info;
 
-  if (pTag && (pExt = pTag->GetExtension()) && !strcmp(pExt->GetExtClassName(), "CIccTagXml")) {
-    CIccTagXml* pXmlTag = (CIccTagXml*)pExt;
+    // create a tag based on the signature
+    pTag = CIccTag::Create(sigType);
 
-	  if (pXmlTag->ParseXml(pNode->children, parseStr)) {
-	    if ((attr=icXmlFindAttr(pNode, "reserved"))) {
-	     sscanf(icXmlAttrValue(attr), "%u", &pTag->m_nReserved);
-	    }
-  	  
-	    for (xmlNode *tagSigNode = pNode->children; tagSigNode; tagSigNode = tagSigNode->next) {
-	 	    if (tagSigNode->type == XML_ELEMENT_NODE && !icXmlStrCmp(tagSigNode->name, "TagSignature")) {
-			    sigTag = (icTagSignature)icGetSigVal((const icChar*)tagSigNode->children->content);
-			    AttachTag(sigTag, pTag);
-		    }
-	    }	  
-	  }
-	  else {
-	    parseStr += "Unable to Parse \"";
-	    parseStr += info.GetTagTypeSigName(sigType);
-	    parseStr += "\" (";
+    IIccExtensionTag *pExt;
+
+    if (pTag && (pExt = pTag->GetExtension()) && !strcmp(pExt->GetExtClassName(), "CIccTagXml")) {
+      CIccTagXml* pXmlTag = (CIccTagXml*)pExt;
+
+      if (pXmlTag->ParseXml(pNode->children, parseStr)) {
+        if ((attr = icXmlFindAttr(pNode, "reserved"))) {
+          sscanf(icXmlAttrValue(attr), "%u", &pTag->m_nReserved);
+        }
+
+        for (xmlNode *tagSigNode = pNode->children; tagSigNode; tagSigNode = tagSigNode->next) {
+          if (tagSigNode->type == XML_ELEMENT_NODE && !icXmlStrCmp(tagSigNode->name, "TagSignature")) {
+            sigTag = (icTagSignature)icGetSigVal((const icChar*)tagSigNode->children->content);
+            AttachTag(sigTag, pTag);
+          }
+        }
+      }
+      else {
+        parseStr += "Unable to Parse \"";
+        parseStr += info.GetTagTypeSigName(sigType);
+        parseStr += "\" (";
+        parseStr += nodeName;
+        parseStr += ") Tag\n";
+        return false;
+      }
+    }
+    else {
+      parseStr += "Invalid tag extension for \"";
+      parseStr += info.GetTagTypeSigName(sigType);
+      parseStr += "\" (";
       parseStr += nodeName;
       parseStr += ") Tag\n";
-	    return false;
-	  }
-  }
-  else {
-	  parseStr += "Invalid tag extension for \"";
-	  parseStr += info.GetTagTypeSigName(sigType);
-    parseStr += "\" (";
-    parseStr += nodeName;
-    parseStr += ") Tag\n";
-	return false;
+      return false;
+    }
   }
 
   switch(sigTag) {
   case icSigAToB0Tag:
   case icSigAToB1Tag:
   case icSigAToB2Tag:
+  case icSigAToB3Tag:
     if (pTag->IsMBBType())
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.colorSpace, m_Header.pcs);
     break;
@@ -525,6 +668,7 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
   case icSigBToA0Tag:
   case icSigBToA1Tag:
   case icSigBToA2Tag:
+  case icSigBToA3Tag:
     if (pTag->IsMBBType())
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, m_Header.colorSpace);
     break;
@@ -550,7 +694,6 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
         }
       }
     }
-
   }
 
   return true;

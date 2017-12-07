@@ -234,6 +234,10 @@ clut{CMYK_Scale} mul(3)
 tget{CMYK}
 clut{CMYK_Offset} add(3)
  
+in{Violet} 0 gt if {
+  in{Violet} tint{VioletScale} mul(3)
+  in{Violet} tint{VioletOffset} add(3)
+}
 in{OrangeYellow} 0 gt if {
   in{OrangeYellow} tint{OrangeYellowScale} mul(3)
   in{OrangeYellow} tint{OrangeYellowOffset} add(3)
@@ -270,21 +274,17 @@ in{White} 0 gt if {
   in{White} tint{WhiteScale} mul(3)
   in{White} tint{WhiteOffset} add(3)
 }
-in{Silver} 0 gt if {
-  in{Silver} tint{SilverScale} mul(3)
-  in{Silver} tint{SilverOffset} add(3)
-}
 in{Red} 0 gt if {
   in{Red} tint{RedScale} mul(3)
   in{Red} tint{RedOffset} add(3)
 }
+in{Silver} 0 gt if {
+  in{Silver} tint{SilverScale} mul(3)
+  in{Silver} tint{SilverOffset} add(3)
+}
 in{WarmPink} 0 gt if {
   in{WarmPink} tint{WarmPinkScale} mul(3)
   in{WarmPink} tint{WarmPinkOffset} add(3)
-}
-in{Violet} 0 gt if {
-  in{Violet} tint{VioletScale} mul(3)
-  in{Violet} tint{VioletOffset} add(3)
 }
 out(0,3)
 }

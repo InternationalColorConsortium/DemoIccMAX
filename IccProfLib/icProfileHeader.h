@@ -560,11 +560,14 @@ typedef enum {
  * Tag Structure type signatures
  */
 typedef enum {
-    icSigUndefinedStruct              = 0x00000000,
-    icSigNamedColorStruct             = 0x6e6d636c,  /* 'nmcl' */
-    icSigBRDFStruct                   = 0x62726466,  /* 'brdf' */
-    icSigZeroTintStruct               = 0x746e7430,  /* 'tnt0' */
-    icSigColorEncodingParamsSruct     = 0x63657074,  /* 'cept' */
+    icSigBRDFStruct                     = 0x62726466,  /* 'brdf' */
+    icSigColorantInfoStruct             = 0x63696e66,  /* 'cinf' */
+    icSigColorEncodingParamsSruct       = 0x63657074,  /* 'cept' */
+    icSigMeasurementInfoStruct          = 0x6d656173,  /* 'meas' */
+    icSigNamedColorStruct               = 0x6e6d636c,  /* 'nmcl' */
+    icSigProfileInfoStruct              = 0x70696e66,  /* 'pinf' */
+    icSigTintZeroStruct                 = 0x746e7430,  /* 'tnt0' */
+    icSigUndefinedStruct                = 0x00000000,
 } icStructSignature;
 
 /** Convenience Enum Definitions - Not defined in ICC specification*/
@@ -625,28 +628,18 @@ typedef enum {
 #define icSigUnknownElemType    ((icElemTypeSignature) 0x3f3f3f3f)  /* '????' */
 #define icMaxEnumElemType       ((icElemTypeSignature) 0xFFFFFFFF)
 
-/**
- * NamedColor Structure (icSigNamedColorStruct) Member Tag signatures
- */
-typedef enum {
-  icSigDeviceNamedColorMember         = 0x64657620,  /* 'dev ' */
-  icSigNameNamedColorMember           = 0x6e616d65,  /* 'name' */
-  icSigPcsNamedColorMember            = 0x70637320,  /* 'pcs ' */
-  icSigSpectralNamedColorMember       = 0x73706563,  /* 'spec' */
-  icSigTintNamedColorMember           = 0x74696e74,  /* 'tint' */
-} icNamedColorMemberSignature;
-/** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigUnknownNamedColorMember    ((icNamedColorMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxNamedColorMamber           ((icNamedColorMemberSignature) 0xFFFFFFFF)
+/*******CIccTagStructure member signatures********/
 
 /**
-* BRDF Structure (icSigBrdfStruct) Member Tag signatures
+* BRDFStructure (icSigBrdfStruct) Member Tag signatures
 */
 typedef enum {
-  icSigTypeBrdfMember                 = 0x74797065,  /* 'type' */
-  icSigFunctionBrdfMember             = 0x66756e63,  /* 'func' */
-  icSigNumParamsBrdfMember            = 0x6e756d70,  /* 'nump' */
-  icSigTransformBrdfMember            = 0x7866726d,  /* 'xfrm' */
+  icSigBrdfTypeMbr                 = 0x74797065,  /* 'type' */
+  icSigBrdfFunctionMbr             = 0x66756e63,  /* 'func' */
+  icSigBrdfNumParamsMbr            = 0x6e756d70,  /* 'nump' */
+  icSigBrdfTransformMbr            = 0x7866726d,  /* 'xfrm' */
+  icSigBrdfLightTransformMbr       = 0x6c747866,  /* 'ltxf' */
+  icSigBrdfOutputTransformMbr      = 0x6f757478,  /* 'outx' */ /* Note: converts the output of the BRDF model to PCS */
 } icBrdfMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
 #define icSigUnknownBrdfMember    ((icBrdfMemberSignature) 0x3f3f3f3f)  /* '????' */
@@ -684,35 +677,123 @@ typedef enum {
 
 
 /**
-* Color Encoding Params Structure (icSigColorEncodingParamsStruct) Member Tag signatures
+* ColorantInfoStructure (icSigColorantInfoStruct) Member Tag signatures
 */
 typedef enum {
-  icBluePrimaryXYZCeptMember = 0x6258595a,  /* bXYZ' */
-  icGreenPrimaryXYZCeptMember	= 0x6758595a,  /* gXYZ' */
-  icRedPrimaryXYZCeptMember  = 0x7258595a,  /* rXYZ' */
-  icTransferFunctionCeptMember = 0x66756e63, /* func’ */
-  icInverseTransferFunctionCeptMember = 0x69666e63, /* ifnc’ */
-  icLumaChromaMatrixCeptMember = 0x6c6d6174,  /* lmat' */
-  icWhitePointLuminanceCeptMember = 0x776c756d,  /* wlum' */
-  icWhitePointChromaticityCeptMember = 0x7758595a,  /* wXYZ' */
-  icEncodingRangeCeptMember = 0x65526e67,  /* eRng' */
-  icBitDepthCeptMember = 0x62697473,  /* bits' */
-  icImageStateCeptMember = 0x696d7374,  /* imst' */
-  icImageBackgroundCeptMember = 0x69626b67,  /* ibkg' */
-  icViewingSurroundCeptMember = 0x73726e64,  /* srnd' */
-  icAmbientIlluminanceCeptMember = 0x61696c6d,  /* ailm' */
-  icAmbientWhitePointLuminanceCeptMember = 0x61776c6d,  /* awlm' */
-  icAmbientWhitePointChromaticityCeptMember = 0x61777063,  /* awpc' */
-  icViewingFlareCeptMember = 0x666c6172,  /* 'flar' */
-  icValidRelativeLuminanceRangeCeptMember = 0x6c726e67,  /* lrng' */
-  icMediumWhitePointLuminanceCeptMember = 0x6d77706c,  /* mwpl' */
-  icMediumWhitePointChromaticityCeptMember = 0x6d777063,  /* mwpc' */
-  icMediumBlackPointLuminanceCeptMember = 0x6d62706c,  /* mbpl' */
-  icMediumBlackPointChromaticityCeptMember = 0x6d627063,  /* mbpc' */
-} icCeptMemberSignature;
+  icSigCinfNameMbr = 0x6e616d65, /* 'name' */
+  icSigCinfLocalizedNameMbr = 0x6c636e6d, /* 'lcnm' */
+  icSigCinfPcsDataMbr = 0x70637320, /* 'pcs ' */
+  icSigCinfSpectralDataMbr = 0x73706563, /* 'spec' */
+} icColorantInfoMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigUnknownCeptMember    ((icBrdfMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxCeptMamber           ((icBrdfMemberSignature) 0xFFFFFFFF)
+#define icSigCinfUnknownMbr    ((icColorInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxCinfMbr           ((icColorInfoMemberSignature) 0xFFFFFFFF)
+
+
+/**
+* ColorEncodingParamsStructure (icSigColorEncodingParamsStruct) Member Tag signatures
+*/
+typedef enum {
+  icSigCeptBluePrimaryXYZMbr                = 0x6258595a,  /* bXYZ' */
+  icSigCeptGreenPrimaryXYZMbr	              = 0x6758595a,  /* gXYZ' */
+  icSigCeptRedPrimaryXYZMbr                 = 0x7258595a,  /* rXYZ' */
+  icSigCeptTransferFunctionMbr              = 0x66756e63, /* func’ */
+  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifnc’ */
+  icSigCeptLumaChromaMatrixMbr              = 0x6c6d6174,  /* lmat' */
+  icSigCeptWhitePointLuminanceMbr           = 0x776c756d,  /* wlum' */
+  icSigCeptWhitePointChromaticityMbr        = 0x7758595a,  /* wXYZ' */
+  icSigCeptEncodingRangeMbr                 = 0x65526e67,  /* eRng' */
+  icSigCeptBitDepthMbr                      = 0x62697473,  /* bits' */
+  icSigCeptImageStateMbr                    = 0x696d7374,  /* imst' */
+  icSigCeptImageBackgroundMbr               = 0x69626b67,  /* ibkg' */
+  icSigCeptViewingSurroundMbr               = 0x73726e64,  /* srnd' */
+  icSigCeptAmbientIlluminanceMbr            = 0x61696c6d,  /* ailm' */
+  icSigCeptAmbientWhitePointLuminanceMbr    = 0x61776c6d,  /* awlm' */
+  icSigCeptAmbientWhitePointChromaticityMbr = 0x61777063,  /* awpc' */
+  icSigCeptViewingFlareMbr                  = 0x666c6172,  /* 'flar' */
+  icSigCeptValidRelativeLuminanceRangeMbr   = 0x6c726e67,  /* lrng' */
+  icSigCeptMediumWhitePointLuminanceMbr     = 0x6d77706c,  /* mwpl' */
+  icSigCeptMediumWhitePointChromaticityMbr  = 0x6d777063,  /* mwpc' */
+  icSigCeptMediumBlackPointLuminanceMbr     = 0x6d62706c,  /* mbpl' */
+  icSigCeptMediumBlackPointChromaticityMbr  = 0x6d627063,  /* mbpc' */
+} icColorEncodingParamsMemberSignature;
+/** Convenience Enum Definitions - Not defined in proposal*/
+#define icSigCeptUnknownMbr    ((icCepsMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxCeptMbr           ((icCepsMemberSignature) 0xFFFFFFFF)
+
+
+/**
+* MeasurementInfoStructure (icSigMeasurementInfoStruct) Member Tag signatures
+*/
+typedef enum {
+  icSigMeasBackingMbr          = 0x6d62616b, /* 'mbak' */
+  icSigMeasFlareMbr            = 0x6d666c72, /* 'mflr' */
+  icSigMeasGeometryMbr         = 0x6d67656f, /* 'mgeo' */
+  icSigMeasIlluminantMbr       = 0x6d696c6c, /* 'mill' */
+  icSigMeasIlluminantRangeMbr  = 0x6d697772, /* 'miwr' */
+  icSigMeasModeMbr             = 0x6d6d6f64, /* 'mmod' */
+} icMeasurementInfoMemberSignature;
+/** Convenience Enum Definitions - Not defined in proposal*/
+#define icSigMeasUnknownMbr    ((icMeasInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxMeasMbr           ((icMeasInfoMemberSignature) 0xFFFFFFFF)
+
+
+/**
+* NamedColorStructure (icSigNamedColorStruct) Member Tag signatures
+*/
+typedef enum {
+  icSigNmclBrdfColorimetricMbr       = 0x62636f6c,  /* 'bcol' */
+  icSigNmclBrdfColorimetricParamsMbr = 0x62636f6c,  /* 'bcpr' */
+  icSigNmclBrdfSpectralMbr           = 0x62737063,  /* 'bspc' */
+  icSigNmclBrdfSpectralParamsMbr     = 0x62737072,  /* 'bspr' */
+  icSigNmclDeviceDataMbr             = 0x64657620,  /* 'dev ' */
+  icSigNmclLocalizedNameMbr          = 0x6c636e6d,  /* 'lcnm' */
+  icSigNmclNameMbr                   = 0x6e616d65,  /* 'name' */
+  icSigNmclNormalMapMbr              = 0x6e6d6170,  /* 'nmap' */
+  icSigNmclPcsDataMbr                = 0x70637320,  /* 'pcs ' */
+  icSigNmclSpectralDataMbr           = 0x73706563,  /* 'spec' */
+  icSigNmclSpectralOverBlackMbr      = 0x73706362,  /* 'spcb' */
+  icSigNmclSpectralOverGrayMbr       = 0x73706367,  /* 'spcg' */
+  icSigNmclTintMbr                   = 0x74696e74,  /* 'tint' */
+} icNamedColorlMemberSignature;
+/** Convenience Enum Definitions - Not defined in proposal*/
+#define icSigNmclUnknownMbr    ((icNmClrMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxNmclMbr           ((icNmClrMemberSignature) 0xFFFFFFFF)
+
+
+/**
+* ProfileInfoStructure (icSigProfileInfoStruct) Member Tag signatures
+*/
+typedef enum {
+  icSigPinfAttributesMbr       = 0x61747472, /* 'attr' */
+  icSigPinfProfileDescMbr      = 0x70647363, /* 'pdsc' */
+  icSigPinfProfileIDMbr        = 0x70696420, /* 'pid ' */
+  icSigPinfManufacturerDescMbr = 0x646d6e64, /* 'dmnd' */
+  icSigPinfManufacturerSigMbr  = 0x646d6e73, /* 'dmns' */
+  icSigPinfModelDescMbr        = 0x646d6464, /* 'dmdd' */
+  icSigPinfModelSigMbr         = 0x6d6f6420, /* 'mod ' */
+  icSigPinfRenderTransformMbr  = 0x7274726e, /* 'rtrn' */
+  icSigPinfTechnologyMbr       = 0x74656368, /* 'tech' */
+} icProfileInfoMemberSignature;
+/** Convenience Enum Definitions - Not defined in proposal*/
+#define icSigPinfUnknownMbr    ((icProfileInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxPinfMbr           ((icProfileInfoMemberSignature) 0xFFFFFFFF)
+
+
+/**
+* TintZeroStructure (icSigTintZeroStruct) Member Tag signatures
+*/
+typedef enum {
+  icSigTnt0DeviceDataMbr        = 0x64657620,  /* 'dev ' */
+  icSigTnt0PcsDataMbr           = 0x70637320,  /* 'pcs ' */
+  icSigTnt0SpectralDataMbr      = 0x73706563,  /* 'spec' */
+  icSigTnt0SpectralOverBlackMbr = 0x73706362,  /* 'spcb' */
+  icSigTnt0SpectralOverGrayMbr  = 0x73706367,  /* 'spcg' */
+} icTintZeroMemberSignature;
+/** Convenience Enum Definitions - Not defined in proposal*/
+#define icSigTnt0UnknownMbr    ((icTntMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxTnt0Mbr           ((icTnt0MemberSignature) 0xFFFFFFFF)
+
 
 /** 
  * Color Space Signatures.

@@ -94,6 +94,7 @@ namespace refIccMAX {
 CIccStructUnknown::CIccStructUnknown(CIccTagStruct *pTagStruct)
 {
   m_pTag = pTagStruct;
+  m_pElemNameSigTable = NULL;
 }
 
 
@@ -139,11 +140,34 @@ bool CIccStructUnknown::Describe(std::string &sDescription) const
 
 std::string CIccStructUnknown::GetElemName(icSignature sigElem) const
 {
+  if (m_pElemNameSigTable) {
+    int i;
+    for (i = 0; m_pElemNameSigTable[i].szName; i++) {
+      if (m_pElemNameSigTable[i].nSig == sigElem)
+        return m_pElemNameSigTable[i].szName;
+    }
+  }
+
   CIccInfo info;
   std::string str;
-  str = info.GetSigName(sigElem);
+
+  str = "PrivateSubTag";
+  //str += info.GetSigName(sigElem);
 
   return str;
+}
+
+icSignature CIccStructUnknown::GetElemSig(const icChar *szElemName) const
+{
+  if (m_pElemNameSigTable) {
+    int i;
+    for (i = 0; m_pElemNameSigTable[i].szName; i++) {
+      if (!strcmp(m_pElemNameSigTable[i].szName, szElemName))
+        return m_pElemNameSigTable[i].nSig;
+    }
+  }
+
+  return (icSignature)0;
 }
 
 CIccTag *CIccStructUnknown::GetElem(icSignature sigElem) const
@@ -156,9 +180,203 @@ CIccTag *CIccStructUnknown::GetElem(icSignature sigElem) const
 
 
 
+static SIccElemNameSig g_IccStructBRDFMbrTable[] = {
+  { icSigBrdfTypeMbr,             "brdfTypeMbr" },
+  { icSigBrdfFunctionMbr,         "brdfFunctionMbr" },
+  { icSigBrdfNumParamsMbr,        "brdfNumParamsMbr" },
+  { icSigBrdfTransformMbr,        "brdfTransformMbr" },
+  { icSigBrdfLightTransformMbr,   "brdfLightTransformMbr" },
+  { icSigBrdfOutputTransformMbr,  "brdfOutputTransformMbr" },
+  { 0, NULL },
+};
+
+CIccStructBRDF::CIccStructBRDF(CIccTagStruct *pTagStruct)
+{
+  m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructBRDFMbrTable;
+}
+
+
+CIccStructBRDF::~CIccStructBRDF()
+{
+
+}
+
+
+IIccStruct* CIccStructBRDF::NewCopy(CIccTagStruct *pTagStruct) const
+{
+  CIccStructBRDF *rv = new CIccStructBRDF(pTagStruct);
+
+  return rv;
+}
+
+
+icSigBRDFType CIccStructBRDF::GetBRDFType() const
+{
+  CIccTag* pTag = GetElem(icSigBrdfTypeMbr);
+
+  if (pTag)
+  {
+    if (pTag->GetType() == icSigSignatureType)
+    {
+      CIccTagSignature* pTagSig = dynamic_cast<CIccTagSignature*>(pTag);
+      if (pTagSig)
+        return  (icSigBRDFType)pTagSig->GetValue();
+    }
+  }
+  return (icSigBRDFType)icSigUnknownType;
+}
+
+
+icSigBRDFFunction CIccStructBRDF::GetBRDFFunction() const
+{
+  CIccTag* pTag = GetElem(icSigBrdfFunctionMbr);
+
+  if (pTag)
+  {
+    if (pTag->GetType() == icSigSignatureType)
+    {
+      CIccTagSignature* pTagSig = dynamic_cast<CIccTagSignature*>(pTag);
+      if (pTagSig)
+        return  (icSigBRDFFunction)pTagSig->GetValue();
+    }
+  }
+  return (icSigBRDFFunction)icSigUnknownType;
+}
+
+
+
+static SIccElemNameSig g_IccStructColorEncodingParamsMbrTable[] = {
+  { icSigCeptBluePrimaryXYZMbr,                "ceptBluePrimaryXYZMbr" },
+  { icSigCeptGreenPrimaryXYZMbr,               "cptGreenPrimaryXYZMbr" },
+  { icSigCeptRedPrimaryXYZMbr,                 "ceptRedPrimaryXYZMbr" },
+  { icSigCeptTransferFunctionMbr,              "ceptTransferFunctionMbr" },
+  { icSigCeptLumaChromaMatrixMbr,              "ceptLumaChromaMatrixMbr" },
+  { icSigCeptWhitePointLuminanceMbr,           "ceptWhitePointLuminanceMbr" },
+  { icSigCeptWhitePointChromaticityMbr,        "ceptWhitePointChromaticityMbr" },
+  { icSigCeptEncodingRangeMbr,                 "ceptEncodingRangeMbr" },
+  { icSigCeptBitDepthMbr,                      "ceptBitDepthMbr" },
+  { icSigCeptImageStateMbr,                    "ceptImageStateMbr" },
+  { icSigCeptImageBackgroundMbr,               "ceptImageBackgroundMbr" },
+  { icSigCeptViewingSurroundMbr,               "ceptViewingSurroundMbr" },
+  { icSigCeptAmbientIlluminanceMbr,            "ceptAmbientIlluminanceMbr" },
+  { icSigCeptAmbientWhitePointLuminanceMbr,    "ceptAmbientWhitePointLuminanceMbr" },
+  { icSigCeptAmbientWhitePointChromaticityMbr, "ceptAmbientWhitePointChromaticityMbr" },
+  { icSigCeptViewingFlareMbr,                  "ceptViewingFlareMbr" },
+  { icSigCeptValidRelativeLuminanceRangeMbr,   "ceptValidRelativeLuminanceRangeMbr" },
+  { icSigCeptMediumWhitePointLuminanceMbr,     "ceptMediumWhitePointLuminanceMbr" },
+  { icSigCeptMediumWhitePointChromaticityMbr,  "ceptMediumWhitePointChromaticityMbr" },
+  { icSigCeptMediumBlackPointLuminanceMbr,     "ceptMediumBlackPointLuminanceMbr" },
+  { icSigCeptMediumBlackPointChromaticityMbr,  "ceptMediumBlackPointChromaticityMbr" },
+  { 0, NULL },
+};
+
+CIccStructColorEncodingParams::CIccStructColorEncodingParams(CIccTagStruct *pTagStruct)
+{
+  m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructColorEncodingParamsMbrTable;
+}
+
+
+CIccStructColorEncodingParams::~CIccStructColorEncodingParams()
+{
+
+}
+
+
+IIccStruct* CIccStructColorEncodingParams::NewCopy(CIccTagStruct *pTagStruct) const
+{
+  CIccStructColorEncodingParams *rv = new CIccStructColorEncodingParams(pTagStruct);
+
+  return rv;
+}
+
+
+
+static SIccElemNameSig g_IccStructColorantInfoMbrTable[] = {
+  { icSigCinfNameMbr,          "cinfNameMbr" },
+  { icSigCinfLocalizedNameMbr, "cinfLocalizedNameMbr" },
+  { icSigCinfPcsDataMbr,       "cinfPcsDataMbr" },
+  { icSigCinfSpectralDataMbr,  "cinfSpectralDataMbr" },
+  { 0, NULL },
+};
+
+CIccStructColorantInfo::CIccStructColorantInfo(CIccTagStruct *pTagStruct)
+{
+  m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructColorantInfoMbrTable;
+}
+
+
+CIccStructColorantInfo::~CIccStructColorantInfo()
+{
+
+}
+
+
+IIccStruct* CIccStructColorantInfo::NewCopy(CIccTagStruct *pTagStruct) const
+{
+  CIccStructColorantInfo *rv = new CIccStructColorantInfo(pTagStruct);
+
+  return rv;
+}
+
+
+
+static SIccElemNameSig g_IccStructMeasurementInfoElemTable[] = {
+  { icSigMeasBackingMbr,         "measBackingMbr" },
+  { icSigMeasFlareMbr,           "measFlareMbr" },
+  { icSigMeasGeometryMbr,        "measGeometryMbr" },
+  { icSigMeasIlluminantMbr,      "measIlluminantMbr" },
+  { icSigMeasIlluminantRangeMbr, "measIlluminantRangeMbr" },
+  { icSigMeasModeMbr,            "measModeMbr" },
+  { 0, NULL },
+};
+
+CIccStructMeasurementInfo::CIccStructMeasurementInfo(CIccTagStruct *pTagStruct)
+{
+  m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructMeasurementInfoElemTable;
+}
+
+
+CIccStructMeasurementInfo::~CIccStructMeasurementInfo()
+{
+
+}
+
+
+IIccStruct* CIccStructMeasurementInfo::NewCopy(CIccTagStruct *pTagStruct) const
+{
+  CIccStructMeasurementInfo *rv = new CIccStructMeasurementInfo(pTagStruct);
+
+  return rv;
+}
+
+
+
+
+static SIccElemNameSig g_IccStructNamedColorMbrTable[] = {
+  {icSigNmclBrdfColorimetricMbr,       "nmclBrdfColorimetricMbr"},
+  {icSigNmclBrdfColorimetricParamsMbr, "nmclBrdfColorimetricParamsMbr"},
+  {icSigNmclBrdfSpectralMbr,           "nmclBrdfSpectralMbr"},
+  {icSigNmclBrdfSpectralParamsMbr,     "nmclBrdfSpectralParamsMbr"},
+  {icSigNmclDeviceDataMbr,             "nmclDeviceDataMbr"},
+  {icSigNmclLocalizedNameMbr,          "nmclLocalizedNameMbr"},
+  {icSigNmclNameMbr,                   "nmclNameNmClrMbr"},
+  {icSigNmclNormalMapMbr,              "nmclNormalMapNmClrMbr"},
+  {icSigNmclPcsDataMbr,                "nmclPcsDataMbr"},
+  {icSigNmclSpectralDataMbr,           "nmclSpectralDataMbr"},
+  {icSigNmclSpectralOverBlackMbr,      "nmclSpectralOverBlackMbr"},
+  {icSigNmclSpectralOverGrayMbr,       "nmclSpectralOverGrayMbr"},
+  {icSigNmclTintMbr,                   "nmclTintMbr"},
+  {0, NULL},
+};
+
 CIccStructNamedColor::CIccStructNamedColor(CIccTagStruct *pTagStruct)
 {
   m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructNamedColorMbrTable;
 }
 
 
@@ -176,40 +394,9 @@ IIccStruct* CIccStructNamedColor::NewCopy(CIccTagStruct *pTagStruct) const
 }
 
 
-bool CIccStructNamedColor::Describe(std::string &sDescription) const
-{
-  return CIccStructUnknown::Describe(sDescription);
-}
-
-
-std::string CIccStructNamedColor::GetElemName(icSignature sigElem) const
-{
-  CIccInfo info;
-
-  switch (sigElem) {
-    case icSigNameNamedColorMember:
-      return "NameSubTag";
-    case icSigDeviceNamedColorMember:
-      return "DeviceSubTag";
-    case icSigPcsNamedColorMember:
-      return "PcsSubTag";
-    case icSigSpectralNamedColorMember:
-      return "SpectralSubTag";
-    case icSigTintNamedColorMember:
-      return "TintSubTag";
-    default:
-      break;
-  }
-  std::string str;
-  str = "UnknownSubTag_";
-  str += info.GetSigName(sigElem);
-
-  return str;
-}
-
 std::string CIccStructNamedColor::getName() const
 {
-  CIccTag *pTag = m_pTag->FindElem(icSigNameNamedColorMember);
+  CIccTag *pTag = m_pTag->FindElem(icSigNmclNameMbr);
 
   if (pTag && pTag->GetType()==icSigUtf8TextType) {
     CIccTagUtf8Text *pText = (CIccTagUtf8Text*)pTag;
@@ -245,7 +432,7 @@ bool CIccStructNamedColor::GetTint(icFloatNumber *dstColor,
   CIccTagNumArray *pTint;
 
   pData = GetNumArray(sigElem);
-  pTint = GetNumArray(icSigTintNamedColorMember);
+  pTint = GetNumArray(icSigNmclTintMbr);
 
   if (!pData || !nSamples)
     return false;
@@ -307,173 +494,71 @@ bool CIccStructNamedColor::GetTint(icFloatNumber *dstColor,
 }
 
 
-CIccStructBRDF::CIccStructBRDF(CIccTagStruct *pTagStruct)
+
+
+static SIccElemNameSig g_IccStructProfileInfoMbrTable[] = {
+  {icSigPinfAttributesMbr, "pinfAttributesMbr"},
+  {icSigPinfProfileDescMbr, "pinfProfileDescMbr"},
+  {icSigPinfProfileIDMbr, "pinfProfileIDMbr"},
+  {icSigPinfManufacturerDescMbr, "pinfManufacturerDescMbr"},
+  {icSigPinfManufacturerSigMbr, "pinfManufacturerSigMbr"},
+  {icSigPinfModelDescMbr, "pinfModelDescMbr"},
+  {icSigPinfModelSigMbr, "oinfModelSigMbr"},
+  {icSigPinfRenderTransformMbr, "pinfRenderTransformMbr"},
+  {icSigPinfTechnologyMbr, "pinfTechnologyMbr"},
+  { 0, NULL },
+};
+
+CIccStructProfileInfo::CIccStructProfileInfo(CIccTagStruct *pTagStruct)
 {
   m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructProfileInfoMbrTable;
 }
 
 
-CIccStructBRDF::~CIccStructBRDF()
+CIccStructProfileInfo::~CIccStructProfileInfo()
 {
 
 }
 
 
-IIccStruct* CIccStructBRDF::NewCopy(CIccTagStruct *pTagStruct) const
+IIccStruct* CIccStructProfileInfo::NewCopy(CIccTagStruct *pTagStruct) const
 {
-  CIccStructBRDF *rv = new CIccStructBRDF(pTagStruct);
+  CIccStructProfileInfo *rv = new CIccStructProfileInfo(pTagStruct);
 
   return rv;
 }
 
 
-bool CIccStructBRDF::Describe(std::string &sDescription) const
-{
-  return CIccStructUnknown::Describe(sDescription);
-}
 
+static SIccElemNameSig g_IccStructTintZeroMbrTable[] = {
+  { icSigTnt0DeviceDataMbr, "tnt0DeviceDataMbr" },
+  { icSigTnt0PcsDataMbr, "tnt0PcsDataMbr" },
+  { icSigTnt0SpectralDataMbr, "tnt0SpectralDataMbr" },
+  { icSigTnt0SpectralOverBlackMbr, "tnt0SpectralOverBlackMbr" },
+  { icSigTnt0SpectralOverGrayMbr, "tnt0SpectralOverGrayMbr" },
+  { 0, NULL },
+};
 
-std::string CIccStructBRDF::GetElemName(icSignature sigElem) const
-{
-  CIccInfo info;
-
-  switch (sigElem) {
-    case icSigTypeBrdfMember:
-      return "TypeSubTag";
-    case icSigFunctionBrdfMember:
-      return "FunctionSubTag";
-    case icSigNumParamsBrdfMember:
-      return "NumParamsSubTag";
-    case icSigTransformBrdfMember:
-      return "TransformSubTag";
-    default:
-      break;
-  }
-  std::string str;
-  str = "UnknownSubTag_";
-  str += info.GetSigName(sigElem);
-
-  return str;
-}
-
-icSigBRDFType CIccStructBRDF::GetBRDFType() const
-{
-  CIccTag* pTag = GetElem(icSigTypeBrdfMember);
-
-  if (pTag)
-  {
-    if (pTag->GetType() == icSigSignatureType)
-    {
-      CIccTagSignature* pTagSig = dynamic_cast<CIccTagSignature*>(pTag);
-      if (pTagSig)
-        return  (icSigBRDFType)pTagSig->GetValue();
-    }
-  }
-  return (icSigBRDFType)icSigUnknownType;
-}
-
-
-icSigBRDFFunction CIccStructBRDF::GetBRDFFunction() const
-{
-  CIccTag* pTag = GetElem(icSigTypeBrdfMember);
-
-  if (pTag)
-  {
-    if (pTag->GetType() == icSigSignatureType)
-    {
-      CIccTagSignature* pTagSig = dynamic_cast<CIccTagSignature*>(pTag);
-      if (pTagSig)
-        return  (icSigBRDFFunction)pTagSig->GetValue();
-    }
-  }
-  return (icSigBRDFFunction)icSigUnknownType;
-}
-
-
-CIccStructColorEncodingParams::CIccStructColorEncodingParams(CIccTagStruct *pTagStruct)
+CIccStructTintZero::CIccStructTintZero(CIccTagStruct *pTagStruct)
 {
   m_pTag = pTagStruct;
+  m_pElemNameSigTable = g_IccStructTintZeroMbrTable;
 }
 
 
-CIccStructColorEncodingParams::~CIccStructColorEncodingParams()
+CIccStructTintZero::~CIccStructTintZero()
 {
 
 }
 
 
-IIccStruct* CIccStructColorEncodingParams::NewCopy(CIccTagStruct *pTagStruct) const
+IIccStruct* CIccStructTintZero::NewCopy(CIccTagStruct *pTagStruct) const
 {
-  CIccStructColorEncodingParams *rv = new CIccStructColorEncodingParams(pTagStruct);
+  CIccStructTintZero *rv = new CIccStructTintZero(pTagStruct);
 
   return rv;
 }
-
-
-bool CIccStructColorEncodingParams::Describe(std::string &sDescription) const
-{
-  return CIccStructUnknown::Describe(sDescription);
-}
-
-
-std::string CIccStructColorEncodingParams::GetElemName(icSignature sigElem) const
-{
-  CIccInfo info;
-
-  switch (sigElem) {
-	case icBluePrimaryXYZCeptMember:
-		return "BluePrimaryXYZSubTag";
-	case icGreenPrimaryXYZCeptMember:
-		return "GreenPrimaryXYZSubTag";
-	case icRedPrimaryXYZCeptMember:
-		return "icRedPrimaryXYZSubTag";
-	case icTransferFunctionCeptMember:
-		return "icTransferFunctionSubTag";
-	case icLumaChromaMatrixCeptMember:
-        return "icLumaChromaMatrixSubTag";
-	case icWhitePointLuminanceCeptMember:
-		return "icWhitePointLuminanceSubTag";
-	case icWhitePointChromaticityCeptMember:
-		return "WhitePointChromaticitySubTag";
-	case icEncodingRangeCeptMember:
-		return "EncodingRangeSubTag";
-	case icBitDepthCeptMember:
-		return "BitDepthCSubTag";
-	case icImageStateCeptMember:
-		return "ImageStateSubTag";
-	case icImageBackgroundCeptMember:
-		return "ImageBackgroundSubTag";
-	case icViewingSurroundCeptMember:
-		return "ViewingSurroundSubTag";
-	case icAmbientIlluminanceCeptMember:
-		return "AmbientIlluminancembientIlluminanceSubTag";
-	case icAmbientWhitePointLuminanceCeptMember:
-		return "AmbientWhitePointLuminanceSubTag";
-	case icAmbientWhitePointChromaticityCeptMember:
-		return "AmbientWhitePointChromaticitySubTag";
-	case icViewingFlareCeptMember:
-		return "ViewingFlareSubTag";
-	case icValidRelativeLuminanceRangeCeptMember:
-		return "ValidRelativeLuminanceRangeSubTag";
-	case icMediumWhitePointLuminanceCeptMember:
-		return "MediumWhitePointLuminanceSubTag";
-	case icMediumWhitePointChromaticityCeptMember:
-		return "MediumWhitePointChromaticitySubTag";
-	case icMediumBlackPointLuminanceCeptMember:
-		return "MediumBlackPointLuminanceSubTag";
-	case icMediumBlackPointChromaticityCeptMember:
-		return "MediumBlackPointChromaticitySubTag";
-    default:
-      break;
-  }
-  std::string str;
-  str = "UnknownSubTag_";
-  str += info.GetSigName(sigElem);
-
-  return str;
-}
-
-
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX

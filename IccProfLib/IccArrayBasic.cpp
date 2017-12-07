@@ -213,7 +213,7 @@ void CIccArrayNamedColor::SetColorSpaces(icColorSpaceSignature csPcs, icColorSpa
 
 bool CIccArrayNamedColor::Begin()
 {
-  m_pZeroTint = (CIccStructNamedColor*)icGetTagStructHandlerOfType(m_pTag->GetIndex(0), icSigZeroTintStruct);
+  m_pZeroTint = (CIccStructNamedColor*)icGetTagStructHandlerOfType(m_pTag->GetIndex(0), icSigTintZeroStruct);
 
   m_list->clear();
 
@@ -253,7 +253,7 @@ CIccStructNamedColor* CIccArrayNamedColor::FindDeviceColor(const icFloatNumber *
   for (i=1; i<n; i++) {
     CIccStructNamedColor *pNamedColor = (CIccStructNamedColor*)icGetTagStructHandlerOfType(m_pTag->GetIndex(i), icSigNamedColorStruct);
     if (pNamedColor) {
-      CIccTag *pTag = pNamedColor->GetElem(icSigDeviceNamedColorMember);
+      CIccTag *pTag = pNamedColor->GetElem(icSigNmclDeviceDataMbr);
       if (pTag && pTag->IsNumArrayType()) {
         CIccTagNumArray *v = (CIccTagNumArray*)pTag;
         icUInt32Number n = v->GetNumValues()/m_nDeviceSamples;
@@ -292,7 +292,7 @@ CIccStructNamedColor* CIccArrayNamedColor::FindPcsColor(const icFloatNumber *pPC
   for (i=1; i<n; i++) {
     CIccStructNamedColor *pNamedColor = (CIccStructNamedColor*)icGetTagStructHandlerOfType(m_pTag->GetIndex(i), icSigNamedColorStruct);
     if (pNamedColor) {
-      CIccTag *pTag = pNamedColor->GetElem(icSigDeviceNamedColorMember);
+      CIccTag *pTag = pNamedColor->GetElem(icSigNmclDeviceDataMbr);
       if (pTag && pTag->IsNumArrayType()) {
         CIccTagNumArray *v = (CIccTagNumArray*)pTag;
         icUInt32Number n = v->GetNumValues()/m_nDeviceSamples;
@@ -327,7 +327,7 @@ CIccStructNamedColor* CIccArrayNamedColor::FindSpectralColor(const icFloatNumber
   for (i=1; i<n; i++) {
     CIccStructNamedColor *pNamedColor = (CIccStructNamedColor*)icGetTagStructHandlerOfType(m_pTag->GetIndex(i), icSigNamedColorStruct);
     if (pNamedColor) {
-      CIccTag *pTag = pNamedColor->GetElem(icSigDeviceNamedColorMember);
+      CIccTag *pTag = pNamedColor->GetElem(icSigNmclDeviceDataMbr);
       if (pTag && pTag->IsNumArrayType()) {
         CIccTagNumArray *v = (CIccTagNumArray*)pTag;
         icUInt32Number n = v->GetNumValues()/m_nDeviceSamples;
@@ -351,7 +351,7 @@ CIccStructNamedColor* CIccArrayNamedColor::FindSpectralColor(const icFloatNumber
 bool CIccArrayNamedColor::GetDeviceTint(icFloatNumber *dstColor,
                                         const CIccStructNamedColor *pColor, 
                                         icFloatNumber tint/*=1.0f*/,
-                                        icNamedColorMemberSignature sig/*=icSigDeviceNamedColorMember*/) const
+                                        icNamedColorlMemberSignature sig/*=icSigDeviceNmClrMember*/) const
 {
   CIccTagNumArray *pZero;
 
@@ -370,7 +370,7 @@ bool CIccArrayNamedColor::GetDeviceTint(icFloatNumber *dstColor,
 bool CIccArrayNamedColor::GetPcsTint(icFloatNumber *dstColor,
                                      const CIccStructNamedColor *pColor, 
                                      icFloatNumber tint/*=1.0f*/,
-                                     icNamedColorMemberSignature sig/*=icSigPcsNamedColorMember*/) const
+                                     icNamedColorlMemberSignature sig/*=icSigPcsNmClrMember*/) const
 {
   CIccTagNumArray *pZero;
 
@@ -388,7 +388,7 @@ bool CIccArrayNamedColor::GetPcsTint(icFloatNumber *dstColor,
 bool CIccArrayNamedColor::GetSpectralTint(icFloatNumber *dstColor,
                                           const CIccStructNamedColor *pColor, 
                                           icFloatNumber tint/*=1.0f*/,
-                                          icNamedColorMemberSignature sig/*=icSigSpectralNamedColorMember*/) const
+                                          icNamedColorlMemberSignature sig/*=icSigSpectralNmClrMember*/) const
 {
   CIccTagNumArray *pZero;
 
@@ -422,7 +422,7 @@ icValidateStatus CIccArrayNamedColor::Validate(std::string sigPath, std::string 
       pSubTag = m_pTag->GetIndex(i);
       if (pSubTag) {
         icStructSignature sig = pSubTag->GetTagStructType();
-        if (!((i && sig==icSigNamedColorStruct) || (!i && sig==icSigZeroTintStruct))) {
+        if (!((i && sig==icSigNamedColorStruct) || (!i && sig==icSigTintZeroStruct))) {
           nBad++;
         }
         else {
@@ -433,9 +433,9 @@ icValidateStatus CIccArrayNamedColor::Validate(std::string sigPath, std::string 
            CIccTagNumArray *pArray, *pTint;
            char str[256];
 
-           pTint = pColor->GetNumArray(icSigTintNamedColorMember);
+           pTint = pColor->GetNumArray(icSigNmclTintMbr);
 
-           pArray = pColor->GetNumArray(icSigDeviceNamedColorMember);
+           pArray = pColor->GetNumArray(icSigNmclDeviceDataMbr);
            if (pArray && m_nDeviceSamples) {
              icUInt32Number n = pArray->GetNumValues()/m_nDeviceSamples;
 
@@ -456,7 +456,7 @@ icValidateStatus CIccArrayNamedColor::Validate(std::string sigPath, std::string 
              }
            }
 
-           pArray = pColor->GetNumArray(icSigPcsNamedColorMember);
+           pArray = pColor->GetNumArray(icSigNmclPcsDataMbr);
            if (pArray && m_nPcsSamples) {
              icUInt32Number n = pArray->GetNumValues()/m_nPcsSamples;
 
@@ -477,7 +477,7 @@ icValidateStatus CIccArrayNamedColor::Validate(std::string sigPath, std::string 
              }
            }
 
-           pArray = pColor->GetNumArray(icSigSpectralNamedColorMember);
+           pArray = pColor->GetNumArray(icSigNmclSpectralDataMbr);
            if (pArray) {
              if (pArray->IsMatrixArray()) {
                CIccTagSparseMatrixArray *pArrayTag = (CIccTagSparseMatrixArray *) pArray;

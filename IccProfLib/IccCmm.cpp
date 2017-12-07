@@ -991,7 +991,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
 
           switch (nLutType) {
             case icXformLutBRDFParam:
-              pTag2 = pStructTag->GetElem(icSigTransformBrdfMember);
+              pTag2 = pStructTag->GetElem(icSigBrdfTransformMbr);
               break;
             default:
               // can't get here, get rid of warning
@@ -1088,8 +1088,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
               bAbsToRel = true;
             }
           }
-
-          if (!pTag) {
+         if (!pTag) {
             pTag = pProfile->FindTag(icSigBRDFMToB0Tag);
           }
           if (!pTag) {
@@ -1104,6 +1103,10 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
           }
         }
 
+        //Unsupported elements cause fall back behavior
+        if (pTag && !pTag->IsSupported())
+          pTag = NULL;
+  
         //Unsupported elements cause fall back behavior
         if (pTag && !pTag->IsSupported())
           pTag = NULL;
@@ -4219,7 +4222,7 @@ CIccPcsStep *CIccPcsStepMatrix::reduce() const
 
   for (i=0; i<nVals; i++) {
     icFloatNumber v = m_vals[i];
-    if (v>1.0e-8 || v<-1.0e-8)
+    if (icNotZero(v))
       nNonZeros++;
   }
   if (nNonZeros<nVals*3/4) {
@@ -8637,7 +8640,10 @@ icStatusCMM CIccCmm::FromInternalEncoding(icColorSpaceSignature nSpace, icFloatC
         switch(nEncode) {
         case icEncodeValue:
           {
-            if (bCLRspace && nSamples>=3) {
+            if (nSpace == icSigDevXYZData) {
+              icXyzFromPcs(pInput);
+            }
+            else if (bCLRspace && nSamples >=3) {
               icLabFromPcs(pInput);
             }
             break;

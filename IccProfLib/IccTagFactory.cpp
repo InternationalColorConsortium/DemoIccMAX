@@ -73,10 +73,221 @@
 #include "IccTagFactory.h"
 #include "IccUtil.h"
 #include "IccProfile.h"
+#include <map>
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {
 #endif
+
+typedef std::map<icTagSignature, std::string> icTagSigToNameMap;
+static icTagSigToNameMap g_TagSigToNameMap;
+
+typedef std::map<std::string, icTagSignature> icTagNameToSigMap;
+static icTagNameToSigMap g_TagNameToSigMap;
+
+struct {
+  icTagSignature sig;
+  icChar *szName;
+} g_icTagNameTable[] = {
+  {icSigAToB0Tag, "AToB0Tag"},
+  {icSigAToB1Tag, "AToB1Tag"},
+  {icSigAToB2Tag, "AToB2Tag"},
+  {icSigAToB3Tag, "AToB3Tag"},
+  {icSigAToM0Tag, "AToM0Tag"},
+  {icSigBlueColorantTag, "blueColorantTag"},
+  {icSigBlueTRCTag, "blueTRCTag"},
+  {icSigBrdfColorimetricParameter0Tag, "brdfColorimetricParameter0Tag"},
+  {icSigBrdfColorimetricParameter1Tag, "brdfColorimetricParameter1Tag"},
+  {icSigBrdfColorimetricParameter2Tag, "brdfColorimetricParameter2Tag"},
+  {icSigBrdfColorimetricParameter3Tag, "brdfColorimetricParameter3Tag"},
+  {icSigBrdfSpectralParameter0Tag, "brdfSpectralParameter0Tag"},
+  {icSigBrdfSpectralParameter1Tag, "brdfSpectralParameter1Tag"},
+  {icSigBrdfSpectralParameter2Tag, "brdfSpectralParameter2Tag"},
+  {icSigBrdfSpectralParameter3Tag, "brdfSpectralParameter3Tag"},
+  {icSigBRDFMToB0Tag, "brdfMToB0Tag"},
+  {icSigBRDFMToB1Tag, "brdfMToB1Tag"},
+  {icSigBRDFMToB2Tag, "brdfMToB2Tag"},
+  {icSigBRDFMToB3Tag, "brdfMToB3Tag"},
+  {icSigBRDFMToS0Tag, "brdfMToS0Tag"},
+  {icSigBRDFMToS1Tag, "brdfMToS1Tag"},
+  {icSigBRDFMToS2Tag, "brdfMToS2Tag"},
+  {icSigBRDFMToS3Tag, "brdfMToS3Tag"},
+  {icSigBRDFAToB0Tag, "BRDFAToB0Tag"},
+  {icSigBRDFAToB1Tag, "BRDFAToB1Tag"},
+  {icSigBRDFAToB2Tag, "BRDFAToB2Tag"},
+  {icSigBRDFAToB3Tag, "BRDFAToB3Tag"},
+  {icSigBRDFDToB0Tag, "BRDFDToB0Tag"},
+  {icSigBRDFDToB1Tag, "BRDFDToB1Tag"},
+  {icSigBRDFDToB2Tag, "BRDFDToB2Tag"},
+  {icSigBRDFDToB3Tag, "BRDFDToB3Tag"},
+  {icSigBToA0Tag, "BToA0Tag"},
+  {icSigBToA1Tag, "BToA1Tag"},
+  {icSigBToA2Tag, "BToA2Tag"},
+  {icSigBToA3Tag, "BToA3Tag"},
+  {icSigBToD0Tag, "BToD0Tag"},
+  {icSigBToD1Tag, "BToD1Tag"},
+  {icSigBToD2Tag, "BToD2Tag"},
+  {icSigBToD3Tag, "BToD3Tag"},
+  {icSigCalibrationDateTimeTag, "calibrationDateTimeTag"},
+  {icSigCharTargetTag, "charTargetTag"},
+  {icSigChromaticityTag, "chromaticityTag"},
+  {icSigCopyrightTag, "copyrightTag"},
+  {icSigCrdInfoTag, "crdInfoTag"},
+  {icSigDataTag, "dataTag"},
+  {icSigDateTimeTag, "dateTimeTag"},
+  {icSigDeviceMfgDescTag, "deviceMfgDescTag"},
+  {icSigDeviceModelDescTag, "deviceModelDescTag"},
+  {icSigMetaDataTag, "metaDataTag"},
+  {icSigDToB0Tag, "DToB0Tag"},
+  {icSigDToB1Tag, "DToB1Tag"},
+  {icSigDToB2Tag, "DToB2Tag"},
+  {icSigDToB3Tag, "DToB3Tag"},
+  {icSigGamutTag, "gamutTag"},
+  {icSigGamutBoundaryDescription0Tag, "gamutBoundaryDescription0Tag"},
+  {icSigGamutBoundaryDescription1Tag, "gamutBoundaryDescription0Tag"},
+  {icSigGamutBoundaryDescription2Tag, "gamutBoundaryDescription0Tag"},
+  {icSigGamutBoundaryDescription3Tag, "gamutBoundaryDescription0Tag"},
+  {icSigGrayTRCTag, "grayTRCTag"},
+  {icSigGreenColorantTag, "greenColorantTag"},
+  {icSigGreenTRCTag, "greenTRCTag"},
+  {icSigLuminanceTag, "luminanceTag"},
+  {icSigMeasurementTag, "measurementTag"},
+  {icSigMediaBlackPointTag, "mediaBlackPointTag"},
+  {icSigMediaWhitePointTag, "mediaWhitePointTag"},
+  {icSigMToA0Tag, "MToA0Tag"},
+  {icSigMToB0Tag, "MToB0Tag"},
+  {icSigMToB1Tag, "MToB1Tag"},
+  {icSigMToB2Tag, "MToB2Tag"},
+  {icSigMToB3Tag, "MToB3Tag"},
+  {icSigMToS0Tag, "MToS0Tag"},
+  {icSigMToS1Tag, "MToS1Tag"},
+  {icSigMToS2Tag, "MToS2Tag"},
+  {icSigMToS3Tag, "MToS3Tag"},
+  {icSigNamedColor2Tag, "namedColor2Tag"},
+  {icSigPreview0Tag, "preview0Tag"},
+  {icSigPreview1Tag, "preview1Tag"},
+  {icSigPreview2Tag, "preview2Tag"},
+  {icSigPrintConditionTag, "printConditionTag"},
+  {icSigProfileDescriptionTag, "profileDescriptionTag"},
+  {icSigProfileSequenceDescTag, "profileSequenceDescTag"},
+  {icSigProfileSequceIdTag, "profileSequenceIdentifierTag"},
+  {icSigPs2CRD0Tag, "ps2CRD0Tag"},
+  {icSigPs2CRD1Tag, "ps2CRD1Tag"},
+  {icSigPs2CRD2Tag, "ps2CRD2Tag"},
+  {icSigPs2CRD3Tag, "ps2CRD3Tag"},
+  {icSigPs2CSATag, "ps2CSATag"},
+  {icSigPs2RenderingIntentTag, "ps2RenderingIntentTag"},
+  {icSigRedColorantTag, "redColorantTag"},
+  {icSigRedTRCTag, "redTRCTag"},
+  {icSigScreeningDescTag, "screeningDescTag"},
+  {icSigScreeningTag, "screeningTag"},
+  {icSigTechnologyTag, "technologyTag"},
+  {icSigUcrBgTag, "ucrBgTag"},
+  {icSigViewingCondDescTag, "viewingCondDescTag"},
+  {icSigViewingConditionsTag, "viewingConditionsTag"},
+  {icSigSpectralViewingConditionsTag, "spectralViewingConditionsTag"},
+  {icSigColorantOrderTag, "colorantOrderTag"},
+  {icSigColorantTableTag, "colorantTableTag"},
+  {icSigChromaticAdaptationTag, "chromaticAdaptationTag"},
+  {icSigColorantTableOutTag, "colorantTableOutTag"},
+  {icSigOutputResponseTag, "outputResponseTag"},
+  {icSigPerceptualRenderingIntentGamutTag, "perceptualRenderingIntentGamutTag"},
+  {icSigSaturationRenderingIntentGamutTag, "saturationRenderingIntentGamutTag"},
+  {icSigCxFTag, "CxfTag"},
+  {icSigSpectralDataInfoTag, "spectralDataInfoTag"},
+  {icSigSpectralMediaWhitePointTag, "spectralMediaWhitePointTag"},
+  {icSigCustomToStandardPcsTag, "customToStandardPcsTag"},
+  {icSigStandardToCustomPcsTag, "standardToCustomPcsTag"},
+  {icSigColorEncodingParamsTag, "colorEncodingParamsTag"},
+  {icSigColorSpaceNameTag, "colorSpaceNameTag"},
+  {icSigReferenceNameTag, "referenceNameTag"},
+  {icSigMaterialTypeArrayTag, "materialTypeArrayTag"},
+  {icSigMaterialDefaultValuesTag, "materialDefaultValuesTag"},
+  {(icTagSignature)0,""},
+};
+
+typedef std::map<icTagTypeSignature, std::string> icTagTypeSigToNameMap;
+static icTagTypeSigToNameMap g_TagTypeSigToNameMap;
+
+typedef std::map<std::string, icTagTypeSignature> icTagTypeNameToSigMap;
+static icTagTypeNameToSigMap g_TagTypeNameToSigMap;
+static icTagTypeNameToSigMap g_AltTagTypeNameToSigMap;
+
+struct {
+  icTagTypeSignature sig;
+  icChar *szName;
+} g_icTagTypeNameTable[] = {
+  {icSigChromaticityType, "chromaticityType"},
+  {icSigColorantOrderType, "colorantOrderType"},
+  {icSigColorantTableType, "colorantTableType"},
+  {icSigCrdInfoType, "crdInfoType"},
+  {icSigCurveType, "curveType"},
+  {icSigSegmentedCurveType, "segmentedCurveType"},
+  {icSigDataType, "dataType"},
+  {icSigDateTimeType, "dateTimeType"},
+  {icSigDeviceSettingsType, "deviceSettingsType"},
+  {icSigDictType, "dictType"},
+  {icSigGamutBoundaryDescType, "gamutBoundaryDescType"},
+  {icSigLut16Type, "lut16Type"},
+  {icSigLut8Type, "lut8Type"},
+  {icSigLutAtoBType, "lutAtoBType"},
+  {icSigLutBtoAType, "lutBtoAType"},
+  {icSigMeasurementType, "measurementType"},
+  {icSigMultiLocalizedUnicodeType, "multiLocalizedUnicodeType"},
+  {icSigMultiProcessElementType, "multiProcessElementType"},
+  {icSigNamedColor2Type, "namedColor2Type"},
+  {icSigParametricCurveType, "parametricCurveType"},
+  {icSigResponseCurveSet16Type, "responseCurveSet16Type"},
+  {icSigProfileSequenceDescType, "profileSequenceDescType"},
+  {icSigS15Fixed16ArrayType, "s15Fixed16ArrayType"},
+  {icSigScreeningType, "screeningType"},
+  {icSigSignatureType, "signatureType"},
+  {icSigSpectralDataInfoType, "spectralDataInfoType"},
+  {icSigSpectralViewingConditionsType, "spectralViewingConditionsType"},
+  {icSigTextType, "textType"},
+  {icSigTextDescriptionType, "textDescriptionType"},
+  {icSigU16Fixed16ArrayType, "u16Fixed16ArrayType"},
+  {icSigUcrBgType, "ucrBgType"},
+  {icSigSparseMatrixArrayType, "sparseMatrixArrayType"},
+  {icSigUInt16ArrayType, "uInt16ArrayType"},
+  {icSigUInt32ArrayType, "uInt32ArrayType"},
+  {icSigUInt64ArrayType, "uInt64ArrayType"},
+  {icSigUInt8ArrayType, "uInt8ArrayType"},
+  {icSigFloat16ArrayType, "float16ArrayType"},
+  {icSigFloat32ArrayType, "float32ArrayType"},
+  {icSigFloat64ArrayType, "float64ArrayType"},
+  {icSigUtf8TextType, "utf8Type"},
+  {icSigZipUtf8TextType, "utf8ZipType"},
+  {icSigZipXmlType, "zipXmlType"},
+  {icSigUtf16TextType, "utf16Type"},
+  {icSigTagArrayType, "tagArrayType"},
+  {icSigTagStructType, "tagStructType"},
+  {icSigViewingConditionsType, "viewingConditionsType"},
+  {icSigXYZArrayType, "XYZArrayType"},
+  {icSigProfileSequceIdType, "profileSequenceIdentifierType"},
+  {(icTagTypeSignature)0,"" },
+};
+
+//Tag type names used in previous versions of these libraries
+struct {
+  icTagTypeSignature sig;
+  icChar *szName;
+} g_icAltTagTypeNameTable[] = {
+  { icSigFloat16ArrayType             , "float16NumberType" },
+  { icSigFloat32ArrayType             , "float32NumberType" },
+  { icSigFloat64ArrayType             , "float64NumberType" },
+  { icSigS15Fixed16ArrayType          , "s15Fixed16NumberType" },
+  { icSigU16Fixed16ArrayType          , "u16Fixed16NumberType" },
+  { icSigUInt16ArrayType              , "uInt16NumberType" },
+  { icSigUInt32ArrayType              , "uInt32NumberType" },
+  { icSigUInt64ArrayType              , "uInt64NumberType" },
+  { icSigUInt8ArrayType               , "uInt8NumberType" },
+  { icSigUtf8TextType                 , "utf8TextType" },
+  { icSigTagStructType                , "tagStructureType" },
+  { icSigXYZArrayType                 , "XYZType" },
+  { icSigZipUtf8TextType              , "zipUtf8TextType" },
+  { (icTagTypeSignature)0,"" },
+};
 
 CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
 {
@@ -226,507 +437,63 @@ CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
 
 const icChar* CIccSpecTagFactory::GetTagSigName(icTagSignature tagSig)
 {
-  switch (tagSig) {
-  case icSigAToB0Tag:
-    return "AToB0Tag";
-
-  case icSigAToB1Tag:
-    return "AToB1Tag";
-
-  case icSigAToB2Tag:
-    return "AToB2Tag";
-
-  case icSigAToB3Tag:
-    return "AToB3Tag";
-
-  case icSigAToM0Tag:
-    return "AToM0Tag";
-
-  case icSigBlueColorantTag:
-    return "blueColorantTag";
-
-  case icSigBlueTRCTag:
-    return "blueTRCTag";
-
-  case icSigBrdfColorimetricParameter0Tag:
-    return "brdfColorimetricParameter0Tag";
-
-  case icSigBrdfColorimetricParameter1Tag:
-    return "brdfColorimetricParameter1Tag";
-
-  case icSigBrdfColorimetricParameter2Tag:
-    return "brdfColorimetricParameter2Tag";
-
-  case icSigBrdfColorimetricParameter3Tag:
-    return "brdfColorimetricParameter3Tag";
-
-  case icSigBrdfSpectralParameter0Tag:
-    return "brdfSpectralParameter0Tag";
-
-  case icSigBrdfSpectralParameter1Tag:
-    return "brdfSpectralParameter1Tag";
-
-  case icSigBrdfSpectralParameter2Tag:
-    return "brdfSpectralParameter2Tag";
-
-  case icSigBrdfSpectralParameter3Tag:
-    return "brdfSpectralParameter3Tag";
-
-  case icSigBRDFAToB0Tag:
-    return "brdfAToB0Tag";
-
-  case icSigBRDFAToB1Tag:
-    return "brdfAToB1Tag";
-
-  case icSigBRDFAToB2Tag:
-    return "brdfAToB2Tag";
-
-  case icSigBRDFAToB3Tag:
-    return "brdfAToB3Tag";
-
-  case icSigBRDFDToB0Tag:
-    return "brdfDToB0Tag";
-
-  case icSigBRDFDToB1Tag:
-    return "brdfDToB1Tag";
-
-  case icSigBRDFDToB2Tag:
-    return "brdfDToB2Tag";
-
-  case icSigBRDFDToB3Tag:
-    return "brdfDToB3Tag";
-
-  case icSigBRDFMToB0Tag:
-    return "brdfMToB0Tag";
-
-  case icSigBRDFMToB1Tag:
-    return "brdfMToB1Tag";
-
-  case icSigBRDFMToB2Tag:
-    return "brdfMToB2Tag";
-
-  case icSigBRDFMToB3Tag:
-    return "brdfMToB3Tag";
-
-  case icSigBRDFMToS0Tag:
-    return "brdfMToS0Tag";
-
-  case icSigBRDFMToS1Tag:
-    return "brdfMToS1Tag";
-
-  case icSigBRDFMToS2Tag:
-    return "brdfMToS2Tag";
-
-  case icSigBRDFMToS3Tag:
-    return "brdfMToS3Tag";
-
-  case icSigBToA0Tag:
-    return "BToA0Tag";
-
-  case icSigBToA1Tag:
-    return "BToA1Tag";
-
-  case icSigBToA2Tag:
-    return "BToA2Tag";
-
-  case icSigBToA3Tag:
-    return "BToA3Tag";
-
-  case icSigBToD0Tag:
-    return "BToD0Tag";
-
-  case icSigBToD1Tag:
-    return "BToD1Tag";
-
-  case icSigBToD2Tag:
-    return "BToD2Tag";
-
-  case icSigBToD3Tag:
-    return "BToD3Tag";
-
-  case icSigCalibrationDateTimeTag:
-    return "calibrationDateTimeTag";
-
-  case icSigCharTargetTag:
-    return "charTargetTag";
-
-  case icSigChromaticityTag:
-    return "chromaticityTag";
-
-  case icSigCopyrightTag:
-    return "copyrightTag";
-
-  case icSigCrdInfoTag:
-    return "crdInfoTag";
-
-  case icSigDataTag:
-    return "dataTag";
-
-  case icSigDateTimeTag:
-    return "dateTimeTag";
-
-  case icSigDeviceMfgDescTag:
-    return "deviceMfgDescTag";
-
-  case icSigDeviceModelDescTag:
-    return "deviceModelDescTag";
-
-  case icSigMetaDataTag:
-    return "metaDataTag";
-
-  case icSigDToB0Tag:
-    return "DToB0Tag";
-
-  case icSigDToB1Tag:
-    return "DToB1Tag";
-
-  case icSigDToB2Tag:
-    return "DToB2Tag";
-
-  case icSigDToB3Tag:
-    return "DToB3Tag";
-
-  case icSigGamutTag:
-    return "gamutTag";
-
-  case icSigGamutBoundaryDescription0Tag:
-    return "gamutBoundaryDescription0Tag";
-
-  case icSigGamutBoundaryDescription1Tag:
-    return "gamutBoundaryDescription0Tag";
-
-  case icSigGamutBoundaryDescription2Tag:
-    return "gamutBoundaryDescription0Tag";
-
-  case icSigGamutBoundaryDescription3Tag:
-    return "gamutBoundaryDescription0Tag";
-
-  case icSigGrayTRCTag:
-    return "grayTRCTag";
-
-  case icSigGreenColorantTag:
-    return "greenColorantTag";
-
-  case icSigGreenTRCTag:
-    return "greenTRCTag";
-
-  case icSigLuminanceTag:
-    return "luminanceTag";
-
-  case icSigMeasurementTag:
-    return "measurementTag";
-
-  case icSigMediaBlackPointTag:
-    return "mediaBlackPointTag";
-
-  case icSigMediaWhitePointTag:
-    return "mediaWhitePointTag";
-
-  case icSigMToA0Tag:
-    return "MToA0Tag";
-
-  case icSigMToB0Tag:
-    return "MToB0Tag";
-
-  case icSigMToB1Tag:
-    return "MToB1Tag";
-
-  case icSigMToB2Tag:
-    return "MToB2Tag";
-
-  case icSigMToB3Tag:
-    return "MToB3Tag";
-
-  case icSigMToS0Tag:
-    return "MToS0Tag";
-
-  case icSigMToS1Tag:
-    return "MToS1Tag";
-
-  case icSigMToS2Tag:
-    return "MToS2Tag";
-
-  case icSigMToS3Tag:
-    return "MToS3Tag";
-
-  case icSigNamedColor2Tag:
-    return "namedColor2Tag";
-
-  case icSigPreview0Tag:
-    return "preview0Tag";
-
-  case icSigPreview1Tag:
-    return "preview1Tag";
-
-  case icSigPreview2Tag:
-    return "preview2Tag";
-
-  case icSigPrintConditionTag:
-    return "printConditionTag";
-
-  case icSigProfileDescriptionTag:
-    return "profileDescriptionTag";
-
-  case icSigProfileSequenceDescTag:
-    return "profileSequenceDescTag";
-
-  case icSigProfileSequceIdTag:
-    return "profileSequenceIdentifierTag";
-
-  case icSigPs2CRD0Tag:
-    return "ps2CRD0Tag";
-
-  case icSigPs2CRD1Tag:
-    return "ps2CRD1Tag";
-
-  case icSigPs2CRD2Tag:
-    return "ps2CRD2Tag";
-
-  case icSigPs2CRD3Tag:
-    return "ps2CRD3Tag";
-
-  case icSigPs2CSATag:
-    return "ps2CSATag";
-
-  case icSigPs2RenderingIntentTag:
-    return "ps2RenderingIntentTag";
-
-  case icSigRedColorantTag:
-    return "redColorantTag";
-
-  case icSigRedTRCTag:
-    return "redTRCTag";
-
-  case icSigScreeningDescTag:
-    return "screeningDescTag";
-
-  case icSigScreeningTag:
-    return "screeningTag";
-
-  case icSigTechnologyTag:
-    return "technologyTag";
-
-  case icSigUcrBgTag:
-    return "ucrBgTag";
-
-  case icSigViewingCondDescTag:
-    return "viewingCondDescTag";
-
-  case icSigViewingConditionsTag:
-    return "viewingConditionsTag";
-
-  case icSigSpectralViewingConditionsTag:
-    return "spectralViewingConditionsTag";
-
-  case icSigColorantOrderTag:
-    return "colorantOrderTag";
-
-  case icSigColorantTableTag:
-    return "colorantTableTag";
-
-  case icSigChromaticAdaptationTag:
-    return "chromaticAdaptationTag";
-
-  case icSigColorantTableOutTag:
-    return "colorantTableOutTag";
-
-  case icSigOutputResponseTag:
-    return "outputResponseTag";
-
-  case icSigPerceptualRenderingIntentGamutTag:
-    return "perceptualRenderingIntentGamutTag";
-
-  case icSigSaturationRenderingIntentGamutTag:
-    return "saturationRenderingIntentGamutTag";
-
-  case icSigCxFTag:
-    return "CxfTag";
-
-  case icSigSpectralDataInfoTag:
-    return "spectralDataInfoTag";
-
-  case icSigSpectralMediaWhitePointTag:
-    return "spectralMediaWhitePointTag";
-
-  case icSigCustomToStandardPcsTag:
-    return "customToStandardPcsTag";
-
-  case icSigStandardToCustomPcsTag:
-    return "standardToCustomPcsTag";
-
-  case icSigColorEncodingParamsTag:
-    return "icSigColorEncodingParamsTag";
-
-  case icSigColorSpaceNameTag:
-    return "icSigColorSpaceNameTag";
-
-  case icSigReferenceNameTag:
-    return "icSigReferenceNameTag";
-
-  case icSigMaterialTypeArrayTag:
-    return "icSigMaterialTypeArrayTag";
-
-  case icSigMaterialDefaultValuesTag:
-    return "icSigMaterialDefaultValuesTag";
-
-  default:
-    return NULL;
+  if (g_TagSigToNameMap.empty()) {
+    for (int i = 0; g_icTagNameTable[i].sig; i++)
+      g_TagSigToNameMap[g_icTagNameTable[i].sig] = std::string(g_icTagNameTable[i].szName);
   }
+  icTagSigToNameMap::iterator sig = g_TagSigToNameMap.find(tagSig);
+  if (sig != g_TagSigToNameMap.end())
+    return sig->second.c_str();
+
   return NULL;
 }
 
-const icChar* CIccSpecTagFactory::GetTagTypeSigName(icTagTypeSignature tagSig)
+icTagSignature CIccSpecTagFactory::GetTagNameSig(const icChar *szName)
 {
-  switch (tagSig) {
-  case icSigChromaticityType:
-    return "chromaticityType";
-
-  case icSigColorantOrderType:
-    return "colorantOrderType";
-
-  case icSigColorantTableType:
-    return "colorantTableType";
-
-  case icSigCrdInfoType:
-    return "crdInfoType";
-
-  case icSigCurveType:
-    return "curveType";
-
-  case icSigSegmentedCurveType:
-    return "segmentedCurveType";
-
-  case icSigDataType:
-    return "dataType";
-
-  case icSigDateTimeType:
-    return "dateTimeType";
-
-  case icSigDeviceSettingsType:
-    return "deviceSettingsType";
-
-  case icSigDictType:
-    return "dictType";
-
-  case icSigGamutBoundaryDescType:
-    return "gamutBoundaryDescType";
-
-  case icSigLut16Type:
-    return "lut16Type";
-
-  case icSigLut8Type:
-    return "lut8Type";
-
-  case icSigLutAtoBType:
-    return "lutAtoBType";
-
-  case icSigLutBtoAType:
-    return "lutBtoAType";
-
-  case icSigMeasurementType:
-    return "measurementType";
-
-  case icSigMultiLocalizedUnicodeType:
-    return "multiLocalizedUnicodeType";
-
-  case icSigMultiProcessElementType:
-    return "multiProcessElementType";
-
-  case icSigNamedColor2Type:
-    return "namedColor2Type";
-
-  case icSigParametricCurveType:
-    return "parametricCurveType";
-
-  case icSigResponseCurveSet16Type:
-    return "responseCurveSet16Type";
-
-  case icSigProfileSequenceDescType:
-    return "profileSequenceDescType";
-
-  case icSigS15Fixed16ArrayType:
-    return "s15Fixed16 ArrayType";
-
-  case icSigScreeningType:
-    return "screeningType";
-
-  case icSigSignatureType:
-    return "signatureType";
-
-  case icSigSpectralDataInfoType:
-    return "spectralDataInfoType";
-
-  case icSigSpectralViewingConditionsType:
-    return "spectralViewingConditionsType";
-
-  case icSigTextType:
-    return "textType";
-
-  case icSigTextDescriptionType:
-    return "textDescriptionType";
-
-  case icSigU16Fixed16ArrayType:
-    return "u16Fixed16 Type";
-
-  case icSigUcrBgType:
-    return "ucrBgType";
-
-  case icSigSparseMatrixArrayType:
-    return "sparseMatrixArrayType";
-
-  case icSigUInt16ArrayType:
-    return "uInt16 Type";
-
-  case icSigUInt32ArrayType:
-    return "uInt32 Type";
-
-  case icSigUInt64ArrayType:
-    return "uInt64 Type";
-
-  case icSigUInt8ArrayType:
-    return "uInt8 Type";
-
-  case icSigFloat16ArrayType:
-    return "float16 Type";
-
-  case icSigFloat32ArrayType:
-    return "float32 Type";
-
-  case icSigFloat64ArrayType:
-    return "float64 Type";
-
-  case icSigUtf8TextType:
-    return "UTF8 Text Type";
-
-  case icSigZipUtf8TextType:
-    return "ZIP Compressed UTF8 Text Type";
-
-  case icSigZipXmlType:
-    return "ZIP Compressed UTF8 XML Type";
-
-  case icSigUtf16TextType:
-    return "UTF16 Text Type";
-
-  case icSigTagArrayType:
-    return "tagArrayType";
-
-  case icSigTagStructType:
-    return "tagStructType";
-
-  case icSigViewingConditionsType:
-    return "viewingConditionsType";
-
-  case icSigXYZArrayType:
-    return "XYZ Type";
-
-  case icSigProfileSequceIdType:
-    return "profileSequenceIdentifierType";
-
-  default:
-    return NULL;
+  if (g_TagSigToNameMap.empty()) {
+    for (int i = 0; g_icTagNameTable[i].sig; i++)
+      g_TagNameToSigMap[g_icTagNameTable[i].szName] = g_icTagNameTable[i].sig;
   }
+  icTagNameToSigMap::iterator sig = g_TagNameToSigMap.find(szName);
+  if (sig != g_TagNameToSigMap.end())
+    return sig->second;
+
+  return icSigUnknownTag;
+}
+
+const icChar* CIccSpecTagFactory::GetTagTypeSigName(icTagTypeSignature typeSig)
+{
+  if (g_TagTypeSigToNameMap.empty()) {
+    for (int i = 0; g_icTagTypeNameTable[i].sig; i++)
+      g_TagTypeSigToNameMap[g_icTagTypeNameTable[i].sig] = std::string(g_icTagTypeNameTable[i].szName);
+  }
+  icTagTypeSigToNameMap::iterator sig = g_TagTypeSigToNameMap.find(typeSig);
+  if (sig != g_TagTypeSigToNameMap.end())
+    return sig->second.c_str();
 
   return NULL;
+}
+
+icTagTypeSignature CIccSpecTagFactory::GetTagTypeNameSig(const icChar *szName)
+{
+  if (g_TagTypeNameToSigMap.empty()) {
+    for (int i = 0; g_icTagTypeNameTable[i].sig; i++)
+      g_TagTypeNameToSigMap[g_icTagTypeNameTable[i].szName] = g_icTagTypeNameTable[i].sig;
+  }
+  icTagTypeNameToSigMap::iterator sig = g_TagTypeNameToSigMap.find(szName);
+  if (sig != g_TagTypeNameToSigMap.end())
+    return sig->second;
+
+  //Allow conversion from alternate names (backwards compatibility with earlier versions)
+  if (g_AltTagTypeNameToSigMap.empty()) {
+    for (int i = 0; g_icAltTagTypeNameTable[i].sig; i++)
+      g_AltTagTypeNameToSigMap[g_icAltTagTypeNameTable[i].szName] = g_icAltTagTypeNameTable[i].sig;
+  }
+  sig = g_AltTagTypeNameToSigMap.find(szName);
+  if (sig != g_AltTagTypeNameToSigMap.end())
+    return sig->second;
+
+  return icSigUnknownType;
 }
 
 std::auto_ptr<CIccTagCreator> CIccTagCreator::theTagCreator;
@@ -779,6 +546,21 @@ const icChar* CIccTagCreator::DoGetTagSigName(icTagSignature tagSig)
   return NULL;
 }
 
+icTagSignature CIccTagCreator::DoGetTagNameSig(const icChar *szName)
+{
+  CIccTagFactoryList::iterator i;
+  icTagSignature rv;
+
+  for (i = factoryStack.begin(); i != factoryStack.end(); i++) {
+    rv = (*i)->GetTagNameSig(szName);
+    if (rv!=icSigUnknownTag)
+      return rv;
+  }
+
+  return icSigUnknownTag;
+}
+
+
 const icChar* CIccTagCreator::DoGetTagTypeSigName(icTagTypeSignature tagTypeSig)
 {
   CIccTagFactoryList::iterator i;
@@ -791,6 +573,20 @@ const icChar* CIccTagCreator::DoGetTagTypeSigName(icTagTypeSignature tagTypeSig)
   }
 
   return NULL;
+}
+
+icTagTypeSignature CIccTagCreator::DoGetTagTypeNameSig(const icChar* szName)
+{
+  CIccTagFactoryList::iterator i;
+  icTagTypeSignature rv;
+
+  for (i = factoryStack.begin(); i != factoryStack.end(); i++) {
+    rv = (*i)->GetTagTypeNameSig(szName);
+    if (rv!=icSigUnknownType)
+      return rv;
+  }
+
+  return icSigUnknownType;
 }
 
 void CIccTagCreator::DoPushFactory(IIccTagFactory *pFactory)

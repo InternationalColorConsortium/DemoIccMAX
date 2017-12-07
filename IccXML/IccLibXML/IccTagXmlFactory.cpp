@@ -219,9 +219,19 @@ const icChar* CIccTagXmlFactory::GetTagSigName(icTagSignature tagSig)
   return NULL;
 }
 
+icTagSignature CIccTagXmlFactory::GetTagNameSig(const icChar *szName)
+{
+  return icSigUnknownTag;
+}
+
 const icChar* CIccTagXmlFactory::GetTagTypeSigName(icTagTypeSignature tagSig)
 {
   return NULL;
+}
+
+icTagTypeSignature CIccTagXmlFactory::GetTagTypeNameSig(const icChar *szName)
+{
+  return icSigUnknownType;
 }
 
 #ifdef USEREFICCMAXNAMESPACE

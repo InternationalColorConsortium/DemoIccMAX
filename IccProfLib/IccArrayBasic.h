@@ -145,15 +145,15 @@ public:
   bool GetDeviceTint(icFloatNumber *dstColor,
                      const CIccStructNamedColor *pColor, 
                      icFloatNumber tint=1.0f,
-                     icNamedColorMemberSignature sig=icSigDeviceNamedColorMember) const;
+                     icNamedColorlMemberSignature sig=icSigNmclDeviceDataMbr) const;
   bool GetPcsTint(icFloatNumber *dstColor,
                   const CIccStructNamedColor *pColor, 
                   icFloatNumber tint=1.0f,
-                  icNamedColorMemberSignature sig=icSigPcsNamedColorMember) const;
+                  icNamedColorlMemberSignature sig=icSigNmclPcsDataMbr) const;
   bool GetSpectralTint(icFloatNumber *dstColor,
                        const CIccStructNamedColor *pColor, 
                        icFloatNumber tint=1.0f,
-                       icNamedColorMemberSignature sig=icSigSpectralNamedColorMember) const;
+                       icNamedColorlMemberSignature sig=icSigNmclSpectralDataMbr) const;
 
   icUInt32Number GetDeviceSamples() { return m_nDeviceSamples; }
   icUInt32Number GetPcsSamples() { return m_nPcsSamples; }
