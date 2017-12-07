@@ -1,0 +1,6 @@
+SET( ENV{LD_LIBRARY_PATH} "${CMAKE_BINARY_DIR}/../IccProfLib:${CMAKE_BINARY_DIR}/../IccXML" )
+EXECUTE_PROCESS( COMMAND ls -l ${CMAKE_BINARY_DIR}/../IccProfLib ${CMAKE_BINARY_DIR}/../IccXML )
+EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/IccFromXml/iccFromXml ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/iccFromXML)
+EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/IccApplyNamedCmm/iccApplyNamedCmm ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/IccApplyNamedCmm)
+EXECUTE_PROCESS( COMMAND echo "run ${CMAKE_BINARY_DIR}/../../Build/Cmake/Testing/test.sh")
+EXECUTE_PROCESS( COMMAND ${CMAKE_CURRENT_LIST_DIR}/../../../Build/Cmake/Testing/test.sh ${CMAKE_CURRENT_LIST_DIR}/../../../Testing)

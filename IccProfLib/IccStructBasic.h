@@ -68,7 +68,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(_ICCTSTRUCTBASIC_H)
+#if !defined(_ICCSTRUCTBASIC_H)
 #define _ICCSTRUCTBASIC_H
 
 #include <list>
