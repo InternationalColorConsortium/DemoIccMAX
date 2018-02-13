@@ -220,7 +220,7 @@ bool CIccProfileXml::ToXml(std::string &xml)
             }
             xml += line;
             // PrivateType - a type that does not belong to the list in the icc specs - custom for vendor.
-            if ("PrivateType" == tagSig)
+            if (!strcmp("PrivateType", tagSig))
               sprintf(line, "<PrivateType type=\"%s\">\n", icFixXml(fix, icGetSigStr(buf, pTag->GetType())));
             else
               sprintf(line, "<%s>\n", tagSig); //parent node is the tag type
