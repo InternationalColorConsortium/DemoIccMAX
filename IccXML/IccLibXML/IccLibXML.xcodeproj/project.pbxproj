@@ -29,22 +29,22 @@
 /* Begin PBXFileReference section */
 		302BFC781C21502E0063E0D2 /* libIccLibXML.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIccLibXML.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		302BFC7F1C21504C0063E0D2 /* IccIoXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccIoXml.cpp; sourceTree = SOURCE_ROOT; };
-		302BFC801C21504C0063E0D2 /* IccIoXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccIoXml.h; path = "IccIoXml.h"; sourceTree = SOURCE_ROOT; };
-		302BFC811C21504C0063E0D2 /* IccLibXMLVer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccLibXMLVer.h; path = "IccLibXMLVer.h"; sourceTree = SOURCE_ROOT; };
-		302BFC821C21504C0063E0D2 /* IccMpeXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccMpeXml.cpp; path = "IccMpeXml.cpp"; sourceTree = SOURCE_ROOT; };
-		302BFC831C21504C0063E0D2 /* IccMpeXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccMpeXml.h; path = "IccMpeXml.h"; sourceTree = SOURCE_ROOT; };
-		302BFC841C21504C0063E0D2 /* IccMpeXmlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccMpeXmlFactory.cpp; path = "IccMpeXmlFactory.cpp"; sourceTree = SOURCE_ROOT; };
-		302BFC851C21504C0063E0D2 /* IccMpeXmlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccMpeXmlFactory.h; path = "IccMpeXmlFactory.h"; sourceTree = SOURCE_ROOT; };
-		302BFC861C21504C0063E0D2 /* IccProfileXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccProfileXml.cpp; path = "IccProfileXml.cpp"; sourceTree = SOURCE_ROOT; };
-		302BFC871C21504C0063E0D2 /* IccProfileXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccProfileXml.h; path = "IccProfileXml.h"; sourceTree = SOURCE_ROOT; };
-		302BFC881C21504C0063E0D2 /* IccTagXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagXml.cpp; path = "IccTagXml.cpp"; sourceTree = SOURCE_ROOT; };
-		302BFC891C21504C0063E0D2 /* IccTagXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagXml.h; path = "IccTagXml.h"; sourceTree = SOURCE_ROOT; };
-		302BFC8A1C21504C0063E0D2 /* IccTagXmlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccTagXmlFactory.cpp; path = "IccTagXmlFactory.cpp"; sourceTree = SOURCE_ROOT; };
-		302BFC8B1C21504C0063E0D2 /* IccTagXmlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccTagXmlFactory.h; path = "IccTagXmlFactory.h"; sourceTree = SOURCE_ROOT; };
-		302BFC8C1C21504C0063E0D2 /* IccUtilXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IccUtilXml.cpp; path = "IccUtilXml.cpp"; sourceTree = SOURCE_ROOT; };
-		302BFC8D1C21504C0063E0D2 /* IccUtilXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccUtilXml.h; path = "IccUtilXml.h"; sourceTree = SOURCE_ROOT; };
-		302BFC8E1C21504C0063E0D2 /* IccXmlConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IccXmlConfig.h; path = "IccXmlConfig.h"; sourceTree = SOURCE_ROOT; };
-		302BFC8F1C21504C0063E0D2 /* MainPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainPage.h; path = "MainPage.h"; sourceTree = SOURCE_ROOT; };
+		302BFC801C21504C0063E0D2 /* IccIoXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccIoXml.h; sourceTree = SOURCE_ROOT; };
+		302BFC811C21504C0063E0D2 /* IccLibXMLVer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccLibXMLVer.h; sourceTree = SOURCE_ROOT; };
+		302BFC821C21504C0063E0D2 /* IccMpeXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccMpeXml.cpp; sourceTree = SOURCE_ROOT; };
+		302BFC831C21504C0063E0D2 /* IccMpeXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccMpeXml.h; sourceTree = SOURCE_ROOT; };
+		302BFC841C21504C0063E0D2 /* IccMpeXmlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccMpeXmlFactory.cpp; sourceTree = SOURCE_ROOT; };
+		302BFC851C21504C0063E0D2 /* IccMpeXmlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccMpeXmlFactory.h; sourceTree = SOURCE_ROOT; };
+		302BFC861C21504C0063E0D2 /* IccProfileXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccProfileXml.cpp; sourceTree = SOURCE_ROOT; };
+		302BFC871C21504C0063E0D2 /* IccProfileXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccProfileXml.h; sourceTree = SOURCE_ROOT; };
+		302BFC881C21504C0063E0D2 /* IccTagXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccTagXml.cpp; sourceTree = SOURCE_ROOT; };
+		302BFC891C21504C0063E0D2 /* IccTagXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccTagXml.h; sourceTree = SOURCE_ROOT; };
+		302BFC8A1C21504C0063E0D2 /* IccTagXmlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccTagXmlFactory.cpp; sourceTree = SOURCE_ROOT; };
+		302BFC8B1C21504C0063E0D2 /* IccTagXmlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccTagXmlFactory.h; sourceTree = SOURCE_ROOT; };
+		302BFC8C1C21504C0063E0D2 /* IccUtilXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IccUtilXml.cpp; sourceTree = SOURCE_ROOT; };
+		302BFC8D1C21504C0063E0D2 /* IccUtilXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccUtilXml.h; sourceTree = SOURCE_ROOT; };
+		302BFC8E1C21504C0063E0D2 /* IccXmlConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IccXmlConfig.h; sourceTree = SOURCE_ROOT; };
+		302BFC8F1C21504C0063E0D2 /* MainPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPage.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,11 +218,11 @@
 				HEADER_SEARCH_PATHS = (
 					"../../IccProfLib/**",
 					"../../Build/Xcode/**",
+					/usr/include/libxml2,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+                                MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Debug;
 		};
@@ -259,10 +259,10 @@
 				HEADER_SEARCH_PATHS = (
 					"../../IccProfLib/**",
 					"../../Build/Xcode/**",
+					/usr/include/libxml2,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Release;
 		};

@@ -172,7 +172,6 @@
 					ApplicationServices,
 				);
 				PRODUCT_NAME = RefIccLabs;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 				WRAPPER_EXTENSION = cmm;
 				ZERO_LINK = YES;
 			};
@@ -197,7 +196,6 @@
 					ApplicationServices,
 				);
 				PRODUCT_NAME = RefIccLabs;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 				WRAPPER_EXTENSION = cmm;
 			};
 			name = Release;
@@ -214,7 +212,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Debug;
 		};
@@ -228,7 +225,6 @@
 				LIBRARY_SEARCH_PATHS = ../../../Build/Xcode/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PREBINDING = NO;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk;
 			};
 			name = Release;
 		};
