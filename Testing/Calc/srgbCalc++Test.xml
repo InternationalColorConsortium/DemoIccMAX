@@ -29,16 +29,16 @@
 						<Import Filename="calcImport.xml"/>
 					</Imports>
 					<Variables>
-						<Declare Name="rv" Position="0" Size="24"/>
+						<Declare Name="rv" Position="0" Size="21"/>
 						<Declare Name="rgb">r g b</Declare>
 						<Declare Name="primaries">red[3] green[3] blue[3]</Declare>
 					</Variables>
 					<Macros>
 						<Macro Name="tiny">1e-10</Macro>
 						<Macro Name="storergb">tput{rgb}</Macro>
-						<Macro Name="checkrgb">copy(3) call{storergb} tget{rgb} sub(3) abs(3) sum(3)</Macro>
-						<Macro Name="scaleoffset3" local="scale offset">tput{@offset} tput{@scale} tget{@scale} smul(3) tget{@offset} sadd(3)</Macro>
-						<Macro Name="scaleoffsetclamp3" local="range[2]">tput{@range} call{scaleoffset3} tget{@range[0]} copy[1,2] vmax[3] tget{@range[1]} copy[1,2] vmin[3]</Macro>
+						<Macro Name="checkrgb">copy(3) call{storergb} tget{rgb} sub(3) abs(3) sum(3) 0.1 lt</Macro>
+						<Macro Name="scaleoffset3" Local="scale offset">tput{@offset} tput{@scale} tget{@scale} smul(3) tget{@offset} sadd(3)</Macro>
+						<Macro Name="scaleoffsetclamp3" Local="range[2]">tput{@range} call{scaleoffset3} tget{@range[0]} copy[1,2] vmax[3] tget{@range[1]} copy[1,2] vmin[3]</Macro>
 					</Macros>		
 					<SubElements>
 						<CurveSetElement Name="applyCurves" InputChannels="3" OutputChannels="3">
@@ -121,6 +121,23 @@
 							<MainFunction>{ in(0,3) 1 1 1 add(3) out(0,3) }</MainFunction>
 						</CalculatorElement>
 
+						<CalculatorElement Name="reorderCalc" InputChannels="7" OutputChannels="6"
+	                                       InputNames="C M Y K Lab[3]" OutputNames="a b C MY[2] L">
+							<MainFunction>
+{
+in{C}		;place input channel 0 onto stack
+out{C}		;place stack value into output channel 2
+in{Lab[1],2}	;place 2 input channels starting at index 5 (i.e. 4+1) onto stack
+out{a,2}	;place 2 values on stack into output channels starting at index 0
+in{M}		;place input channel 1 onto stack
+in{Y}		;place input channel 2 onto stack
+out{MY}	;place 2 values on stack into output channels starting at index 3
+in{Lab[0]}	;place input channel 4 onto stack
+out{L}		;place value on stack into output channel 5
+}
+							</MainFunction>
+						</CalculatorElement>
+						
 						<JabToXYZElement Name="JabToXYZ" InputChannels="3" OutputChannels="3">
 							<ColorAppearanceParams>
 								<WhitePoint>
@@ -170,7 +187,7 @@ tput{rv(3)]}
 curv{applyCurves} %y=.5x; y=x; y=1.5x
 sum(3)
 3 eq
-tput{rv(8)}
+tput{rv(4)}
 
 1 2 3
 mtx{applyMtx} %[1 1 -1; 2 1 -1; 1 -1 1]
@@ -178,7 +195,7 @@ mtx{applyMtx} %[1 1 -1; 2 1 -1; 1 -1 1]
 sub(3)
 sum(3)
 0 eq
-tput{rv(9)}
+tput{rv(5)}
 
 1 1 1
 clut{applyLut} %clut with 0.25 0.5 0.75 at entry 1 1 1
@@ -186,7 +203,7 @@ clut{applyLut} %clut with 0.25 0.5 0.75 at entry 1 1 1
 sub(3)
 sum(3)
 0 eq
-tput{rv(10)}
+tput{rv(6)}
 
 1 2 3
 calc{applyCalc} %{ in(0,3) 1 1 1 add(3) out(0,3) }
@@ -194,7 +211,7 @@ calc{applyCalc} %{ in(0,3) 1 1 1 add(3) out(0,3) }
 sub(3)
 sum(3)
 0 eq
-tput{rv(11)}
+tput{rv(7)}
 
 .5
 tint{applyTint}
@@ -202,7 +219,7 @@ tint{applyTint}
 sub(3)
 sum(3)
 0 eq
-tput{rv(12)}
+tput{rv(8)}
 
 100 0 0
 fJab{JabToXYZ}
@@ -211,7 +228,7 @@ sub(3)
 abs(3)
 sum(3)
 0.001 le
-tput{rv(13)}
+tput{rv(9)}
 
 0.9642 1.0 0.8249
 tJab{XYZToJab}
@@ -220,7 +237,7 @@ sub(3)
 abs(3)
 sum(3)
 0.1 le
-tput{rv(14)}
+tput{rv(10)}
 
 .5
 elem{applyTint}
@@ -228,10 +245,10 @@ elem{applyTint}
 sub(3)
 sum(3)
 0 eq
-tput{rv(15)}
+tput{rv(11)}
 
 call{tiny} 1e-10 eq
-tput{rv(16)}
+tput{rv(12)}
 
 1 tput{v1}
 2 tput{v2}
@@ -243,7 +260,7 @@ call{applyIdent}
 sub(3)
 sum(3)
 0 eq
-tput{rv(17)}
+tput{rv(13)}
 
 1 2 3
 #storergb
@@ -253,11 +270,11 @@ sub(3)
 abs(3)
 sum(3)
 0.1 lt
-tput{rv(18)}
+tput{rv(14)}
 
 1 2 3
 call{checkrgb}
-tput{rv(19)}
+tput{rv(15)}
 
 tget{rgb.r} tget{rgb.g} tget{rgb.b}
 1 2 3
@@ -265,7 +282,7 @@ sub(3)
 abs(3)
 sum(3)
 0.1 lt
-tput{rv(20)}
+tput{rv(16)}
 
 100 0 0
 0 100 0
@@ -279,7 +296,7 @@ sub(3)
 abs(3)
 sum(3)
 0.1 lt
-tput{rv(21)}
+tput{rv(17)}
 
 .5 .5 .5 1.5 0.25 call{scaleoffset3}
 1 1 1
@@ -287,7 +304,7 @@ sub(3)
 abs(3)
 sum(3)
 0.1 lt
-tput{rv(22)}
+tput{rv(18)}
 
 .5 .5 .5 1.5 0.25 0 0.9 call{scaleoffsetclamp3}
 .9 .9 .9
@@ -295,11 +312,19 @@ sub(3)
 abs(3)
 sum(3)
 0.1 lt
-tput{rv(23)}
+tput{rv(19)}
+
+0 1 2 3 4 5 6 calc{reorderCalc}
+5 6 0 1 2 4
+sub(6)
+abs(6)
+sum(6)
+0.1 lt
+tput{rv(20)}
 
 tget{rv}
-sum(24)
-24 eq
+sum(21)
+21 eq
 if {
  env(01020304) if {
   copy(1,2)

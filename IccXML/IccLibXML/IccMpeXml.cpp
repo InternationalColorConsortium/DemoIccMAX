@@ -1838,7 +1838,7 @@ bool CIccMpeXmlCalculator::ToXml(std::string &xml, std::string blanks/* = ""*/)
   xml += blanks + line;
 
   if (m_nReserved) {
-    sprintf(line, " reserved=\"%u\"", m_nReserved);
+    sprintf(line, " Reserved=\"%u\"", m_nReserved);
     xml += line;
   }
   xml += ">\n";
@@ -2272,7 +2272,7 @@ bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, 
       std::string op = parse.GetName();
       std::string ref = parse.GetReference();
       std::string refroot;
-      for (const char *ptr = ref.c_str(); *ptr && *ptr != ','; ptr++) refroot += *ptr;
+      for (const char *ptr = ref.c_str(); *ptr && *ptr != ',' && *ptr != '(' && *ptr != '['; ptr++) refroot += *ptr;
 
       ChanVarMap *pMap;
       int nChan;
@@ -2291,18 +2291,36 @@ bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, 
         return false;
       }
       if (refroot != ref) {
-        int size = atoi(ref.substr(refroot.size() + 1).c_str());
-        if (size < 0 || ci->second + size >= m_nInputChannels) {
-          parseStr += "Invalid '" + op + "' operation channel size '" + refroot + "'\n";
+        std::string select = ref.substr(refroot.size());
+        int offset = 0;
+        int size = 1;
+
+        if (select[0] == '[' || select[1] == '(') {
+          const char *ptr;
+          offset = atoi(select.c_str() + 1);
+          for (ptr = select.c_str() + 1; *ptr && *ptr != ')' && *ptr != ']'; ptr++);
+          select = ptr + 1;
+        }
+
+        if (select[0]==',')
+          size = atoi(select.c_str() + 1);
+
+        if (size < 0 || offset<0 || ci->second.first + offset + size > m_nInputChannels) {
+          parseStr += "Invalid '" + op + "' operation channel offset or size '" + refroot + "'\n";
           return false;
         }
         char index[80];
-        sprintf(index, "(%d,%d)", ci->second, size);
+        sprintf(index, "(%d,%d)", ci->second.first+offset, size);
+        flatStr += op + index + " ";
+      }
+      else if (ci->second.second>1) {
+        char index[80];
+        sprintf(index, "(%d,%d)", ci->second.first, ci->second.second);
         flatStr += op + index + " ";
       }
       else {
         char index[80];
-        sprintf(index, "(%d)", ci->second);
+        sprintf(index, "(%d)", ci->second.first);
         flatStr += op + index + " ";
       }
     }
@@ -2583,13 +2601,29 @@ bool CIccMpeXmlCalculator::ParseChanMap(ChanVarMap& chanMap, const char *szNames
   int i;
   const char *ptr;
   std::string name;
+  IndexSizePair isp;
+  int size = 1;
+
   for (i = 0, ptr = szNames; *ptr && i < nChannels; ptr++) {
     bool bFirst = name.empty();
     if (*ptr == ' ') {
       if (!bFirst) {
-        chanMap[name] = i++;
+        isp.first = i;
+        isp.second = size;
+        chanMap[name] = isp;
         name.clear();
+        i += size;
+        size = 1;
       }
+    }
+    else if (*ptr == '[' || *ptr == '(') {
+      size = atoi(ptr + 1);
+      if (size<0 || i + size>nChannels)
+        return 0;
+
+      for (; *ptr && *ptr != ']' && *ptr != ')'; ptr++);
+      if (!*ptr)
+        ptr--;
     }
     else if (validNameChar(*ptr, bFirst)) {
       name += *ptr;
@@ -2598,8 +2632,12 @@ bool CIccMpeXmlCalculator::ParseChanMap(ChanVarMap& chanMap, const char *szNames
       return false;
     }
   }
-  if (!name.empty() && i < nChannels)
-    chanMap[name] = i;
+
+  if (!name.empty() && i < nChannels) {
+    isp.first = i;
+    isp.second = size;
+    chanMap[name] = isp;
+  }
 
   return true;
 }
@@ -2634,6 +2672,16 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
   if (pChild && pNode->children && pChild->children->content) {
     char *content = (char*)pChild->children->content;
     std::string flatFunc;
+
+    //Move new variables to after allocated variables
+    TempDeclVarMap::iterator declVar;
+    for (declVar = m_declVarMap.begin(); declVar != m_declVarMap.end(); declVar++) {
+      if (declVar->second.m_pos >= 0) {
+        int next = declVar->second.m_pos + declVar->second.m_size;
+        if (next > m_nNextVar)
+          m_nNextVar = next;
+      }
+    }
 
     if (!Flatten(flatFunc, "", content, parseStr, 0)) {
       return false;

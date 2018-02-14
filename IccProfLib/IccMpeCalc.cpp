@@ -1788,6 +1788,11 @@ void SIccCalcOp::Describe(std::string &desc)
       }
       break;
 
+    case icSigGammaOp:
+    case icSigScalarAddOp:
+    case icSigScalarSubtractOp:
+    case icSigScalarMultiplyOp:
+    case icSigScalarDivideOp:
     case icSigAddOp:
     case icSigSubtractOp:
     case icSigMultiplyOp:

@@ -1863,7 +1863,7 @@ bool CIccTagXmlSpectralViewingConditions::ToXml(std::string &xml, std::string bl
     xml += blanks + buf;
 
     if (m_reserved2) {
-      sprintf(buf, " reserved=\"%d\"", m_reserved2);
+      sprintf(buf, " Reserved=\"%d\"", m_reserved2);
       xml += buf;
     }
     xml += ">\n";
@@ -1898,7 +1898,7 @@ bool CIccTagXmlSpectralViewingConditions::ToXml(std::string &xml, std::string bl
     xml += blanks + buf;
 
     if (m_reserved3) {
-      sprintf(buf, " reserved=\"%d\"", m_reserved3);
+      sprintf(buf, " Reserved=\"%d\"", m_reserved3);
       xml += buf;
     }
     xml += ">\n";
@@ -4269,7 +4269,7 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
               }
             }
             // if (pTag->m_nReserved) {
-            //   sprintf(line, " reserved=\"%08x\"", pTag->m_nReserved);
+            //   sprintf(line, " Reserved=\"%08x\"", pTag->m_nReserved);
             //   xml += line;
             // }
             // xml += ">\n";

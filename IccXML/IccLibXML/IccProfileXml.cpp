@@ -387,11 +387,11 @@ bool CIccProfileXml::ParseBasic(xmlNode *pNode, std::string &parseStr)
 		else if (!icXmlStrCmp(pNode->name, "RenderingIntent")) {
 			if (!strcmp((const char*)pNode->children->content, "Perceptual"))
 				m_Header.renderingIntent = icPerceptual;
-			else if (!strcmp((const char*)pNode->children->content, "Relative Colorimetric"))
+			else if (!strcmp((const char*)pNode->children->content, "Relative Colorimetric") || !strcmp((const char*)pNode->children->content, "Relative"))
 				m_Header.renderingIntent = icRelativeColorimetric;
 			else if (!strcmp((const char*)pNode->children->content, "Saturation"))
 				m_Header.renderingIntent = icSaturation;
-			else if (!strcmp((const char*)pNode->children->content, "Absolute Colorimetric"))
+			else if (!strcmp((const char*)pNode->children->content, "Absolute Colorimetric") || !strcmp((const char*)pNode->children->content, "Absolute"))
 				m_Header.renderingIntent = icAbsoluteColorimetric;
 
 		}

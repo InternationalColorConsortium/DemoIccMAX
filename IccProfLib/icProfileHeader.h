@@ -1079,8 +1079,10 @@ typedef enum {
 typedef enum {
     icPerceptual                        = 0,
     icRelativeColorimetric              = 1,
+    icRelative                          = 1,
     icSaturation                        = 2,
     icAbsoluteColorimetric              = 3,
+    icAbsolute                          = 3,
 } icRenderingIntent;
 
 /** Convenience Enum Definitions - Not defined in ICC specification*/

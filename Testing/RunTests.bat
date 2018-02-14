@@ -4,6 +4,10 @@ echo Test CalcElement Operations return of zero's indicates that something bad h
 iccApplyNamedCMM Calc\srgbCalcTest.txt 2 0 Calc\srgbCalcTest.icc 3 sRGB_v4_ICC_preference.icc 3
 
 echo ===========================================================================
+echo Test Extended CalcElement Operations return of zero's indicates that something bad happened
+iccApplyNamedCMM Calc\srgbCalcTest.txt 2 0 Calc\srgbCalc++Test.icc 3 sRGB_v4_ICC_preference.icc 3
+
+echo ===========================================================================
 echo Test NamedColor
 iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 sRGB_v4_ICC_preference.icc 1
 

@@ -251,7 +251,8 @@ public:
 
 typedef std::map<std::string, CIccTempVar> TempVarMap;
 typedef std::list<CIccTempVar> TempVarList;
-typedef std::map<std::string, int> ChanVarMap;
+typedef std::pair<int, int> IndexSizePair;
+typedef std::map<std::string, IndexSizePair> ChanVarMap;
 
 class CIccTempDeclVar
 {
