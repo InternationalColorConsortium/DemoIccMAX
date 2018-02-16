@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccCalcImport>
+	<Imports>
+		<Import Filename="calcVars.xml"/>
+	</Imports>
+	<SubElements>
+		<MatrixElement Name="identity3x3" InputChannels="3" OutputChannels="3">
+			<MatrixData>
+			 1 0 0
+			 0 1 0
+			 0 0 1
+			</MatrixData>
+		</MatrixElement>
+	</SubElements>
+	<Variables>
+		<Declare Name="v1"/>
+	</Variables>
+	<Macros>
+		<Macro Name="v1Inc">tget{v1} 1 add tput{v1}</Macro>
+		<Macro Name="v2Inc">tget{v2} 1 add tput{v2}</Macro>
+		<Macro Name="applyIdent">mtx{identity3x3}</Macro>
+	</Macros>
+</IccCalcImport>

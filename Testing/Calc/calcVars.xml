@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccCalcImport>
+	<Variables>
+		<Declare Name="v2"/>
+		<Declare Name="v3"/>
+	</Variables>
+</IccCalcImport>
