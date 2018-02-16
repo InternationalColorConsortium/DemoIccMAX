@@ -216,6 +216,11 @@ encoding is provided.</p>
 
 <h2>Project Build Considerations</h2>
 
+### Dependencies
+* [libxml2](http://xmlsoft.org/) - for IccXML library and tools
+* [libtiff](http://www.libtiff.org/) - for Tiff image tools
+* [wxWidgets](https://www.wxwidgets.org/) - for basic profile viewer GUI
+
 <h3>Windows</h3>
 
 <p class="MsoNormal">The project solution BuildAll.sln file for the Visual Studio
@@ -266,8 +271,9 @@ For example:</p>
 <p class="MsoNormal">WXVER=28</p><p class="MsoNormal">When the
 ICC_USE_EIGEN_SOLVER is defined in IccProfLibConf.h then the Calc
 element solv operator will be implementd using the Eigen math C++
-template library (<a href="http://eigen.tuxfamily.org/index.php?title=Main_Page">http://eigen.tuxfamily.org/index.php?title=Main_Page</a>), and is referenced using the system environeent variable EIGEN. &nbsp;Fore example:</p>EIGEN=C:\DevLibs\eigen\eigen-3.2.8<h3>MacOS-X</h3>
+template library (<a href="http://eigen.tuxfamily.org/index.php?title=Main_Page">http://eigen.tuxfamily.org/index.php?title=Main_Page</a>), and is referenced using the system environeent variable EIGEN. &nbsp;Fore example:</p>EIGEN=C:\DevLibs\eigen\eigen-3.2.8
 
+<h3>MacOS-X</h3>
 <p class="MsoNormal">XCODE projects can be found in each of the library
 and project folders that are presently supported for building on the
 MacOS-X platform. The file Build/XCode/BuildAll.sh contains a bash Terminal script that can be used to build all of the XCODE projects. &nbsp;</p><p class="MsoNormal">Header
@@ -281,13 +287,38 @@ this folder). &nbsp;<span style=""></span>(Note: Projects with
 additional dependencies may not correctly build if these folders not set up before running the BuildAll.sh script).</p><p class="MsoNormal">The
 BuildAll.sh script file will make a copy of the libIccProfLib.a and
 libIccXML.a library binaries into the Build/XCode/lib folder. &nbsp;The
-libraries in Build/XCode/Lib are then referenced by the rest of the
+libraries in Build/XCode/lib are then referenced by the rest of the
 projects in RefIccMAX. &nbsp;Executables for the various tools will be
 placed into the Testing folder after a successful run
 of&nbsp;BuildAll.sh.</p>
 
-<h3>Linux</h3>
-<p class="MsoNormal">TBD</p>
+### CMake
+[Cmake](https://cmake.org/) builds should work cross platform.
+The source archive contains a CMake build configuration,
+which can be used to build on the command line with make or ninja, or
+generate a project for a KDevelop or Eclipse or for the platform specific XCode and VC++ IDEs.
+
+#### Compilation
+Typical create a out of source build directory and specify an install path:
+
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
+        make
+        make install
+
+##### Build Flags
+... are typical cmake flags like CMAKE\_CXX\_FLAGS to tune compilation. For development *-DCMAKE\_CXX\_FLAGS="-Wall -Wextra -g"* is recommended.
+
+* ENABLE\_TESTS - default is ON
+* ENABLE\_TOOLS - default is ON
+* ENABLE\_SHARED\_LIBS - default is ON
+* ENABLE\_STATIC\_LIBS - default is ON
+* ENABLE\_INSTALL\_RIM - install no files if build as subproject
+* USE\_SYSTEM\_LIBXML2 - default is OFF
+
+Linux Packages
+--------------
+* Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libRefIccMAX-devel)
 
 <h2>License</h2>
 The ICC Software License, Version 0.2<br><br><br>Copyright (c) 2003-2015 The International Color Consortium. All rights <br>reserved.<br><br>Redistribution and use in source and binary forms, with or without<br>modification, are permitted provided that the following conditions<br>are met:<br><br>1. Redistributions of source code must retain the above copyright<br>&nbsp;&nbsp; notice, this list of conditions and the following disclaimer. <br><br>2. Redistributions in binary form must reproduce the above copyright<br>&nbsp;&nbsp; notice, this list of conditions and the following disclaimer in<br>&nbsp;&nbsp; the documentation and/or other materials provided with the<br>&nbsp;&nbsp; distribution.<br><br>3. In the absence of prior written permission, the names "ICC" and "The<br>&nbsp;&nbsp; International Color Consortium" must not be used to imply that the<br>&nbsp;&nbsp; ICC organization endorses or promotes products derived from this<br>&nbsp;&nbsp; software.<br><br>THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED<br>WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES<br>OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<br>DISCLAIMED.&nbsp; IN NO EVENT SHALL THE INTERNATIONAL COLOR CONSORTIUM OR<br>ITS CONTRIBUTING MEMBERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,<br>SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT<br>LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF<br>USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<br>ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,<br>OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT<br>OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF<br>SUCH DAMAGE.<br>====================================================================<br><br>This software consists of voluntary contributions made by many<br>individuals on behalf of the The International Color Consortium. <br><br><br>Membership in the ICC is encouraged when this software is used for<br>commercial purposes. <br><br>&nbsp; <br>For more information on The International Color Consortium, please<br>see <a href="http://www.color.org/">http://www.color.org/</a>.<br>
