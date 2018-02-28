@@ -235,11 +235,13 @@
 				HEADER_SEARCH_PATHS = (
 					../../../Build/Xcode/libtiff,
 					../../../IccProfLib,
+					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../Build/Xcode/libtiff,
 					../../../Build/Xcode/lib,
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -252,11 +254,13 @@
 				HEADER_SEARCH_PATHS = (
 					../../../Build/Xcode/libtiff,
 					../../../IccProfLib,
+					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../Build/Xcode/libtiff,
 					../../../Build/Xcode/lib,
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
