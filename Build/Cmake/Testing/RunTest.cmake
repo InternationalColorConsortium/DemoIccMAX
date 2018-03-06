@@ -8,6 +8,6 @@ EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/IccDumpProfile/iccD
 EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/IccRoundTrip/iccRoundTrip ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/)
 EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/IccSpecSepToTiff/iccSpecSepToTiff ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/)
 EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/IccTiffDump/iccTiffDump ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/)
-EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/wxProfileDump/iccDumpProfileGui ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/)
+EXECUTE_PROCESS( COMMAND cp -av ${CMAKE_BINARY_DIR}/../Tools/wxProfileDump/iccDumpProfileGui ${CMAKE_CURRENT_LIST_DIR}/../../../Testing/ || echo "")
 EXECUTE_PROCESS( COMMAND echo "run ${CMAKE_BINARY_DIR}/../../Build/Cmake/Testing/test.sh")
 EXECUTE_PROCESS( COMMAND ${CMAKE_CURRENT_LIST_DIR}/../../../Build/Cmake/Testing/test.sh ${CMAKE_CURRENT_LIST_DIR}/../../../Testing)
