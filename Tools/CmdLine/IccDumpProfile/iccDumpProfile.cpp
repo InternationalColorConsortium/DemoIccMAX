@@ -110,7 +110,7 @@ print_usage:
 
   CIccProfile *pIcc;
   std::string sReport;
-  icValidateStatus nStatus;
+  icValidateStatus nStatus = icValidateOK;
 
   if (!strncmp(argv[1], "-V", 2) || !strncmp(argv[1], "-v", 2)) {
     if (argc<=2)
