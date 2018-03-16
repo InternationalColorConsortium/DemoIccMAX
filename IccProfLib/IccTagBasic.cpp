@@ -1145,7 +1145,7 @@ void CIccTagZipUtf8Text::Describe(std::string &sDescription)
 {
   std::string str;
 #ifdef ICC_USE_ZLIB
-  GetString(str);
+  GetText(str);
   sDescription += "ZLib Compressed String=\"";
   sDescription += str;
   sDescription += "\"\r\n";
@@ -1161,7 +1161,7 @@ void CIccTagZipUtf8Text::Describe(std::string &sDescription)
     sDescription += "\r\n";
   }
   sDescription += "END_COMPRESSED_DATA\r\n";
-#endif`
+#endif
 }
 
 /**
@@ -1183,15 +1183,14 @@ bool CIccTagZipUtf8Text::GetText(std::string &str) const
   int zstat;
   z_stream zstr;
   memset(&zstr, 0, sizeof(zstr));
-  unsigned char buf[32767];
+  unsigned char buf[32767] = {0};
 
-  zstr.next_in = pBuf;
-  zstr.avail_in = zstr.total_in = nSize;
+  zstr.next_in = buf;
+  zstr.avail_in = zstr.total_in = 32767;
 
   zstat = inflateInit(&zstr);
 
   if (zstat != Z_OK) {
-    free(pBuf);
     return false;
   }
 
@@ -1205,7 +1204,6 @@ bool CIccTagZipUtf8Text::GetText(std::string &str) const
 
     if (zstat != Z_OK && zstat != Z_STREAM_END) {
       inflateEnd(&zstr);
-      free(pBuf);
       return false;
     }
 
@@ -1239,7 +1237,7 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 #ifndef ICC_USE_ZLIB
   return false;
 #else
-  icUInt32Number nSize = (icUInt32Number)strlen(szText)+1;
+  icUInt32Number nSize = (icUInt32Number)strlen((const char*)szText)+1;
   icUtf8Vector compress;
   int i;
 
@@ -2511,12 +2509,10 @@ icValidateStatus CIccTagSignature::Validate(std::string sigPath, std::string &sR
  */
 CIccTagNamedColor2::CIccTagNamedColor2(int nSize/*=1*/, int nDeviceCoords/*=0*/)
 {
-  m_nSize = nSize;
+  m_nSize = nSize <1 ? 1 : nSize;
   m_nVendorFlags = 0;
   m_nDeviceCoords = nDeviceCoords;
-  if (m_nSize <1)
-    m_nSize = 1;
-  if (m_nDeviceCoords<0)
+  if (nDeviceCoords<0)
     m_nDeviceCoords = nDeviceCoords = 0;
 
   if (nDeviceCoords>0)
