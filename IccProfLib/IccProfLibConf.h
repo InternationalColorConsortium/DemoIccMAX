@@ -168,7 +168,7 @@ namespace refIccMAX {
 #endif
 
 // Uncomment below if you wish to utilize ZLIB for compressed text tag types
-//#define ICC_USE_ZLIB
+#define ICC_USE_ZLIB
 
 // Uncomment below if you wish to utilize Eigen library to support matrix solving
 //#define ICC_USE_EIGEN_SOLVER
