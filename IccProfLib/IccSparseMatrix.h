@@ -79,7 +79,7 @@ Copyright:  (c) see ICC Software License
 class IIccSparseMatrixEntry
 {
 public:
-  virtual ~IIccSparseMatrixEntry()=0;
+  virtual ~IIccSparseMatrixEntry(){}
   virtual void init(void *pData)=0;
   
   virtual icFloatNumber get(int index) const=0;
@@ -94,7 +94,6 @@ class CIccSparseMatrixEntry : public IIccSparseMatrixEntry
 {
 public:
   CIccSparseMatrixEntry<T>() {m_pData = 0;}
-
   void init(void *pData) {m_pData = (T*)pData;}
 
   virtual icUInt8Number size() const { return sizeof(T); }
