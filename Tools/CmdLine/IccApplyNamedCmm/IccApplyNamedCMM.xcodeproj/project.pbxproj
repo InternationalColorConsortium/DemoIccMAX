@@ -25,7 +25,7 @@
 
 /* Begin PBXFileReference section */
 		30052A241AA59EDF0005E17C /* IccApplyNamedCMM */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IccApplyNamedCMM; sourceTree = BUILT_PRODUCTS_DIR; };
-		30DF54131C0F621600ADAD66 /* libIccProfLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccProfLib.a; path = ../../../../Build/XCode/lib/libIccProfLib.a; sourceTree = SOURCE_ROOT; };
+		30DF54131C0F621600ADAD66 /* libIccProfLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccProfLib.a; path = ../../../Build/XCode/lib/libIccProfLib.a; sourceTree = SOURCE_ROOT; };
 		30EB15DA1C07539A00D4654E /* iccApplyNamedCmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iccApplyNamedCmm.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -208,7 +208,9 @@
 		30052A2C1AA59EDF0005E17C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				HEADER_SEARCH_PATHS = "../../../IccProfLib/**";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -221,7 +223,9 @@
 		30052A2D1AA59EDF0005E17C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				HEADER_SEARCH_PATHS = "../../../IccProfLib/**";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
