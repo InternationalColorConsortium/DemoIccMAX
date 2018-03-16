@@ -6,7 +6,7 @@ xcodebuild -target IccProfLib-macOS -configuration "$config"
 cp Build/$config/* ../Build/XCode/lib
 
 cd ../IccXML/IccLibXML
-xcodebuild -target IccLibXML -configuration "$config"
+xcodebuild -target IccLibXML-macOS -configuration "$config"
 cp build/$config/* ../../Build/XCode/lib
 
 cd ../../Tools/CmdLine/IccApplyNamedCmm
