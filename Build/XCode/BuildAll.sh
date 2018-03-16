@@ -2,7 +2,7 @@
 config="Release"
 
 cd ../../IccProfLib
-xcodebuild -target IccProfLib-Static -configuration "$config"
+xcodebuild -target IccProfLib-macOS -configuration "$config"
 cp Build/$config/* ../Build/XCode/lib
 
 cd ../IccXML/IccLibXML
