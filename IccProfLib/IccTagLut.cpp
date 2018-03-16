@@ -142,9 +142,8 @@ icFloatNumber CIccCurve::Find(icFloatNumber v,
 */
 CIccTagCurve::CIccTagCurve(int nSize/*=0*/)
 {
-  m_nSize = nSize;
-  if (m_nSize <0)
-    m_nSize = 0;
+  if (nSize <0)
+    m_nSize = nSize <0 ? 0 : nSize;
   if (m_nSize>0)
     m_Curve = (icFloatNumber*)calloc(nSize, sizeof(icFloatNumber));
   else
@@ -5512,7 +5511,7 @@ void CIccTagGamutBoundaryDesc::Describe(std::string &sDescription)
 {
 	icChar buf[256];
 	
-	sprintf(buf,"Number Of Vertices = %ld, Number of Triangles = %ld\r\n",m_NumberOfVertices,m_NumberOfTriangles);
+  sprintf(buf,"Number Of Vertices = %d, Number of Triangles = %d\r\n",m_NumberOfVertices,m_NumberOfTriangles);
 	sDescription += buf;
 	
 	sprintf(buf,"Number Of Inputs = %d, Number of Outputs = %d\r\n",m_nPCSChannels,m_nDeviceChannels);
@@ -5522,7 +5521,7 @@ void CIccTagGamutBoundaryDesc::Describe(std::string &sDescription)
 	int d = 0;
 	for (int i=0; i<m_NumberOfVertices; i++)
 	{
-		sprintf(buf,"V = %ld:\t",i);
+    sprintf(buf,"V = %d:\t",i);
 		sDescription += buf;
 		for (int j=0; j<m_nPCSChannels; j++)
 		{
@@ -5546,7 +5545,7 @@ void CIccTagGamutBoundaryDesc::Describe(std::string &sDescription)
 	
 	for (int i=0; i<m_NumberOfTriangles; i++)
 	{
-		sprintf(buf,"V1 = %ld\tV2 = %ld\tV3 = %ld\r\n",m_Triangles[i].m_VertexNumbers[0],m_Triangles[i].m_VertexNumbers[1],m_Triangles[i].m_VertexNumbers[2]);
+    sprintf(buf,"V1 = %u\tV2 = %u\tV3 = %u\r\n",m_Triangles[i].m_VertexNumbers[0],m_Triangles[i].m_VertexNumbers[1],m_Triangles[i].m_VertexNumbers[2]);
 		sDescription += buf;
 	}
 	
