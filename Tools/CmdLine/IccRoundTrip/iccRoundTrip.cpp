@@ -140,8 +140,6 @@ void CIccMinMaxEval::Compare(icFloatNumber *pixel, icFloatNumber *deviceLab, icF
 
 int main(int argc, char* argv[])
 {
-  int nArg = 1;
-
   if (argc<=1) {
     printf("Usage: iccRoundTrip profile {rendering_intent=1 {use_mpe=0}}\n");
     printf("  where rendering_intent is (0=perceptual, 1=relative, 2=saturation, 3=absolute)\n");
