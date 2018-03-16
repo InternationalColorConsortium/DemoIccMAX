@@ -79,8 +79,9 @@ Copyright:  (c) see ICC Software License
 class IIccSparseMatrixEntry
 {
 public:
+  virtual ~IIccSparseMatrixEntry()=0;
   virtual void init(void *pData)=0;
-
+  
   virtual icFloatNumber get(int index) const=0;
   virtual void set(int index, icFloatNumber value)=0;
 
