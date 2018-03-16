@@ -2366,7 +2366,7 @@ bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, 
         }
         else {
           voffset = 0;
-          vsize = nLocalSize;
+          vsize = (int)nLocalSize;
         }
 
         if (voffset + vsize > (int)nLocalSize) {
@@ -2380,10 +2380,10 @@ bool CIccMpeXmlCalculator::Flatten(std::string &flatStr, std::string macroName, 
         }
         char idx[80];
         if (vsize == 1) {
-          sprintf(idx, "[%d]", nLocalsOffset + nLocalOffset + voffset);
+          sprintf(idx, "[%lu]", nLocalsOffset + nLocalOffset + voffset);
         }
         else {
-          sprintf(idx, "[%d,%d]", nLocalsOffset + nLocalOffset + voffset, vsize);
+          sprintf(idx, "[%lu,%d]", nLocalsOffset + nLocalOffset + voffset, vsize);
         }
         flatStr += "l";
         flatStr += op.substr(1);

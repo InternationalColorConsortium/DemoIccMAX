@@ -694,6 +694,8 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
         }
       }
     }
+  default:
+      break;
   }
 
   return true;

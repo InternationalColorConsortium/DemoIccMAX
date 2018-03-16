@@ -230,7 +230,7 @@ class CIccMpePtr
 {
 public:
   CIccMpePtr(CIccMultiProcessElement *pMpe = NULL, int nIndex = -1) { m_ptr = pMpe; m_nIndex = nIndex; }
-  CIccMpePtr(const CIccMpePtr &mptr) { m_ptr = mptr.m_ptr; m_nIndex = m_nIndex; }
+  CIccMpePtr(const CIccMpePtr &mptr) { m_ptr = mptr.m_ptr; m_nIndex = mptr.m_nIndex; }
   
   CIccMultiProcessElement *m_ptr;
   int m_nIndex;

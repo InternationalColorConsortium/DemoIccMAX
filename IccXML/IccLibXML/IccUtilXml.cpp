@@ -835,7 +835,11 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
       case icSigUInt32ArrayType:
         sprintf(str, "%u", (icUInt32Number)buf[i]);
         break;
-
+      
+      case icSigUInt64ArrayType:
+        // unused
+        break;
+        
       case icSigFloatArrayType:
       case icSigFloat32ArrayType:
       case icSigFloat64ArrayType:
@@ -948,7 +952,7 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseTextCount(const char *szText)
 template <class T, icTagTypeSignature Tsig>
 icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSize, const char *szText)
 {	
-  icUInt32Number n = 0, b;
+  icUInt32Number n = 0, b = 0;
   bool bInNum = false;
   char num[256];
 
@@ -1317,7 +1321,11 @@ icUInt64Number icGetDeviceAttrValue(xmlNode *pNode)
   attr = icXmlFindAttr(pNode, "VendorSpecific");
   if (attr) {
     icUInt64Number vendor;
+#if defined(__APPLE__)
+    sscanf(icXmlAttrValue(attr), "%llx", &vendor);
+#else
     sscanf(icXmlAttrValue(attr), "%I64x", &vendor);
+#endif
     devAttr |= vendor;
   }
 
@@ -1407,8 +1415,12 @@ const std::string icGetDeviceAttrName(icUInt64Number devAttr)
   icUInt64Number otherAttr = ~((icUInt64Number)icTransparency|icMatte|icMediaNegative|icMediaBlackAndWhite);
 
   if (devAttr & otherAttr) {
+#if defined(__APPLE__)
+    sprintf(line, " VendorSpecific=\"%016llx\"", devAttr & otherAttr);
+#else
     sprintf(line, " VendorSpecific=\"%016I64x\"", devAttr & otherAttr);
-    xml += line;  		
+#endif
+    xml += line;
   }
 
   xml += "/>\n";

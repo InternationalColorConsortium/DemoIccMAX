@@ -570,7 +570,7 @@ bool CIccTagXmlSignature::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
 bool CIccTagXmlSignature::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
-  if (pNode = icXmlFindNode(pNode, "Signature")) {
+  if ((pNode = icXmlFindNode(pNode, "Signature"))) {
     this->SetValue(icGetSigVal(pNode->children ? (const icChar*)pNode->children->content : ""));
 
     return true;
@@ -1600,11 +1600,11 @@ bool CIccTagXmlTagData::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
   icUInt8Number *ptr = m_pData;  
   char buf[60];
-  char *szFlag = "ASCII";
+  std::string szFlag("ASCII");
 
   if (m_nDataFlag == 1)
     szFlag = "binary";
-  sprintf (buf, "<Data Flag=\"%s\">\n", szFlag);
+  sprintf (buf, "<Data Flag=\"%s\">\n", szFlag.c_str());
   xml += blanks + buf;
   icXmlDumpHexData(xml, blanks+" ", m_pData, m_nSize);
   xml += blanks + "</Data>\n";
@@ -2709,7 +2709,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           const char *szSize = icXmlAttrValue(pCurveNode, "IdentitySize");
 
           if (szSize && *szSize) {
-            icUInt32Number nSize = atol(szSize);
+            icUInt32Number nSize = (icUInt32Number)atol(szSize);
             SetSize(nSize);
 
             if (m_nSize == nSize) {
@@ -2755,7 +2755,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           const char *szSize = icXmlAttrValue(pCurveNode, "IdentitySize");
 
           if (szSize && *szSize) {
-            icUInt32Number nSize = atol(szSize);
+            icUInt32Number nSize = (icUInt32Number)atol(szSize);
             SetSize(nSize);
 
             if (m_nSize == nSize) {
@@ -2794,7 +2794,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           const char *szSize = icXmlAttrValue(pCurveNode, "IdentitySize");
 
           if (szSize && *szSize) {
-            icUInt32Number nSize = atol(szSize);
+            icUInt32Number nSize = (icUInt32Number)atol(szSize);
 
             SetSize(nSize);
 
