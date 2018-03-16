@@ -649,7 +649,7 @@ CIccCamConverter& CIccCamConverter::operator=(const CIccCamConverter &camcon)
   //LW is absolute luminance of the reference white in cd/m^2
 
   // parameters precalculations
-  memcpy(&m_rgbWhite, camcon.m_rgbWhite, sizeof(&m_rgbWhite));
+  memcpy(m_rgbWhite, camcon.m_rgbWhite, sizeof(m_rgbWhite));
   m_D=camcon.m_D;
   m_Fl=camcon.m_Fl;
   m_n=camcon.m_n;
