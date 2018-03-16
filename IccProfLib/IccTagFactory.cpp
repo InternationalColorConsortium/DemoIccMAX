@@ -87,7 +87,7 @@ static icTagNameToSigMap g_TagNameToSigMap;
 
 struct {
   icTagSignature sig;
-  icChar *szName;
+  const icChar *szName;
 } g_icTagNameTable[] = {
   {icSigAToB0Tag, "AToB0Tag"},
   {icSigAToB1Tag, "AToB1Tag"},
@@ -215,7 +215,7 @@ static icTagTypeNameToSigMap g_AltTagTypeNameToSigMap;
 
 struct {
   icTagTypeSignature sig;
-  icChar *szName;
+  const icChar *szName;
 } g_icTagTypeNameTable[] = {
   {icSigChromaticityType, "chromaticityType"},
   {icSigColorantOrderType, "colorantOrderType"},
@@ -271,7 +271,7 @@ struct {
 //Tag type names used in previous versions of these libraries
 struct {
   icTagTypeSignature sig;
-  icChar *szName;
+  const icChar *szName;
 } g_icAltTagTypeNameTable[] = {
   { icSigFloat16ArrayType             , "float16NumberType" },
   { icSigFloat32ArrayType             , "float32NumberType" },

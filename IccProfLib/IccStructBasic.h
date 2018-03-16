@@ -82,7 +82,7 @@ namespace refIccMAX {
 struct ICCPROFLIB_API SIccElemNameSig
 {
   icSignature nSig;
-  icChar *szName;
+  const icChar *szName;
 };
 
 /**
