@@ -2881,7 +2881,12 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
   else {
     icUInt32Number nVals = m_Array->GetNumValues();
     bool bBad = false;
-
+    
+    /*
+     * NOTE: nVals is unsigned as is m_nOutputChannels
+     * so the result will never be < 0
+     */
+    /*
     if (nVals/m_nOutputChannels<0) {
       CIccInfo Info;
       std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
@@ -2891,6 +2896,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
       sReport += " -  Needs two or more tint steps!\r\n";
       bBad = true;
     }
+    */
     if ((nVals % m_nOutputChannels)!=0) {
       CIccInfo Info;
       std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
