@@ -163,7 +163,7 @@ int main(int argc, icChar* argv[])
 
   if(!InputData) {
     printf("\nFile [%s] cannot be opened.\n", argv[1]);
-    return false;
+    return -1;
   }
 
   icChar ColorSig[7], tempBuf[20000];
@@ -195,7 +195,7 @@ int main(int argc, icChar* argv[])
   srcEncoding = CIccCmm::GetFloatColorEncoding(tempBuf);
   if(srcEncoding == icEncodeUnknown) {
     printf("Source color data encoding not recognized.\n");
-    return false;
+    return -1;
   }
   
   //Setup destination encoding
