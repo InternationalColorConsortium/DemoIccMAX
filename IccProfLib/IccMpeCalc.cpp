@@ -160,7 +160,7 @@ public:
       op->extra = n;
     }
     else {
-      n=op->extra;
+      n=(icUInt32Number)op->extra;
     }
     size_t ss = os.pStack->size();
     os.pStack->resize(ss+n);
@@ -295,7 +295,7 @@ public:
 
     pElemApply->Apply(d, s);
 
-    int ns = ss + (int)nDst - (int)nSrc;
+    int ns = (int)ss + (int)nDst - (int)nSrc;
 
     if (ns != ss)
       os.pStack->resize(ns);
@@ -1717,7 +1717,7 @@ void SIccCalcOp::Describe(std::string &desc)
       {
         char varName[10];
         icGetSigStr(varName, (icSignature)data.size);
-        int l=strlen(varName);
+        int l=(int)strlen(varName);
         if (l==9) { //Remove h at end
           varName[8]=0;
         }
@@ -2567,7 +2567,7 @@ bool CIccFuncTokenizer::GetEnvSig(icSigCmmEnvVar &envSig)
   if (!GetNext())
     return false;
   const char *szToken = m_token->c_str();
-  int l=strlen(szToken);
+  int l=(int)strlen(szToken);
   if ((*szToken=='[' && szToken[l-1]==']') ||
       (*szToken=='(' && szToken[l-1]==')')) {
 
@@ -2922,12 +2922,12 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
           }
 
           scan.SetPos(szFuncDef);
-          op.data.size = trueList.size();
+          op.data.size = (icUInt32Number)trueList.size();
           scanList.push_back(op);
 
           if (bHasElse) {
             op.sig = icSigElseOp;
-            op.data.size = falseList.size();
+            op.data.size = (icUInt32Number)falseList.size();
             scanList.push_back(op);
 
             AppendOpList(scanList, trueList);
@@ -2962,7 +2962,7 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
 
               scan.SetPos(szFuncDef);
               op.sig = icSigCaseOp;
-              op.data.size = pCaseList->size();
+              op.data.size = (icUInt32Number)pCaseList->size();
               scanList.push_back(op);
 
               selList.push_back(pCaseList);
@@ -2979,7 +2979,7 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
 
               scan.SetPos(szFuncDef);
               op.sig = icSigDefaultOp;
-              op.data.size = pDefaultList->size();
+              op.data.size = (icUInt32Number)pDefaultList->size();
               scanList.push_back(op);
 
               selList.push_back(pDefaultList);
@@ -3188,7 +3188,7 @@ icFuncParseStatus CIccCalculatorFunc::SetFunction(CIccCalcOpList &opList, std::s
     free(m_Op);
   }
 
-  m_nOps = opList.size();
+  m_nOps = (icUInt32Number)opList.size();
 
   if (m_nOps) {
     CIccCalcOpList::iterator i;
@@ -3532,7 +3532,7 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
         return false;
       }
       
-      icUInt32Number nDefOff = os.idx+1 + op->extra;
+      icUInt32Number nDefOff = (icUInt32Number)(os.idx+1 + op->extra);
       if (nDefOff >= nOps)
         return false;
 
@@ -3560,15 +3560,15 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
         if (os.idx+1 + ops[nDefOff].extra + ops[nDefOff].data.size >nOps)
           return false;
 
-        os.idx = os.idx + ops[nDefOff].extra + ops[nDefOff].data.size;
+        os.idx = (icUInt32Number)(os.idx + ops[nDefOff].extra + ops[nDefOff].data.size);
       }
       else if (op->extra) {
-        int nOff = os.idx + op->extra;
+        unsigned long nOff = os.idx + op->extra;
 
         if (os.idx+1 + ops[nOff].extra + ops[nOff].data.size > nOps)
           return false;
 
-        os.idx = os.idx + ops[nOff].extra + ops[nOff].data.size;
+        os.idx = (icUInt32Number)(os.idx + ops[nOff].extra + ops[nOff].data.size);
       }
       else 
         return false;

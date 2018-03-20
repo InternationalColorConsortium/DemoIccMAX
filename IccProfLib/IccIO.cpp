@@ -456,9 +456,9 @@ icInt32Number CIccFileIO::GetLength()
     return 0;
 
   fflush(m_fFile);
-  icInt32Number current = ftell(m_fFile), end;
+  icInt32Number current = (icInt32Number)ftell(m_fFile), end;
   fseek (m_fFile, 0, SEEK_END);
-  end = ftell(m_fFile);
+  end = (icInt32Number)ftell(m_fFile);
   fseek (m_fFile, current, SEEK_SET);
   return end;
 }
@@ -469,7 +469,7 @@ icInt32Number CIccFileIO::Seek(icInt32Number nOffset, icSeekVal pos)
   if (!m_fFile)
     return -1;
 
-  return !fseek(m_fFile, nOffset, pos) ? ftell(m_fFile) : -1;
+  return !fseek(m_fFile, nOffset, pos) ? (icInt32Number)ftell(m_fFile) : -1;
 }
 
 
@@ -478,7 +478,7 @@ icInt32Number CIccFileIO::Tell()
   if (!m_fFile)
     return -1;
 
-  return ftell(m_fFile);
+  return (icInt32Number)ftell(m_fFile);
 }
 
 

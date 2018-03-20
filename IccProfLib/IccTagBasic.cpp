@@ -7317,7 +7317,7 @@ bool CIccTagData::Write(CIccIO *pIO)
 
   if (IsTypeCompressed()) {
     icUInt32Number *pData = NULL;
-    unsigned long nSize = 0;
+    icInt32Number nSize = 0;
     //Compress data here
 
     if (pIO->Write8(pData, nSize) != (icInt32Number)nSize)

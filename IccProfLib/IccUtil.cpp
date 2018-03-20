@@ -1123,33 +1123,33 @@ icUInt32Number icGetSigVal(const icChar *pBuf)
       return 0;
 
     case 1:
-      return (((unsigned long)pBuf[0])<<24) +
-             0x202020;
+      return (icUInt32Number)((((unsigned long)pBuf[0])<<24) +
+                              0x202020);
 
     case 2:
-      return (((unsigned long)pBuf[0])<<24) +
-             (((unsigned long)pBuf[1])<<16) +
-             0x2020;
+      return (icUInt32Number)((((unsigned long)pBuf[0])<<24) +
+                              (((unsigned long)pBuf[1])<<16) +
+                              0x2020);
 
     case 3:
-      return (((unsigned long)pBuf[0])<<24) +
-             (((unsigned long)pBuf[1])<<16) +
-             (((unsigned long)pBuf[2])<<8) +
-             0x20;
+      return (icUInt32Number)((((unsigned long)pBuf[0])<<24) +
+                              (((unsigned long)pBuf[1])<<16) +
+                              (((unsigned long)pBuf[2])<<8) +
+                              0x20);
 
     case 4:
     default:
-      return (((unsigned long)pBuf[0])<<24) +
-             (((unsigned long)pBuf[1])<<16) +
-             (((unsigned long)pBuf[2])<<8) +
-             (((unsigned long)pBuf[3]));
+      return (icUInt32Number)((((unsigned long)pBuf[0])<<24) +
+                              (((unsigned long)pBuf[1])<<16) +
+                              (((unsigned long)pBuf[2])<<8) +
+                              (((unsigned long)pBuf[3])));
 
     case 6:  //Channel based color signatures
       sscanf(pBuf+2, "%x", &v);
 
-      return (((unsigned long)pBuf[0])<<24) +
-             (((unsigned long)pBuf[1])<<16) +
-             v;
+      return (icUInt32Number)((((unsigned long)pBuf[0])<<24) +
+                              (((unsigned long)pBuf[1])<<16) +
+                              v);
 
     case 8:
     case 9:
