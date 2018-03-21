@@ -76,6 +76,8 @@ Copyright:  (c) see ICC Software License
 #ifndef _ICCTAGMPE_H
 #define _ICCTAGMPE_H
 
+#include "IccProfLibConf.h"
+
 #include "IccTag.h"
 #include "IccTagFactory.h"
 #include "icProfileHeader.h"

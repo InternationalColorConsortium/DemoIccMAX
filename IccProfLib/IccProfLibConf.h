@@ -122,12 +122,12 @@ namespace refIccMAX {
   #include <stdint.h>
 
   //Make sure that 32 bit values are set correctly
-  #define ICCUINT32 unsigned long
-  #define ICCINT32  long
-  #define ICUINT32TYPE unsigned long
-  #define ICINT32TYPE  long
+  #define ICCUINT32 uint32_t
+  #define ICCINT32  int32_t
+  #define ICUINT32TYPE uint32_t
+  #define ICINT32TYPE  int32_t
     
-  #define ICHALFFLOATTYPE unsigned short
+  #define ICHALFFLOATTYPE uint16_t
 
   #if defined(__APPLE__)
     #if  defined(__LITTLE_ENDIAN__)
