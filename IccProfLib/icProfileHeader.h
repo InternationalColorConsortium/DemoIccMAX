@@ -163,6 +163,9 @@ authorization from SunSoft Inc.
 #ifndef icPROFILEHEADER_H
 #define icPROFILEHEADER_H
 
+#if !defined(ICCCONFIG_h)
+    #error Include icProfLibConf.h before this file
+#endif
 
 /* In order for structures to work it is important to ensure that
  * the structure packing is set to 1.  On many compilers this
