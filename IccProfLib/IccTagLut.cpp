@@ -142,7 +142,6 @@ icFloatNumber CIccCurve::Find(icFloatNumber v,
 */
 CIccTagCurve::CIccTagCurve(int nSize/*=0*/)
 {
-  if (nSize <0)
     m_nSize = nSize <0 ? 0 : nSize;
   if (m_nSize>0)
     m_Curve = (icFloatNumber*)calloc(nSize, sizeof(icFloatNumber));
