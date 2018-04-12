@@ -156,7 +156,7 @@ public:
   virtual CIccMultiProcessElement *NewCopy() const = 0;
 
   virtual icElemTypeSignature GetType() const = 0;
-  virtual const icChar *GetClassName() const = 0;
+  virtual const char *GetClassName() const { return "abc"; }// */ = 0;//SAP
 
   virtual icUInt16Number NumInputChannels() const { return m_nInputChannels; }
   virtual icUInt16Number NumOutputChannels() const { return m_nOutputChannels; }
