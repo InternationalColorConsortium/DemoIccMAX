@@ -159,8 +159,8 @@ public:
   //virtual const char *GetClassName() const  = 0;
   //when this function is declared as pure virtual, instances of all derived classes
   //cannot be instantiated though this function is overwritten in those derived classes with exactly same signuture;
-  //couldn't find the source of the problem. workaround is implemented by removal of pure virtuality (next line). //sap
-  virtual const char *GetClassName() const { return "abc"; }
+  //couldn't find the source of the problem. workaround is implemented by removal of pure virtuality (next line).
+  virtual const char *GetClassName() const { return "CIccMultiProcessElement"; }
 
   virtual icUInt16Number NumInputChannels() const { return m_nInputChannels; }
   virtual icUInt16Number NumOutputChannels() const { return m_nOutputChannels; }
