@@ -176,7 +176,7 @@
       <AdditionalIncludeDirectories>$(EIGEN);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/IccProfLib.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
@@ -185,7 +185,6 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -230,7 +229,7 @@
       <AdditionalIncludeDirectories>$(EIGEN);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/IccProfLib.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
       <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
