@@ -158,7 +158,7 @@ public:
   virtual icElemTypeSignature GetType() const = 0;
   //virtual const char *GetClassName() const  = 0;
   //when this function is declared as pure virtual, instances of all derived classes
-  //cannot be instantiated though this function is overwritten in those derived classes with exactly same signuture;
+  //cannot be instantiated though this function is overwritten in those derived classes with exactly same signature;
   //couldn't find the source of the problem. workaround is implemented by removal of pure virtuality (next line).
   virtual const char *GetClassName() const { return "CIccMultiProcessElement"; }
 
