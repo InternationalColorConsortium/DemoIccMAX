@@ -338,10 +338,10 @@ typedef CIccCurveSetCurve* icCurveSetCurvePtr;
 class CIccMpeCurveSet : public CIccMultiProcessElement
 {
 public:
-  CIccMpeCurveSet(int nSize = 0);
+  CIccMpeCurveSet(int nSize=0);
   CIccMpeCurveSet(const CIccMpeCurveSet &curveSet);
   CIccMpeCurveSet &operator=(const CIccMpeCurveSet &curveSet);
-  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeCurveSet(*this); }
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeCurveSet(*this);}
   virtual ~CIccMpeCurveSet();
 
   bool SetSize(int nNewSize);
