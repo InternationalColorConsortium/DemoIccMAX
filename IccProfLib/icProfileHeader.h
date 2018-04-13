@@ -164,7 +164,7 @@ authorization from SunSoft Inc.
 #define icPROFILEHEADER_H
 #include "IccProfLibConf.h"
 #if !defined(ICCCONFIG_h)
-   #error Include icProfLibConf.h before this file
+    #error Include icProfLibConf.h before this file
 #endif
 
 /* In order for structures to work it is important to ensure that
