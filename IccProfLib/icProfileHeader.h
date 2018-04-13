@@ -162,7 +162,7 @@ authorization from SunSoft Inc.
 /* Header file guard bands */
 #ifndef icPROFILEHEADER_H
 #define icPROFILEHEADER_H
-
+#include "IccProfLibConf.h"
 #if !defined(ICCCONFIG_h)
     #error Include icProfLibConf.h before this file
 #endif
@@ -1433,7 +1433,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number*  gamma;          /* x°gamma                      */
                                         /* up to 7 values Y,a,b,c,d,e,f */
 } icParametricCurve;
 
