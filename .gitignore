@@ -50,3 +50,7 @@ Tools/CmdLine/IccSpecSepToTiff/TiffImg.cpp
 Tools/CmdLine/IccSpecSepToTiff/TiffImg.h
 Tools/CmdLine/IccTiffDump/TiffImg.cpp
 Tools/CmdLine/IccTiffDump/TiffImg.h
+
+*.sdf
+*.vcxproj.user
+IccProfLib/Win32
