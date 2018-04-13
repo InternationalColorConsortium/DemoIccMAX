@@ -338,18 +338,18 @@ typedef CIccCurveSetCurve* icCurveSetCurvePtr;
 class CIccMpeCurveSet : public CIccMultiProcessElement
 {
 public:
-	CIccMpeCurveSet(int nSize = 0);
-	CIccMpeCurveSet(const CIccMpeCurveSet &curveSet);
-	CIccMpeCurveSet &operator=(const CIccMpeCurveSet &curveSet);
-	virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeCurveSet(*this); }
-	virtual ~CIccMpeCurveSet();
+  CIccMpeCurveSet(int nSize = 0);
+  CIccMpeCurveSet(const CIccMpeCurveSet &curveSet);
+  CIccMpeCurveSet &operator=(const CIccMpeCurveSet &curveSet);
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeCurveSet(*this); }
+  virtual ~CIccMpeCurveSet();
 
-	bool SetSize(int nNewSize);
+  bool SetSize(int nNewSize);
 
-	bool SetCurve(int nIndex, icCurveSetCurvePtr newCurve);
+  bool SetCurve(int nIndex, icCurveSetCurvePtr newCurve);
 
-	virtual icElemTypeSignature GetType() const { return icSigCurveSetElemType; }
-	virtual const char *GetClassName() const { return "CIccMpeCurveSet"; }
+  virtual icElemTypeSignature GetType() const { return icSigCurveSetElemType; }
+  virtual const icChar *GetClassName() const { return "CIccMpeCurveSet"; }
 
   virtual void Describe(std::string &sDescription);
 
@@ -381,7 +381,7 @@ public:
   CIccMpeTintArray(int nVectorSize=1);
   CIccMpeTintArray(const CIccMpeTintArray &tintArray);
   CIccMpeTintArray &operator=(const CIccMpeTintArray &tintArray);
-  virtual CIccMultiProcessElement *NewCopy() const { return NULL/*new CIccMpeTintArray(*this)*/;}
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeTintArray(*this);}
   virtual ~CIccMpeTintArray();
 
   void SetVectorSize(int nVectorSize);
@@ -431,7 +431,7 @@ public:
   CIccMpeMatrix();
   CIccMpeMatrix(const CIccMpeMatrix &ITPC);
   CIccMpeMatrix &operator=(const CIccMpeMatrix &ParamCurveTag);
-  virtual CIccMultiProcessElement *NewCopy() const { return NULL/*new CIccMpeMatrix(*this)*/;}
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeMatrix(*this);}
   virtual ~CIccMpeMatrix();
 
   virtual icElemTypeSignature GetType() const { return icSigMatrixElemType; }
@@ -485,7 +485,7 @@ public:
   CIccMpeCLUT();
   CIccMpeCLUT(const CIccMpeCLUT &clut);
   CIccMpeCLUT &operator=(const CIccMpeCLUT &clut);
-  virtual CIccMultiProcessElement *NewCopy() const { return NULL/*new CIccMpeCLUT(*this)*/;}
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeCLUT(*this);}
   virtual ~CIccMpeCLUT();
 
   virtual icElemTypeSignature GetType() const { return icSigCLutElemType; }
@@ -521,7 +521,7 @@ public:
   CIccMpeExtCLUT();
   CIccMpeExtCLUT(const CIccMpeExtCLUT &clut);
   CIccMpeExtCLUT &operator=(const CIccMpeExtCLUT &clut);
-  virtual CIccMultiProcessElement *NewCopy() const { return NULL/*new CIccMpeExtCLUT(*this)*/;}
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeExtCLUT(*this);}
   virtual ~CIccMpeExtCLUT() {}
 
   virtual icElemTypeSignature GetType() const { return icSigExtCLutElemType; }
@@ -591,7 +591,7 @@ public:
   CIccMpeXYZToJab();
   CIccMpeXYZToJab(const CIccMpeXYZToJab &cam);
   CIccMpeXYZToJab &operator=(const CIccMpeXYZToJab &cam);
-  virtual CIccMultiProcessElement *NewCopy() const { return NULL/*new CIccMpeXYZToJab(*this)*/;}
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeXYZToJab(*this);}
   virtual ~CIccMpeXYZToJab();
 
   virtual icElemTypeSignature GetType() const {return icSigXYZToJabElemType; }
@@ -615,7 +615,7 @@ public:
   CIccMpeJabToXYZ();
   CIccMpeJabToXYZ(const CIccMpeJabToXYZ &cam);
   CIccMpeJabToXYZ &operator=(const CIccMpeJabToXYZ &cam);
-  virtual CIccMultiProcessElement *NewCopy() const { return NULL/*new CIccMpeJabToXYZ(*this)*/;}
+  virtual CIccMultiProcessElement *NewCopy() const { return new CIccMpeJabToXYZ(*this);}
   virtual ~CIccMpeJabToXYZ();
 
   virtual icElemTypeSignature GetType() const {return icSigJabToXYZElemType; }
