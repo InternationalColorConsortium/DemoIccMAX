@@ -66,7 +66,7 @@
 #ifndef _ICCDEFS_H
 #define _ICCDEFS_H
 
-#pragma pack(4)
+//sap #pragma pack(4)
 
 //Get any platform specific prototypes
 #include "IccProfLibConf.h"
@@ -126,7 +126,7 @@ typedef enum {
 } icValidateStatus;
 
 
-#pragma pack()
+//sap #pragma pack()
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX
