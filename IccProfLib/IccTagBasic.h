@@ -344,7 +344,7 @@ public:
   virtual const icChar *GetClassName() const { return "CIccZipUtf8TagText"; }
 
   /* GetText() may fail if ICC_USE_ZLIB is not defined*/
-  bool GetText(std::string &str) const;
+  bool GetText(std::string &str) ;
 
   /* SetText() may fail if ICC_USE_ZLIB is not defined*/
   bool SetText(const icUChar16 *szText);
@@ -363,6 +363,8 @@ public:
   icUChar *GetBuffer() const { return m_pZipBuf; }
   icUInt32Number BufferSize() const { return m_nBufSize; }
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
+
+  bool _Uncompress();
 
 protected:
   icUChar *m_pZipBuf;

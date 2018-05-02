@@ -99,6 +99,7 @@ using std::min;
 namespace refIccMAX {
 #endif
 
+const unsigned int OUTPUT_BUFFER_SIZE = (1024 * 1024);
 
 /**
  ****************************************************************************
@@ -1085,6 +1086,10 @@ bool CIccTagZipUtf8Text::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&m_nReserved))
     return false;
 
+  icUInt32Number m_nDataFlag = 0;//sap
+  if (!pIO->Read32(&m_nDataFlag))
+	  return false;
+
   icUInt32Number nSize = size - sizeof(icTagTypeSignature) - sizeof(icUInt32Number);
 
   icUChar *pBuf = AllocBuffer(nSize);
@@ -1123,6 +1128,11 @@ bool CIccTagZipUtf8Text::Write(CIccIO *pIO)
 
   if (!pIO->Write32(&m_nReserved))
     return false;
+
+  icUInt32Number m_nDataFlag = 1;//sap
+  if (!pIO->Write32(&m_nDataFlag)) {
+	  return false;
+  }
 
   if (m_pZipBuf) {
     if (pIO->Write8(m_pZipBuf, m_nBufSize) != (icInt32Number)m_nBufSize)
@@ -1164,6 +1174,7 @@ void CIccTagZipUtf8Text::Describe(std::string &sDescription)
 #endif
 }
 
+
 /**
  ****************************************************************************
  * Name: CIccTagZipUtf8Text::GetText
@@ -1174,50 +1185,73 @@ void CIccTagZipUtf8Text::Describe(std::string &sDescription)
  *  text - string to put uncompressed text into
  *****************************************************************************
  */
-bool CIccTagZipUtf8Text::GetText(std::string &str) const
+bool CIccTagZipUtf8Text::GetText(std::string &str)
 {
 #ifndef ICC_USE_ZLIB
   str="";
   return false;
 #else
-  int zstat;
-  z_stream zstr;
-  memset(&zstr, 0, sizeof(zstr));
-  unsigned char buf[32767] = {0};
+	z_stream zs;
+	zs.zalloc = NULL;
+	zs.zfree = NULL;
+	zs.opaque = NULL;
 
-  zstr.next_in = buf;
-  zstr.avail_in = zstr.total_in = 32767;
+	if (inflateInit(&zs) != Z_OK)
+	{
+		return false;
+	}
 
-  zstat = inflateInit(&zstr);
+	// Point the stream to the head of the compressed data buffer.
+	zs.next_in = m_pZipBuf;// m_pCompressedData;
 
-  if (zstat != Z_OK) {
-    return false;
-  }
+						   // give input in one chunk
+	zs.avail_in = m_nBufSize;// m_compressedDataSize;
 
-  do {
-    unsigned int i, n;
+							 // allocate output buffer
+	unsigned int outbufSize = OUTPUT_BUFFER_SIZE;
 
-    zstr.next_out = buf;
-    zstr.avail_out = sizeof(buf);
+	Bytef* pUncompressedData = reinterpret_cast<Bytef*>(malloc(outbufSize));
+	zs.next_out = pUncompressedData;
+	zs.avail_out = outbufSize;
 
-    zstat = inflate(&zstr, Z_SYNC_FLUSH);
+	int status;
+	icUInt32Number uncompressedDataSize;
+	while (true) {
+		status = inflate(&zs, Z_SYNC_FLUSH);
 
-    if (zstat != Z_OK && zstat != Z_STREAM_END) {
-      inflateEnd(&zstr);
-      return false;
-    }
+		// Total bytes uncompressed so far
+		uncompressedDataSize = zs.total_out;
 
-    n=sizeof(buf) - zstr.avail_out;
+		if (status == Z_STREAM_END) {
+			break;
+		}
+		else if (status == Z_OK) {
+			// double the size of the output buffer
+			outbufSize <<= 1;
+			pUncompressedData = reinterpret_cast<Bytef*>(realloc(pUncompressedData, outbufSize));
 
-    for (i=0; i<n; i++) {
-      str += buf[i];
-    }
-  }
-  while(zstat != Z_STREAM_END);
+			// point the stream to the new buffer
+			zs.next_out = pUncompressedData + uncompressedDataSize;    // next available location in the new buffer
+			zs.avail_out = outbufSize - uncompressedDataSize;    // number of bytes available in the new buffer
+		}
+		else {
+			// Error while uncompressing.
+			return false;
+		}
+	}
 
-  inflateEnd(&zstr);
+	// NULL-terminate the buffer so it can be treated as a string, if desired.
+	pUncompressedData[uncompressedDataSize] = NULL;
 
-  return true;
+	inflateEnd(&zs);
+
+	AllocBuffer(uncompressedDataSize);
+	m_pZipBuf = pUncompressedData;
+
+	str.assign((char*)m_pZipBuf, m_nBufSize);
+	//printf("Uncompressed %d chars to %d chars.\n", zs.total_in, m_uncompressedDataSize);
+
+	return true;
 #endif
 }
 
@@ -1237,55 +1271,94 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 #ifndef ICC_USE_ZLIB
   return false;
 #else
-  icUInt32Number nSize = (icUInt32Number)strlen((const char*)szText)+1;
-  icUtf8Vector compress;
-  int i;
 
-  int zstat;
-  z_stream zstr;
-  unsigned char buf[32767];
-  memset(&zstr, 0, sizeof(zstr));
+#if 1
+	z_stream  zs;
+	const int level = Z_DEFAULT_COMPRESSION;
 
-  zstr.next_in = (Bytef*)szText;
-  zstr.avail_in = nSize;
+	zs.zalloc = NULL;
+	zs.zfree = NULL;
+	zs.opaque = NULL;
 
-  zstat = deflateInit(&zstr, Z_DEFAULT_COMPRESSION);
+	if (deflateInit(&zs, level) != Z_OK)
+	{
+		return false;
+	}
 
-  if (zstat != Z_OK) {
-    return false;
-  }
+	icUInt32Number nSize = (icUInt32Number)strlen((const char*)szText) + 1;
 
-  do {
-    int n;
-    zstr.next_out = buf;
-    zstr.avail_out = sizeof(buf);
+	// point the stream to the head of the cxf buffer (uncompressed input)
+	zs.next_in = (Bytef*)szText;
 
-    zstat = deflate(&zstr, Z_NO_FLUSH);
+	// give input in one chunk
+	zs.avail_in = nSize;
 
-    if (zstat != Z_OK && zstat != Z_STREAM_END) {
-      deflateEnd(&zstr);
-      return false;
-    }
+	// allocate output buffer
+	unsigned int outbufSize = OUTPUT_BUFFER_SIZE;
 
-    n = sizeof(buf) - zstr.avail_out;
+	Bytef* pCompressedData = reinterpret_cast<Bytef*>(malloc(outbufSize));
+	icUInt32Number compressedDataSize = 0;
 
-    for (i=0; i<n; i++) {
-      compress.push_back(buf[i]);
-    }
-  }
-  while(zstat!=Z_STREAM_END);
+	zs.next_out = pCompressedData;
+	zs.avail_out = outbufSize;
 
-  deflateEnd(&zstr);
+	// Deflate in chunks until finished.
+	int status;
 
-  icUChar *pBuf = AllocBuffer(compress.size());
+	while (true) {
+		status = deflate(&zs, Z_FINISH);
 
-  if (pBuf) {
-    for (i=0; i<m_nBufSize; i++) {
-      pBuf[i]=compress[i];
-    }
-  }
+		// Total bytes compressed so far.
+		compressedDataSize = zs.total_out;
 
-  return true;
+		if (status == Z_STREAM_END) {
+			break;
+		}
+		else if (status == Z_OK) {
+			// Double the size of the output buffer.
+			outbufSize <<= 1;
+			pCompressedData = reinterpret_cast<Bytef*>(realloc(pCompressedData, outbufSize));
+
+			// point the stream to the new buffer
+			zs.next_out = pCompressedData + compressedDataSize;   // next available location in the new buffer
+			zs.avail_out = outbufSize - compressedDataSize;   // number of bytes available in the new buffer
+}
+		else {
+			// Error while compressing.
+			return false;
+		}
+	}
+
+	deflateEnd(&zs);
+
+	AllocBuffer(compressedDataSize);
+	m_pZipBuf = pCompressedData;
+
+	return true;
+#else
+	//length of the string to be compressed
+	icUInt32Number ucompSize = (icUInt32Number)strlen((const char*)szText) + 1;
+
+	//compressBound() returns an upper bound on the compressed size after
+	//compress() on ucompSize bytes.
+	//It would be used before a compress() call to allocate the destination buffer.
+	icUInt32Number compSize = compressBound(ucompSize);
+	AllocBuffer(compSize);//allocates m_pZipBuf 
+
+	//Deflate
+	if (compress((Bytef *)m_pZipBuf, &compSize, (Bytef *)szText, ucompSize) != Z_OK)
+	{
+		return false;
+	}
+	m_pZipBuf[compSize] = '\0';
+	m_nBufSize = compSize;
+
+	std::string testStr;
+	GetText(testStr);
+
+	return true;
+#endif
+
 #endif
 }
 
