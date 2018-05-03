@@ -364,8 +364,6 @@ public:
   icUInt32Number BufferSize() const { return m_nBufSize; }
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
-  bool _Uncompress();
-
 protected:
   icUChar *m_pZipBuf;
   icUInt32Number m_nBufSize;
