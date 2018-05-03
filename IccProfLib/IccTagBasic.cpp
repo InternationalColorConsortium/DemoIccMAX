@@ -1271,8 +1271,6 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 #ifndef ICC_USE_ZLIB
   return false;
 #else
-
-#if 1
 	z_stream  zs;
 	const int level = Z_DEFAULT_COMPRESSION;
 
@@ -1335,30 +1333,6 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 	m_pZipBuf = pCompressedData;
 
 	return true;
-#else
-	//length of the string to be compressed
-	icUInt32Number ucompSize = (icUInt32Number)strlen((const char*)szText) + 1;
-
-	//compressBound() returns an upper bound on the compressed size after
-	//compress() on ucompSize bytes.
-	//It would be used before a compress() call to allocate the destination buffer.
-	icUInt32Number compSize = compressBound(ucompSize);
-	AllocBuffer(compSize);//allocates m_pZipBuf 
-
-	//Deflate
-	if (compress((Bytef *)m_pZipBuf, &compSize, (Bytef *)szText, ucompSize) != Z_OK)
-	{
-		return false;
-	}
-	m_pZipBuf[compSize] = '\0';
-	m_nBufSize = compSize;
-
-	std::string testStr;
-	GetText(testStr);
-
-	return true;
-#endif
-
 #endif
 }
 
