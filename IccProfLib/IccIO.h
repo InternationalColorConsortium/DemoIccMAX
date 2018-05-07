@@ -171,6 +171,38 @@ protected:
 };
 
 /**
+**************************************************************************
+* Type: Class
+*
+* Purpose: Handles embedding a file within a file
+**************************************************************************
+*/
+class ICCPROFLIB_API CIccEmbedIO : public CIccIO
+{
+public:
+  CIccEmbedIO();
+  virtual ~CIccEmbedIO();
+
+  bool Attach(CIccIO *pIO, icInt32Number nSize=0, bool bOwnIO=false);
+  virtual void Close();
+
+  virtual icInt32Number Read8(void *pBuf, icInt32Number nNum = 1);
+  virtual icInt32Number Write8(void *pBuf, icInt32Number nNum = 1);
+
+  virtual icInt32Number GetLength();
+
+  virtual icInt32Number Seek(icInt32Number nOffset, icSeekVal pos);
+  virtual icInt32Number Tell();
+
+protected:
+ CIccIO *m_pIO;
+ icInt32Number m_nStartPos;
+ icInt32Number m_nSize;
+ bool m_bOwnIO;
+};
+
+
+/**
  **************************************************************************
  * Type: Class
  * 

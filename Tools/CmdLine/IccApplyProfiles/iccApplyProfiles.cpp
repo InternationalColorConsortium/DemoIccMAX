@@ -137,14 +137,8 @@ void Usage()
   printf("    60 - BDRF Direct\n");
   printf("    70 - BDRF MCS Parameters\n");
   printf("    80 - MCS connection\n");
-  printf("    100 - Luminance based Perceptual\n");
-  printf("    101 - Luminance based Relative Colorimetric\n");
-  printf("    102 - Luminance based Saturation\n");
-  printf("    103 - Luminance based Absolute Colorimetric\n");
-  printf("    110 - Luminance based Perceptual without D2Bx/B2Dx\n");
-  printf("    111 - Luminance based Relative Colorimetric without D2Bx/B2Dx\n");
-  printf("    112 - Luminance based Saturation without D2Bx/B2Dx\n");
-  printf("    113 - Luminance based Absolute Colorimetric without D2Bx/B2Dx \n");
+  printf("  +100 - Use Luminance based PCS adjustment\n");
+  printf(" +1000 - Use V5 sub-profile if present\n");
 }
 
 //===================================================
@@ -244,9 +238,10 @@ int main(int argc, icChar* argv[])
   IccProfilePtrList pccList;
 
   int nCount;
-  bool bUseMPE;
+  bool bUseD2BxB2DxTags;
   icStatusCMM stat;       //status variable for CMM operations
   icCmmEnvSigMap sigMap;  //Keep track of CMM Environment for each profile
+  bool bUseSubProfile;
 
   //Remaining arguments define a sequence of profiles to be applied.  
   //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
@@ -262,8 +257,10 @@ int main(int argc, icChar* argv[])
       sigMap[sig]=val;
     }
     else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
-      bUseMPE = true;
+      bUseD2BxB2DxTags = true;
       nIntent = atoi(argv[nCount+1]);
+      bUseSubProfile = (nIntent / 1000) > 0;
+      nIntent = nIntent % 1000;
       nLuminance = nIntent / 100;
       nIntent = nIntent % 100;
       nType = abs(nIntent) / 10;
@@ -275,7 +272,7 @@ int main(int argc, icChar* argv[])
       switch(nType) {
       case 1:
         nType = 0;
-        bUseMPE = false;
+        bUseD2BxB2DxTags = false;
         break;
       case 4:
         nType = 0;
@@ -308,7 +305,7 @@ int main(int argc, icChar* argv[])
         }
 
         //Read and validate profile from memory
-        CIccProfile *pImgProfile = OpenIccProfile(pProfile, len);
+        CIccProfile *pImgProfile = OpenIccProfile(pProfile, len, bUseSubProfile);
         if (!pImgProfile) {
           printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
           return -1;
@@ -320,7 +317,8 @@ int main(int argc, icChar* argv[])
         }
 
         //Add embedded profile to theCmm (transferring ownership)
-        stat = theCmm.AddXform(pImgProfile, nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint);
+        stat = theCmm.AddXform(pImgProfile, nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile,
+                               (icXformLutType)nType, bUseD2BxB2DxTags, &Hint);
         if (stat) {
           printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
           return -1;
@@ -337,7 +335,8 @@ int main(int argc, icChar* argv[])
         last_path = &argv[nCount][0];
 
         //Read profile from path and add it to theCmm
-        stat = theCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint);
+        stat = theCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile,
+                               (icXformLutType)nType, bUseD2BxB2DxTags, &Hint, bUseSubProfile);
         if (stat) {
           printf("Invalid Profile(%d):  %s\n", stat, argv[nCount]);
           return -1;

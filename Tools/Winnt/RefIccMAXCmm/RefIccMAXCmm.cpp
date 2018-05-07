@@ -1228,7 +1228,7 @@ DWORD WINAPI CMGetInfo(
       return 0x01;
 
     case CMM_IDENT:
-      return icSigRefIccLabs;
+      return icSigRefIccMAX;
 
     case CMM_LOGOICON:
       return IDI_LOGO;

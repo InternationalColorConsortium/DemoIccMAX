@@ -90,7 +90,7 @@ namespace refIccMAX {
 class ICCPROFLIB_API CIccArrayUnknown : public IIccArray
 {
 public:
-  CIccArrayUnknown(CIccTagArray *pTagArray=NULL);
+  CIccArrayUnknown(CIccTagArray *pTagArray = NULL, icArraySignature sigArray = (icArraySignature)0);
   virtual ~CIccArrayUnknown();
   virtual IIccArray* NewCopy(CIccTagArray *pTagArray) const;
 
@@ -98,10 +98,33 @@ public:
 
   virtual const icChar *GetClassName() const { return "CIccArrayUnknown"; }
 
-  icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
 protected:
   CIccTagArray *m_pTag;
+  icArraySignature m_sig;
+
+};
+
+/**
+****************************************************************************
+* Class: CIccArrayColorantInfo
+*
+* Purpose: The ColorantInfo array handler
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccArrayColorantInfo : public CIccArrayUnknown
+{
+public:
+  CIccArrayColorantInfo(CIccTagArray *pTagArray = NULL);
+  virtual ~CIccArrayColorantInfo();
+  virtual IIccArray* NewCopy(CIccTagArray *pTagArray) const;
+
+  virtual bool Describe(std::string &sDescription) const;
+
+  virtual const icChar *GetClassName() const { return "CIccArrayColorantInfo"; }
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
 
 };
 

@@ -121,6 +121,28 @@ ICCPROFLIB_API const char *icValidateCriticalErrorMsg = "Error! - ";
   return nptr;
 }
 
+
+/**
+******************************************************************************
+* Name: icIsNear
+*
+* Purpose: Checks if two numbers are close to each other in value
+*
+* Args:
+*  v1 - first value
+*  v2 - second value
+*  range - 
+*
+* Return:
+*  true if v1 is near v2 within range
+******************************************************************************
+*/
+bool icIsNear(icFloatNumber v1, icFloatNumber v2, icFloatNumber nearRange /* = 1.0e-8 */)
+{
+  return fabs(v1 - v2) <= nearRange;
+}
+
+
 /**
  ******************************************************************************
 * Name: icRoundOffset
@@ -1082,7 +1104,7 @@ icSignature icGetFirstSigPathSig(std::string sigPath)
 {
   icSignature rv = 0;
   const char *ptr = sigPath.c_str();
-  if(*ptr==':') {
+  while(*ptr==':') {
     std::string sigStr;
     ptr++;
     while(*ptr && *ptr!=':') {
@@ -1090,8 +1112,29 @@ icSignature icGetFirstSigPathSig(std::string sigPath)
       ptr++;
     }
     rv = icGetSigVal(sigStr.c_str());
+    //Skip embedded tag path entry
+    if (rv != icSigEmbeddedV5ProfileTag)
+      break;
   }
   return rv;
+}
+
+icSignature icGetLastSigPathSig(std::string sigPath)
+{
+  int n = sigPath.length();
+  if (!n)
+    return icGetSigVal(sigPath.c_str());
+
+  const char *sig = sigPath.c_str();
+
+  for (n = n - 1; n > 0; n--) {
+    if (sig[n] == ':') {
+      break;
+    }
+  }
+  if (n >= 0 && sig[n] == ':')
+    n++;
+  return icGetSigVal(sig+n);
 }
 
 icSignature icGetSecondSigPathSig(std::string sigPath)
@@ -1445,7 +1488,7 @@ std::string CIccInfo::GetSigPathName(std::string sigPath)
     icSignature sig = icGetSigVal(sigStr.c_str());
     if (n!=0) {
       rv += ">";
-      rv += GetTagTypeSigName((icTagTypeSignature)sig);
+      rv += GetTagSigName((icTagSignature)sig);
     }
     else {
       rv = GetSigName(sig);
@@ -1696,6 +1739,9 @@ const icChar *CIccInfo::GetCmmSigName(icCmmSignature sig)
   case icSigAdobe:
     return "Adobe";
 
+  case icSigAgfa:
+    return "Agfa";
+
   case icSigApple:
     return "Apple";
 
@@ -1704,6 +1750,15 @@ const icChar *CIccInfo::GetCmmSigName(icCmmSignature sig)
 
   case icSigColorGearLite:
     return "ColorGear Lite";
+
+  case icSigColorGearC:
+    return "ColorGear C";
+
+  case icSigEFI:
+    return "EFI";
+
+  case icSigExactScan:
+    return "ExactScan";
 
   case icSigFujiFilm:
     return "Fuji Film";
@@ -1732,11 +1787,32 @@ const icChar *CIccInfo::GetCmmSigName(icCmmSignature sig)
   case icSigMutoh:
     return "Mutoh";
 
+  case icSigRefIccMAX:
+    return "RefIccMAX";
+
+  case icSigRolfGierling:
+    return "Rolf Gierling Multitools";
+
   case icSigSampleICC:
     return "SampleIcc";
 
+  case icSigToshiba:
+    return "Toshiba";
+
   case icSigTheImagingFactory:
     return "the imaging factory";
+
+  case icSigVivo:
+    return "Vivo";
+
+  case icSigWareToGo:
+    return "Ware To Go";
+
+  case icSigMicrosoft:
+    return "Windows Color System";
+
+  case icSigZoran:
+    return "Zoran";
 
   default:
     return GetUnknownName(sig);

@@ -666,4 +666,19 @@ public:
   virtual bool ParseXml(xmlNode *pNode, std::string &parseStr);
 };
 
+//Private class to embed a profile within a profile
+class CIccTagXmlEmbeddedProfile : public CIccTagEmbeddedProfile, CIccTagXml
+{
+public:
+  virtual ~CIccTagXmlEmbeddedProfile() {}
+
+  virtual const char *GetGlassName() const { return "CIccTagXmlEmbeddedProfile"; }
+
+  virtual IIccExtensionTag *GetExtension() { return this; }
+
+  virtual bool ToXml(std::string &xml, std::string blanks = "");
+  virtual bool ParseXml(xmlNode *pNode, std::string &parseStr);
+};
+
+
 #endif //_ICCTAGXML_H

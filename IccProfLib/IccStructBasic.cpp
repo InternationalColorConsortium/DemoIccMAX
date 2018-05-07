@@ -93,7 +93,7 @@ namespace refIccMAX {
 
 CIccStructUnknown::CIccStructUnknown(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = NULL;
 }
 
@@ -118,8 +118,8 @@ bool CIccStructUnknown::Describe(std::string &sDescription) const
   CIccInfo info;
   int n;
 
-  if (m_pTag) {
-    TagEntryList *entries = m_pTag->GetElemList();
+  if (m_pTagStruct) {
+    TagEntryList *entries = m_pTagStruct->GetElemList();
     TagEntryList::iterator i;
 
     for (n=0, i=entries->begin(); i!=entries->end(); n++, i++) {
@@ -172,10 +172,33 @@ icSignature CIccStructUnknown::GetElemSig(const icChar *szElemName) const
 
 CIccTag *CIccStructUnknown::GetElem(icSignature sigElem) const
 {
-  if (!m_pTag)
+  if (!m_pTagStruct)
     return NULL;
 
-  return m_pTag->FindElem(sigElem);
+  return m_pTagStruct->FindElem(sigElem);
+}
+
+
+icValidateStatus CIccStructUnknown::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile/* = NULL*/) const
+{
+  icValidateStatus rv = icValidateOK;
+
+  TagEntryList *pList = getTagEntries();
+  if (pList) {
+    // Per Tag tests
+    TagEntryList::iterator i;
+    for (i = pList->begin(); i != pList->end(); i++) {
+      if (i->pTag)
+        rv = icMaxStatus(rv, i->pTag->Validate(sigPath + icGetSigPath(i->TagInfo.sig), sReport, pProfile));
+    }
+  }
+  else {
+    sReport += "Struct Handler not connected to CIccTagStruct object with valid sub-tags!";
+
+    rv = icValidateWarning;
+  }
+
+  return rv;
 }
 
 
@@ -183,16 +206,14 @@ CIccTag *CIccStructUnknown::GetElem(icSignature sigElem) const
 static SIccElemNameSig g_IccStructBRDFMbrTable[] = {
   { icSigBrdfTypeMbr,             "brdfTypeMbr" },
   { icSigBrdfFunctionMbr,         "brdfFunctionMbr" },
-  { icSigBrdfNumParamsMbr,        "brdfNumParamsMbr" },
+  { icSigBrdfParamsPerChannelMbr, "brdfParamsPerChannelMbr" },
   { icSigBrdfTransformMbr,        "brdfTransformMbr" },
-  { icSigBrdfLightTransformMbr,   "brdfLightTransformMbr" },
-  { icSigBrdfOutputTransformMbr,  "brdfOutputTransformMbr" },
   { 0, NULL },
 };
 
 CIccStructBRDF::CIccStructBRDF(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = g_IccStructBRDFMbrTable;
 }
 
@@ -244,6 +265,26 @@ icSigBRDFFunction CIccStructBRDF::GetBRDFFunction() const
   return (icSigBRDFFunction)icSigUnknownType;
 }
 
+icValidateStatus CIccStructBRDF::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile/* = NULL*/) const
+{
+  icValidateStatus rv = icValidateOK;
+  if (m_pTagStruct) {
+    if (!m_pTagStruct->FindElem(icSigBrdfTypeMbr) || !m_pTagStruct->FindElem(icSigBrdfFunctionMbr) ||
+        !m_pTagStruct->FindElem(icSigBrdfParamsPerChannelMbr) || !m_pTagStruct->FindElem(icSigBrdfTransformMbr)) {
+      CIccInfo Info;
+      std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+      rv = icValidateCriticalError;
+      sReport += icValidateWarning;
+      sReport += sSigPathName;
+      sReport += " - Missing required struct member(s).\r\n";
+    }
+  }
+
+  return icMaxStatus(rv, CIccStructUnknown::Validate(sigPath, sReport, pProfile));
+}
+
+
 
 
 static SIccElemNameSig g_IccStructColorEncodingParamsMbrTable[] = {
@@ -273,7 +314,7 @@ static SIccElemNameSig g_IccStructColorEncodingParamsMbrTable[] = {
 
 CIccStructColorEncodingParams::CIccStructColorEncodingParams(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = g_IccStructColorEncodingParamsMbrTable;
 }
 
@@ -303,7 +344,7 @@ static SIccElemNameSig g_IccStructColorantInfoMbrTable[] = {
 
 CIccStructColorantInfo::CIccStructColorantInfo(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = g_IccStructColorantInfoMbrTable;
 }
 
@@ -322,6 +363,26 @@ IIccStruct* CIccStructColorantInfo::NewCopy(CIccTagStruct *pTagStruct) const
 }
 
 
+icValidateStatus CIccStructColorantInfo::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile/* = NULL*/) const
+{
+  icValidateStatus rv = icValidateOK;
+  if (m_pTagStruct) {
+    if (!m_pTagStruct->FindElem(icSigCinfNameMbr)) {
+      CIccInfo Info;
+      std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+      rv = icValidateCriticalError;
+      sReport += icValidateWarning;
+      sReport += sSigPathName;
+      sReport += " - Missing required struct member(s).\r\n";
+    }
+  }
+
+  return icMaxStatus(rv, CIccStructUnknown::Validate(sigPath, sReport, pProfile));
+}
+
+
+
 
 static SIccElemNameSig g_IccStructMeasurementInfoElemTable[] = {
   { icSigMeasBackingMbr,         "measBackingMbr" },
@@ -335,7 +396,7 @@ static SIccElemNameSig g_IccStructMeasurementInfoElemTable[] = {
 
 CIccStructMeasurementInfo::CIccStructMeasurementInfo(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct= pTagStruct;
   m_pElemNameSigTable = g_IccStructMeasurementInfoElemTable;
 }
 
@@ -375,7 +436,7 @@ static SIccElemNameSig g_IccStructNamedColorMbrTable[] = {
 
 CIccStructNamedColor::CIccStructNamedColor(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = g_IccStructNamedColorMbrTable;
 }
 
@@ -396,7 +457,7 @@ IIccStruct* CIccStructNamedColor::NewCopy(CIccTagStruct *pTagStruct) const
 
 std::string CIccStructNamedColor::getName() const
 {
-  CIccTag *pTag = m_pTag->FindElem(icSigNmclNameMbr);
+  CIccTag *pTag = m_pTagStruct->FindElem(icSigNmclNameMbr);
 
   if (pTag && pTag->GetType()==icSigUtf8TextType) {
     CIccTagUtf8Text *pText = (CIccTagUtf8Text*)pTag;
@@ -494,6 +555,23 @@ bool CIccStructNamedColor::GetTint(icFloatNumber *dstColor,
 }
 
 
+icValidateStatus CIccStructNamedColor::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile/* = NULL*/) const
+{
+  icValidateStatus rv = icValidateOK;
+  if (m_pTagStruct) {
+    if (!m_pTagStruct->FindElem(icSigNmclNameMbr)) {
+      CIccInfo Info;
+      std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+      rv = icValidateCriticalError;
+      sReport += icValidateWarning;
+      sReport += sSigPathName;
+      sReport += " - Missing required struct member(s).\r\n";
+    }
+  }
+
+  return icMaxStatus(rv, CIccStructUnknown::Validate(sigPath, sReport, pProfile));
+}
 
 
 static SIccElemNameSig g_IccStructProfileInfoMbrTable[] = {
@@ -511,7 +589,7 @@ static SIccElemNameSig g_IccStructProfileInfoMbrTable[] = {
 
 CIccStructProfileInfo::CIccStructProfileInfo(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = g_IccStructProfileInfoMbrTable;
 }
 
@@ -542,7 +620,7 @@ static SIccElemNameSig g_IccStructTintZeroMbrTable[] = {
 
 CIccStructTintZero::CIccStructTintZero(CIccTagStruct *pTagStruct)
 {
-  m_pTag = pTagStruct;
+  m_pTagStruct = pTagStruct;
   m_pElemNameSigTable = g_IccStructTintZeroMbrTable;
 }
 

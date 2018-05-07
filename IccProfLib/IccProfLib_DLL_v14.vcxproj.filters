@@ -110,6 +110,9 @@
     <ClCompile Include="IccWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IccTagEmbedIcc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IccApplyBPC.h">
@@ -230,6 +233,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IccWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IccTagEmbedIcc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

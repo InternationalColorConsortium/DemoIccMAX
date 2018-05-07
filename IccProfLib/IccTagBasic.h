@@ -167,6 +167,37 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO) { return false; }
 
   /**
+  * Function: ReadAll() - Read All sub data for tag from file.
+  *  Called by CIccProfile::ReadAll() to read all sub data for tag
+  *
+  * Returns true if ReadAll is successful.
+  */
+  virtual bool ReadAll() { return true; }
+
+  /**
+  * Function: ReadAll() - Read All sub data for tag from file.
+  *  Called by CIccProfile::ReadAll() to read all sub data for tag
+  *
+  * Returns true if ReadAll is successful.
+  */
+  virtual void DetachIO() {}
+
+  /**
+  * Function: Read(size, pIO) - Read tag from file.
+  *  Each derived tag will implement it's own Read() function.
+  *
+  * Parameter(s):
+  * size - number of bytes in tag including the type signature.
+  * pIO - IO object used to read in tag. The IO object should
+  *       already be initialized to point to the begining of
+  *       the tag.
+  *
+  * Returns true if Read is successful.
+  */
+  virtual bool Read(icUInt32Number size, CIccIO *pIO, CIccProfile *pProfile) { return Read(size, pIO); }
+
+
+  /**
   * Function: Write(pIO)
   *  Each derived tag will implement it's own Write() function.
   *
@@ -1627,26 +1658,35 @@ public:
   icFloatNumber *applyRangeToObserver(const icSpectralRange &newRange) const; //Caller responsible for deleting results
   CIccMatrixMath *getObserverMatrix(const icSpectralRange &newRange) const;
 
+  icIlluminant getStdIllumiant() const { return m_stdIlluminant; }
+  icFloatNumber getIlluminantCCT() const { return m_colorTemperature; }
+  icStandardObserver getStdObserver() const { return m_stdObserver; }
+
+  const icFloatNumber *getIlluminant(icSpectralRange &illumRange) const;
+  bool setIlluminant(icIlluminant illumId, const icSpectralRange &illumRange, const icFloatNumber *illum, icFloatNumber illumCCT = 0.0f);
+  bool setIlluminant(icFloatNumber *pWhiteXYZ);
+
+  const icFloatNumber *getObserver(icSpectralRange &observerRange) const;
+  bool setObserver(icStandardObserver observerId, const icSpectralRange &observerRange, const icFloatNumber *observer);
+    
+  icFloatXYZNumber m_illuminantXYZ;
+  icFloatXYZNumber m_surroundXYZ;
+
+  icUInt16Number m_reserved2;
+  icUInt16Number m_reserved3;
+
+protected:
   icStandardObserver m_stdObserver;
 
   icSpectralRange m_observerRange;
-  icUInt16Number m_reserved2;
   icFloatNumber *m_observer;
 
   icIlluminant m_stdIlluminant;
   icFloatNumber m_colorTemperature;
 
   icSpectralRange m_illuminantRange;
-  icUInt16Number m_reserved3;
   icFloatNumber *m_illuminant;
-
-  icFloatXYZNumber m_illuminantXYZ;
-  icFloatXYZNumber m_surroundXYZ;
-
-protected:
-
 };
-
 
 
 #ifdef USEREFICCMAXNAMESPACE

@@ -493,6 +493,7 @@
     </ClCompile>
     <ClCompile Include="IccTagComposite.cpp" />
     <ClCompile Include="IccTagDict.cpp" />
+    <ClCompile Include="IccTagEmbedIcc.cpp" />
     <ClCompile Include="IccTagFactory.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -616,6 +617,7 @@
     <ClInclude Include="IccTagBasic.h" />
     <ClInclude Include="IccTagComposite.h" />
     <ClInclude Include="IccTagDict.h" />
+    <ClInclude Include="IccTagEmbedIcc.h" />
     <ClInclude Include="IccTagFactory.h" />
     <ClInclude Include="IccTagLut.h" />
     <ClInclude Include="IccTagMPE.h" />

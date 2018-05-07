@@ -457,6 +457,7 @@ protected:
   icFloatNumber *m_pConstants;
   icUInt32Number m_size;
   icMatrixElemType m_type;
+  bool m_bApplyConstants;
 };
 
 

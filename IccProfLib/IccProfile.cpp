@@ -539,6 +539,44 @@ bool CIccProfile::DeleteTag(icSignature sig)
 
 
 /**
+******************************************************************************
+* Name: CIccProfile::ConnectSubProfile
+*
+* Purpose: This checks for a embedded profile tag and creates a CIccIO object
+* for purposes of reading embedded profile in tag
+*
+* Args:
+*  pIO - pointer to IO object to use to 
+*  bOwnIO - flag to indicate whether returned IO object should own pIO (pIO closed when returned object closed).
+*
+* Return:
+*  the IO object (file) if there is an embedded profile.
+*  NULL if there is no embedded profile.
+*******************************************************************************
+*/
+CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO)
+{
+  TagEntryList::iterator i;
+
+  for (i = m_Tags->begin(); i != m_Tags->end(); i++) {
+    if (i->TagInfo.sig == icSigEmbeddedV5ProfileTag && i->TagInfo.size>2*sizeof(icUInt32Number)) {
+      pIO->Seek(i->TagInfo.offset, icSeekSet);
+      icTagTypeSignature sig=(icTagTypeSignature)0, extra;
+
+      if (pIO->Read32(&sig) && pIO->Read32(&extra) && sig == icSigEmbeddedProfileType) {
+        CIccEmbedIO *pEmbedIO = new CIccEmbedIO();
+        
+        if (pEmbedIO->Attach(pIO, i->TagInfo.size - 2 * sizeof(icUInt32Number), bOwnIO))
+          return pEmbedIO;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+
+/**
  ******************************************************************************
  * Name: CIccProfile::Attach
  * 
@@ -556,7 +594,7 @@ bool CIccProfile::DeleteTag(icSignature sig)
  *  false - the IO object (file) is not an ICC profile.
  *******************************************************************************
  */
-bool CIccProfile::Attach(CIccIO *pIO)
+bool CIccProfile::Attach(CIccIO *pIO, bool bUseSubProfile/*=false*/)
 {
   if (m_Tags->size())
     Cleanup();
@@ -564,6 +602,19 @@ bool CIccProfile::Attach(CIccIO *pIO)
   if (!ReadBasic(pIO)) {
     Cleanup();
     return false;
+  }
+
+  if (bUseSubProfile) {
+    CIccIO *pSubIO = ConnectSubProfile(pIO, true);
+
+    if (pSubIO) {
+      Cleanup();
+      if (!ReadBasic(pSubIO)) {
+        Cleanup();
+        return false;
+      }
+      pIO = pSubIO;
+    }
   }
 
   m_pAttachIO = pIO;
@@ -587,6 +638,13 @@ bool CIccProfile::Attach(CIccIO *pIO)
 bool CIccProfile::Detach()
 {
   if (m_pAttachIO) {
+    TagEntryList::iterator i;
+
+    for (i = m_Tags->begin(); i != m_Tags->end(); i++) {
+      if (i->pTag)
+        i->pTag->DetachIO();
+    }
+
     delete m_pAttachIO;
 
     m_pAttachIO = NULL;
@@ -625,7 +683,7 @@ bool CIccProfile::ReadTags(CIccProfile* pProfile)
 	icUInt32Number pos = pIO->Tell();
 
 	for (i=m_Tags->begin(); i!=m_Tags->end(); i++) {
-		if (!LoadTag((IccTagEntry*)&(i->TagInfo), pIO)) {
+		if (!LoadTag((IccTagEntry*)&(i->TagInfo), pIO, true)) {
 			pIO->Seek(pos, icSeekSet);
 			return false;
 		}
@@ -645,14 +703,15 @@ bool CIccProfile::ReadTags(CIccProfile* pProfile)
  * 
  * Args: 
  *  pIO - pointer to IO object to read ICC profile from
- * 
+ *  bUseSubProfile - will attempt to open a sub-profile if present
+ *
  * Return: 
  *  true - the IO object (file) is an ICC profile, and the CIccProfile object
  *   now contains all its data,
  *  false - the IO object (file) is not an ICC profile.
  *******************************************************************************
  */
-bool CIccProfile::Read(CIccIO *pIO)
+bool CIccProfile::Read(CIccIO *pIO, bool bUseSubProfile/*=false*/)
 {
   if (m_Tags->size())
     Cleanup();
@@ -660,6 +719,19 @@ bool CIccProfile::Read(CIccIO *pIO)
   if (!ReadBasic(pIO)) {
     Cleanup();
     return false;
+  }
+
+  if (bUseSubProfile) {
+    CIccIO *pSubIO = ConnectSubProfile(pIO, false);
+
+    if (pSubIO) {
+      Cleanup();
+      if (!ReadBasic(pSubIO)) {
+        Cleanup();
+        return false;
+      }
+      pIO = pSubIO;
+    }
   }
 
   TagEntryList::iterator i;
@@ -1040,13 +1112,13 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
  *  false - failure
  *******************************************************************************
  */
-bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO)
+bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll/*=false*/)
 {
   if (!pTagEntry)
     return false;
 
   if (pTagEntry->pTag)
-    return true;
+    return pTagEntry->pTag->ReadAll();
 
   if (pTagEntry->TagInfo.offset<sizeof(m_Header) ||
     !pTagEntry->TagInfo.size) {
@@ -1075,9 +1147,16 @@ bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO)
     return false;
   }
 
-  if (!pTag->Read(pTagEntry->TagInfo.size, pIO)) {
+  if (!pTag->Read(pTagEntry->TagInfo.size, pIO, this)) {
     delete pTag;
     return false;
+  }
+
+  if (bReadAll) {
+    if (!pTag->ReadAll()) {
+      delete pTag;
+      return false;
+    }
   }
 
   switch(pTagEntry->TagInfo.sig) {
@@ -1451,11 +1530,14 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
     switch((icCmmSignature)m_Header.cmmId) {
     //Account for registered CMM's as well:
-    case icSigUnknownCmm:
     case icSigAdobe:
+    case icSigAgfa:
     case icSigApple:
     case icSigColorGear:
     case icSigColorGearLite:
+    case icSigColorGearC:
+    case icSigEFI:
+    case icSigExactScan:
     case icSigFujiFilm:
     case icSigHarlequinRIP:
     case icSigArgyllCMS:
@@ -1464,9 +1546,16 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     case icSigLittleCMS:
     case icSigKodak:
     case icSigKonicaMinolta:
+    case icSigWindowsCMS:
     case icSigMutoh:
+    case icSigRefIccMAX:
+    case icSigRolfGierling:
     case icSigSampleICC:
+    case icSigToshiba:
     case icSigTheImagingFactory:
+    case icSigVivo:
+    case icSigWareToGo:
+    case icSigZoran:
     case icSigOnyxGraphics:
       break;
 
@@ -1939,7 +2028,16 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
       else return true;
     }
 
+  case icSigColorantInfoTag:
+  case icSigColorantInfoOutTag:
+  {
+    if (arraySig == icSigColorantInfoArray)
+      return true;
+    else return true;
+  }
+
   case icSigColorantOrderTag:
+  case icSigColorantOrderOutTag:
     {
       if (typeSig!=icSigColorantOrderType)
         return false;
@@ -2331,7 +2429,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
           if (m_Header.colorSpace == icSigGrayData) {
             if (!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag) && !GetTag(icSigGrayTRCTag)) {
               sReport += icValidateCriticalErrorMsg;
-              sReport += "Critical tags missing.\r\n";
+              sReport += "Critical tag(s) missing.\r\n";
               rv = icMaxStatus(rv, icValidateCriticalError);
             }
           }
@@ -2563,7 +2661,7 @@ bool CIccProfile::CheckFileSize(CIccIO *pIO) const
  *  icValidateOK if profile is valid, warning/error level otherwise
  *****************************************************************************
  */
-icValidateStatus CIccProfile::Validate(std::string &sReport) const
+icValidateStatus CIccProfile::Validate(std::string &sReport, std::string sSigPath/*=""*/) const
 {
   icValidateStatus rv = icValidateOK;
 
@@ -2584,7 +2682,7 @@ icValidateStatus CIccProfile::Validate(std::string &sReport) const
   rv = icMaxStatus(rv, CheckTagTypes(sReport));
   TagEntryList::iterator i;
   for (i=m_Tags->begin(); i!=m_Tags->end(); i++) {
-    rv = icMaxStatus(rv, i->pTag->Validate(icGetSigPath(i->TagInfo.sig), sReport, this));
+    rv = icMaxStatus(rv, i->pTag->Validate(sSigPath + icGetSigPath(i->TagInfo.sig), sReport, this));
   }
 
   return rv;
@@ -2631,7 +2729,7 @@ icIlluminant CIccProfile::getPccIlluminant()
       return icIlluminantUnknown;
   }
 
-  return pCond->m_stdIlluminant;
+  return pCond->getStdIllumiant();
 }
 
 
@@ -2660,7 +2758,7 @@ icFloatNumber CIccProfile::getPccCCT()
       return 0.0;
   }
 
-  return pCond->m_colorTemperature;
+  return pCond->getIlluminantCCT();
 }
 
 
@@ -2687,7 +2785,7 @@ icStandardObserver CIccProfile::getPccObserver()
       return icStdObsUnknown;
   }
 
-  return pCond->m_stdObserver;
+  return pCond->getStdObserver();
 }
 
 /**
@@ -2795,7 +2893,10 @@ bool CIccProfile::calcLumIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectio
   const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();
 
   if (pCond) {
-    CIccMatrixMath *obs = pCond->getObserverMatrix(pCond->m_illuminantRange);
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pCond->getIlluminant(illuminantRange);
+
+    CIccMatrixMath *obs = pCond->getObserverMatrix(illuminantRange);
 
     if (!obs) {
       pXYZ[0] = icFtoD(m_Header.illuminant.X) * icDefaultLuminance;
@@ -2805,7 +2906,7 @@ bool CIccProfile::calcLumIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectio
       return false;
     }
 
-    obs->VectorScale(pCond->m_illuminant);
+    obs->VectorScale(illuminant);
 
     pXYZ[0] = 683.0f * obs->RowSum(0);
     pXYZ[1] = 683.0f * obs->RowSum(1);
@@ -2838,7 +2939,10 @@ bool CIccProfile::calcNormIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnecti
   const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();
 
   if (pCond) {
-    CIccMatrixMath *obs = pCond->getObserverMatrix(pCond->m_illuminantRange);
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pCond->getIlluminant(illuminantRange);
+
+    CIccMatrixMath *obs = pCond->getObserverMatrix(illuminantRange);
 
     if (!obs) {
       pXYZ[0] = icFtoD(m_Header.illuminant.X);
@@ -2848,7 +2952,7 @@ bool CIccProfile::calcNormIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnecti
       return false;
     }
 
-    obs->VectorScale(pCond->m_illuminant);
+    obs->VectorScale(illuminant);
     obs->Scale(obs->RowSum(1));
 
     pXYZ[0] = obs->RowSum(0);
@@ -2979,12 +3083,13 @@ getmediaXYZ:
  * 
  * Args: 
  *  szFilename - zero terminated string with filename of ICC profile to read 
- * 
+ *  bUseSubProfile - will attempt to open a subprofile if present
+ *
  * Return: 
- *  Pointer to icc profile object, or NULL on failure
+ *  Pointer to ICC profile object, or NULL on failure
  ******************************************************************************
  */
-CIccProfile* ReadIccProfile(const icChar *szFilename)
+CIccProfile* ReadIccProfile(const icChar *szFilename, bool bUseSubProfile/*=false*/)
 {
   CIccFileIO *pFileIO = new CIccFileIO;
 
@@ -2995,7 +3100,7 @@ CIccProfile* ReadIccProfile(const icChar *szFilename)
 
   CIccProfile *pIcc = new CIccProfile;
 
-  if (!pIcc->Read(pFileIO)) {
+  if (!pIcc->Read(pFileIO, bUseSubProfile)) {
     delete pIcc;
     delete pFileIO;
     return NULL;
@@ -3015,12 +3120,13 @@ CIccProfile* ReadIccProfile(const icChar *szFilename)
 * 
 * Args: 
 *  szFilename - zero terminated string with filename of ICC profile to read 
-* 
+*  bUseSubProfile - will attempt to open a subprofile if present
+*
 * Return: 
 *  Pointer to icc profile object, or NULL on failure
 ******************************************************************************
 */
-CIccProfile* ReadIccProfile(const icWChar *szFilename)
+CIccProfile* ReadIccProfile(const icWChar *szFilename, bool bUseSubProfile/*=false*/)
 {
   CIccFileIO *pFileIO = new CIccFileIO;
 
@@ -3052,12 +3158,13 @@ CIccProfile* ReadIccProfile(const icWChar *szFilename)
 * Args: 
 *  pMem = pointer to memory containing profile data
 *  nSize = size of memory related to profile
-* 
+*  bUseSubProfile - will attempt to open a subprofile if present
+*
 * Return: 
 *  Pointer to icc profile object, or NULL on failure
 ******************************************************************************
 */
-CIccProfile* ReadIccProfile(const icUInt8Number *pMem, icUInt32Number nSize)
+CIccProfile* ReadIccProfile(const icUInt8Number *pMem, icUInt32Number nSize, bool bUseSubProfile/*=false*/)
 {
   CIccMemIO *pMemIO = new CIccMemIO();
 
@@ -3088,13 +3195,14 @@ CIccProfile* ReadIccProfile(const icUInt8Number *pMem, icUInt32Number nSize)
  *  tags are actually referenced by FindTag().
  * 
  * Args: 
- *  szFilename - zero terminated string with filename of ICC profile to read 
+ *  szFilename - zero terminated string with filename of ICC profile to read
+ *  bUseSubProfile - will attempt to open a subprofile if present
  * 
  * Return: 
  *  Pointer to icc profile object, or NULL on failure
  *******************************************************************************
  */
-CIccProfile* OpenIccProfile(const icChar *szFilename)
+CIccProfile* OpenIccProfile(const icChar *szFilename, bool bUseSubProfile/*=false*/)
 {
   CIccFileIO *pFileIO = new CIccFileIO;
 
@@ -3105,7 +3213,7 @@ CIccProfile* OpenIccProfile(const icChar *szFilename)
 
   CIccProfile *pIcc = new CIccProfile;
 
-  if (!pIcc->Attach(pFileIO)) {
+  if (!pIcc->Attach(pFileIO, bUseSubProfile)) {
     delete pIcc;
     delete pFileIO;
     return NULL;
@@ -3125,12 +3233,13 @@ CIccProfile* OpenIccProfile(const icChar *szFilename)
 * 
 * Args: 
 *  szFilename - zero terminated string with filename of ICC profile to read 
-* 
+*  bUseSubProfile - will attempt to open a subprofile if present
+*
 * Return: 
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
-CIccProfile* OpenIccProfile(const icWChar *szFilename)
+CIccProfile* OpenIccProfile(const icWChar *szFilename, bool bUseSubProfile/*=false*/)
 {
   CIccFileIO *pFileIO = new CIccFileIO;
 
@@ -3141,7 +3250,7 @@ CIccProfile* OpenIccProfile(const icWChar *szFilename)
 
   CIccProfile *pIcc = new CIccProfile;
 
-  if (!pIcc->Attach(pFileIO)) {
+  if (!pIcc->Attach(pFileIO, bUseSubProfile)) {
     delete pIcc;
     delete pFileIO;
     return NULL;
@@ -3167,7 +3276,7 @@ CIccProfile* OpenIccProfile(const icWChar *szFilename)
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
-CIccProfile* OpenIccProfile(const icUInt8Number *pMem, icUInt32Number nSize)
+CIccProfile* OpenIccProfile(const icUInt8Number *pMem, icUInt32Number nSize, bool bUseSubProfile/*=false*/)
 {
   CIccMemIO *pMemIO = new CIccMemIO;
 
@@ -3178,7 +3287,7 @@ CIccProfile* OpenIccProfile(const icUInt8Number *pMem, icUInt32Number nSize)
 
   CIccProfile *pIcc = new CIccProfile;
 
-  if (!pIcc->Attach(pMemIO)) {
+  if (!pIcc->Attach(pMemIO, bUseSubProfile)) {
     delete pIcc;
     delete pMemIO;
     return NULL;

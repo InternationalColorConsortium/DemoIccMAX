@@ -94,6 +94,8 @@ class IIccOpDef;
 
 #define icMaxDataStackSize 65535
 
+
+
 /************************************************************************
  * Channel Function signature
  ************************************************************************/
@@ -535,6 +537,25 @@ protected:
 
   IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
+
+class IIccCalcDebugger
+{
+public:
+  static void SetDebugger(IIccCalcDebugger *pDebugger);
+
+  virtual ~IIccCalcDebugger() {}
+
+  virtual void BeginApply() = 0;
+  virtual void EndApply() = 0;
+
+  virtual bool BeforeOp(SIccCalcOp *op, SIccOpState &os, SIccCalcOp *ops)=0;
+  virtual bool AfterOp(SIccCalcOp *op, SIccOpState &os, SIccCalcOp *ops)=0;
+
+  virtual void Error(const char *msg) = 0;
+};
+
+#define icCalcDebuggerNone    ((IIccCalcDebugger*)0) 
+#define icCalcDebuggerConsole ((IIccCalcDebugger*)-1) 
 
 //CIccMPElements support  
 #ifdef USEREFICCMAXNAMESPACE

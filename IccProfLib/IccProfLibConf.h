@@ -147,6 +147,7 @@ namespace refIccMAX {
   #define ICCPROFLIB_API
   #define ICCPROFLIB_EXTERN
   #define stricmp strcasecmp
+  #define strnicmp strncasecmp
 
   //Define ICC_CBRTF as a call to cbrtf (replace with pow if system doesn't support cbrtf)
   #define ICC_CBRTF(v) cbrtf(v)

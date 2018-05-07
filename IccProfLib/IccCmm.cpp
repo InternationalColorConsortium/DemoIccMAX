@@ -627,7 +627,7 @@ void CIccXform::DetachAll()
  *  nIntent = the rendering intent to apply to the profile,   
  *  nInterp = the interpolation algorithm to use for N-D luts.
  *  nLutType = selection of which transform lut to use
- *  bUseMpeTags = flag to indicate the use MPE flags if available
+ *  bUseD2BxB2DxTags = flag to indicate the use MPE flags if available
  *  pHintManager = pointer to object that contains xform creation hints
  * 
  * Return: 
@@ -1386,7 +1386,7 @@ void CIccXform::SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent 
  *  nIntent = the rendering intent to apply to the profile,   
  *  nInterp = the interpolation algorithm to use for N-D luts.
  *  nLutType = selection of which transform lut to use
- *  bUseMpeTags = flag to indicate the use MPE flags if available
+ *  bUseD2BxB2DxTags = flag to indicate the use MPE flags if available
  *  pHint = pointer to object passed to CIccXform creation functionality
  * 
  * Return: 
@@ -1399,11 +1399,11 @@ CIccXform *CIccXform::Create(CIccProfile &Profile,
 														 icXformInterp nInterp/* =icInterpLinear */, 
                              IIccProfileConnectionConditions *pPcc/*=NULL*/,
                              icXformLutType nLutType/* =icXformLutColor */, 
-														 bool bUseMpeTags/* =true */,
+														 bool bUseD2BxB2DxTags/* =true */,
                              CIccCreateXformHintManager *pHintManager/* =NULL */)
 {
   CIccProfile *pProfile = new CIccProfile(Profile);
-  CIccXform *pXform = Create(pProfile, bInput, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+  CIccXform *pXform = Create(pProfile, bInput, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (!pXform)
     delete pProfile;
@@ -2723,7 +2723,7 @@ void CIccPcsXform::pushOffset3(icFloatNumber v1, icFloatNumber v2, icFloatNumber
  *  equivalent to inserting a nxn diagonal matrix).
  **************************************************************************
  */
-void CIccPcsXform::pushScale(icUInt16Number n, icFloatNumber *vals)
+void CIccPcsXform::pushScale(icUInt16Number n, const icFloatNumber *vals)
 {
   CIccPcsStepScale *scale = new CIccPcsStepScale(n);
   memcpy(scale->data(), vals, n*sizeof(icFloatNumber));
@@ -2742,7 +2742,7 @@ void CIccPcsXform::pushScale(icUInt16Number n, icFloatNumber *vals)
  *  Insert PCS step defined by a nRows x nCols matrix with specified vals
  **************************************************************************
  */
-void CIccPcsXform::pushMatrix(icUInt16Number nRows, icUInt16Number nCols, icFloatNumber *vals)
+void CIccPcsXform::pushMatrix(icUInt16Number nRows, icUInt16Number nCols, const icFloatNumber *vals)
 {
   CIccPcsStepMatrix *mtx = new CIccPcsStepMatrix(nRows, nCols);
   memcpy(mtx->entry(0), vals, nRows*nCols*sizeof(icFloatNumber));
@@ -2889,16 +2889,22 @@ void CIccPcsXform::pushXYZNormalize(IIccProfileConnectionConditions *pPcc, const
   const CIccTagSpectralViewingConditions *pView = pPcc->getPccViewingConditions();
   CIccPcsXform tmp;
 
+  icSpectralRange illuminantRange;
+  const icFloatNumber *illuminant = pView->getIlluminant(illuminantRange);
+
+  icSpectralRange observerRange;
+  const icFloatNumber *observer = pView->getObserver(observerRange);
+
   //make sure illuminant goes through identical conversion steps
-  if (!icSameSpectralRange(srcRange, pView->m_illuminantRange) || !icSameSpectralRange(dstRange, pView->m_illuminantRange)) {
-    tmp.pushSpecToRange(pView->m_illuminantRange, srcRange);
+  if (!icSameSpectralRange(srcRange, illuminantRange) || !icSameSpectralRange(dstRange, illuminantRange)) {
+    tmp.pushSpecToRange(illuminantRange, srcRange);
     tmp.pushSpecToRange(srcRange, dstRange);
-    tmp.pushSpecToRange(dstRange, pView->m_observerRange);
+    tmp.pushSpecToRange(dstRange, observerRange);
   }
   else {
-    tmp.pushSpecToRange(pView->m_illuminantRange, pView->m_observerRange);
+    tmp.pushSpecToRange(illuminantRange, observerRange);
   }
-  tmp.pushMatrix(3, pView->m_observerRange.steps, pView->m_observer);
+  tmp.pushMatrix(3, observerRange.steps, observer);
 
   icStatusCMM stat=icCmmStatOk;
   CIccApplyXform *pApply = tmp.GetNewApply(stat);
@@ -2906,7 +2912,7 @@ void CIccPcsXform::pushXYZNormalize(IIccProfileConnectionConditions *pPcc, const
     icFloatNumber xyz[3], normxyz[3], pccxyz[3];
 
     //Get absolute xyz for illuminant and observer
-    tmp.Apply(pApply, xyz, pView->m_illuminant);
+    tmp.Apply(pApply, xyz, illuminant);
 
     //calculate normalized XYZ
     normxyz[0] = xyz[0] / xyz[1];
@@ -2944,12 +2950,18 @@ void CIccPcsXform::pushRef2Xyz(CIccProfile *pProfile, IIccProfileConnectionCondi
   const CIccTagSpectralViewingConditions *pView = pPcc->getPccViewingConditions();
 
   if (pView) {
-    pushSpecToRange(pProfile->m_Header.spectralRange, pView->m_illuminantRange);
-    pushScale(pView->m_illuminantRange.steps, pView->m_illuminant);
-    pushSpecToRange(pView->m_illuminantRange, pView->m_observerRange);
-    pushMatrix(3, pView->m_observerRange.steps, pView->m_observer);
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pView->getIlluminant(illuminantRange);
 
-    pushXYZNormalize(pPcc, pView->m_illuminantRange, pView->m_illuminantRange);
+    icSpectralRange observerRange;
+    const icFloatNumber *observer = pView->getObserver(observerRange);
+
+    pushSpecToRange(pProfile->m_Header.spectralRange, illuminantRange);
+    pushScale(illuminantRange.steps, illuminant);
+    pushSpecToRange(illuminantRange, observerRange);
+    pushMatrix(3, observerRange.steps, observer);
+
+    pushXYZNormalize(pPcc, illuminantRange, illuminantRange);
   }
 }
 
@@ -3019,15 +3031,19 @@ void CIccPcsXform::pushApplyIllum(CIccProfile *pProfile, IIccProfileConnectionCo
 
   if (pView) {
     CIccPcsStepPtr ptr;
-    CIccPcsStepScale *pScale = new CIccPcsStepScale(pView->m_illuminantRange.steps);
-    memcpy(pScale->data(), pView->m_illuminant, pView->m_illuminantRange.steps*sizeof(icFloatNumber));
 
-    if (icSameSpectralRange(pProfile->m_Header.spectralRange, pView->m_illuminantRange)) {
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pView->getIlluminant(illuminantRange);
+
+    CIccPcsStepScale *pScale = new CIccPcsStepScale(illuminantRange.steps);
+    memcpy(pScale->data(), illuminant, illuminantRange.steps*sizeof(icFloatNumber));
+
+    if (icSameSpectralRange(pProfile->m_Header.spectralRange, illuminantRange)) {
       ptr.ptr = pScale;
       m_list->push_back(ptr);
     }
     else {
-      ptr.ptr  = rangeMap(pProfile->m_Header.spectralRange, pView->m_illuminantRange);
+      ptr.ptr  = rangeMap(pProfile->m_Header.spectralRange, illuminantRange);
       if (ptr.ptr) {
         m_list->push_back(ptr);
       }
@@ -3035,7 +3051,7 @@ void CIccPcsXform::pushApplyIllum(CIccProfile *pProfile, IIccProfileConnectionCo
       ptr.ptr = pScale;
       m_list->push_back(ptr);
 
-      ptr.ptr = rangeMap(pView->m_illuminantRange, pProfile->m_Header.spectralRange);
+      ptr.ptr = rangeMap(illuminantRange, pProfile->m_Header.spectralRange);
       if (ptr.ptr)
         m_list->push_back(ptr);
     }
@@ -3058,9 +3074,15 @@ void CIccPcsXform::pushRad2Xyz(CIccProfile* pProfile, IIccProfileConnectionCondi
   const CIccTagSpectralViewingConditions *pProfView = pProfile ? pProfile->getPccViewingConditions() : NULL;
   const CIccTagSpectralViewingConditions *pView = pPcc->getPccViewingConditions();
   if (pProfView && pView) {
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pView->getIlluminant(illuminantRange);
+
+    icSpectralRange observerRange;
+    const icFloatNumber *observer = pView->getObserver(observerRange);
+
     //Preserve smallest step size
     icFloatNumber dPCSStepSize = (icF16toF(pProfile->m_Header.spectralRange.end) - icF16toF(pProfile->m_Header.spectralRange.start))/(icFloatNumber)pProfile->m_Header.spectralRange.steps;
-    icFloatNumber dObsStepSize = (icF16toF(pView->m_observerRange.end) - icF16toF(pView->m_observerRange.start)) / (icFloatNumber) pView->m_observerRange.steps;
+    icFloatNumber dObsStepSize = (icF16toF(observerRange.end) - icF16toF(observerRange.start)) / (icFloatNumber) observerRange.steps;
 
     if (dPCSStepSize<dObsStepSize) {
       icFloatNumber *obs = pView->applyRangeToObserver(pProfile->m_Header.spectralRange);
@@ -3069,8 +3091,8 @@ void CIccPcsXform::pushRad2Xyz(CIccProfile* pProfile, IIccProfileConnectionCondi
       free(obs);
     }
     else {
-      pushSpecToRange(pProfile->m_Header.spectralRange, pView->m_observerRange);
-      pushMatrix(3, pView->m_observerRange.steps, pView->m_observer);
+      pushSpecToRange(pProfile->m_Header.spectralRange, observerRange);
+      pushMatrix(3, observerRange.steps, observer);
 
     }
     icFloatNumber k;
@@ -3078,7 +3100,7 @@ void CIccPcsXform::pushRad2Xyz(CIccProfile* pProfile, IIccProfileConnectionCondi
       k = 683;
     }
     else {
-      k = 1.0f / pPcc->getObserverWhiteScaleFactor(pProfView->m_illuminant, pProfView->m_illuminantRange);
+      k = 1.0f / pPcc->getObserverWhiteScaleFactor(illuminant, illuminantRange);
     }
     pushScale3(k, k, k);
   }
@@ -3099,6 +3121,9 @@ icStatusCMM CIccPcsXform::pushBiRef2Rad(CIccProfile *pProfile, IIccProfileConnec
   const CIccTagSpectralViewingConditions *pView = pPcc->getPccViewingConditions();
 
   if (pView) {
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pView->getIlluminant(illuminantRange);
+
     if (icGetColorSpaceType(pProfile->m_Header.spectralPCS)==icSigSparseMatrixSpectralPcsData) {
       CIccPcsStepSrcSparseMatrix *pMtx = new CIccPcsStepSrcSparseMatrix(pProfile->m_Header.spectralRange.steps, 
                                                                         pProfile->m_Header.biSpectralRange.steps,
@@ -3106,13 +3131,13 @@ icStatusCMM CIccPcsXform::pushBiRef2Rad(CIccProfile *pProfile, IIccProfileConnec
       if (!pMtx)
         return icCmmStatAllocErr;
 
-      CIccPcsStepMatrix *illumMtx = rangeMap(pView->m_illuminantRange, pProfile->m_Header.biSpectralRange);
+      CIccPcsStepMatrix *illumMtx = rangeMap(illuminantRange, pProfile->m_Header.biSpectralRange);
       if (illumMtx) {
-        illumMtx->Apply(NULL, pMtx->data(), pView->m_illuminant);
+        illumMtx->Apply(NULL, pMtx->data(), illuminant);
         delete illumMtx; 
       }
       else {
-        memcpy(pMtx->data(), pView->m_illuminant, pView->m_illuminantRange.steps*sizeof(icFloatNumber));
+        memcpy(pMtx->data(), illuminant, illuminantRange.steps*sizeof(icFloatNumber));
       }
 
       CIccPcsStepPtr ptr;
@@ -3125,13 +3150,13 @@ icStatusCMM CIccPcsXform::pushBiRef2Rad(CIccProfile *pProfile, IIccProfileConnec
       if (!pMtx)
         return icCmmStatAllocErr;
 
-      CIccPcsStepMatrix *illumMtx = rangeMap(pView->m_illuminantRange, pProfile->m_Header.biSpectralRange);
+      CIccPcsStepMatrix *illumMtx = rangeMap(illuminantRange, pProfile->m_Header.biSpectralRange);
       if (illumMtx) {
-        illumMtx->Apply(NULL, pMtx->data(), pView->m_illuminant);
+        illumMtx->Apply(NULL, pMtx->data(), illuminant);
         delete illumMtx; 
       }
       else {
-        memcpy(pMtx->data(), pView->m_illuminant, pView->m_illuminantRange.steps*sizeof(icFloatNumber));
+        memcpy(pMtx->data(), illuminant, illuminantRange.steps*sizeof(icFloatNumber));
       }
 
       CIccPcsStepPtr ptr;
@@ -3165,8 +3190,11 @@ icStatusCMM CIccPcsXform::pushBiRef2Xyz(CIccProfile *pProfile, IIccProfileConnec
   const CIccTagSpectralViewingConditions *pView = pPcc->getPccViewingConditions();
 
   if (pView) {
-    pushSpecToRange(pProfile->m_Header.spectralRange, pView->m_observerRange);
-    pushMatrix(3, pView->m_observerRange.steps, pView->m_observer);
+    icSpectralRange observerRange;
+    const icFloatNumber *observer = pView->getObserver(observerRange);
+
+    pushSpecToRange(pProfile->m_Header.spectralRange, observerRange);
+    pushMatrix(3, observerRange.steps, observer);
     pushXYZNormalize(pPcc, pProfile->m_Header.biSpectralRange, pProfile->m_Header.spectralRange);
   }
   else {
@@ -3196,15 +3224,18 @@ icStatusCMM CIccPcsXform::pushBiRef2Ref(CIccProfile *pProfile, IIccProfileConnec
   const CIccTagSpectralViewingConditions *pView = pPcc->getPccViewingConditions();
 
   if (pView) {
+    icSpectralRange illuminantRange;
+    const icFloatNumber *illuminant = pView->getIlluminant(illuminantRange);
+
     CIccPcsStepScale *pScale = new CIccPcsStepScale(pProfile->m_Header.spectralRange.steps);
 
     if (pScale) {
       icFloatNumber *pData = pScale->data();
-      CIccPcsStepMatrix *illumMtx = rangeMap(pView->m_illuminantRange, pProfile->m_Header.spectralRange);
+      CIccPcsStepMatrix *illumMtx = rangeMap(illuminantRange, pProfile->m_Header.spectralRange);
       int i;
 
       if (illumMtx) {
-        illumMtx->Apply(NULL, pData, pView->m_illuminant);
+        illumMtx->Apply(NULL, pData, illuminant);
         for (i=0; i<pProfile->m_Header.spectralRange.steps; i++)
           pData[i] = 1.0f / pData[i];
 
@@ -3216,7 +3247,7 @@ icStatusCMM CIccPcsXform::pushBiRef2Ref(CIccProfile *pProfile, IIccProfileConnec
       }
       else {
         for (i=0; i<pProfile->m_Header.spectralRange.steps; i++) {
-          pData[i] = 1.0f / pView->m_illuminant[i];
+          pData[i] = 1.0f / illuminant[i];
         }
       }
     }
@@ -6984,9 +7015,9 @@ void CIccXformMpe::SetAppliedCC(IIccProfileConnectionConditions *pPCC)
         const CIccTagSpectralViewingConditions *pViewProfile = m_pProfile ? m_pProfile->getPccViewingConditions() : NULL;
 
         if (pViewPCC && pViewProfile &&
-          pViewPCC->m_stdIlluminant == pViewProfile->m_stdIlluminant &&
-          pViewPCC->m_colorTemperature == pViewProfile->m_colorTemperature &&
-          pViewPCC->m_stdIlluminant != icIlluminantUnknown) {
+          pViewPCC->getStdIllumiant() == pViewProfile->getStdIllumiant() &&
+          pViewPCC->getIlluminantCCT() == pViewProfile->getIlluminantCCT() &&
+          pViewPCC->getStdIllumiant() != icIlluminantUnknown) {
           m_pAppliedPCC = pPCC;
           m_bDeleteAppliedPCC = false;
         }
@@ -7461,15 +7492,16 @@ icStatusCMM CIccCmm::AddXform(const icChar *szProfilePath,
                               icXformInterp nInterp /*icXformInterp*/,
                               IIccProfileConnectionConditions *pPcc/*=NULL*/,
                               icXformLutType nLutType /*=icXformLutColor*/,
-                              bool bUseMpeTags /*=true*/,
-                              CIccCreateXformHintManager *pHintManager /*=NULL*/)
+                              bool bUseD2BxB2DxTags /*=true*/,
+                              CIccCreateXformHintManager *pHintManager /*=NULL*/,
+                              bool bUseSubProfile /*=false*/)
 {
-  CIccProfile *pProfile = OpenIccProfile(szProfilePath);
+  CIccProfile *pProfile = OpenIccProfile(szProfilePath, bUseSubProfile);
 
   if (!pProfile) 
     return icCmmStatCantOpenProfile;
 
-  icStatusCMM rv = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+  icStatusCMM rv = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (rv != icCmmStatOk)
     delete pProfile;
@@ -7492,7 +7524,7 @@ icStatusCMM CIccCmm::AddXform(const icChar *szProfilePath,
 *  nIntent = rendering intent to be used with the profile,
 *  nInterp = type of interpolation to be used with the profile,
 *  nLutType = selection of which transform lut to use
-*  bUseMpeTags = flag to indicate the use MPE flags if available
+*  bUseD2BxB2DxTags = flag to indicate the use MPE flags if available
 *  pHintManager = hints for creating the xform
 * 
 * Return: 
@@ -7505,12 +7537,13 @@ icStatusCMM CIccCmm::AddXform(icUInt8Number *pProfileMem,
                               icXformInterp nInterp /*icXformInterp*/,
                               IIccProfileConnectionConditions *pPcc/*=NULL*/,
                               icXformLutType nLutType /*=icXformLutColor*/,
-                              bool bUseMpeTags /*=true*/,
-                              CIccCreateXformHintManager *pHintManager /*=NULL*/)
+                              bool bUseD2BxB2DxTags /*=true*/,
+                              CIccCreateXformHintManager *pHintManager /*=NULL*/,
+                              bool bUseSubProfile /*=false*/)
 {
   CIccMemIO *pFile = new CIccMemIO;
 
-  if (!pFile || !pFile->Attach(pProfileMem, nProfileLen))
+  if (!pFile || !pFile->Attach(pProfileMem, nProfileLen, bUseSubProfile))
     return icCmmStatCantOpenProfile;
 
   CIccProfile *pProfile = new CIccProfile;
@@ -7524,7 +7557,7 @@ icStatusCMM CIccCmm::AddXform(icUInt8Number *pProfileMem,
     return icCmmStatCantOpenProfile;
   }
 
-  icStatusCMM rv = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+  icStatusCMM rv = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (rv != icCmmStatOk)
     delete pProfile;
@@ -7545,7 +7578,7 @@ icStatusCMM CIccCmm::AddXform(icUInt8Number *pProfileMem,
  *  nIntent = rendering intent to be used with the profile,
  *  nInterp = type of interpolation to be used with the profile,
  *  nLutType = selection of which transform lut to use
- *  bUseMpeTags = flag to indicate the use MPE flags if available
+ *  bUseD2BxB2DxTags = flag to indicate the use MPE flags if available
  *  pHintManager = hints for creating the xform
  * 
  * Return: 
@@ -7557,7 +7590,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
                               icXformInterp nInterp /*=icInterpLinear*/,
                               IIccProfileConnectionConditions *pPcc/*=NULL*/,
                               icXformLutType nLutType /*=icXformLutColor*/,
-                              bool bUseMpeTags /*=true*/,
+                              bool bUseD2BxB2DxTags /*=true*/,
                               CIccCreateXformHintManager *pHintManager /*=NULL*/)
 {
   icColorSpaceSignature nSrcSpace, nDstSpace;
@@ -7584,7 +7617,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
       if (bInput) {
         nSrcSpace = pProfile->m_Header.colorSpace;
 
-        if (bUseMpeTags && pProfile->m_Header.spectralPCS)
+        if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS)
           nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
         else
           nDstSpace = pProfile->m_Header.pcs;
@@ -7598,7 +7631,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
           nIntent = icPerceptual; // Note: icPerceptualIntent = 0
         }
 
-        if (bUseMpeTags && pProfile->m_Header.spectralPCS)
+        if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS)
           nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
         else
           nSrcSpace = pProfile->m_Header.pcs;
@@ -7661,7 +7694,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
 
             CIccXform *pPrev = prev->ptr;
             CIccXform *pNew = CIccXform::Create(pPrev->GetProfilePtr(), pPrev->IsInput(), pPrev->GetIntent(), pPrev->GetInterp(),
-                                                pPrev->GetConnectionConditions(), icXformLutMCS, bUseMpeTags, pHintManager);
+                                                pPrev->GetConnectionConditions(), icXformLutMCS, bUseD2BxB2DxTags, pHintManager);
 
             if (pNew) {
               pPrev->DetachAll();
@@ -7678,7 +7711,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
 
         nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.mcs;
         if (pProfile->m_Header.deviceClass==icSigMaterialVisualizationClass) {
-          if (bUseMpeTags && pProfile->m_Header.spectralPCS) {
+          if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS) {
             nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
           }
           else {
@@ -7729,7 +7762,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
 
   CIccXformPtr Xform;
   
-  Xform.ptr = CIccXform::Create(pProfile, bInput, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+  Xform.ptr = CIccXform::Create(pProfile, bInput, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (!Xform.ptr) {
     return icCmmStatBadXform;
@@ -7760,7 +7793,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
 *  nIntent = rendering intent to be used with the profile,
 *  nInterp = type of interpolation to be used with the profile,
 *  nLutType = selection of which transform lut to use
-*  bUseMpeTags = flag to indicate the use MPE flags if available
+*  bUseD2BxB2DxTags = flag to indicate the use MPE flags if available
 *  pHintManager = hints for creating the xform
 *
 * Return:
@@ -7879,7 +7912,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
  *  nIntent = rendering intent to be used with the profile,
  *  nInterp = type of interpolation to be used with the profile,
  *  nLutType = selection of which transform lut to use
- *  bUseMpeTags = flag to indicate the use MPE flags if available
+ *  bUseD2BxB2DxTags = flag to indicate the use MPE flags if available
  *  pHintManager = hints for creating the xform
  * 
  * Return: 
@@ -7891,7 +7924,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile &Profile,
                               icXformInterp nInterp /*=icInterpLinear*/,
                               IIccProfileConnectionConditions *pPcc/*=NULL*/,
                               icXformLutType nLutType /*=icXformLutColor*/,
-                              bool bUseMpeTags /*=true*/,
+                              bool bUseD2BxB2DxTags /*=true*/,
                               CIccCreateXformHintManager *pHintManager /*=NULL*/)
 {
   CIccProfile *pProfile = new CIccProfile(Profile);
@@ -7899,7 +7932,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile &Profile,
   if (!pProfile) 
     return icCmmStatAllocErr;
 
- icStatusCMM stat = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+ icStatusCMM stat = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (stat != icCmmStatOk)
     delete pProfile;
@@ -9670,15 +9703,16 @@ icStatusCMM CIccNamedColorCmm::AddXform(const icChar *szProfilePath,
                                         icXformInterp nInterp /*icXformInterp*/,
                                         IIccProfileConnectionConditions *pPcc/*=NULL*/,
                                         icXformLutType nLutType /*=icXformLutColor*/,
-                                        bool bUseMpeTags /*=true*/,
-                                        CIccCreateXformHintManager *pHintManager /*=NULL*/)
+                                        bool bUseD2BxB2DxTags /*=true*/,
+                                        CIccCreateXformHintManager *pHintManager /*=NULL*/,
+                                        bool bUseSubProfile /*=false*/)
 {
-  CIccProfile *pProfile = OpenIccProfile(szProfilePath);
+  CIccProfile *pProfile = OpenIccProfile(szProfilePath, bUseSubProfile);
 
   if (!pProfile) 
     return icCmmStatCantOpenProfile;
 
-  icStatusCMM rv = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+  icStatusCMM rv = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (rv != icCmmStatOk)
     delete pProfile;
@@ -9709,7 +9743,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
                                         icXformInterp nInterp /*=icInterpLinear*/,
                                         IIccProfileConnectionConditions *pPcc/*=NULL*/,
                                         icXformLutType nLutType /*=icXformLutColor*/,
-                                        bool bUseMpeTags /*=true*/,
+                                        bool bUseD2BxB2DxTags /*=true*/,
                                         CIccCreateXformHintManager *pHintManager /*=NULL*/)
 {
   icColorSpaceSignature nSrcSpace, nDstSpace;
@@ -9744,7 +9778,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
         if (bInput) {
           nSrcSpace = icSigNamedData;
         }
-        else if (bUseMpeTags && pProfile->m_Header.spectralPCS) {
+        else if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS) {
           nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
         }
         else {
@@ -9769,7 +9803,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
         }
 
         if (nSrcSpace==icSigNamedData) {
-          if (bUseMpeTags && pProfile->m_Header.spectralPCS) {
+          if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS) {
             nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
           }
           else {
@@ -9782,7 +9816,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
           bInput = false;
         }
 
-        Xform.ptr = CIccXform::Create(pProfile, bInput, nIntent, nInterp, pPcc, icXformLutNamedColor, bUseMpeTags, pHintManager);
+        Xform.ptr = CIccXform::Create(pProfile, bInput, nIntent, nInterp, pPcc, icXformLutNamedColor, bUseD2BxB2DxTags, pHintManager);
         if (!Xform.ptr) {
           return icCmmStatBadXform;
         }
@@ -9803,7 +9837,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
         if (bInput) {
           nSrcSpace = pProfile->m_Header.colorSpace;
 
-          if (bUseMpeTags && pProfile->m_Header.spectralPCS)
+          if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS)
             nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
           else
             nDstSpace = pProfile->m_Header.pcs;
@@ -9817,7 +9851,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
             nIntent = icPerceptual; // Note: icPerceptualIntent = 0
           }
 
-          if (bUseMpeTags && pProfile->m_Header.spectralPCS)
+          if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS)
             nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
           else
             nSrcSpace = pProfile->m_Header.pcs;
@@ -9860,7 +9894,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
           break;
         case icSigMaterialVisualizationClass:
           nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.mcs;
-          if (bUseMpeTags && pProfile->m_Header.spectralPCS) {
+          if (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS) {
             nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
           }
           else {
@@ -9910,7 +9944,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
   }
 
   if (!Xform.ptr)
-    Xform.ptr = CIccXform::Create(pProfile, bInput, nIntent, nInterp, pPcc, nLutType, bUseMpeTags, pHintManager);
+    Xform.ptr = CIccXform::Create(pProfile, bInput, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
 
   if (!Xform.ptr) {
     return icCmmStatBadXform;

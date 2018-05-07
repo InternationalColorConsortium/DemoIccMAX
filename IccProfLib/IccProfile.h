@@ -152,7 +152,11 @@ public:
   CIccProfile();
   CIccProfile(const CIccProfile &Profile);
   CIccProfile &operator=(const CIccProfile &Profile);
+  virtual CIccProfile* NewCopy() const { return new CIccProfile(*this); }
+  virtual CIccProfile* NewProfile() const { return new CIccProfile(); }
   virtual ~CIccProfile();
+
+  virtual const char *GetClassName() { return "CIccProfile"; }
 
   icHeader m_Header;
 
@@ -166,14 +170,16 @@ public:
   CIccMemIO* GetTagIO(icSignature sig); //caller should delete returned result
 	bool ReadTags(CIccProfile* pProfile); // will read in all the tags using the IO of the passed profile
 
-  bool Attach(CIccIO *pIO);
+  bool Attach(CIccIO *pIO, bool bUseSubProfile=false);
   bool Detach();
-  bool Read(CIccIO *pIO);
+  bool HasIO() { return m_pAttachIO != NULL;  }
+
+  bool Read(CIccIO *pIO, bool bUseSubProfile=false);
   icValidateStatus ReadValidate(CIccIO *pIO, std::string &sReport);
   bool Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId=icVersionBasedID);
 
   void InitHeader();
-  icValidateStatus Validate(std::string &sReport) const;
+  icValidateStatus Validate(std::string &sReport, std::string sSigPath="") const;
 
   icUInt16Number GetSpaceSamples() const;
 
@@ -209,8 +215,10 @@ protected:
   IccTagEntry* GetTag(icSignature sig) const;
   IccTagEntry* GetTag(CIccTag *pTag) const;
   bool ReadBasic(CIccIO *pIO);
-  bool LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO);
+  bool LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll=false);
   bool DetachTag(CIccTag *pTag);
+
+  CIccIO* ConnectSubProfile(CIccIO *pIO, bool bOwnIO);
 
   // Profile Validation functions
   icValidateStatus CheckRequiredTags(std::string &sReport) const;
@@ -227,10 +235,10 @@ protected:
   TagPtrList *m_TagVals;
 };
 
-CIccProfile ICCPROFLIB_API *ReadIccProfile(const icChar *szFilename);
-CIccProfile ICCPROFLIB_API *ReadIccProfile(const icUInt8Number *pMem, icUInt32Number nSize);
-CIccProfile ICCPROFLIB_API *OpenIccProfile(const icChar *szFilename);
-CIccProfile ICCPROFLIB_API *OpenIccProfile(const icUInt8Number *pMem, icUInt32Number nSize);  //pMem must be available for entire life of returned CIccProfile Object
+CIccProfile ICCPROFLIB_API *ReadIccProfile(const icChar *szFilename, bool bUseSubProfile=false);
+CIccProfile ICCPROFLIB_API *ReadIccProfile(const icUInt8Number *pMem, icUInt32Number nSize, bool bUseSubProfile=false);
+CIccProfile ICCPROFLIB_API *OpenIccProfile(const icChar *szFilename, bool bUseSubProfile=false);
+CIccProfile ICCPROFLIB_API *OpenIccProfile(const icUInt8Number *pMem, icUInt32Number nSize, bool bUseSubProfile=false);  //pMem must be available for entire life of returned CIccProfile Object
 
 CIccProfile ICCPROFLIB_API *ValidateIccProfile(CIccIO *pIO, std::string &sReport, icValidateStatus &nStatus);
 CIccProfile ICCPROFLIB_API *ValidateIccProfile(const icChar *szFilename, std::string &sReport, icValidateStatus &nStatus);
@@ -241,8 +249,8 @@ void ICCPROFLIB_API CalcProfileID(CIccIO *pIO, icProfileID *profileID);
 bool ICCPROFLIB_API CalcProfileID(const icChar *szFilename, icProfileID *profileID);
 
 #ifdef WIN32
-CIccProfile ICCPROFLIB_API *ReadIccProfile(const icWChar *szFilename);
-CIccProfile ICCPROFLIB_API *OpenIccProfile(const icWChar *szFilename);
+CIccProfile ICCPROFLIB_API *ReadIccProfile(const icWChar *szFilename, bool bUseSubProfile=false);
+CIccProfile ICCPROFLIB_API *OpenIccProfile(const icWChar *szFilename, bool bUseSubProfile=false);
 CIccProfile ICCPROFLIB_API *ValidateIccProfile(const icWChar *szFilename, std::string &sReport, icValidateStatus &nStatus);
 bool ICCPROFLIB_API SaveIccProfile(const icWChar *szFilename, CIccProfile *pIcc, icProfileIDSaveMethod nWriteId=icVersionBasedID);
 bool ICCPROFLIB_API CalcProfileID(const icWChar *szFilename, icProfileID *profileID);

@@ -205,6 +205,9 @@ CIccTag* CIccTagXmlFactory::CreateTag(icTagTypeSignature tagSig)
   case icSigUtf16TextType:
     return new CIccTagXmlUtf16Text;
 
+  case icSigEmbeddedProfileType:
+    return new CIccTagXmlEmbeddedProfile;
+
   case icSigScreeningType:
   case icSigUcrBgType:
   case icSigCrdInfoType:

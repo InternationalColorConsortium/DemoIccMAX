@@ -123,13 +123,26 @@ public:
   *  Get display name of structTypeSig.
   *
   * Parameter(s):
-  *  elemName = string to put element name into, 
+  *  structName = string to put element name into, 
   *  structTypeSig = signature of the ICC element type to get a name for
+  *  bFindUnknown = flag to indicate structName should be filled with unknown_sig name, (empty if false)
   *
   * Returns true if struct type is recognized by the factory, false if
   * the factory doesn't create structTypeSig elements.
   */
-  virtual bool GetStructSigName(std::string &strutName, icStructSignature structTypeSig)=0;
+  virtual bool GetStructSigName(std::string &structName, icStructSignature structTypeSig, bool bFindUnknown)=0;
+
+  /**
+  * Function: GetStructSig(structName)
+  *  Get signature of structure from display name.
+  *
+  * Parameter(s):
+  *  structName = struct display name
+  *
+  * Returns signature of structure if it is recognized by the factory, 0 if the
+  * factory doesn't create structures with such a display name.
+  */
+  virtual icStructSignature GetStructSig(const icChar *structName)=0;
 };
 
 
@@ -174,7 +187,19 @@ public:
   * Returns true if struct type is recognized by the factory, false if the
   * factory doesn't create structTypeSig structs.
   */
-  virtual bool GetStructSigName(std::string &structName, icStructSignature structTypeSig);
+  virtual bool GetStructSigName(std::string &structName, icStructSignature structTypeSig, bool bFindUnknown=false);
+
+  /**
+  * Function: GetStructSig(structName)
+  *  Get signature of structure from display name.
+  *
+  * Parameter(s):
+  *  structName = struct display name
+  *
+  * Returns signature of structure if it is recognized by the factory, 0 if the
+  * factory doesn't create structures with such a display name.
+  */
+  virtual icStructSignature GetStructSig(const icChar *structName);
 };
 
 class CIccStructCreator;
@@ -218,14 +243,30 @@ public:
   * Parameter(s):
   *  structName = string to put struct name into
   *  structTypeSig = signature of the ICC struct type to get a name for
+  *  bFillUnknown = flag to indicate structName is filled if not found
   *
   * Returns true if struct type is recognized by any factory, false if all
   * factories do not create structTypeSig structs. If struct type is not
   * recognized by any factories a suitable display name will be placed in
-  * structName.
+  * structName if bFillUknown is true.
   */
-  static bool GetStructSigName(std::string &structName, icStructSignature structTypeSig)
-      { return CIccStructCreator::GetInstance()->DoGetStructSigName(structName, structTypeSig); }
+  static bool GetStructSigName(std::string &structName, icStructSignature structTypeSig, bool bFillUnknown=true)
+      { return CIccStructCreator::GetInstance()->DoGetStructSigName(structName, structTypeSig, bFillUnknown); }
+
+  /**
+  * Function: GetStructSig(structName)
+  *  Get signature of structure from display name.
+  *
+  * Parameter(s):
+  *  structName = struct display name
+  *
+  * Returns signature of structure if it is recognized by any factory, 0 if the
+  * all the factories don't create a structure with such a display name.
+  */
+  static icStructSignature GetStructSig(const icChar *structName)
+  {
+    return CIccStructCreator::GetInstance()->DoGetStructSig(structName);
+  }
 
   /**
   * Function: PushFactory(pFactory)
@@ -278,7 +319,8 @@ private:
   static CIccStructCreator* GetInstance();
 
   IIccStruct* DoCreateStruct(icStructSignature structTypeSig, CIccTagStruct *pTagStruct=NULL);
-  bool DoGetStructSigName(std::string &elemName, icStructSignature structTypeSig);
+  bool DoGetStructSigName(std::string &structName, icStructSignature structTypeSig, bool bFillUnknown=true);
+  icStructSignature DoGetStructSig(const char *structName);
   void DoPushFactory(IIccStructFactory *pFactory);
   IIccStructFactory* DoPopFactory(bool bAll=false);
 

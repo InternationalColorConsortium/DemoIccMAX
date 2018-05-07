@@ -109,7 +109,12 @@ public:
   virtual std::string GetElemName(icSignature sigElem) const = 0;
   virtual icSignature GetElemSig(const icChar *szElemName) const = 0;
 
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const = 0;
+
 protected:
+
+  TagEntryList *getTagEntries() const;
+
   CIccTagStruct *m_pTagStruct;
 };
 
@@ -149,6 +154,7 @@ protected:
 */
 class ICCPROFLIB_API CIccTagStruct : public CIccTag
 {
+  friend class IIccStruct;
 public:
   CIccTagStruct();
   CIccTagStruct(const CIccTagStruct &lut);

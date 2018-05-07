@@ -108,48 +108,56 @@ IIccStruct* CIccBasicStructFactory::CreateStruct(icStructSignature structTypeSig
   }
 }
 
-bool CIccBasicStructFactory::GetStructSigName(std::string &structName, icStructSignature structTypeSig)
+static struct {
+  icStructSignature sig;
+  const icChar *szStructName;
+} g_icStructNames[] = {
+  {icSigBRDFStruct, "brdfTransfromStructure"},
+  {icSigColorantInfoStruct, "colorantInfoStruct"},
+  {icSigBRDFStruct, "brfdfTransformStructure"},
+  {icSigColorantInfoStruct, "colorantInfoStructure"},
+  {icSigColorEncodingParamsSruct, "colorEncodingParamsStructure"},
+  {icSigMeasurementInfoStruct, "measurementInfoStructure"},
+  {icSigNamedColorStruct, "namedColorStructure"},
+  {icSigProfileInfoStruct, "profileInfoStructure"},
+  {icSigTintZeroStruct, "tintZeroStructure"},
+  {(icStructSignature)0, ""},
+};
+
+bool CIccBasicStructFactory::GetStructSigName(std::string &structName, icStructSignature structTypeSig, bool bFindUnknown)
 {
-  char sig[20];
-  switch(structTypeSig) {
-    case icSigBRDFStruct:
-      structName = "brfdfTransformStructure";
-      break;
-
-    case icSigColorantInfoStruct:
-      structName = "colorantInfoStruct";
-      break;
-
-    case icSigColorEncodingParamsSruct:
-      structName = "colorEncodingParamsStruct";
-      break;
-
-    case icSigMeasurementInfoStruct:
-      structName = "measurementInfoStruct";
-      break;
-
-    case icSigNamedColorStruct:
-        structName = "namedColorStructure";
-        break;
-
-    case icSigProfileInfoStruct:
-      structName = "profileInfoStruct";
-      break;
-  
-    case icSigTintZeroStruct:
-      structName = "tintZeroStructure";
-      break;
-
-
-    default:
-      structName = "UnknownStruct_";
-      icGetSigStr(sig, structTypeSig);
-      structName += sig;
-      break;
+  int i;
+  for (i = 0; g_icStructNames[i].sig; i++) {
+    if (g_icStructNames[i].sig == structTypeSig) {
+      structName = g_icStructNames[i].szStructName;
+      return true;
+    }
   }
 
-  return true;
+  if (!bFindUnknown) {
+    char sig[20];
+    structName = "UnknownStruct_";
+    icGetSigStr(sig, structTypeSig);
+    structName += sig;
+  }
+  else {
+    structName = "";
+  }
+
+  return false;
 }
+
+icStructSignature CIccBasicStructFactory::GetStructSig(const icChar *szStructName)
+{
+  int i;
+  for (i = 0; g_icStructNames[i].sig; i++) {
+    if (!strcmp(g_icStructNames[i].szStructName, szStructName)) {
+      return g_icStructNames[i].sig;
+    }
+  }
+  return (icStructSignature)0;
+}
+
 
 std::auto_ptr<CIccStructCreator> CIccStructCreator::theStructCreator;
 
@@ -187,16 +195,29 @@ IIccStruct* CIccStructCreator::DoCreateStruct(icStructSignature structTypeSig, C
   return rv;
 }
 
-bool CIccStructCreator::DoGetStructSigName(std::string &structName, icStructSignature structTypeSig)
+bool CIccStructCreator::DoGetStructSigName(std::string &structName, icStructSignature structTypeSig, bool bFillUnknown)
 {
   CIccStructFactoryList::iterator i;
 
   for (i=factoryStack.begin(); i!=factoryStack.end(); i++) {
-    if ((*i)->GetStructSigName(structName, structTypeSig))
+    if ((*i)->GetStructSigName(structName, structTypeSig, bFillUnknown))
       return true;
   }
 
   return false;
+}
+
+icStructSignature CIccStructCreator::DoGetStructSig(const icChar* structName)
+{
+  CIccStructFactoryList::iterator i;
+
+  for (i = factoryStack.begin(); i != factoryStack.end(); i++) {
+    icStructSignature rv = (*i)->GetStructSig(structName);
+    if (rv)
+      return rv;
+  }
+
+  return (icStructSignature)0;
 }
 
 void CIccStructCreator::DoPushFactory(IIccStructFactory *pFactory)

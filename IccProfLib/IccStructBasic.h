@@ -109,8 +109,9 @@ public:
 
   CIccTag *GetElem(icSignature sigElem) const;
 
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
+
 protected:
-  CIccTagStruct *m_pTag;
   SIccElemNameSig *m_pElemNameSigTable;
   
 };
@@ -142,6 +143,8 @@ public:
 
   CIccTagNumArray *GetNumArray(icSignature sigElem) const;
 
+  icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile/* = NULL*/) const;
+
 protected:
 
 };
@@ -167,6 +170,8 @@ public:
   virtual icSigBRDFType GetBRDFType() const;
 
   virtual icSigBRDFFunction GetBRDFFunction() const;
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
 
 protected:
 
@@ -211,6 +216,8 @@ public:
 
   virtual const icChar *GetClassName() const { return "CIccStructColorantInfo"; }
   virtual const icChar *GetDisplayName() const { return "colorantInfoStructure"; }
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
 
 protected:
 

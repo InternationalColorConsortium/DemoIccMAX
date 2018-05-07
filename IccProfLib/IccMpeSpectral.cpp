@@ -1491,8 +1491,10 @@ bool CIccMpeReflectanceCLUT::Begin(icElemInterp nInterp, CIccTagMultiProcessElem
     return false;
 
   CIccMatrixMath observer(3, m_Range.steps);
+  icSpectralRange illumRange;
+  const icFloatNumber *illum = pSVC->getIlluminant(illumRange);
 
-  if (!pAppliedPCC->getEmissiveObserver(pSVC->m_illuminantRange, pSVC->m_illuminant, observer.entry(0)))
+  if (!pAppliedPCC->getEmissiveObserver(illumRange, illum, observer.entry(0)))
     return false;
 
   //
@@ -1503,15 +1505,15 @@ bool CIccMpeReflectanceCLUT::Begin(icElemInterp nInterp, CIccTagMultiProcessElem
   int i, j;
   for (i=0; i<3; i++) {
     xyzi[i] = 0.0;
-    for (j=0; j<pSVC->m_illuminantRange.steps; j++) {
-      *pObs *= pSVC->m_illuminant[j];
+    for (j=0; j<illumRange.steps; j++) {
+      *pObs *= illum[j];
       xyzi[i] += *pObs;
       pObs++;
     }
   }
 
   //concatenate reflectance range mapping to observer+illuminant
-  CIccMatrixMath *rangeRef = CIccMatrixMath::rangeMap(m_Range, pSVC->m_illuminantRange);
+  CIccMatrixMath *rangeRef = CIccMatrixMath::rangeMap(m_Range, illumRange);
   CIccMatrixMath *pApplyMtx;
   if (!rangeRef) 
     pApplyMtx = &observer;
@@ -2029,8 +2031,10 @@ bool CIccMpeReflectanceObserver::Begin(icElemInterp nInterp, CIccTagMultiProcess
     return false;
 
   CIccMatrixMath observer(3, m_Range.steps);
+  icSpectralRange illumRange;
+  const icFloatNumber *illum = pSVC->getIlluminant(illumRange);
 
-  if (!pAppliedPCC->getEmissiveObserver(pSVC->m_illuminantRange, pSVC->m_illuminant, observer.entry(0)))
+  if (!pAppliedPCC->getEmissiveObserver(illumRange, illum, observer.entry(0)))
     return false;
 
   //
@@ -2039,15 +2043,15 @@ bool CIccMpeReflectanceObserver::Begin(icElemInterp nInterp, CIccTagMultiProcess
   int i, j;
   for (i=0; i<3; i++) {
     m_xyzw[i] = 0.0;
-    for (j=0; j<pSVC->m_illuminantRange.steps; j++) {
-      *pObs *= pSVC->m_illuminant[j];
+    for (j=0; j<illumRange.steps; j++) {
+      *pObs *= illum[j];
       m_xyzw[i] += *pObs;
       pObs++;
     }
   }
 
   //concatenate reflectance range mapping to observer+illuminant
-  CIccMatrixMath *rangeRef = CIccMatrixMath::rangeMap(m_Range, pSVC->m_illuminantRange);
+  CIccMatrixMath *rangeRef = CIccMatrixMath::rangeMap(m_Range, illumRange);
   if (!rangeRef) 
     m_pApplyMtx = new CIccMatrixMath(observer);
   else

@@ -85,29 +85,59 @@ IIccArray* CIccBasicArrayFactory::CreateArray(icArraySignature arrayTypeSig, CIc
     case icSigNamedColorArray:
       return new CIccArrayNamedColor(pTagArray);
 
+    case icSigColorantInfoArray:
+      return new CIccArrayColorantInfo(pTagArray);
+
     default:
-      return new CIccArrayUnknown(pTagArray);
+      return new CIccArrayUnknown(pTagArray, arrayTypeSig);
   }
 }
 
-bool CIccBasicArrayFactory::GetArraySigName(std::string &ArrayName, icArraySignature arrayTypeSig)
+
+static struct {
+  icArraySignature sig;
+  const icChar *szArrayName;
+} g_icArrayNames[] = {
+  { icSigColorantInfoArray, "colorantInfoArray" },
+  { icSigNamedColorArray, "namedColorArray" },
+  { icSigUtf8TextTypeArray, "UTF8TextArray" },
+  { (icArraySignature)0, "" },
+};
+
+bool CIccBasicArrayFactory::GetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig, bool bFindUnknown)
 {
-  switch(arrayTypeSig) {
-    case icSigNamedColorArray:
-      ArrayName = "Named Color Array";
-      break;
-
-    case icSigUtf8TextTypeArray:
-      ArrayName = "UTF8 Text Array";
-      break;
-
-    default:
-      ArrayName = "Unknown Array Type";
-      break;
+  int i;
+  for (i = 0; g_icArrayNames[i].sig; i++) {
+    if (g_icArrayNames[i].sig == arrayTypeSig) {
+      arrayName = g_icArrayNames[i].szArrayName;
+      return true;
+    }
   }
 
-  return true;
+  if (!bFindUnknown) {
+    char sig[20];
+    arrayName = "UnknownStruct_";
+    icGetSigStr(sig, arrayTypeSig);
+    arrayName += sig;
+  }
+  else {
+    arrayName = "";
+  }
+
+  return false;
 }
+
+icArraySignature CIccBasicArrayFactory::GetArraySig(const icChar *szArrayName)
+{
+  int i;
+  for (i = 0; g_icArrayNames[i].sig; i++) {
+    if (!strcmp(g_icArrayNames[i].szArrayName, szArrayName)) {
+      return g_icArrayNames[i].sig;
+    }
+  }
+  return (icArraySignature)0;
+}
+
 
 std::auto_ptr<CIccArrayCreator> CIccArrayCreator::theArrayCreator;
 
@@ -145,17 +175,31 @@ IIccArray* CIccArrayCreator::DoCreateArray(icArraySignature arrayTypeSig, CIccTa
   return rv;
 }
 
-bool CIccArrayCreator::DoGetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig)
+bool CIccArrayCreator::DoGetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig, bool bFillUnknown)
 {
   CIccArrayFactoryList::iterator i;
 
   for (i=factoryStack.begin(); i!=factoryStack.end(); i++) {
-    if ((*i)->GetArraySigName(arrayName, arrayTypeSig))
+    if ((*i)->GetArraySigName(arrayName, arrayTypeSig, bFillUnknown))
       return true;
   }
 
   return false;
 }
+
+icArraySignature CIccArrayCreator::DoGetArraySig(const icChar* structName)
+{
+  CIccArrayFactoryList::iterator i;
+
+  for (i = factoryStack.begin(); i != factoryStack.end(); i++) {
+    icArraySignature rv = (*i)->GetArraySig(structName);
+    if (rv)
+      return rv;
+  }
+
+  return (icArraySignature)0;
+}
+
 
 void CIccArrayCreator::DoPushFactory(IIccArrayFactory *pFactory)
 {

@@ -75,9 +75,16 @@ class CIccProfileXml :
   public CIccProfile
 {
 public:
+  CIccProfileXml() : CIccProfile() {}
+  CIccProfileXml(const CIccProfileXml &profile) : CIccProfile(profile) {}
+  virtual CIccProfile* NewCopy() const { return new CIccProfileXml(*this); }
+  virtual CIccProfile* NewProfile() const { return new CIccProfileXml(); }
   virtual ~CIccProfileXml() {}
 
+  virtual const char *GetClassName() { return "CIccProfileXml"; }
+
   bool ToXml(std::string &xmlString);
+  bool ToXmlWithBlanks(std::string &xmlString, std::string blanks);
 
   bool ParseXml(xmlNode *pNode, std::string &parseStr);
   bool LoadXml(const char *szFilename, const char *szRelaxNGDir, std::string *parseStr=NULL);

@@ -10382,6 +10382,9 @@ bool CIccTagSpectralViewingConditions::Read(icUInt32Number size, CIccIO *pIO)
     if (pIO->ReadFloat32Float(&m_illuminant[0], vals) != vals)
       return false;
   }
+  else {
+    setIlluminant(m_stdIlluminant, m_illuminantRange, NULL, m_colorTemperature);
+  }
 
   if (pIO->ReadFloat32Float(&m_illuminantXYZ, 3)!=3 ||
       pIO->ReadFloat32Float(&m_surroundXYZ, 3)!=3)
@@ -10595,6 +10598,109 @@ CIccMatrixMath *CIccTagSpectralViewingConditions::getObserverMatrix(const icSpec
   }
 
   return pMtx;
+}
+
+const icFloatNumber *CIccTagSpectralViewingConditions::getIlluminant(icSpectralRange &illumRange) const
+{
+  illumRange = m_illuminantRange;
+  return m_illuminant;
+}
+
+bool CIccTagSpectralViewingConditions::setIlluminant(icIlluminant illumId, const icSpectralRange &illumRange, const icFloatNumber *illum, icFloatNumber illumCCT/* = 0.0f*/)
+{
+  m_stdIlluminant = illumId;
+  m_colorTemperature = illumCCT;
+
+  if (m_illuminant) {
+    free(m_illuminant);
+  }
+
+  m_illuminantRange = illumRange;
+
+  if (illumRange.steps && illum) {
+    icUInt32Number size = illumRange.steps * sizeof(icFloatNumber);
+    m_illuminant = (icFloatNumber *)malloc(size);
+    if (m_illuminant)
+      memcpy(m_illuminant, illum, size);
+    else {
+      memset(&m_illuminantRange, 0, sizeof(m_illuminantRange));
+      return false;
+    }
+  }
+  else {
+    if (!illum)
+      memset(&m_illuminantRange, 0, sizeof(m_illuminantRange));
+
+    m_illuminant = NULL;
+  }
+
+  return true;
+}
+
+bool CIccTagSpectralViewingConditions::setIlluminant(icFloatNumber *pWhiteXYZ)
+{
+  icSpectralRange zeroRange;
+  memset(&zeroRange, 0, sizeof(zeroRange));
+  icFloatNumber white[3];
+  white[0] = pWhiteXYZ[0] / pWhiteXYZ[1];
+  white[1] = 1.0;
+  white[2] = pWhiteXYZ[2] / pWhiteXYZ[1];
+
+  if (!pWhiteXYZ || !icNotZero(pWhiteXYZ[1])) {
+    setIlluminant(icIlluminantUnknown, zeroRange, NULL);
+    return false;
+  }
+
+  if (m_stdObserver == icStdObs1931TwoDegrees) {
+    if ((icIsNear(white[0], icD50XYZ[0]) && icIsNear(white[2], icD50XYZ[2])) ||
+        (icIsNear(white[0], 0.9642f, 0.0001f) && icIsNear(white[2], 0.8251f, 0.0001f))) {
+      return setIlluminant(icIlluminantD50, zeroRange, NULL, 5000);
+    }
+    else if (icIsNear(white[0], 0.9505f, 0.0001f) && icIsNear(white[2], 1.0888f, 0.0001f)) {
+      return setIlluminant(icIlluminantD65, zeroRange, NULL, 6504);
+    }
+  }
+//   else if (m_stdObserver == icStdObs1964TenDegrees) {
+//     setIlluminant(icIlluminantUnknown, zeroRange, NULL);
+//     return false;
+//   }
+
+  setIlluminant(icIlluminantUnknown, zeroRange, NULL);
+  return false;
+}
+
+const icFloatNumber *CIccTagSpectralViewingConditions::getObserver(icSpectralRange &observerRange) const
+{
+  observerRange = m_observerRange;
+  return m_observer;
+}
+
+bool CIccTagSpectralViewingConditions::setObserver(icStandardObserver observerId, const icSpectralRange &observerRange, const icFloatNumber *observer)
+{
+  m_stdObserver = observerId;
+  m_observerRange = observerRange;
+  if (m_observer) {
+    free(m_observer);
+  }
+
+  if (observerRange.steps && observer) {
+    icUInt32Number size = observerRange.steps * sizeof(icFloatNumber) * 3;
+    m_observer = (icFloatNumber *)malloc(size);
+    if (m_observer)
+      memcpy(m_observer, observer, size);
+    else {
+      memset(&m_observerRange, 0, sizeof(m_observerRange));
+      return false;
+    }
+  }
+  else {
+    if (!observer)
+      memset(&m_observerRange, 0, sizeof(m_illuminantRange));
+
+    m_observer = NULL;
+  }
+
+  return true;
 }
 
 

@@ -1020,16 +1020,24 @@ bool CIccMpeXmlMatrix::ToXml(std::string &xml, std::string blanks/* = ""*/)
   }
 
   if (m_pConstants) {
-    xml += blanks + "  <ConstantData>\n";
+    bool bNonZero;
 
-    xml += blanks + "   ";
-    for (i=0; i<NumOutputChannels(); i++) {
-      sprintf(buf, " %.8f", m_pConstants[i]);
-      xml += buf;
+    for (i = 0; i < NumOutputChannels(); i++) {
+      if (icNotZero(m_pConstants[i]))
+        break;
     }
-    xml += "\n";
+    if (i < NumOutputChannels()) {
+      xml += blanks + "  <ConstantData>\n";
 
-    xml += blanks + "  </ConstantData>\n";
+      xml += blanks + "   ";
+      for (i = 0; i < NumOutputChannels(); i++) {
+        sprintf(buf, " %.8f", m_pConstants[i]);
+        xml += buf;
+      }
+      xml += "\n";
+
+      xml += blanks + "  </ConstantData>\n";
+    }
   }
 
   xml += blanks + "</MatrixElement>\n";
@@ -1337,7 +1345,7 @@ bool CIccMpeXmlTintArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
   IIccExtensionTag *pTagEx;
   if (m_Array && (pTagEx=m_Array->GetExtension()) && !strcmp(pTagEx->GetExtClassName(), "CIccTagXml")) {
-    CIccTagXml *pTagXml = (CIccTagXml*)m_Array;
+    CIccTagXml *pTagXml = (CIccTagXml*)pTagEx;
     const icChar* tagSig = icGetTagSigTypeName(m_Array->GetType());
 
     sprintf(line, "  <%s>\n",  tagSig); //parent node is the tag type
@@ -1486,9 +1494,9 @@ bool CIccMpeXmlExtCLUT::ToXml(std::string &xml, std::string blanks/* = ""*/)
     reserved += attrs;
   }
 
-  sprintf(attrs, " InputChannels=\"%d\" OutputChannels=\"%d\"%s", NumInputChannels(), NumOutputChannels(), reserved.c_str());
+  sprintf(attrs, " InputChannels=\"%d\" OutputChannels=\"%d\"%s StorageType=\"%d\"", NumInputChannels(), NumOutputChannels(), reserved.c_str(), m_storageType);
 
-  return icCLUTToXml(xml, m_pCLUT, icConvertFloat, blanks, true, attrs, "CLutElement");
+  return icCLUTToXml(xml, m_pCLUT, icConvertFloat, blanks, true, attrs, "ExtCLutElement");
 }
 
 bool CIccMpeXmlExtCLUT::ParseXml(xmlNode *pNode, std::string &parseStr)
@@ -1500,7 +1508,7 @@ bool CIccMpeXmlExtCLUT::ParseXml(xmlNode *pNode, std::string &parseStr)
   m_nOutputChannels = atoi(icXmlAttrValue(pNode, "OutputChannels"));
 
   if (!m_nInputChannels || !m_nOutputChannels) {
-    parseStr += "Invalid InputChannels or OutputChannels In CLutExtElement\n";
+    parseStr += "Invalid InputChannels or OutputChannels In ExtCLutElement\n";
     return false;
   }
 

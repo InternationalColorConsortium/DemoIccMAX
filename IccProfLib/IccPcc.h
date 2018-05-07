@@ -104,7 +104,7 @@ public:
   bool hasIlluminantSPD();
 
   icFloatNumber getObserverIlluminantScaleFactor();
-  icFloatNumber getObserverWhiteScaleFactor(icFloatNumber *pWhite, const icSpectralRange &whiteRange);
+  icFloatNumber getObserverWhiteScaleFactor(const icFloatNumber *pWhite, const icSpectralRange &whiteRange);
 
 
   icFloatNumber *getEmissiveObserver(const icSpectralRange &range, const icFloatNumber *pWhite, icFloatNumber *obsMatrix=NULL);  //Caller responsible for freeing results if obsMatrix is NULL

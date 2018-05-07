@@ -1,3 +1,48 @@
+2018-04-15 Max Derhak
+* 2.1.11 Release of IccProfLib and related tools
+* 2.1.11 Release of IccLibXml and related tools
+* Support embedded iccMAX profiles within v2/v4 profiles
+* Add command line option to debug calculator element in iccApplyNamedCmm
+* Improve RefIccMAX XML generation and parsing of tag structures and arrays
+* Improve validation of tag structures and arrays
+* Add example overprint simulation profile based on ICS
+
+2018-02-15 Max Derhak
+* 2.1.10 Release of IccProfLib and related tools
+* 2.1.10 Release of IccLibXml and related tools
+* IccXmlLib: fixed bug with parsing default rendering intent in
+  header
+* IccXmlLib: Added vector based named channel specificaiton and
+  parsing with CalculatorElement
+* Revised DecRefC, DecRefH, IncRefw profiles in SpecRef
+
+2018-02-15 Kai-Uwe Behrmann
+* Updated build scripts for MacOS
+
+2018-01-01 Max Derhak
+ * 2.1.9 Release of IccProfLib and related tools
+ * 2.1.9 Release of IccLibXml and related tools
+ * IccApplyNamedCmm: Fixed bug with application of very
+   large spectral reflectance vectors (1nm sampling)
+
+2017-12 Kai-Uwe Behrmann
+* Updated cmake build system for linux
+* Made changes for better platform/complier independence
+   
+2017-11-7 Max Derhak
+ * 2.1.8 Release of IccProfLib and related tools
+ * 2.1.8 Release of IccLibXML and related tools
+ * Syncronization with ICC.2:2017
+ * IccProfLib: Added support for 'sign' calc element operator
+ * IccProfLib: Added support for Luminance matching PCS adjustement
+ * IccProfLib: Completed implementation of BRDF tags and structure
+   elements
+ * IccProfLib: Various improvements to profile validation and reporting
+ * IccProfLib: Cleanup of some type conversion warnings
+ * IccApplyNamedCmm: Added option for precision in reporting and option
+   for luminance matching
+ * IccApplyProfiles: Added option for luminance matching
+  
 2017-2-21 Max Derhak
  * 2.1.7 Release of IccProfLib and related tools
  * 2.1.7 Release of IccLibXML and related tools
@@ -11,17 +56,3 @@
  * Modified IccProflib and profiles to support ColorEncoding Class 
    signature 'cenc' instead of pre-release 'enc3'
    
- 2017-11-7 Max Derhak
- * 2.1.8 Release of IccProfLib and related tools
- * 2.1.8 Release of IccLibXML and related tools
- * Syncronization with ICC.2:20107
- * IccProfLib: Added support for 'sign' calc element operator
- * IccProfLib: Added support for Luminance matching PCS adjustement
- * IccProfLib: Completed implementation of BRDF tags and structure
-   elements
- * IccProfLib: Various improvements to profile validation and reporting
- * IccProfLib: Cleanup of some type conversion warnings
- * IccApplyNamedCmm: Added option for precision in reporting and option
-   for luminance matching
- * IccApplyProfiles: Added option for luminance matching
-  

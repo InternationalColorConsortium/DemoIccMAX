@@ -85,6 +85,83 @@
 //#define ICC_VERBOSE_CALC_APPLY 1
 
 
+class CIccConsoleDebugger : public IIccCalcDebugger
+{
+public:
+
+  virtual ~CIccConsoleDebugger() {}
+
+  virtual void BeginApply()
+  {
+    printf("\nBegin Calc Apply\n");
+  }
+
+  virtual void EndApply()
+  {
+    printf("End Calculator Apply\n\n");
+    fflush(stdout);
+  }
+
+  virtual bool BeforeOp(SIccCalcOp *op, SIccOpState &os, SIccCalcOp *ops)
+  {
+    if (op->sig == icSigIfOp || op->sig == icSigSelectOp) {
+      printf("Start:");
+        std::string opDesc;
+      op->Describe(opDesc);
+      printf("%s\t", opDesc.c_str());
+      for (int j = 0; j < (int)os.pStack->size(); j++)
+        printf(" %.4f", (*os.pStack)[j]);
+      printf("\n");
+    }
+    return false;
+  }
+
+  virtual bool AfterOp(SIccCalcOp *op, SIccOpState &os, SIccCalcOp *ops)
+  {
+    if (op->sig == icSigDataOp) {
+      printf("data\t");
+    }
+    else {
+      if (op->sig == icSigIfOp || op->sig == icSigSelectOp) {
+        printf("End:");
+      }
+      std::string opDesc;
+      op->Describe(opDesc);
+      printf("%s\t", opDesc.c_str());
+    }
+
+    for (int j = 0; j < (int)os.pStack->size(); j++)
+      printf(" %.4f", (*os.pStack)[j]);
+    printf("\n");
+
+    if (op->sig==icSigIfOp || op->sig==icSigSelectOp)
+      printf("\n");
+    fflush(stdout);
+
+    return false;
+  }
+  virtual void Error(const char *szMsg)
+  {
+    printf("%s\n", szMsg);
+  }
+};
+
+static CIccConsoleDebugger g_ConsoleDebugger;
+
+#ifdef ICC_VERBOSE_CALC_APPLY
+static IIccCalcDebugger *g_pDebugger = &g_ConsoleDebugger;
+#else
+static IIccCalcDebugger *g_pDebugger = icCalcDebuggerNone;
+#endif
+
+void IIccCalcDebugger::SetDebugger(IIccCalcDebugger *pDebugger)
+{
+  if (pDebugger == icCalcDebuggerConsole)
+    g_pDebugger = &g_ConsoleDebugger;
+  else 
+    g_pDebugger = pDebugger;
+}
+
 #define OsPopArg(X) { \
   if (!os.pStack->size()) \
     return false; \
@@ -136,13 +213,14 @@ public:
   virtual bool IsValid(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return false; }
   virtual bool Exec(SIccCalcOp *op, SIccOpState &os)
   {
-#if ICC_VERBOSE_CALC_APPLY
+    if (g_pDebugger)
     {
       std::string opDesc;
       op->Describe(opDesc);
-      printf("Unknown operator: %s\n", opDesc.c_str());
+      std::string line = "Unknown operator: ";
+      line += opDesc;
+      g_pDebugger->Error(line.c_str());
     }
-#endif
     return false;
   }
 };
@@ -3447,9 +3525,6 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
 {
   SIccCalcOp *op;
   SIccOpState os;
-#if ICC_VERBOSE_CALC_APPLY
-  int j;
-#endif
 
   os.pApply = pApply;
   os.pStack = pApply->GetStack();
@@ -3462,24 +3537,13 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
   for (os.idx=0; os.idx<os.nOps; os.idx++) {
     op = &ops[os.idx];
 
-#if ICC_VERBOSE_CALC_APPLY
-    bool bAddCR = false;
-#endif
+    if (g_pDebugger)
+      g_pDebugger->BeforeOp(op, os, ops);
 
     if (op->sig==icSigIfOp) {
       icFloatNumber a1;
       OsPopArg(a1);
 
-#if ICC_VERBOSE_CALC_APPLY
-      {
-        int j;
-        printf("\nStart:if");
-        for (j=0; j<(int)os.pStack->size(); j++)
-          printf(" %.4f", (*os.pStack)[j]);
-        printf("\n");
-        fflush(stdout);
-      }
-#endif
       if (os.idx+1<nOps && ops[os.idx+1].sig==icSigElseOp) {
         os.idx++;
         if (a1>=0.5) {
@@ -3508,26 +3572,12 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
         }
         os.idx+= op->data.size;
       }
-#if ICC_VERBOSE_CALC_APPLY
-      printf("End:");
-      bAddCR = true;
-#endif
     }
     else if (op->sig==icSigSelectOp) {
       icFloatNumber a1;
       OsPopArg(a1);
       icInt32Number nSel = (a1 >= 0.0) ? (icInt32Number)(a1+0.5f) : (icInt32Number)(a1-0.5f);
 
-#if ICC_VERBOSE_CALC_APPLY
-      {
-        int j;
-        printf("\nStart:sel");
-        for (j=0; j<(int)os.pStack->size(); j++)
-          printf(" %.4f", (*os.pStack)[j]);
-        printf("\n");
-        fflush(stdout);
-      }
-#endif
       if (!op->extra) {
         return false;
       }
@@ -3572,32 +3622,15 @@ bool CIccCalculatorFunc::ApplySequence(CIccApplyMpeCalculator *pApply, icUInt32N
       }
       else 
         return false;
-
-#if ICC_VERBOSE_CALC_APPLY
-      printf("End:");
-      bAddCR = true;
-#endif
     }
     else {
       if (!op->def->Exec(op, os))
         return false;
     }
-#if ICC_VERBOSE_CALC_APPLY
-    if (op->sig==icSigDataOp) {
-      printf("data\t");
+
+    if (g_pDebugger) {
+      g_pDebugger->AfterOp(op, os, ops);
     }
-    else {
-      std::string opDesc;
-      op->Describe(opDesc);
-      printf("%s\t", opDesc.c_str());
-    }
-    for (j=0; j<(int)os.pStack->size(); j++)
-      printf(" %.4f", (*os.pStack)[j]);
-    printf("\n");
-    if (bAddCR)
-      printf("\n");
-    fflush(stdout);
-#endif
   }
   return true;
 }
@@ -4657,6 +4690,7 @@ void CIccMpeCalculator::Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, c
 {
   CIccApplyMpeCalculator *pApplyCalc = (CIccApplyMpeCalculator*)pApply;
   icFloatNumber *pSrcTemp = pApplyCalc->m_temp;
+  bool rv;
 
   pApplyCalc->m_temp = pSrcTemp;
   pApplyCalc->m_input = pSrcPixel;
@@ -4665,17 +4699,18 @@ void CIccMpeCalculator::Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, c
   if (m_bNeedTempReset) {
     memset(pSrcTemp, 0, m_nTempChannels*sizeof(icFloatNumber));
   }
-#if ICC_VERBOSE_CALC_APPLY
-  printf("BeginCalcFunctionApply\n");
-#endif
 
-  bool rv = m_calcFunc->Apply(pApplyCalc);
+  if (g_pDebugger) {
+    g_pDebugger->BeginApply();
+    rv = m_calcFunc->Apply(pApplyCalc);
+    if (!rv)
+      g_pDebugger->Error("Calc Function Apply Terminated with an error!");
 
-#if ICC_VERBOSE_CALC_APPLY
-  if (!rv)
-    printf("Calc Function Apply Terminated with an error\n");
-  printf("EndCalcFunctionApply\n");
-#endif
+    g_pDebugger->EndApply();
+  }
+  else {
+    rv = m_calcFunc->Apply(pApplyCalc);
+  }
 }
 
 /**

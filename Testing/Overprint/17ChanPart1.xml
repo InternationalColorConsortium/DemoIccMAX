@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>scnr</ProfileDeviceClass>
+	<ProfileDeviceSubClass>osim</ProfileDeviceSubClass>
+    <DataColourSpace>nc0011</DataColourSpace>
+	<PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false" MCSNeedsSubset="false" />
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.841281646704631" Y="1.00000000" Z="0.963726140000727"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[CMYK plus 13 Spots Overprint Simulation]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <AToB1Tag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="17" OutputChannels="3">
+		<CalculatorElement InputChannels="17" OutputChannels="3" InputNames="Cyan Magenta Yellow Black Spot1 Spot2 Spot3 Spot4 Spot5 Spot6 Spot7 Spot8 Spot9 Spot10 Spot11 Spot12 Spot13">
+			<SubElements>
+				<CurveSetElement Name="CMYK_Shaper" InputChannels="4" OutputChannels="4">
+					<SegmentedCurve>
+						<SingleSampledSegment Start="-infinity" End="+infinity" 
+						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-OSIM/Shaper-Cyan.txt" Format="text"/>
+					</SegmentedCurve>
+					<SegmentedCurve>
+						<SingleSampledSegment Start="-infinity" End="+infinity" 
+						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-OSIM/Shaper-Magenta.txt" Format="text"/>
+					</SegmentedCurve>
+					<SegmentedCurve>
+						<SingleSampledSegment Start="-infinity" End="+infinity" 
+						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-OSIM/Shaper-Yellow.txt" Format="text"/>
+					</SegmentedCurve>
+					<SegmentedCurve>
+						<SingleSampledSegment Start="-infinity" End="+infinity" 
+						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-OSIM/Shaper-Black.txt" Format="text"/>
+					</SegmentedCurve>
+				</CurveSetElement>
+				<ExtCLutElement Name="CMYK_CLUT" InputChannels="4" OutputChannels="3" StorageType="1"> <!-- Map adjusted CMYK to XYZ -->
+				  <GridPoints>17 17 17 17</GridPoints>
+				  <TableData Filename="Spot-OSIM/CLUT-CMYK-XYZ.txt" Format="text" FileEncoding="float"/>
+				</ExtCLutElement>
+
+				<TintArrayElement Name="Spot1Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot1-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot1Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot1-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot2Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot2-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot2Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot2-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot3Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot3-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot3Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot3-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot4Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot4-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot4Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot4-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot5Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot5-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot5Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot5-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot6Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot6-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot6Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot6-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot7Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot7-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot7Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot7-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot8Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot8-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot8Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot8-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot9Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot9-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot9Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot9-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot10Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot10-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot10Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot10-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot11Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot11-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot11Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot11-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot12Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot12-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot12Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot12-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot13Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot13-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot13Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-OSIM/Spot13-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+        	</SubElements>
+			<MainFunction>
+{
+in(0,4)
+curv{CMYK_Shaper}
+clut{CMYK_CLUT}
+in{Spot1} 0 gt if {
+  in{Spot1} tint{Spot1Scale} mul(3)
+  in{Spot1} tint{Spot1Offset} add(3)
+}
+in{Spot2} 0 gt if {
+  in{Spot2} tint{Spot2Scale} mul(3)
+  in{Spot2} tint{Spot2Offset} add(3)
+}
+in{Spot3} 0 gt if {
+  in{Spot3} tint{Spot3Scale} mul(3)
+  in{Spot3} tint{Spot3Offset} add(3)
+}
+in{Spot4} 0 gt if {
+  in{Spot4} tint{Spot4Scale} mul(3)
+  in{Spot4} tint{Spot4Offset} add(3)
+}
+in{Spot5} 0 gt if {
+  in{Spot5} tint{Spot5Scale} mul(3)
+  in{Spot5} tint{Spot5Offset} add(3)
+}
+in{Spot6} 0 gt if {
+  in{Spot6} tint{Spot6Scale} mul(3)
+  in{Spot6} tint{Spot6Offset} add(3)
+}
+in{Spot7} 0 gt if {
+  in{Spot7} tint{Spot7Scale} mul(3)
+  in{Spot7} tint{Spot7Offset} add(3)
+}
+in{Spot8} 0 gt if {
+  in{Spot8} tint{Spot8Scale} mul(3)
+  in{Spot8} tint{Spot8Offset} add(3)
+}
+in{Spot9} 0 gt if {
+  in{Spot9} tint{Spot9Scale} mul(3)
+  in{Spot9} tint{Spot9Offset} add(3)
+}
+in{Spot10} 0 gt if {
+  in{Spot10} tint{Spot10Scale} mul(3)
+  in{Spot10} tint{Spot10Offset} add(3)
+}
+in{Spot11} 0 gt if {
+  in{Spot11} tint{Spot11Scale} mul(3)
+  in{Spot11} tint{Spot11Offset} add(3)
+}
+in{Spot12} 0 gt if {
+  in{Spot12} tint{Spot12Scale} mul(3)
+  in{Spot12} tint{Spot12Offset} add(3)
+}
+in{Spot13} 0 gt if {
+  in{Spot13} tint{Spot13Scale} mul(3)
+  in{Spot13} tint{Spot13Offset} add(3)
+}
+out(0,3)
+}
+        	</MainFunction>					
+		</CalculatorElement>
+	  </MultiProcessElements>
+	</multiProcessElementType> </AToB1Tag>
+	
+	<colorantInfoTag> <tagArrayType>
+  	  <ArraySignature>cinf</ArraySignature>
+	  <ArrayTags>
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Process Cyan</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+		
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Process Magenta</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+		
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Process Yellow</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+		
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Process Black</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+		
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 1</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 2</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 3</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 4</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 5</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 6</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 7</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 8</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 9</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 10</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 11</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 12</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+		<tagStructureType>
+		  <StructureSignature>cinf</StructureSignature>
+		  <MemberTags>
+		    <cinfNameMbr> <utf8TextType> 
+			  <TextData>Spot 13</TextData> 
+			</utf8TextType> </cinfNameMbr>
+		  </MemberTags>
+        </tagStructureType>		  
+
+	  </ArrayTags>
+	</tagArrayType> </colorantInfoTag>
+
+    <XYZType>
+      <TagSignature>wtpt</TagSignature>
+      <XYZNumber X="0.841281646704631" Y="1.00000000" Z="0.963726140000727"/>
+    </XYZType>
+		
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2018 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+  </Tags>
+</IccProfile>

@@ -4,6 +4,7 @@ cd Calc
 ..\iccFromXML RGBWProjector.xml RGBWProjector.icc
 ..\iccFromXML srgbCalcTest.xml srgbCalcTest.icc
 ..\iccFromXML srgbCalc++Test.xml srgbCalc++Test.icc
+..\iccFromXML argbCalc.xml argbCalc.icc
 
 cd ..\CMYK-3DLUTs
 ..\iccFromXML CMYK-3DLUTs.xml CMYK-3DLUTs.icc

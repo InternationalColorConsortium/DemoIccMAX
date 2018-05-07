@@ -112,6 +112,14 @@ bool IIccStruct::Describe(std::string &sDescription) const
   return true;
 }
 
+TagEntryList* IIccStruct::getTagEntries() const
+{
+  if (m_pTagStruct)
+    return m_pTagStruct->m_ElemEntries;
+
+  return NULL;
+}
+
 
 /**
  ******************************************************************************
@@ -504,15 +512,18 @@ icValidateStatus CIccTagStruct::Validate(std::string sigPath, std::string &sRepo
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
-  // Check Required Tags which includes exclusion tests
-  //rv = icMaxStatus(rv, CheckRequiredSubTags(sReport));
+  if (m_pStruct) {  //Should call GetStructHandler before validate to get 
+    rv = icMaxStatus(rv, m_pStruct->Validate(sigPath, sReport, pProfile));
+  }
+  else {
+    sReport += "Unknown tag struct type - Validating struct sub-tags\n";
+    rv = icMaxStatus(rv, icValidateWarning);
 
-  //rv = icMaxStatus(rv, CheckSubTagTypes(sig, sReport));
-
-  // Per Tag tests
-  TagEntryList::iterator i;
-  for (i=m_ElemEntries->begin(); i!=m_ElemEntries->end(); i++) {
-    rv = icMaxStatus(rv, i->pTag->Validate(sigPath + icGetSigPath(i->TagInfo.sig), sReport, pProfile));
+    // Per Tag tests
+    TagEntryList::iterator i;
+    for (i = m_ElemEntries->begin(); i != m_ElemEntries->end(); i++) {
+      rv = icMaxStatus(rv, i->pTag->Validate(sigPath + icGetSigPath(i->TagInfo.sig), sReport, pProfile));
+    }
   }
 
   return rv;

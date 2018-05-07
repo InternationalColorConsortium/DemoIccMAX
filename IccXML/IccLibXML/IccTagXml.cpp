@@ -67,6 +67,9 @@
 #include "IccUtilXml.h"
 #include "IccIoXml.h"
 #include "IccSparseMatrix.h"
+#include "IccProfileXml.h"
+#include "IccStructFactory.h"
+#include "IccArrayFactory.h"
 #include <cstring> /* C strings strcpy, memcpy ... */
 #include <set>
 #include <map>
@@ -1303,7 +1306,7 @@ bool CIccTagXmlFloatNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/
 #ifdef _WIN32
     if (sizeof(T)==sizeof(icFloat32Number))
       sprintf(buf, "<Data>%.8f</Data>\n", this->m_Num[0]);
-    else if (sizeof(T)==sizeof(icFloat32Number))
+    else if (sizeof(T)==sizeof(icFloat64Number))
       sprintf(buf, "<Data>%.16lf</Data>\n", this->m_Num[0]);
     else
 #endif
@@ -1338,8 +1341,11 @@ bool CIccTagXmlFloatNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/
 
     if ((i%n)!=1) {
       xml += "\n";
+      xml += blanks + "</Data>\n";
     }
-    xml += blanks + "</Data>\n";
+    else {
+      xml += " </Data>\n";
+    }
   }
   return true;
 }
@@ -2026,7 +2032,7 @@ bool CIccTagXmlSpectralViewingConditions::ParseXml(xmlNode *pNode, std::string &
       m_reserved3 = (icUInt16Number)atoi(icXmlAttrValue(attr));
     }
 
-    if (pChild->children && pChild->children->content) {
+    if (pChild->children && pChild->children->content && m_illuminantRange.steps) {
       CIccFloatArray vals;
       vals.ParseTextArray((icChar*)pChild->children->content);
       if (vals.GetSize()!=m_illuminantRange.steps)
@@ -2036,6 +2042,9 @@ bool CIccTagXmlSpectralViewingConditions::ParseXml(xmlNode *pNode, std::string &
         return false;
       icFloatNumber *pBuf = vals.GetBuf();
       memcpy(m_illuminant, pBuf, m_illuminantRange.steps * sizeof(icFloatNumber));
+    }
+    else {
+      setIlluminant(m_stdIlluminant, m_illuminantRange, NULL, m_colorTemperature);
     }
   }
 
@@ -4207,18 +4216,18 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
   IIccStruct *pStruct = GetStructHandler();
 
   const icChar *structName = ((pStruct != NULL) ? pStruct->GetDisplayName() : NULL);
+  blanks += "  ";
 
    if (structName && strcmp(structName, "privateStruct")) {
-     sprintf(line, "<%s>\n", structName);
+     sprintf(line, "<%s> <MemberTags>\n", structName);
    }
    else {
      // print out the struct signature
-     sprintf(line, "<privateStruct StructSignature=\"%s\"/>\n", icFixXml(fix, icGetSigStr(buf, m_sigStructType)));
+     sprintf(line, "<privateStruct StructSignature=\"%s\"/> <MemberTags>\n", icFixXml(fix, icGetSigStr(buf, m_sigStructType)));
      structName = "privateStruct";
    }
 
   xml += blanks + line;
-  xml += blanks + "<MemberTags>\n";
   TagEntryList::iterator i, j;
   std::set<icTagSignature> sigSet;
   CIccInfo Fmt;
@@ -4275,11 +4284,11 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
             // xml += ">\n";
 #endif
             //convert the rest of the tag to xml
-            if (!pTagXml->ToXml(xml, blanks + "  ")) {
+            if (!pTagXml->ToXml(xml, blanks + "    ")) {
               printf("Unable to output sub-tag with type %s\n", icGetSigStr(buf, i->TagInfo.sig));
               return false;
             }
-            sprintf(line, "  </%s> </%s>\n\n", tagSig, tagName.c_str());
+            sprintf(line, "  </%s> </%s>\n", tagSig, tagName.c_str());
             xml += blanks + line;
             offsetTags[i->TagInfo.offset] = i->TagInfo.sig;
           }
@@ -4298,7 +4307,7 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
               xml += line;
             }
 
-            xml += "/>\n\n";
+            xml += "/>\n";
           }
         }
         else {
@@ -4312,8 +4321,8 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
       }
     }
   }
-  xml += blanks + "</MemberTags>\n";
-  xml += blanks + "</" + structName + ">\n";
+
+  xml += blanks + "</MemberTags> </" + structName + ">\n";
   return true;
 }
 
@@ -4347,16 +4356,20 @@ bool CIccTagXmlStruct::ParseTag(xmlNode *pNode, std::string &parseStr)
   CIccTag *pTag = NULL;
 
   std::string nodeName = (icChar*)pNode->name;
-  icTagSignature sigTag = icGetTagNameSig(nodeName.c_str());
+  icSignature sigTag;
+  if (m_pStruct)
+    sigTag = m_pStruct->GetElemSig(nodeName.c_str());
+  else
+    sigTag = 0;
 
-  if (sigTag != icSigUnknownTag || nodeName == "PrivateTag") { //Parsing of XML tags by name
-    if (nodeName == "PrivateTag") {
+  if (sigTag != 0 || nodeName == "PrivateSubTag") { //Parsing of XML tags by name
+    if (nodeName == "PrivateSubTag") {
       const char *tagSig = icXmlAttrValue(pNode, "TagSignature", "");
       if (tagSig[0]) {
         sigTag = (icTagSignature)icGetSigVal(tagSig);
       }
       else {
-        parseStr += "Invalid TagSignature for PrivateTag\n";
+        parseStr += "Invalid TagSignature for PrivateSubTag\n";
         return false;
       }
     }
@@ -4365,13 +4378,13 @@ bool CIccTagXmlStruct::ParseTag(xmlNode *pNode, std::string &parseStr)
 
     if (sameAs[0]) {
       icTagSignature sigParentTag = icGetTagNameSig(sameAs);
-      if (!strcmp(sameAs, "PrivateTag") || sigParentTag == icSigUnknownTag) {
+      if (!strcmp(sameAs, "PrivateSubTag") || sigParentTag == icSigUnknownTag) {
         const char *sameAsSig = icXmlAttrValue(pNode, "SameAsSignature", "");
         if (sameAsSig[0]) {
           sigParentTag = (icTagSignature)icGetSigVal(sameAsSig);
         }
         else {
-          parseStr += "Invalid SameAsSignature for PrivateTag\n";
+          parseStr += "Invalid SameAsSignature for PrivateSubTag\n";
           return false;
         }
       }
@@ -4505,20 +4518,42 @@ bool CIccTagXmlStruct::ParseTag(xmlNode *pNode, std::string &parseStr)
 bool CIccTagXmlStruct::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   // parse each tag
-  xmlNode *tagNode;
+  xmlNode *tagNode, *firstNode=pNode;
 
-  tagNode = icXmlFindNode(pNode, "StructureSignature");
-  if (!tagNode) {
-    parseStr += "Unable to find StructureSignature\r\n";
+  for (; pNode; pNode = pNode->next) {
+    if (pNode->type == XML_ELEMENT_NODE)
+      break;
+  }
+  if (!pNode) {
+    parseStr += "Invalid Tag Structure: ";
+    parseStr += (const char *)firstNode->name;
+    parseStr += "\n";
     return false;
   }
 
-  if (tagNode->type == XML_ELEMENT_NODE && tagNode->children && tagNode->children->content) {
-    m_sigStructType= (icStructSignature)icGetSigVal(tagNode->children ? (const icChar*)tagNode->children->content: "");
+  std::string nodeName = (icChar*)pNode->name;
+  icStructSignature sigStruct = CIccStructCreator::GetStructSig(nodeName.c_str());
+
+  if (sigStruct) {
+    m_sigStructType = sigStruct;
+    m_pStruct = CIccStructCreator::CreateStruct(m_sigStructType, this);
+    pNode = pNode->children;
   }
   else {
-    parseStr += "Invalid XNode type for StructureSignature\r\n";
-    return false;
+    tagNode = icXmlFindNode(firstNode, "StructureSignature");
+    if (!tagNode) {
+      parseStr += "Unable to find StructureSignature\r\n";
+      return false;
+    }
+
+    if (tagNode->type == XML_ELEMENT_NODE && tagNode->children && tagNode->children->content) {
+      m_sigStructType = (icStructSignature)icGetSigVal(tagNode->children ? (const icChar*)tagNode->children->content : "");
+      m_pStruct = CIccStructCreator::CreateStruct(m_sigStructType, this);
+    }
+    else {
+      parseStr += "Invalid XNode type for StructureSignature\r\n";
+      return false;
+    }
   }
 
   tagNode = icXmlFindNode(pNode, "MemberTags");
@@ -4546,11 +4581,21 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
   std::string info;
   char buf[256], fix[256], line[256];
 
-  // print out the struct signature
-  sprintf(line, "<ArraySignature>%s</ArraySignature>\n", icFixXml(fix, icGetSigStr(buf, m_sigArrayType)));
+  std::string arrayName;
+  std::string arrayBlanks = "";
+  bool found = CIccArrayCreator::GetArraySigName(arrayName, m_sigArrayType, false);
 
-  xml += blanks + line;
-  xml += blanks + "<ArrayTags>\n";
+  if (found) {
+    sprintf(line, "<%s> ", arrayName.c_str());
+    arrayBlanks = "  ";
+  }
+  else {
+    // print out the struct signature
+    sprintf(line, "<privateArray StructSignature=\"%s\"/> ", icFixXml(fix, icGetSigStr(buf, m_sigArrayType)));
+    arrayName = "privateArray";
+  }
+  
+  xml += blanks + line + "<ArrayTags>\n";
   int i;
 
   for (i=0; i<(int)m_nSize; i++) {
@@ -4564,17 +4609,17 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
         if ( !strcmp("PrivateType", tagSig) )
           sprintf(line, " <PrivateType type=\"%s\">\n",  icFixXml(fix, icGetSigStr(buf, pTag->GetType())));		
         else
-          sprintf(line, " <%s index=\"%d\">\n", tagSig, i); //parent node is the tag type
+          sprintf(line, " <%s>\n", tagSig); //parent node is the tag type
 
-        xml += blanks + line; 				
+        xml += blanks + arrayBlanks + line; 				
 
         //convert the rest of the tag to xml
-        if (!pTagXml->ToXml(xml, blanks + " ")) {
+        if (!pTagXml->ToXml(xml, blanks + arrayBlanks + " ")) {
           printf("Unable to output tag with type %s\n", icGetSigStr(buf, pTag->GetType()));
           return false;
         }
-        sprintf(line, " </%s>\n",  tagSig);
-        xml += blanks + line; 	
+        sprintf(line, " </%s>\n\n",  tagSig);
+        xml += blanks + arrayBlanks + line; 	
       }
       else {
         printf("Non XML tag in list with type %s!\n", icGetSigStr(buf, pTag->GetType()));
@@ -4582,8 +4627,8 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
       }
     }
   }
-  xml += blanks + "</ArrayTags>\n";
-
+  xml += blanks + "</ArrayTags> </" + arrayName + ">\n";
+  
   return true;
 }
 
@@ -4591,15 +4636,43 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
 bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   // parse each tag
-  xmlNode *tagNode, *indexNode;
+  xmlNode *tagNode, *indexNode, *firstNode = pNode;;
   xmlAttr *attr;
 
-  tagNode = icXmlFindNode(pNode, "ArraySignature");
-  if (!tagNode)
+  for (; pNode; pNode = pNode->next) {
+    if (pNode->type == XML_ELEMENT_NODE)
+      break;
+  }
+  if (!pNode) {
+    parseStr += "Invalid Tag Array: ";
+    parseStr += (const char *)firstNode->name;
+    parseStr += "\n";
     return false;
+  }
 
-  if (tagNode->type == XML_ELEMENT_NODE) {
-    m_sigArrayType= (icArraySignature)icGetSigVal(tagNode->children ? (const icChar*)tagNode->children->content: "");
+  std::string nodeName = (icChar*)pNode->name;
+  icArraySignature sigArray = CIccArrayCreator::GetArraySig(nodeName.c_str());
+
+  if (sigArray) {
+    m_sigArrayType = sigArray;
+    m_pArray = CIccArrayCreator::CreateArray(m_sigArrayType, this);
+    pNode = pNode->children;
+  }
+  else {
+    tagNode = icXmlFindNode(firstNode, "ArraySignature");
+    if (!tagNode) {
+      parseStr += "Unable to find ArraySignature\r\n";
+      return false;
+    }
+
+    if (tagNode->type == XML_ELEMENT_NODE && tagNode->children && tagNode->children->content) {
+      m_sigArrayType = (icArraySignature)icGetSigVal(tagNode->children ? (const icChar*)tagNode->children->content : "");
+      m_pArray = CIccArrayCreator::CreateArray(m_sigArrayType, this);
+    }
+    else {
+      parseStr += "Invalid XNode type for ArraySignature\r\n";
+      return false;
+    }
   }
 
   indexNode = icXmlFindNode(pNode, "ArrayTags");
@@ -4654,7 +4727,7 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
           }
         }
         else {
-          parseStr += "Unable to Parse xmnode named  \"";
+          parseStr += "Unable to Parse xml node named  \"";
           parseStr += (icChar*)tagNode->name;
           parseStr += "\"\n\r";
           return false;
@@ -4829,6 +4902,41 @@ bool CIccTagXmlGamutBoundaryDesc::ParseXml(xmlNode *pNode, std::string &parseStr
   }
 
   return true;
+}
+
+bool CIccTagXmlEmbeddedProfile::ParseXml(xmlNode *pNode, std::string &parseStr)
+{
+  // parse each tag
+  xmlNode *tagNode;
+
+  tagNode = icXmlFindNode(pNode, "IccProfile");
+  if (!tagNode)
+    return false;
+
+  if (m_pProfile) {
+    delete m_pProfile;
+  }
+
+  CIccProfileXml *pProfile = new CIccProfileXml();
+  m_pProfile = pProfile;
+
+  if (!pProfile->ParseXml(tagNode, parseStr)) {
+    delete m_pProfile;
+    m_pProfile = NULL;
+    return false;
+  }
+  return true;
+}
+
+bool CIccTagXmlEmbeddedProfile::ToXml(std::string &xml, std::string blanks/* = ""*/)
+{
+  if (!m_pProfile || strcmp(m_pProfile->GetClassName(), "CIccProfileXml")) {
+    return false;
+  }
+
+  CIccProfileXml *pProfile = (CIccProfileXml*)m_pProfile;
+
+  return pProfile->ToXmlWithBlanks(xml, blanks);
 }
 
 

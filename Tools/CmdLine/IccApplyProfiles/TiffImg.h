@@ -72,6 +72,7 @@
 #define _TIFFIMG_H
 
 #include "tiffio.h"                  // need tiff library
+#include "IccProfLibConf.h"
 #include "icProfileHeader.h"
 
 #define PHOTO_MINISBLACK  0

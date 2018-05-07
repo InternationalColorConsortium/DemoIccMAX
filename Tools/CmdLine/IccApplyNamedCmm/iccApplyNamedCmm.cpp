@@ -5,6 +5,7 @@
 #include "IccDefs.h"
 #include "IccApplyBPC.h"
 #include "IccEnvVar.h"
+#include "IccMpeCalc.h"
 
 //----------------------------------------------------
 // Function Declarations
@@ -88,7 +89,7 @@ typedef std::list<CIccProfile*> IccProfilePtrList;
 
 void Usage() 
 {
-  printf("Usage: iccApplyNamedCmm data_file_path final_data_encoding{:FmtPrecision{:FmtDigits}} interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Usage: iccApplyNamedCmm {-debug} data_file_path final_data_encoding{:FmtPrecision{:FmtDigits}} interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
 	printf("  For final_data_encoding:\n");
 	printf("    0 - icEncodeValue (converts to/from lab encoding when samples=3)\n");
 	printf("    1 - icEncodePercent\n");
@@ -127,14 +128,8 @@ void Usage()
   printf("    60 - BDRF Light\n");
   printf("    70 - BDRF Output\n");
   printf("    80 - MCS connection\n");
-  printf("    100 - Luminance based Perceptual\n");
-  printf("    101 - Luminance based Relative Colorimetric\n");
-  printf("    102 - Luminance based Saturation\n");
-  printf("    103 - Luminance based Absolute Colorimetric\n");
-  printf("    110 - Luminance based Perceptual without D2Bx/B2Dx\n");
-  printf("    111 - Luminance based Relative Colorimetric without D2Bx/B2Dx\n");
-  printf("    112 - Luminance based Saturation without D2Bx/B2Dx\n");
-  printf("    113 - Luminance based Absolute Colorimetric without D2Bx/B2Dx \n");
+  printf("   +100 - Use Luminance based PCS adjustment\n");
+  printf("  +1000 - Use V5 sub-profile if present\n");
 }
 
 
@@ -142,6 +137,12 @@ void Usage()
 
 int main(int argc, icChar* argv[])
 {
+  if (argc > 1 && !stricmp(argv[1], "-debugcalc")) {
+    IIccCalcDebugger::SetDebugger(icCalcDebuggerConsole);
+    argv++;
+    argc--;
+  }
+
 	int minargs = 4; // minimum number of arguments
   if(argc<minargs) {
 		Usage();
@@ -226,25 +227,24 @@ int main(int argc, icChar* argv[])
   IccProfilePtrList pccList;
 
   int nCount;
-  bool bUseMPE;
+  bool bUseD2BxB2Dx;
   icCmmEnvSigMap sigMap;
+  bool bUseSubProfile = false;
 
   //Remaining arguments define a sequence of profiles to be applied.  
   //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
   for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
-#if defined(_WIN32) || defined(_WIN64)
     if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
-#else
-    if (!strncasecmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for Cmm Environment variables to be defined for next transform
-#endif
       icSignature sig = icGetSigVal(argv[nCount]+5);
       icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
       
       sigMap[sig]=val;
     }
     else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
-      bUseMPE = true;
+      bUseD2BxB2Dx = true;
       nIntent = atoi(argv[nCount+1]);
+      bUseSubProfile = (nIntent / 1000) > 0;
+      nIntent = nIntent % 1000;
       nLuminance = nIntent / 100;
       nIntent = nIntent % 100;
       nType = abs(nIntent) / 10;
@@ -256,7 +256,7 @@ int main(int argc, icChar* argv[])
       switch(nType) {
         case 1:
           nType = 0;
-          bUseMPE = false;
+          bUseD2BxB2Dx = false;
           break;
         case 4:
           nType = 0;
@@ -285,7 +285,8 @@ int main(int argc, icChar* argv[])
       }
 
       //Read profile from path and add it to namedCmm
-      if (namedCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, (icXformLutType)nType, bUseMPE, &Hint)) {
+      if (namedCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile, 
+                            (icXformLutType)nType, bUseD2BxB2Dx, &Hint, bUseSubProfile)) {
         printf("Invalid Profile:  %s\n", argv[nCount]);
         return -1;
       }

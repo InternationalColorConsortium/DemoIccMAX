@@ -115,7 +115,7 @@ icIlluminant IIccProfileConnectionConditions::getPccIlluminant()
   if (!pCond)
     return icIlluminantD50;
 
-  return pCond->m_stdIlluminant;
+  return pCond->getStdIllumiant();
 }
 
 icFloatNumber IIccProfileConnectionConditions::getPccCCT()
@@ -124,7 +124,7 @@ icFloatNumber IIccProfileConnectionConditions::getPccCCT()
   if (!pCond)
     return 0.0f;
 
-  return pCond->m_colorTemperature;
+  return pCond->getIlluminantCCT();
 }
 
 icStandardObserver IIccProfileConnectionConditions::getPccObserver()
@@ -133,7 +133,7 @@ icStandardObserver IIccProfileConnectionConditions::getPccObserver()
   if (!pCond)
     return icStdObs1931TwoDegrees;
 
-  return pCond->m_stdObserver;
+  return pCond->getStdObserver();
 }
 
 bool IIccProfileConnectionConditions::isStandardPcc()
@@ -150,7 +150,10 @@ bool IIccProfileConnectionConditions::hasIlluminantSPD()
   if (!pCond)
     return false;
 
-  if (!pCond->m_illuminantRange.steps || !pCond->m_illuminant)
+  icSpectralRange illumRange;
+  const icFloatNumber *illum = pCond->getIlluminant(illumRange);
+
+  if (!illumRange.steps || !illum)
     return false;
 
   return true;
@@ -162,45 +165,52 @@ icFloatNumber IIccProfileConnectionConditions::getObserverIlluminantScaleFactor(
   if (!pView)
     return 1.0;
 
-  int i, n = pView->m_illuminantRange.steps;
-  CIccMatrixMath *mapRange=CIccMatrixMath::rangeMap(pView->m_observerRange, pView->m_illuminantRange);
+  icSpectralRange illumRange;
+  const icFloatNumber *illum = pView->getIlluminant(illumRange);
+
+  icSpectralRange obsRange;
+  const icFloatNumber *obs = pView->getObserver(obsRange);
+
+  int i, n = illumRange.steps;
+  CIccMatrixMath *mapRange=CIccMatrixMath::rangeMap(obsRange, illumRange);
   icFloatNumber rv=0;
 
   if (mapRange) {
-    icFloatNumber *Ycmf = new icFloatNumber[pView->m_illuminantRange.steps];
-    icFloatNumber *ill = pView->m_illuminant;
-    mapRange->VectorMult(Ycmf, &pView->m_observer[pView->m_observerRange.steps]);
+    icFloatNumber *Ycmf = new icFloatNumber[illumRange.steps];
+    mapRange->VectorMult(Ycmf, &obs[obsRange.steps]);
     delete mapRange;
 
     for (i=0; i<n; i++) {
-      rv += Ycmf[i]*ill[i];
+      rv += Ycmf[i]*illum[i];
     }
     delete [] Ycmf;
   }
   else {
-    icFloatNumber *Ycmf = &pView->m_observer[pView->m_observerRange.steps];
-    icFloatNumber *ill = pView->m_illuminant;
+   const icFloatNumber *Ycmf = &obs[obsRange.steps];
 
     for (i=0; i<n; i++) {
-      rv += Ycmf[i]*ill[i];
+      rv += Ycmf[i]*illum[i];
     }
   }
   return rv;
 }
 
-icFloatNumber IIccProfileConnectionConditions::getObserverWhiteScaleFactor(icFloatNumber *pWhite, const icSpectralRange &whiteRange)
+icFloatNumber IIccProfileConnectionConditions::getObserverWhiteScaleFactor(const icFloatNumber *pWhite, const icSpectralRange &whiteRange)
 {
   const CIccTagSpectralViewingConditions *pView = getPccViewingConditions();
   if (!pView)
     return 1.0;
 
+  icSpectralRange obsRange;
+  const icFloatNumber *obs = pView->getObserver(obsRange);
+
   int i, n = whiteRange.steps;
-  CIccMatrixMath *mapRange=CIccMatrixMath::rangeMap(pView->m_observerRange, whiteRange);
+  CIccMatrixMath *mapRange=CIccMatrixMath::rangeMap(obsRange, whiteRange);
   icFloatNumber rv=0;
 
   if (mapRange) {
     icFloatNumber *Ycmf = new icFloatNumber[whiteRange.steps];
-    mapRange->VectorMult(Ycmf, &pView->m_observer[pView->m_observerRange.steps]);
+    mapRange->VectorMult(Ycmf, &obs[obsRange.steps]);
     delete mapRange;
 
     for (i=0; i<n; i++) {
@@ -209,7 +219,7 @@ icFloatNumber IIccProfileConnectionConditions::getObserverWhiteScaleFactor(icFlo
     delete [] Ycmf;
   }
   else {
-    icFloatNumber *Ycmf = &pView->m_observer[pView->m_observerRange.steps];
+    const icFloatNumber *Ycmf = &obs[obsRange.steps];
 
     for (i=0; i<n; i++) {
       rv += Ycmf[i]*pWhite[i];
@@ -225,30 +235,34 @@ icFloatNumber *IIccProfileConnectionConditions::getEmissiveObserver(const icSpec
     return NULL;
 
   int i, n = range.steps, size = 3*n;
-  icFloatNumber *fptr, *tptr;
+  const icFloatNumber *fptr;
+  icFloatNumber *tptr;
 
-  if (!obs) 
+  icSpectralRange observerRange;
+  const icFloatNumber *observer = pView->getObserver(observerRange);
+
+  if (!obs)
     obs = (icFloatNumber*)malloc(size*sizeof(icFloatNumber));
 
   if (obs) {
-    CIccMatrixMath *mapRange=CIccMatrixMath::rangeMap(pView->m_observerRange, range);
+    CIccMatrixMath *mapRange=CIccMatrixMath::rangeMap(observerRange, range);
 
     //Copy observer while adjusting to range
     if (mapRange) {
 
       if (obs) {
-        fptr = &pView->m_observer[0];
+        fptr = &observer[0];
         tptr = obs;
         for (i=0; i<3; i++) {
           mapRange->VectorMult(tptr, fptr);
-          fptr += pView->m_observerRange.steps;
+          fptr += observerRange.steps;
           tptr += range.steps;
         }
       }
       delete mapRange;
     }
     else {
-      memcpy(obs, pView->m_observer, size*sizeof(icFloatNumber));
+      memcpy(obs, observer, size*sizeof(icFloatNumber));
     }
 
     //Calculate scale constant 
@@ -263,11 +277,11 @@ icFloatNumber *IIccProfileConnectionConditions::getEmissiveObserver(const icSpec
       obs[i] = obs[i] / k;
     }
 
-    CIccMatrixMath observer(3,range.steps);
-    memcpy(observer.entry(0), obs, size*sizeof(icFloatNumber));
+    CIccMatrixMath observerMtx(3,range.steps);
+    memcpy(observerMtx.entry(0), obs, size*sizeof(icFloatNumber));
 
     icFloatNumber xyz[3];
-    observer.VectorMult(xyz, pWhite);
+    observerMtx.VectorMult(xyz, pWhite);
   }
 
   return obs;
@@ -278,11 +292,14 @@ CIccMatrixMath *IIccProfileConnectionConditions::getReflectanceObserver(const ic
   CIccMatrixMath *pAdjust=NULL, *pMtx;
   const CIccTagSpectralViewingConditions *pView = getPccViewingConditions();
 
-  pMtx = CIccMatrixMath::rangeMap(rangeRef, pView->m_illuminantRange);
+  icSpectralRange illumRange;
+  const icFloatNumber *illum = pView->getIlluminant(illumRange);
+
+  pMtx = CIccMatrixMath::rangeMap(rangeRef, illumRange);
   if (pMtx)
     pAdjust = pMtx;
 
-  pMtx = pView->getObserverMatrix(pView->m_illuminantRange);
+  pMtx = pView->getObserverMatrix(illumRange);
 
   if (pAdjust) {
     pMtx = pAdjust->Mult(pMtx);
@@ -290,7 +307,7 @@ CIccMatrixMath *IIccProfileConnectionConditions::getReflectanceObserver(const ic
   }
   pAdjust = pMtx;
 
-  pAdjust->VectorScale(pView->m_illuminant);
+  pAdjust->VectorScale(illum);
   pAdjust->Scale(1.0f / pAdjust->RowSum(1));
 
   return pAdjust;
@@ -317,16 +334,11 @@ CIccCombinedConnectionConditions::CIccCombinedConnectionConditions(CIccProfile *
   else if (pView) {
     m_pPCC = NULL;
     m_pViewingConditions = (CIccTagSpectralViewingConditions*)pView->NewCopy();
-    m_pViewingConditions->m_colorTemperature = pView->m_colorTemperature;
-    m_pViewingConditions->m_stdIlluminant = pView->m_stdIlluminant;
-    m_pViewingConditions->m_illuminantRange = pView->m_illuminantRange;
-    if (m_pViewingConditions->m_illuminant)
-      free(m_pViewingConditions->m_illuminant);
-    if (pView->m_illuminantRange.steps) {
-      int n = (int)pView->m_illuminantRange.steps * sizeof(icFloatNumber);
-      m_pViewingConditions->m_illuminant = (icFloatNumber*)malloc(n);
-      memcpy(m_pViewingConditions->m_illuminant, pView->m_illuminant, n);
-    }
+
+    icSpectralRange illumRange;
+    const icFloatNumber *illum = pView->getIlluminant(illumRange);
+
+    m_pViewingConditions->setIlluminant(pView->getStdIllumiant(), illumRange, illum, pView->getIlluminantCCT());
 
     pProfile->calcNormIlluminantXYZ(m_illuminantXYZ, this);
     pProfile->calcLumIlluminantXYZ(m_illuminantXYZLum, this);

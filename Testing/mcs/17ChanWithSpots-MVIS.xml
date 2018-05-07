@@ -263,6 +263,35 @@ out(0,3)
 	  </MultiProcessElements>
 	</multiProcessElementType>
 
+	<!-- Example brdfMToB0Tag
+	<tagStructureType>
+		<TagSignature>bMB0</TagSignature>
+		<StructureSignature>brdf</StructureSignature>
+		<MemberTags>
+			<signatureType>
+				<TagSignature>type</TagSignature>
+				<Signature>mono</Signature>
+			</signatureType>
+			<signatureType>
+				<TagSignature>func</TagSignature>
+				<Signature>BPh0</Signature>
+			</signatureType>
+			<uInt16NumberType>
+				<TagSignature>nump</TagSignature>
+				<Data>4</Data>
+			</uInt16NumberType>
+			<multiProcessElementType>
+				<TagSignature>xfrm</TagSignature>
+				<MultiProcessElements InputChannels="17" OutputChannels="4">
+					<CalculatorElement InputChannels="17" OutputChannels="4">
+						<MainFunction>{ 0 0 0 0 out[0,4] }</MainFunction>
+					</CalculatorElement>
+				</MultiProcessElements>
+			</multiProcessElementType>
+		</MemberTags>
+	</tagStructureType>
+	-->
+
 	<tagArrayType>
 	  <TagSignature>mcta</TagSignature>
 	  <ArraySignature>utf8</ArraySignature>

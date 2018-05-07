@@ -186,7 +186,10 @@ struct {
   {icSigViewingCondDescTag, "viewingCondDescTag"},
   {icSigViewingConditionsTag, "viewingConditionsTag"},
   {icSigSpectralViewingConditionsTag, "spectralViewingConditionsTag"},
-  {icSigColorantOrderTag, "colorantOrderTag"},
+  {icSigColorantInfoTag, "colorantInfoTag" },
+  {icSigColorantInfoOutTag, "colorantInfoOutTag" },
+  {icSigColorantOrderTag, "colorantOrderTag" },
+  {icSigColorantOrderOutTag, "colorantOrderOutTag"},
   {icSigColorantTableTag, "colorantTableTag"},
   {icSigChromaticAdaptationTag, "chromaticAdaptationTag"},
   {icSigColorantTableOutTag, "colorantTableOutTag"},
@@ -203,6 +206,7 @@ struct {
   {icSigReferenceNameTag, "referenceNameTag"},
   {icSigMaterialTypeArrayTag, "materialTypeArrayTag"},
   {icSigMaterialDefaultValuesTag, "materialDefaultValuesTag"},
+  {icSigEmbeddedV5ProfileTag, "embeddedV5ProfileTag"},
   {(icTagSignature)0,""},
 };
 
@@ -265,6 +269,7 @@ struct {
   {icSigViewingConditionsType, "viewingConditionsType"},
   {icSigXYZArrayType, "XYZArrayType"},
   {icSigProfileSequceIdType, "profileSequenceIdentifierType"},
+  {icSigEmbeddedProfileType, "embeddedProfileType"},
   {(icTagTypeSignature)0,"" },
 };
 
@@ -425,6 +430,9 @@ CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
 
     case icSigTagStructType:
       return new CIccTagStruct;
+
+    case icSigEmbeddedProfileType:
+      return new CIccTagEmbeddedProfile;
 
     case icSigScreeningType:
     case icSigUcrBgType:

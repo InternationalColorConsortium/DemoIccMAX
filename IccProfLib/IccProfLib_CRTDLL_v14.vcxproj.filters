@@ -107,6 +107,9 @@
     <ClCompile Include="IccMD5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IccTagEmbedIcc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IccApplyBPC.h">
@@ -224,6 +227,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IccMD5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IccTagEmbedIcc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

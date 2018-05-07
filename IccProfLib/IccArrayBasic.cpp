@@ -92,9 +92,10 @@ namespace refIccMAX {
 #endif
 
 
-CIccArrayUnknown::CIccArrayUnknown(CIccTagArray *pTagArray)
+CIccArrayUnknown::CIccArrayUnknown(CIccTagArray *pTagArray, icArraySignature sigArray)
 {
   m_pTag = pTagArray;
+  m_sig = sigArray;
 }
 
 
@@ -149,9 +150,74 @@ icValidateStatus CIccArrayUnknown::Validate(std::string sigPath, std::string &sR
 }
 
 
+CIccArrayColorantInfo::CIccArrayColorantInfo(CIccTagArray *pTagArray)
+{
+  m_pTag = pTagArray;
+  m_sig = icSigColorantInfoArray;
+}
+
+
+CIccArrayColorantInfo::~CIccArrayColorantInfo()
+{
+
+}
+
+
+IIccArray* CIccArrayColorantInfo::NewCopy(CIccTagArray *pTagArray) const
+{
+  CIccArrayColorantInfo *rv = new CIccArrayColorantInfo(pTagArray);
+
+  return rv;
+}
+
+
+bool CIccArrayColorantInfo::Describe(std::string &sDescription) const
+{
+  return false;
+}
+
+
+icValidateStatus CIccArrayColorantInfo::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile) const
+{
+  icValidateStatus rv = icValidateOK;
+
+  if (m_pTag) {
+    icUInt32Number i;
+
+    for (i = 0; i < m_pTag->GetSize(); i++) {
+      CIccTag *pTag = m_pTag->GetIndex(i);
+      if (!pTag) {
+        rv = icMaxStatus(rv, icValidateWarning);
+        char buf[80];
+        sprintf(buf, "Tag at index %d is NULL\r\n", i);
+        sReport += buf;
+      }
+      else {
+        if (pTag->GetTagStructType() != icSigColorantInfoStruct) {
+          rv = icMaxStatus(rv, icValidateCriticalError);
+          char buf[80]; 
+          sprintf(buf, "Tag at index %d is not a colorantInfoStruct\r\n", i);
+          sReport += buf;
+        }
+        rv = icMaxStatus(rv, pTag->Validate(sigPath + icGetSigPath(pTag->GetType()), sReport, pProfile));
+      }
+    }
+  }
+  else {
+    sReport += "Array Handler not connected to CIccTagArray object!";
+
+    rv = icValidateWarning;
+  }
+
+  return rv;
+}
+
+
 CIccArrayNamedColor::CIccArrayNamedColor(CIccTagArray *pTagArray)
 {
   m_pTag = pTagArray;
+  m_sig = icSigNamedColorArray;
+
   m_list = new icNamedColorStructList;
 
   m_nDeviceSamples = 0;

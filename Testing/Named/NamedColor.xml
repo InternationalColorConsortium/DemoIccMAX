@@ -48,7 +48,7 @@
 		  </MemberTags>
 		</tagStructureType>
 		
-	  <tagStructureType>
+		<tagStructureType>
 		  <StructureSignature>nmcl</StructureSignature>
 		  <MemberTags>
 		    <utf8TextType>
@@ -65,6 +65,38 @@
 			    0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2
 			  </Data>
 			</float16NumberType>
+			
+			<!-- Example brdfColorimetricParams sub-tag
+			<tagStructureType>
+				<TagSignature>bcpr</TagSignature>
+				<StructureSignature>brdf</StructureSignature>
+				<MemberTags>
+					<signatureType>
+						<TagSignature>type</TagSignature>
+						<Signature>mono</Signature>
+					</signatureType>
+					<signatureType>
+						<TagSignature>func</TagSignature>
+						<Signature>BPh0</Signature>
+					</signatureType>
+					<uInt16NumberType>
+						<TagSignature>nump</TagSignature>
+						<Data>4</Data>
+					</uInt16NumberType>
+					<multiProcessElementType>
+						<TagSignature>xfrm</TagSignature>
+						<MultiProcessElements InputChannels="1" OutputChannels="4">
+							<TintArrayElement InputChannels="1" OutputChannels="4">
+								<float32NumberType>
+									<Data>0 0 0 0 0 0 0 0</Data>
+								</float32NumberType>
+							</TintArrayElement>
+						</MultiProcessElements>
+					</multiProcessElementType>
+				</MemberTags>
+			</tagStructureType>
+			-->
+			
 		  </MemberTags>
 		</tagStructureType>
 		
@@ -80,14 +112,14 @@
 			  <Data>
 				  0.00
 				  1.00
-        </Data>
+			  </Data>
 			</float16NumberType>
 			<float16NumberType>
 			  <TagSignature>pcs </TagSignature>
 			  <Data>
 				  100 0 0 
 				  0 0 0
-				</Data>
+			  </Data>
 			</float16NumberType>
 			<float16NumberType>
 			  <TagSignature>spec</TagSignature>
@@ -116,7 +148,7 @@
 				0.639
 				0.82
 				1.00
-        </Data>
+			  </Data>
 			</float16NumberType>
 			<float16NumberType>
 			  <TagSignature>spec</TagSignature>
@@ -128,7 +160,7 @@
 					0.26935 0.336687 0.388079 0.47805 0.57039 0.615044 0.608749 0.578689 0.53134 0.461852 0.384843 0.323426 0.263361 0.18279 0.114882 0.095263 0.092198 0.070136 0.058081 0.083093 0.11998 0.135566 0.131911 0.125128 0.125753 0.132436 0.146402 0.170747 0.196346 0.209543 0.205503 0.189267 0.168603 0.158532 0.179465 0.241681
 					0.169908 0.212385 0.281791 0.366485 0.449994 0.495324 0.497337 0.468127 0.414685 0.342387 0.266281 0.208663 0.158411 0.097652 0.051461 0.037767 0.033364 0.022699 0.016793 0.02337 0.036363 0.042826 0.041316 0.03915 0.039064 0.041465 0.047999 0.058795 0.071574 0.078605 0.076163 0.068518 0.058082 0.052286 0.063708 0.099318
 					0.037319 0.046649 0.106311 0.18371 0.259057 0.316456 0.361485 0.368537 0.330586 0.268449 0.200339 0.146511 0.102632 0.056927 0.025353 0.014075 0.008584 0.004684 0.003769 0.004024 0.004403 0.004427 0.004672 0.004762 0.004636 0.004474 0.003978 0.003796 0.003884 0.004061 0.004296 0.004106 0.004373 0.004413 0.004489 0.005822
-        </Data>
+			  </Data>
 			</float16NumberType>
 		  </MemberTags>
 		</tagStructureType>
@@ -158,7 +190,7 @@
 					72.43411   39.85182   26.21421
 					53.12290   71.18126   53.51850
 					47.90215   73.46014   60.61409
-        </Data>
+			  </Data>
 			</float16NumberType>
 			<float16NumberType>
 			  <TagSignature>spec</TagSignature>
@@ -168,7 +200,7 @@
 					0.236431 0.295539 0.255013 0.251822 0.270862 0.281956 0.268785 0.257079 0.258019 0.249338 0.225617 0.205305 0.196361 0.190265 0.179892 0.175325 0.200354 0.276734 0.399765 0.5331 0.648385 0.719652 0.753664 0.770648 0.783611 0.790513 0.801421 0.805659 0.804735 0.81572 0.825864 0.832542 0.841093 0.849283 0.85319 0.853927
 					0.059685 0.074607 0.087617 0.071596 0.052174 0.052892 0.051748 0.038431 0.031667 0.026776 0.017036 0.010921 0.011073 0.010347 0.006994 0.007739 0.011161 0.010646 0.022712 0.095848 0.258008 0.457148 0.614075 0.698689 0.73833 0.758463 0.777521 0.786368 0.788544 0.800529 0.809467 0.816221 0.827304 0.837656 0.842444 0.844804
 					0.023295 0.029119 0.029551 0.041869 0.035828 0.024058 0.022835 0.018766 0.010522 0.006332 0.005635 0.004651 0.003886 0.004866 0.005494 0.005378 0.007034 0.006923 0.005047 0.024323 0.125146 0.309869 0.500977 0.627274 0.691343 0.723923 0.750777 0.763824 0.768004 0.782073 0.793538 0.802521 0.814908 0.825386 0.830707 0.835815
-        </Data>
+			  </Data>
 			</float16NumberType>
 		  </MemberTags>
 		</tagStructureType>

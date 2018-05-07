@@ -88,6 +88,8 @@ ICCPROFLIB_API void* icRealloc(void *ptr, size_t size);
 #define icNotANumber (std::numeric_limits<icFloatNumber>::quiet_NaN())
 #define icNotZero(v) ((v)>1.0e-8 || (v)<-1.0e-8)
 
+ICCPROFLIB_API bool icIsNear(icFloatNumber v1, icFloatNumber v2, icFloatNumber nearRange = 1.0e-8);
+
 ICCPROFLIB_API double icRoundOffset(double v);
 
 ICCPROFLIB_API icValidateStatus icMaxStatus(icValidateStatus s1, icValidateStatus s2);
@@ -184,6 +186,7 @@ ICCPROFLIB_API const icChar *icGetColorSigStr(icChar *pBuf, icUInt32Number nSig)
 ICCPROFLIB_API std::string icGetSigPath(icUInt32Number sig);
 ICCPROFLIB_API icSignature icGetFirstSigPathSig(std::string sigPath);
 ICCPROFLIB_API icSignature icGetSecondSigPathSig(std::string sigPath);
+ICCPROFLIB_API icSignature icGetLastSigPathSig(std::string sigPath);
 
 ICCPROFLIB_API icUInt32Number icGetSigVal(const icChar *pBuf);
 ICCPROFLIB_API icUInt32Number icGetSpaceSamples(icColorSpaceSignature sig);

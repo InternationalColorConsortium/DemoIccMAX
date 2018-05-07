@@ -993,8 +993,8 @@ protected:
   icStatusCMM pushBiRef2Xyz(CIccProfile *pProfile, IIccProfileConnectionConditions *pPcc);
   icStatusCMM pushBiRef2Ref(CIccProfile *pProfile, IIccProfileConnectionConditions *pPcc);
   icStatusCMM pushBiRef2Rad(CIccProfile *pProfile, IIccProfileConnectionConditions *pPcc);
-  void pushScale(icUInt16Number n, icFloatNumber *vals);
-  void pushMatrix(icUInt16Number nRows, icUInt16Number nCols, icFloatNumber *vals);
+  void pushScale(icUInt16Number n, const icFloatNumber *vals);
+  void pushMatrix(icUInt16Number nRows, icUInt16Number nCols, const icFloatNumber *vals);
   void pushMatrixTransverse(icUInt16Number nRows, icUInt16Number nCols, icFloatNumber *vals);
   icStatusCMM pushXYZConvert(CIccXform *pSrcXform, CIccXform *pDstXform);
   void pushXYZNormalize(IIccProfileConnectionConditions *pPcc, const icSpectralRange &srcRange, const icSpectralRange &dstRange);
@@ -1540,34 +1540,36 @@ public:
                                icXformInterp nInterp=icInterpLinear, 
                                IIccProfileConnectionConditions *pPcc=NULL,
                                icXformLutType nLutType=icXformLutColor,
-                               bool bUseMpeTags=true, 
-                               CIccCreateXformHintManager *pHintManager=NULL);
+                               bool bUseD2BxB2DxTags=true, 
+                               CIccCreateXformHintManager *pHintManager=NULL,
+                               bool bUseSubProfile=false);
   virtual icStatusCMM AddXform(icUInt8Number *pProfileMem, icUInt32Number nProfileLen,
                                icRenderingIntent nIntent=icUnknownIntent, 
                                icXformInterp nInterp=icInterpLinear,
                                IIccProfileConnectionConditions *pPcc=NULL,
-                               icXformLutType nLutType=icXformLutColor, bool bUseMpeTags=true,
-                               CIccCreateXformHintManager *pHintManager=NULL);
+                               icXformLutType nLutType=icXformLutColor, bool bUseD2BxB2DxTags =true,
+                               CIccCreateXformHintManager *pHintManager=NULL,
+                               bool bUseSubProfile=false);
   virtual icStatusCMM AddXform(CIccProfile *pProfile, 
                                icRenderingIntent nIntent=icUnknownIntent,
                                icXformInterp nInterp=icInterpLinear, 
                                IIccProfileConnectionConditions *pPcc=NULL,
                                icXformLutType nLutType=icXformLutColor,
-                               bool bUseMpeTags=true,
+                               bool bUseD2BxB2DxTags =true,
                                CIccCreateXformHintManager *pHintManager=NULL);  //Note: profile will be owned by the CMM
   virtual icStatusCMM AddXform(CIccProfile &Profile, 
                                icRenderingIntent nIntent=icUnknownIntent,
                                icXformInterp nInterp=icInterpLinear, 
                                IIccProfileConnectionConditions *pPcc=NULL,
                                icXformLutType nLutType=icXformLutColor,
-                               bool bUseMpeTags=true, 
+                               bool bUseD2BxB2DxTags =true,
                                CIccCreateXformHintManager *pHintManager=NULL);  //Note the profile will be copied
   virtual icStatusCMM AddXform(CIccProfile *pProfile,
                                CIccTag *pXformTag,
                                icRenderingIntent nIntent = icUnknownIntent,
                                icXformInterp nInterp = icInterpLinear,
                                IIccProfileConnectionConditions *pPcc = NULL,
-                               bool bUseSpectralPCS=false,
+                               bool bUseD2BxB2DxTags =false,
                                CIccCreateXformHintManager *pHintManager = NULL);  //Note: profile will be owned by the CMM
 
   //The Begin function should be called before Apply or GetNewApplyCmm()
@@ -1712,14 +1714,15 @@ public:
                                icXformInterp nInterp=icInterpLinear, 
                                IIccProfileConnectionConditions *pPcc=NULL,
                                icXformLutType nLutType=icXformLutColor,
-                               bool bUseMpeTags=true,
-                               CIccCreateXformHintManager *pHintManager=NULL);
+                               bool bUseD2BxB2DxTags=true,
+                               CIccCreateXformHintManager *pHintManager=NULL,
+                               bool bUseSubProfile=false);
   virtual icStatusCMM AddXform(CIccProfile *pProfile, 
                                icRenderingIntent nIntent=icUnknownIntent,
                                icXformInterp nInterp=icInterpLinear, 
                                IIccProfileConnectionConditions *pPcc=NULL,
                                icXformLutType nLutType=icXformLutColor,
-                               bool buseMpeTags=true,
+                               bool bUseD2BxB2DxTags =true,
                                CIccCreateXformHintManager *pHintManager=NULL);  //Note: profile will be owned by the CMM
 
   ///Must be called before calling Apply() or GetNewApply()

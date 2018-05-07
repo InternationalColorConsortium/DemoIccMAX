@@ -483,6 +483,149 @@ icInt32Number CIccFileIO::Tell()
 
 
 //////////////////////////////////////////////////////////////////////
+// Class CIccEmbedIO
+//////////////////////////////////////////////////////////////////////
+
+CIccEmbedIO::CIccEmbedIO() : CIccIO()
+{
+  m_pIO = NULL;
+  m_nStartPos = 0;
+  m_nSize = -1;
+  m_bOwnIO = false;
+}
+
+CIccEmbedIO::~CIccEmbedIO()
+{
+  Close();
+}
+
+bool CIccEmbedIO::Attach(CIccIO *pIO, icInt32Number nSize/* =0 */, bool bOwnIO/* =false */)
+{
+  if (!pIO)
+    return false;
+
+  m_nStartPos = pIO->Tell();
+  m_nSize = nSize;
+  m_bOwnIO = bOwnIO;
+  m_pIO = pIO;
+
+  if (m_nStartPos < 0)
+    return false;
+
+  return true;
+}
+
+
+void CIccEmbedIO::Close()
+{
+  if (m_pIO && m_bOwnIO) {
+    m_pIO->Close();
+
+    delete m_pIO;
+    m_pIO = NULL;
+  }
+}
+
+
+icInt32Number CIccEmbedIO::Read8(void *pBuf, icInt32Number nNum)
+{
+  if (!m_pIO)
+    return 0;
+
+  if (m_nSize > 0) {
+    icUInt32Number nPos = m_pIO->Tell();
+    icUInt32Number nOffset = nPos - m_nStartPos;
+
+    if (nOffset + nNum > m_nSize)
+      nNum = m_nSize - nOffset;
+  }
+
+  return m_pIO->Read8(pBuf, nNum);
+}
+
+
+icInt32Number CIccEmbedIO::Write8(void *pBuf, icInt32Number nNum)
+{
+  if (!m_pIO)
+    return 0;
+
+  return m_pIO->Write8(pBuf, nNum);
+}
+
+
+icInt32Number CIccEmbedIO::GetLength()
+{
+  if (!m_pIO)
+    return 0;
+
+  if (m_nSize)
+    return m_nSize;
+
+  return m_pIO->GetLength() - m_nStartPos;
+}
+
+
+icInt32Number CIccEmbedIO::Seek(icInt32Number nOffset, icSeekVal pos)
+{
+  icInt32Number nPos;
+  if (!m_pIO)
+    return -1;
+
+  if (pos == icSeekSet) {
+    if (m_nSize > 0 && nOffset > m_nSize)
+      nOffset = m_nSize;
+    else if (nOffset < 0)
+      nOffset = m_nStartPos;
+
+   nPos = m_pIO->Seek(nOffset + m_nStartPos, icSeekSet);
+    
+  }
+  else if (pos == icSeekEnd) {
+    if (m_nSize > 0) {
+      nOffset = m_nSize + nOffset;
+    }
+    else {
+      nOffset = nOffset + m_pIO->GetLength() - m_nStartPos;
+    }
+    if (nOffset < 0)
+      nOffset = 0;
+    nOffset += m_nStartPos;
+
+    nPos = m_pIO->Seek(nOffset, icSeekSet);
+  }
+  else {//pos == icSeekCur
+    nOffset = m_pIO->Tell() + nOffset;
+
+    if (m_nSize && nOffset - m_nStartPos > m_nSize)
+      nOffset = m_nStartPos + m_nSize;
+    else if (nOffset < m_nStartPos)
+      nOffset = m_nStartPos;
+
+    nPos = m_pIO->Seek(nOffset, icSeekSet);
+  }
+
+  if (nPos >= m_nStartPos)
+    return nPos - m_nStartPos;
+
+  return nPos;
+}
+
+
+icInt32Number CIccEmbedIO::Tell()
+{
+  if (!m_pIO)
+    return -1;
+
+  icUInt32Number nPos = m_pIO->Tell();
+
+  if (nPos >= m_nStartPos)
+    return nPos - m_nStartPos;
+
+  return nPos;
+}
+
+
+//////////////////////////////////////////////////////////////////////
 // Class CIccMemIO
 //////////////////////////////////////////////////////////////////////
 

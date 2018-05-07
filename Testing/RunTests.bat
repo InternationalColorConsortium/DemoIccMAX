@@ -7,6 +7,7 @@ echo ===========================================================================
 echo Test Extended CalcElement Operations return of zero's indicates that something bad happened
 iccApplyNamedCMM Calc\srgbCalcTest.txt 2 0 Calc\srgbCalc++Test.icc 3 sRGB_v4_ICC_preference.icc 3
 
+
 echo ===========================================================================
 echo Test NamedColor
 iccApplyNamedCMM Named\NamedColorTest.txt 2 0 Named\NamedColor.icc 3 sRGB_v4_ICC_preference.icc 1
@@ -86,3 +87,7 @@ iccApplyNamedCmm.exe ApplyDataFiles\cc_ref-380_5_780.txt 1 0 pcc\Spec380_5_780-D
 echo ===========================================================================
 echo Test 380_10_730 Reflectance under D50 to XYZ
 iccApplyNamedCmm.exe ApplyDataFiles\cc_ref-380_10_730.txt 1 0 pcc\Spec380_10_730-D50_2deg.icc 3 pcc\XYZ-D50_2deg.icc 3
+
+echo ===========================================================================
+echo CalcElement based aRGB profile test
+iccApplyNamedCMM -debugcalc Calc\srgbCalcTest.txt 3 0 Calc\argbCalc.icc 1

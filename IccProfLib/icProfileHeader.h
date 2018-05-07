@@ -164,7 +164,7 @@ authorization from SunSoft Inc.
 #define icPROFILEHEADER_H
 
 #if !defined(ICCCONFIG_h)
-    #error Include icProfLibConf.h before this file
+    #error Include IccProfLibConf.h before this file
 #endif
 
 /* In order for structures to work it is important to ensure that
@@ -262,6 +262,7 @@ typedef icUInt32Number       icUInt64Number[2];
 #endif
 
 typedef icUInt32Number       icSignature;
+
 
 
 /** Signed numbers */
@@ -373,7 +374,10 @@ typedef enum {
     icSigChromaticityTag                   = 0x6368726D,  /* 'chrm' */
     icSigColorEncodingParamsTag            = 0x63657074,  /* 'cept' */
     icSigColorSpaceNameTag                 = 0x63736e6d,  /* 'csnm' */
+    icSigColorantInfoTag                   = 0x636c696e,  /* 'clin' */
+    icSigColorantInfoOutTag                = 0x636c696f,  /* 'clio' */
     icSigColorantOrderTag                  = 0x636C726F,  /* 'clro' */
+    icSigColorantOrderOutTag               = 0x636c6f6f,  /* 'cloo' */
     icSigColorantTableTag                  = 0x636C7274,  /* 'clrt' */
     icSigColorantTableOutTag               = 0x636C6F74,  /* 'clot' */
     icSigColorimetricIntentImageStateTag   = 0x63696973,  /* 'ciis' */
@@ -455,6 +459,9 @@ typedef enum {
     icSigUcrBgTag                          = 0x62666420,  /* 'bfd ' Removed in V4 */
     icSigViewingCondDescTag                = 0x76756564,  /* 'vued' */
     icSigViewingConditionsTag              = 0x76696577,  /* 'view' */
+
+/* Private tags*/
+    icSigEmbeddedV5ProfileTag              = 0x49434335,  /* 'ICC5' */
 } icTagSignature;
 
 /** Convenience Enum Definitions - Not defined in ICC specification*/
@@ -552,6 +559,10 @@ typedef enum {
     icSigXYZArrayType                   = 0x58595A20,  /* 'XYZ ' */
     icSigZipUtf8TextType                = 0x7a757438,  /* 'zut8' */
     icSigZipXmlType                     = 0x5a584d4c,  /* 'ZXML' */
+
+/*Private tag types*/
+    icSigEmbeddedProfileType            = 0x49434370,  /* 'ICCp' */
+
 } icTagTypeSignature;
 
 /** Convenience Enum Definitions - Not defined in ICC specification*/
@@ -583,6 +594,7 @@ typedef enum {
 typedef enum {
     icSigUndefinedArray              = 0x00000000,
     icSigNamedColorArray             = 0x6e6d636c,  /* 'nmcl' */
+    icSigColorantInfoArray           = 0x63696e66,  /* 'cinf' */
     icSigUtf8TextTypeArray           = 0x75746638,  /* 'utf8' */
 } icArraySignature;
 
@@ -639,7 +651,7 @@ typedef enum {
 typedef enum {
   icSigBrdfTypeMbr                 = 0x74797065,  /* 'type' */
   icSigBrdfFunctionMbr             = 0x66756e63,  /* 'func' */
-  icSigBrdfNumParamsMbr            = 0x6e756d70,  /* 'nump' */
+  icSigBrdfParamsPerChannelMbr     = 0x6e756d70,  /* 'nump' */
   icSigBrdfTransformMbr            = 0x7866726d,  /* 'xfrm' */
   icSigBrdfLightTransformMbr       = 0x6c747866,  /* 'ltxf' */
   icSigBrdfOutputTransformMbr      = 0x6f757478,  /* 'outx' */ /* Note: converts the output of the BRDF model to PCS */
@@ -944,25 +956,35 @@ typedef enum {
 #define icMaxEnumPlatform ((icPlatformSignature) 0xFFFFFFFF)
 
 
-/** CMM signatures from the signature registry (as of Jan 10, 2007) */
+/** CMM signatures from the signature registry (as of Mar 6, 2018) */
 typedef enum {
     icSigAdobe                          = 0x41444245,  /* 'ADBE' */
+    icSigAgfa                           = 0x41434D53,  /* 'ACMS' */
     icSigApple                          = 0x6170706C,  /* 'appl' */
     icSigColorGear                      = 0x43434D53,  /* 'CCMS' */
     icSigColorGearLite                  = 0x5543434D,  /* 'UCCM' */
+    icSigColorGearC                     = 0x55434D53,  /* 'UCMS' */
+    icSigEFI                            = 0x45464920,  /* 'EFI ' */
+    icSigExactScan                      = 0x45584143,  /* 'EXAC' */
     icSigFujiFilm                       = 0x46462020,  /* 'FF  ' */
     icSigHarlequinRIP                   = 0x48434d4d,  /* 'HCMM' */
     icSigArgyllCMS                      = 0x6172676C,  /* 'argl' */
     icSigLogoSync                       = 0x44676f53,  /* 'LgoS' */
     icSigHeidelberg                     = 0x48444d20,  /* 'HDM ' */
-    icSigLittleCMS                      = 0x6C636d73,  /* 'lcms' */
+    icSigLittleCMS                      = 0x6C636D73,  /* 'lcms' */
     icSigKodak                          = 0x4b434d53,  /* 'KCMS' */
     icSigKonicaMinolta                  = 0x4d434d44,  /* 'MCML' */
+    icSigWindowsCMS                     = 0x57435320,  /* 'WCS ' */
     icSigMutoh                          = 0x5349474E,  /* 'SIGN' */
-    icSigSampleICC                      = 0x53494343,  /* 'SICC' */
-    icSigTheImagingFactory              = 0x33324254,  /* '32BT' */
-    icSigRefIccLabs                     = 0x52494c42,  /* 'RILB' */
     icSigOnyxGraphics                   = 0x4f4e5958,  /* 'ONYX' */
+    icSigRefIccMAX                      = 0x52494343,  /* 'RIMX' */
+    icSigRolfGierling                   = 0x52474d53,  /* 'RGMS' */
+    icSigSampleICC                      = 0x53494343,  /* 'SICC' */
+    icSigToshiba                        = 0x54434D4D,  /* 'TCMM' */
+    icSigTheImagingFactory              = 0x33324254,  /* '32BT' */
+    icSigVivo                           = 0x7669766F,  /* 'VIVO' */
+    icSigWareToGo                       = 0x57544720,  /* 'WTG ' */
+    icSigZoran                          = 0x7a633030,  /* 'zc00' */
     icSigUnknownCmm                     = 0x00000000,
 } icCmmSignature;
 /** Convenience Enum Definition - Not defined in ICC specification*/

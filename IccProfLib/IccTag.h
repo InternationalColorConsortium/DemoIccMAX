@@ -91,5 +91,6 @@
 #include "IccTagProfSeqId.h"
 #include "IccTagDict.h"
 #include "IccTagComposite.h"
+#include "IccTagEmbedIcc.h"
 
 #endif //_ICCTAG_H

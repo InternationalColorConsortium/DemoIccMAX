@@ -296,7 +296,7 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
     (void)wxMessageBox(_T("wxProfileDump\n")
-                       _T("Copyright (C) 2005-2017\n\n")
+                       _T("Copyright (C) 2005-2018\n\n")
                        _T("Using ICCProflib version ") ICCPROFLIBVER _T("\n"),
 											 _T("About wxProfileDump"));
 }

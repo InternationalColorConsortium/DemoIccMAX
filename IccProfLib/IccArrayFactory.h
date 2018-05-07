@@ -104,31 +104,44 @@ public:
   virtual ~IIccArrayFactory() {}
 
   /**
-  * Function: CreateArray(structTypeSig)
-  *  Create a element of type structTypeSig.
+  * Function: CreateArray(arrayTypeSig)
+  *  Create a element of type arrayTypeSig.
   *
   * Parameter(s):
-  *  structTypeSig = signature of the ICC element type for the element to
+  *  arrayTypeSig = signature of the ICC element type for the element to
   *  be created
   *
   * Returns a new IIArrayObject object of the given signature type.
-  * If the element factory doesn't support creation of structs of type
-  * structTypeSig then it should return NULL.
+  * If the element factory doesn't support creation of array handlers of type
+  * arrayTypeSig then it should return NULL.
   */
-  virtual IIccArray* CreateArray(icArraySignature structTypeSig, CIccTagArray *pTagArray=NULL)=0;
+  virtual IIccArray* CreateArray(icArraySignature arrayTypeSig, CIccTagArray *pTagArray=NULL)=0;
 
   /**
   * Function: GeArraySigName(structTypeSig)
-  *  Get display name of structTypeSig.
+  *  Get display name of arrayTypeSig.
   *
   * Parameter(s):
-  *  elemName = string to put element name into, 
-  *  structTypeSig = signature of the ICC element type to get a name for
+  *  arrayName = string to put struct name into,
+  *  arrayTypeSig = signature of the ICC struct type to get a name for
+  *  bFindUnknown = fills arrayName if strutTypeSig is unknown
   *
-  * Returns true if struct type is recognized by the factory, false if
-  * the factory doesn't create structTypeSig elements.
+  * Returns true if arraySig is recognized by the factory, false if the
+  * factory doesn't create arrayTypeSig arrays.
   */
-  virtual bool GetArraySigName(std::string &strutName, icArraySignature structTypeSig)=0;
+  virtual bool GetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig, bool bFillUnknown)=0;
+
+  /**
+  * Function: GetArraySig(arrayName)
+  *  Get signature associate with display name arrayName handler
+  *
+  * Parameter(s):
+  *  arrayName = string to find signature for
+  *
+  * Returns true if arraySig is recognized by the factory, false if the
+  * factory doesn't create arraySig arrays.
+  */
+  virtual icArraySignature GetArraySig(const icChar *arrayName)=0;
 };
 
 
@@ -151,29 +164,43 @@ class CIccBasicArrayFactory : public IIccArrayFactory
 {
 public:
   /**
-  * Function: CreateArray(structTypeSig)
-  *  Create a struct object of type structTypeSig.
+  * Function: CreateArray(arrayTypeSig)
+  *  Create an array object handler of type arrayTypeSig.
   *
   * Parameter(s):
-  *  structTypeSig = signature of the ICC struct type for the struct to be created
+  *  arrayTypeSig = signature of the ICC array type for the array handler to be created
+  *  pTagArray = pointer to tag array to associate with the handerl
   *
   * Returns a new CIccArray handler of the given signature type.
   * Unrecognized structTypeSig's will be created as a CIccArrayUnknown object.
   */
-  virtual IIccArray* CreateArray(icArraySignature structSig, CIccTagArray *pTagArray=NULL);
+  virtual IIccArray* CreateArray(icArraySignature arrayTypeSig, CIccTagArray *pTagArray=NULL);
 
   /**
-  * Function: GetArraySigName(structTypeSig)
-  *  Get display name of structTypeSig.
+  * Function: GetArraySigName(arrayName, arrayTypeSig, bFindUnknown)
+  *  Get display name of arrayTypeSig.
   *
   * Parameter(s):
-  *  structName = string to put struct name into, 
-  *  structTypeSig = signature of the ICC struct type to get a name for
+  *  arrayName = string to put struct name into, 
+  *  arrayTypeSig = signature of the ICC struct type to get a name for
+  *  bFindUnknown = fills arrayName if strutTypeSig is unknown
   *
-  * Returns true if struct type is recognized by the factory, false if the
-  * factory doesn't create structTypeSig structs.
+  * Returns true if arraySig is recognized by the factory, false if the
+  * factory doesn't create arraySig arrays.
   */
-  virtual bool GetArraySigName(std::string &structName, icArraySignature structTypeSig);
+  virtual bool GetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig, bool bFindUnknown=true);
+
+  /**
+  * Function: GetArraySig(arrayName)
+  *  Get signature associate with display name arrayName handler
+  *
+  * Parameter(s):
+  *  arrayName = string to find signature for
+  *
+  * Returns true if arraySig is recognized by the factory, false if the
+  * factory doesn't create arraySig arrays.
+  */
+  virtual icArraySignature GetArraySig(const icChar *arrayName);
 };
 
 class CIccArrayCreator;
@@ -215,16 +242,31 @@ public:
   *  Get display name of structTypeSig.
   *
   * Parameter(s):
-  *  structName = string to put struct name into
-  *  structTypeSig = signature of the ICC struct type to get a name for
+  *  arrayName = string to put struct name into
+  *  arrayTypeSig = signature of the ICC struct type to get a name for
+  *  bFillUnknown = flag to fill in arrayName if arryTypeSig is unknown
   *
   * Returns true if struct type is recognized by any factory, false if all
-  * factories do not create structTypeSig structs. If struct type is not
+  * factories do not create arrayTypeSig arrays. If arrayTypeSig is not
   * recognized by any factories a suitable display name will be placed in
-  * structName.
+  * arrayName if bFindUnkown is true (otherwise arrayName will be empty).
   */
-  static bool GetArraySigName(std::string &structName, icArraySignature arrayTypeSig)
-      { return CIccArrayCreator::GetInstance()->DoGetArraySigName(structName, arrayTypeSig); }
+  static bool GetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig, bool bFillUnknown=true)
+      { return CIccArrayCreator::GetInstance()->DoGetArraySigName(arrayName, arrayTypeSig, bFillUnknown); }
+
+
+  /**
+  * Function: GetArraySig(arrayName)
+  *  Get signature associate with display name arrayName handler
+  *
+  * Parameter(s):
+  *  arrayName = string to find signature for
+  *
+  * Returns array signuture if arrayName arrays are recognized by any factory, 0 if all
+  * factories do not create arrayName arrays.
+  */
+  static icArraySignature GetArraySig(const icChar* arrayName)
+    { return CIccArrayCreator::GetInstance()->DoGetArraySig(arrayName); }
 
   /**
   * Function: PushFactory(pFactory)
@@ -277,7 +319,8 @@ private:
   static CIccArrayCreator* GetInstance();
 
   IIccArray* DoCreateArray(icArraySignature arrayTypeSig, CIccTagArray *pArray);
-  bool DoGetArraySigName(std::string &elemName, icArraySignature arrayTypeSig);
+  bool DoGetArraySigName(std::string &arrayName, icArraySignature arrayTypeSig, bool bFillUnknown=true);
+  icArraySignature DoGetArraySig(const icChar *arrayName);
   void DoPushFactory(IIccArrayFactory *pFactory);
   IIccArrayFactory* DoPopFactory(bool bAll=false);
 

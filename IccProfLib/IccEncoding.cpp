@@ -362,10 +362,11 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
 
     icFloatNumber illXYZ[3];
     icFloatNumber Lw = pParams->GetElemNumberValue(icSigCeptWhitePointLuminanceMbr, 100);
-    pCond->m_stdIlluminant = icIlluminantCustom;
-    illXYZ[0] = pCond->m_illuminantXYZ.X = XYZWhite[0];
-    illXYZ[1] = pCond->m_illuminantXYZ.Y = XYZWhite[1];
-    illXYZ[2] = pCond->m_illuminantXYZ.Z = XYZWhite[2];
+    pCond->setIlluminant(XYZWhite);
+    //pCond->m_stdIlluminant = icIlluminantCustom;
+    illXYZ[0] = pCond->m_illuminantXYZ.X = Lw * XYZWhite[0];
+    illXYZ[1] = pCond->m_illuminantXYZ.Y = Lw * XYZWhite[1];
+    illXYZ[2] = pCond->m_illuminantXYZ.Z = Lw * XYZWhite[2];
 
     icFloatNumber La = pParams->GetElemNumberValue(icSigCeptAmbientWhitePointLuminanceMbr, Lw/5.0f);
     CIccTagFloat32 *pSurround = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptAmbientWhitePointChromaticityMbr, icSigFloat32ArrayType);
