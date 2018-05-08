@@ -66,8 +66,6 @@
 #ifndef _ICCDEFS_H
 #define _ICCDEFS_H
 
-#pragma pack(4)
-
 //Get any platform specific prototypes
 #include "IccProfLibConf.h"
 
@@ -124,9 +122,6 @@ typedef enum {
   icValidateNonCompliant,    /*Profile does not conform to specification, but may still be useable*/
   icValidateCriticalError,   /*Profile does not conform to specification and is not useable*/
 } icValidateStatus;
-
-
-#pragma pack()
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX
