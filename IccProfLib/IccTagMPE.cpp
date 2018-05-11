@@ -715,7 +715,10 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(icUInt16Number nInputChan
  ******************************************************************************/
 CIccTagMultiProcessElement::CIccTagMultiProcessElement(const CIccTagMultiProcessElement &lut)
 {
-  m_nReserved = lut.m_nReserved;
+    m_position = NULL;
+    m_list = NULL;
+    
+    m_nReserved = lut.m_nReserved;
 
   if (lut.m_list) {
     m_list = new CIccMultiProcessElementList();
