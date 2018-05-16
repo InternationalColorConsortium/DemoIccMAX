@@ -81,7 +81,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#if defined(__cpluplus) && defined(USEREFICCMAXNAMESPACE)
+#if defined(__cplusplus) && defined(USEREFICCMAXNAMESPACE)
 namespace refIccMAX {
 #endif
   
