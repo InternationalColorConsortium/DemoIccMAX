@@ -84,6 +84,7 @@
 #include "IccSparseMatrix.h"
 #include "IccCmm.h"
 
+#define  ICC_USE_ZLIB
 #ifdef ICC_USE_ZLIB
 #include "zlib.h"
 #endif
