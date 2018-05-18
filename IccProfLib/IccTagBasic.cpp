@@ -1086,11 +1086,23 @@ bool CIccTagZipUtf8Text::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&m_nReserved))
     return false;
 
+  // fix read of non-standard pre iccMAX X-Rite tag
   icUInt32Number m_nDataFlag = 0;//sap
+  icUInt32Number sizeOffset = 0;
   if (!pIO->Read32(&m_nDataFlag))
 	  return false;
 
-  icUInt32Number nSize = size - sizeof(icTagTypeSignature) - sizeof(icUInt32Number);
+    if (m_nDataFlag != 1)
+    {
+        pIO->Seek(-(icInt32Number)sizeof(icUInt32Number), icSeekCur);
+    }
+    else
+    {
+        sizeOffset = sizeof(icUInt32Number);
+    }
+
+
+  icUInt32Number nSize = size - sizeof(icTagTypeSignature) - sizeof(icUInt32Number) - sizeOffset;
 
   icUChar *pBuf = AllocBuffer(nSize);
 
@@ -1128,11 +1140,13 @@ bool CIccTagZipUtf8Text::Write(CIccIO *pIO)
 
   if (!pIO->Write32(&m_nReserved))
     return false;
+    
+ // testing, create TAG using old x-rite method
+ //   icUInt32Number m_nDataFlag = 1;//sap
+ //   if (!pIO->Write32(&m_nDataFlag)) {
+ //       return false;
+ //   }
 
-  icUInt32Number m_nDataFlag = 1;//sap
-  if (!pIO->Write32(&m_nDataFlag)) {
-	  return false;
-  }
 
   if (m_pZipBuf) {
     if (pIO->Write8(m_pZipBuf, m_nBufSize) != (icInt32Number)m_nBufSize)
