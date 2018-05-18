@@ -344,7 +344,7 @@ public:
   virtual const icChar *GetClassName() const { return "CIccZipUtf8TagText"; }
 
   /* GetText() may fail if ICC_USE_ZLIB is not defined*/
-  bool GetText(std::string &str) const;
+  bool GetText(std::string &str) ;
 
   /* SetText() may fail if ICC_USE_ZLIB is not defined*/
   bool SetText(const icUChar16 *szText);
