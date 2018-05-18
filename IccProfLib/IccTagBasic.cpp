@@ -84,6 +84,7 @@
 #include "IccSparseMatrix.h"
 #include "IccCmm.h"
 
+#define ICC_USE_ZLIB 
 #ifdef ICC_USE_ZLIB
 #include "zlib.h"
 #endif
@@ -1147,6 +1148,11 @@ bool CIccTagZipUtf8Text::Write(CIccIO *pIO)
  //       return false;
  //   }
 
+
+  icUInt32Number m_nDataFlag = 1;//sap
+  if (!pIO->Write32(&m_nDataFlag)) {
+	  return false;
+  }
 
   if (m_pZipBuf) {
     if (pIO->Write8(m_pZipBuf, m_nBufSize) != (icInt32Number)m_nBufSize)
