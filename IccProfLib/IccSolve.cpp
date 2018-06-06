@@ -217,3 +217,74 @@ IIccMatrixSolver *IccGetDefaultMatrixSolver()
 {
   return g_pIccMatrixSolver;
 }
+
+//TODO implement IIccMatrixInverter in terms of Eigen library
+
+class CIccSimpleMatrixInverter : public IIccMatrixInverter
+{
+public:
+  CIccSimpleMatrixInverter() {}
+
+  /**
+  ****************************************************************************
+  * Member Function: Invert
+  *
+  * Purpose: Solve for x in the matrix/vector equation y=Mx when M is 3x3 matrix
+  *  Otherwise return false.
+  *
+  * Parameters:
+  *  -dMatrix is a matrix (M) with nRows x nCols entries in RowOrder
+  *  -nRows is number of row entries
+  *  -nCols is number of column entries
+  *
+  * Return:
+  *  true if matrix was inverted or false if not possible/supported.
+  *****************************************************************************
+  */
+  virtual bool Invert(icFloatNumber *dMatrix, icUInt16Number nRows, icUInt16Number nCols)
+  {
+    if (nRows == 3 && nCols == 3) {
+      bool bInvertible = icMatrixInvert3x3(dMatrix);
+
+      return bInvertible;
+    }
+
+    return false;
+  }
+};
+
+CIccSimpleMatrixInverter g_SimpleInverter;
+
+//Define the global g_pIccMatrixSolver variable pointer
+ICCPROFLIB_API IIccMatrixInverter *g_pIccMatrixInverter = &g_SimpleInverter;
+
+
+
+/**
+****************************************************************************
+* Name:  IccSetMatrixInverter(IIccMatrixInverter *pInverter)
+*
+* Purpose:
+*  Global function that can be used by a supporting application to
+*  establish an implementation of a matrix inverter object.
+*****************************************************************************
+*/
+void ICCPROFLIB_API IccSetMatrixInverter(IIccMatrixInverter *pIccMatrixInverter)
+{
+  g_pIccMatrixInverter = pIccMatrixInverter;
+}
+
+
+/**
+****************************************************************************
+* Name:  IccGetDefaultMatrixInverter()
+*
+* Purpose:
+*  Global function that can be used by a supporting application to
+*  determine the default matrix inverter object.
+*****************************************************************************
+*/
+IIccMatrixInverter *IccGetDefaultMatrixInverter()
+{
+  return g_pIccMatrixInverter;
+}

@@ -137,5 +137,65 @@ void ICCPROFLIB_API IccSetMatrixSolver(IIccMatrixSolver *pSolver);
 */
 IIccMatrixSolver ICCPROFLIB_API *IccGetDefaultMatrixSolver();
 
+/**
+****************************************************************************
+* Structure: IIccMatrixInverter
+*
+* Purpose: Define an interface for allowing external implementation of
+* matrix inversion
+*****************************************************************************
+*/
+class IIccMatrixInverter
+{
+public:
+  /**
+  ****************************************************************************
+  * Member Function: Invert
+  *
+  * Purpose: Invert a square matrix
+  *
+  * Parameters:
+  *  -dMatrix is a matrix (M) with nRows x nCols entries
+  *  -nRows is number of rows in matrix
+  *  -nCols is number of columns in matrix
+  *
+  * Return:
+  *  true if matrix was inverted or false if not possible.
+  *****************************************************************************
+  */
+  virtual bool Invert(icFloatNumber *dMatrix, icUInt16Number nRows, icUInt16Number nCols) = 0;
+};
+
+/**
+****************************************************************************
+* Global Variable: g_pIccMatrixInverter
+*
+* Purpose: Keep tracks of pointer to matrix inverter object.  
+*****************************************************************************
+*/
+ICCPROFLIB_API extern IIccMatrixInverter *g_pIccMatrixInverter;
+
+/**
+****************************************************************************
+* Function: IccSetMatrixInverter(IIccMatrixInverter *pInverter)
+*
+* Purpose:
+*  Global function that can be used by a supporting application to
+*  establish an implementation of a matrix inverter object.
+*****************************************************************************
+*/
+void ICCPROFLIB_API IccSetMatrixInverter(IIccMatrixInverter *pInverter);
+
+/**
+****************************************************************************
+* Function: icGetDefaultInverter(IIccMatrixInverter *pInverter)
+*
+* Purpose:
+*  Global function that can be used by a supporting application to
+*  determine the matrix solver object.
+*****************************************************************************
+*/
+IIccMatrixInverter ICCPROFLIB_API *IccGetDefaultMatrixInverter();
+
 #endif //_ICCSOLVE_H
 

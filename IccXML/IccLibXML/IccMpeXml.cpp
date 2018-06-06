@@ -1020,8 +1020,6 @@ bool CIccMpeXmlMatrix::ToXml(std::string &xml, std::string blanks/* = ""*/)
   }
 
   if (m_pConstants) {
-    bool bNonZero;
-
     for (i = 0; i < NumOutputChannels(); i++) {
       if (icNotZero(m_pConstants[i]))
         break;
@@ -1063,6 +1061,19 @@ bool CIccMpeXmlMatrix::ParseXml(xmlNode *pNode, std::string &parseStr)
 
     if (!CIccFloatArray::ParseArray(m_pMatrix, m_nInputChannels*m_nOutputChannels, pData->children))
       return false;
+
+    const char *invert = icXmlAttrValue(pData, "InvertMatrix", "false");
+    if (!stricmp(invert, "true")) {
+      if (m_nInputChannels != m_nOutputChannels) {
+        parseStr += "Inversion of MatrixData requires square matrix\n";
+        return false;
+      }
+      IIccMatrixInverter *pInverter = IccGetDefaultMatrixInverter();
+      if (!pInverter || !pInverter->Invert(m_pMatrix, m_nOutputChannels, m_nInputChannels)) {
+        parseStr += "Unable to invert matrix!\n";
+        return false;
+      }
+    }
   }
   else { //Having no MatrixData implies having a matrix full of zeros which is represented by m_pMatrix set to NULL
     SetSize(0, nOutputChannels); //Initialize with m_pMatrix set to NULL

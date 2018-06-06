@@ -37,6 +37,9 @@ cd ..\mcs
 ..\iccFromXML 18ChanWithSpots-MVIS.xml 18ChanWithSpots-MVIS.icc
 ..\iccFromXML 6ChanSelect-MID.xml 6ChanSelect-MID.icc
 
+cd ..\Overprint
+..\iccFromXML 17ChanPart1.xml 17ChanPart1.icc
+
 cd ..\mcs\Flexo-CMYKOGP
 ..\..\iccFromXML CMYKOGP-MVIS-Smooth.xml CMYKOGP-MVIS-Smooth.icc
 ..\..\iccFromXML 4ChanSelect-MID.xml 4ChanSelect-MID.icc
