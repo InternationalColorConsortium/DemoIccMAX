@@ -340,10 +340,10 @@ icInt32Number CIccIO::WriteFloat32Float(void *pBufFloat, icInt32Number nNum)
 
 bool CIccIO::Align32()
 {
-  int mod = GetLength() % 4;
+  int mod = Tell() % 4;
   if (mod != 0) {
     icUInt8Number buf[4]={0,0,0,0};
-    if (Seek(0, icSeekEnd)<0)
+    if (Seek(0, icSeekCur)<0)
       return false;
 
     if (Write8(buf, 4-mod) != 4-mod)

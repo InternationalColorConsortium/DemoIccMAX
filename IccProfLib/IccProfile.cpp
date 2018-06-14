@@ -810,7 +810,7 @@ bool CIccProfile::Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId)
 
   pIO->Write32(&count);
 
-  icUInt32Number dirpos = pIO->GetLength();
+  icUInt32Number dirpos = pIO->Tell();
 
   //Write Unintialized TagDir
   for (i=m_Tags->begin(); i!= m_Tags->end(); i++) {
@@ -833,9 +833,9 @@ bool CIccProfile::Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId)
       }
 
       if (i==j) {
-        i->TagInfo.offset = pIO->GetLength();
+        i->TagInfo.offset = pIO->Tell();
         i->pTag->Write(pIO);
-        i->TagInfo.size = pIO->GetLength() - i->TagInfo.offset;
+        i->TagInfo.size = pIO->Tell() - i->TagInfo.offset;
 
         pIO->Align32();
       }
