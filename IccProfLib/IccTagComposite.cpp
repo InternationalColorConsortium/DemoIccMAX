@@ -1000,7 +1000,7 @@ CIccTagArray::CIccTagArray(const CIccTagArray &tagAry)
     m_TagVals = new IccTagPtr[tagAry.m_nSize];
 
     icUInt32Number i;
-    for (i=0; i<m_nSize; i++) {
+    for (i=0; i<tagAry.m_nSize; i++) {
       if (tagAry.m_TagVals[i].ptr)
         m_TagVals[i].ptr = tagAry.m_TagVals[i].ptr->NewCopy();
       else

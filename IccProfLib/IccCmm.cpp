@@ -702,7 +702,14 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
             }
           }
           else if (pProfile->m_Header.version < icVersionNumberV5) {
-            pTag = pProfile->FindTag(icSigDToB0Tag + nTagIntent);
+            if (pProfile->m_Header.deviceClass != icSigLinkClass)
+            {
+                pTag = pProfile->FindTag(icSigDToB0Tag + nTagIntent);
+            }
+            else
+            {
+                pTag = pProfile->FindTag(icSigDToB0Tag);
+            }
 
             if (!pTag && nTagIntent ==icAbsoluteColorimetric) {
               pTag = pProfile->FindTag(icSigDToB1Tag);
