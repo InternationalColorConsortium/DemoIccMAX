@@ -144,6 +144,9 @@ public:
   virtual void Describe(std::string &sDescription);
 
   void SetFunction(icUInt16Number functionType, icUInt8Number num_parameters, icFloatNumber *parameters);
+    icUInt16Number GetFunctionType() {return m_nFunctionType; }
+    icUInt8Number GetNumberOfParameters() {return m_nParameters;}
+    icFloatNumber GetParameter(icUInt8Number nParamNum ) {return m_params[nParamNum];}
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -307,6 +310,19 @@ public:
 
   virtual icCurveElemSignature GetType() const { return icSigSegmentedCurve; }
   virtual const icChar *GetClassName() const { return "CIccSegmentedCurve"; }
+    
+    virtual int GetNumberOfCurveSegments() const {return m_list->size();}
+    virtual CIccCurveSegment* GetCurveSegment(int nIndex) {
+        CIccCurveSegmentList::iterator i;
+        
+        int c = 0;
+        for (i=m_list->begin(); i!=m_list->end(); i++) {
+            if (c == nIndex)
+                return *i;
+            c++;
+        }
+        return NULL;
+    }
 
   virtual void Describe(std::string &sDescription);
 
@@ -350,6 +366,13 @@ public:
 
   virtual icElemTypeSignature GetType() const { return icSigCurveSetElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCurveSet"; }
+    
+  virtual CIccCurveSetCurve* GetCurvePointer(unsigned int nIndex)
+    {
+        if (nIndex >= NumInputChannels())
+            return NULL;
+        return m_curve[nIndex];
+    }
 
   virtual void Describe(std::string &sDescription);
 
