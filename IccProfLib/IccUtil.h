@@ -314,8 +314,11 @@ public:
   const icChar *GetReferenceMediumGamutSigNameName(icReferenceMediumGamutSignature sig);
   const icChar *GetColorimetricIntentImageStateName(icColorimetricIntentImageStateSignature sig);
   const icChar *GetSpectralColorSigName(icSpectralColorSignature sig);
+  const icChar *GetElementTypeSigName(icElemTypeSignature sig);
 
   const icChar *GetSigName(icUInt32Number val);
+
+  const icChar *GetPathEntrySigName(icUInt32Number val);
 
   std::string GetSigPathName(std::string sigPath);
 

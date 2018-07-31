@@ -4140,6 +4140,12 @@ CIccMpeCalculator::CIccMpeCalculator(const CIccMpeCalculator &channelGen)
 
   m_nInputChannels = channelGen.m_nInputChannels;
   m_nOutputChannels = channelGen.m_nOutputChannels;
+  m_nTempChannels = channelGen.m_nTempChannels;
+
+  m_pCmmEnvVarLookup = channelGen.m_pCmmEnvVarLookup;
+
+  m_nSubElem = channelGen.m_nSubElem;
+  m_bNeedTempReset = channelGen.m_bNeedTempReset;
 
   m_pCmmEnvVarLookup = channelGen.m_pCmmEnvVarLookup;
 
@@ -4169,7 +4175,6 @@ CIccMpeCalculator::CIccMpeCalculator(const CIccMpeCalculator &channelGen)
     m_nSubElem = 0;
     m_SubElem = NULL;
   }
-
 }
 
 /**

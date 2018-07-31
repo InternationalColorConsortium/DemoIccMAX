@@ -163,17 +163,6 @@
 					</float32NumberType>
 				</TintArrayElement>
 
-				<TintArrayElement Name="WhiteScale" InputChannels="1" OutputChannels="3">
-					<float32NumberType>
-						<Data Filename="Spot-MVIS/Spot9-scaleXYZ.txt" Format="text"/>
-					</float32NumberType>
-				</TintArrayElement>
-				<TintArrayElement Name="WhiteOffset" InputChannels="1" OutputChannels="3">
-					<float32NumberType>
-						<Data Filename="Spot-MVIS/Spot9-offsetXYZ.txt" Format="text"/>
-					</float32NumberType>
-				</TintArrayElement>
-
 				<TintArrayElement Name="SilverScale" InputChannels="1" OutputChannels="3">
 					<float32NumberType>
 						<Data Filename="Spot-MVIS/Spot10-scaleXYZ.txt" Format="text"/>
@@ -182,6 +171,17 @@
 				<TintArrayElement Name="SilverOffset" InputChannels="1" OutputChannels="3">
 					<float32NumberType>
 						<Data Filename="Spot-MVIS/Spot10-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="WhiteScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot9-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="WhiteOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot9-offsetXYZ.txt" Format="text"/>
 					</float32NumberType>
 				</TintArrayElement>
 
@@ -242,6 +242,10 @@ in{OrangeYellow} 0 gt if {
   in{OrangeYellow} tint{OrangeYellowScale} mul(3)
   in{OrangeYellow} tint{OrangeYellowOffset} add(3)
 }
+in{White} 0 gt if {
+  in{White} tint{WhiteScale} mul(3)
+  in{White} tint{WhiteOffset} add(3)
+}
 in{Orange} 0 gt if {
   in{Orange} tint{OrangeScale} mul(3)
   in{Orange} tint{OrangeOffset} add(3)
@@ -269,10 +273,6 @@ in{BrightRed} 0 gt if {
 in{PaleYellow} 0 gt if {
   in{PaleYellow} tint{PaleYellowScale} mul(3)
   in{PaleYellow} tint{PaleYellowOffset} add(3)
-}
-in{White} 0 gt if {
-  in{White} tint{WhiteScale} mul(3)
-  in{White} tint{WhiteOffset} add(3)
 }
 in{Red} 0 gt if {
   in{Red} tint{RedScale} mul(3)

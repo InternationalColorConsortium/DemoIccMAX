@@ -3248,6 +3248,18 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
   xmlNode *table = icXmlFindNode(pNode->children, "TableData");
 
   if (table) {
+    if (nType == icConvertVariable) {
+      const char *precision = icXmlAttrValue(table, "Precision");
+      if (precision && atoi(precision) == 1) {
+        nType = icConvert8Bit;
+        pCLUT->SetPrecision(1);
+      }
+      else {
+        nType = icConvert16Bit;
+        pCLUT->SetPrecision(2);
+      }
+    }
+
     const char *filename = icXmlAttrValue(table, "Filename");
     if (!filename || !filename[0]) {
       filename = icXmlAttrValue(table, "File");

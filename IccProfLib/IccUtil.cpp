@@ -73,6 +73,7 @@
 #include "IccTagFactory.h"
 #include "IccStructFactory.h"
 #include "IccArrayFactory.h"
+#include "IccMpeFactory.h"
 #include <stdlib.h>
 #include <memory.h>
 #include <ctype.h>
@@ -1473,6 +1474,16 @@ const icChar *CIccInfo::GetTagTypeSigName(icTagTypeSignature sig)
   return GetUnknownName(sig);
 }
 
+const icChar *CIccInfo::GetElementTypeSigName(icElemTypeSignature sig)
+{
+
+  if (CIccMpeCreator::GetElementSigName(*m_str, sig)) {
+    return m_str->c_str();
+  }
+
+  return GetUnknownName(sig);
+}
+
 std::string CIccInfo::GetSigPathName(std::string sigPath)
 {
   std::string rv;
@@ -1488,13 +1499,13 @@ std::string CIccInfo::GetSigPathName(std::string sigPath)
     icSignature sig = icGetSigVal(sigStr.c_str());
     if (n!=0) {
       rv += ">";
-      rv += GetTagSigName((icTagSignature)sig);
     }
-    else {
-      rv = GetSigName(sig);
-    }
+    rv += GetPathEntrySigName(sig);
     n++;
   }
+  if (n > 0)
+    rv += ":";
+
   return rv;
 }
 
@@ -1889,6 +1900,25 @@ const icChar *CIccInfo::GetSigName(icUInt32Number sig)
     return rv;
 
   return GetColorimetricIntentImageStateName((icColorimetricIntentImageStateSignature)sig);
+}
+
+const icChar *CIccInfo::GetPathEntrySigName(icUInt32Number sig)
+{
+  const icChar *rv;
+
+  rv = GetTagSigName((icTagSignature)sig);
+  if (rv != m_szStr)
+    return rv;
+
+  rv = GetTagTypeSigName((icTagTypeSignature)sig);
+  if (rv != m_szStr)
+    return rv;
+
+  rv = GetElementTypeSigName((icElemTypeSignature)sig);
+  if (rv != m_szStr)
+    return rv;
+
+  return GetUnknownName(sig);
 }
 
 

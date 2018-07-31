@@ -7469,6 +7469,53 @@ CIccCmm::~CIccCmm()
     delete m_pApply;
 }
 
+const icChar* CIccCmm::GetStatusText(icStatusCMM stat)
+{
+  switch (stat) {
+  case icCmmStatBad:
+    return "Bad CMM";
+  case icCmmStatOk:
+    return "OK";
+  case icCmmStatCantOpenProfile:
+    return "Cannot open profile";
+  case icCmmStatBadSpaceLink:
+    return "Invalid space link";
+  case icCmmStatInvalidProfile:
+    return "Invalid profile";
+  case icCmmStatBadXform:
+    return "Invalid profile transform";
+  case icCmmStatInvalidLut:
+    return "Invalid Look-Up Table";
+  case icCmmStatProfileMissingTag:
+    return "Missing tag in profile";
+  case icCmmStatColorNotFound:
+    return "Color not found";
+  case icCmmStatIncorrectApply:
+    return "Incorrect Apply object";
+  case icCmmStatBadColorEncoding:
+    return "Invalid color encoding used";
+  case icCmmStatAllocErr:
+    return "Memory allocation error";
+  case icCmmStatBadLutType:
+    return "Invalid Look-Up Table type";
+  case icCmmStatIdentityXform:
+    return "Identity transform used";
+  case icCmmStatUnsupportedPcsLink:
+    return "Unsupported PCS Link used";
+  case icCmmStatBadConnection:
+    return "Invalid profile connection";
+  case icCmmStatBadTintXform:
+    return "Invalid tint transform";
+  case icCmmStatTooManySamples:
+    return "Too many samples used";
+  case icCmmStatBadMCSLink:
+    return "Invalid MCS link connection";
+  default:
+    return "Unknown CMM Status value";
+
+  }
+}
+
 /**
  **************************************************************************
  * Name: CIccCmm::AddXform

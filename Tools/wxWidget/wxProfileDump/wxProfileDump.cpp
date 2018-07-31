@@ -477,6 +477,7 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 		sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Creation Date:"), &m_textCreationDate), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Primary Platform:"), &m_textPlatform), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Primary Platform:"), &m_textDeviceManufacturer), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Flags:"), &m_textFlags), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Attributes:"), &m_textAttribute), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Rendering Intent:"), &m_textRenderingIntent), wxSizerFlags().Expand().Border(wxALL, 0));
@@ -535,6 +536,7 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 		m_textCreator->SetLabel(icGetSig(buf, pHdr->creator));
 		m_textColorSpace->SetLabel(Fmt.GetColorSpaceSigName(pHdr->colorSpace));
 		m_textFlags->SetLabel(Fmt.GetProfileFlagsName(pHdr->flags, pHdr->mcs!=0));
+    m_textDeviceManufacturer->SetLabel(icGetSig(buf, pHdr->deviceSubClass));
 		m_textPCS->SetLabel(Fmt.GetColorSpaceSigName(pHdr->pcs));
 		m_textPlatform->SetLabel(Fmt.GetPlatformSigName(pHdr->platform));
 		m_textRenderingIntent->SetLabel(Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
@@ -829,6 +831,9 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   if (stat!=icCmmStatOk) {
     report += wxString::Format("  Unable to perform round trip on '%s'\n", profilePath.c_str());
     report += "\n";
+    report += "CMM Status: ";
+    report += CIccCmm::GetStatusText(stat);
+    report += "\n\n";
 
     return report;
   }

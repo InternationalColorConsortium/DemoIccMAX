@@ -1,3 +1,16 @@
+2018-07-31 Max Derhak
+* 2.1.12 Release of IccProflib and related tools
+* 2.1.12 Release of IccLibXml and reated tools
+* Fix bugs with CLUT precision during XML parsing and creation
+* Fix bug with CIccMpeCalculator copy construction
+* Improve signature path text conversion
+* Display reason for RountTrip failure to wxProfileDump
+* Added static function to CIccCmm to get text representation of icStatusCMM values
+
+2018-06-06 Max Derhak
+* Addition of Support matrix element inversion during XML parsing to 2.1.11
+  release.
+
 2018-04-15 Max Derhak
 * 2.1.11 Release of IccProfLib and related tools
 * 2.1.11 Release of IccLibXml and related tools

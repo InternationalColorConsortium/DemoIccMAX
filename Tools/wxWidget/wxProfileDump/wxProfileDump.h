@@ -168,6 +168,7 @@ protected:
 		wxStaticText *m_textIlluminant;
 		wxStaticText *m_textPCS;
 		wxStaticText *m_textPlatform;
+    wxStaticText *m_textDeviceManufacturer;
 		wxStaticText *m_textProfileID;
 		wxStaticText *m_textRenderingIntent;
     wxStaticText *m_textSpectralPCS;

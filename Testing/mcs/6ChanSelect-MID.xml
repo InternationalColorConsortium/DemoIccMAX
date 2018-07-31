@@ -43,7 +43,7 @@
 	  <TagSignature>mcta</TagSignature>
 	  <ArraySignature>utf8</ArraySignature>
 	  <ArrayTags>
-	    <utf8TextType><TextData>Process Yellow</TextData></utf8TextType>
+	    <utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
 			<utf8TextType><TextData>Violet</TextData></utf8TextType>
 			<utf8TextType><TextData>Orange</TextData></utf8TextType>
 			<utf8TextType><TextData>White</TextData></utf8TextType>

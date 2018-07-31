@@ -86,6 +86,7 @@ namespace refIccMAX {
 #endif
   
 /// CMM return status values
+//Note: Update CIccCMM::GetStatusText() as appropriate 
 typedef enum {
   icCmmStatBad                = -1,
   icCmmStatOk                 = 0,
@@ -1638,6 +1639,8 @@ public:
 
   virtual icColorSpaceSignature GetFirstXformSource();
   virtual icColorSpaceSignature GetLastXformDest();
+
+  static const icChar *GetStatusText(icStatusCMM stat);
 
 protected:
   void SetLateBindingCC();

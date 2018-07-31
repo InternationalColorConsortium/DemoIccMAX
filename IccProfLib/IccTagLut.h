@@ -352,6 +352,7 @@ public:
   void SetClipFunc(icCLUTCLIPFUNC ClipFunc) { UnitClip = ClipFunc; }
 
   icUInt8Number GetPrecision() { return m_nPrecision; }
+  void SetPrecision(icUInt8Number nPrecision) { m_nPrecision = nPrecision; }
 
 protected:
   void Iterate(std::string &sDescription, icUInt8Number nIndex, icUInt32Number nPos, bool bUseLegacy=false);

@@ -483,6 +483,7 @@ bool icCLUTDataToXml(std::string &xml, CIccCLUT *pCLUT, icConvertType nType, std
                      bool bSaveGridPoints/*=false*/)
 {
   char buf[128];
+  int nStartType = nType;
   if (nType == icConvertVariable) {
     nType = pCLUT->GetPrecision()==1 ? icConvert8Bit : icConvert16Bit;
   }
@@ -511,7 +512,15 @@ bool icCLUTDataToXml(std::string &xml, CIccCLUT *pCLUT, icConvertType nType, std
 
   CIccDumpXmlCLUT dumper(&xml, nType, blanks + "   ", pCLUT->GetOutputChannels(), nPixelsPerRow);
 
-  xml += blanks + "  <TableData>\n";
+  xml += blanks + "  <TableData";
+
+  if (nStartType == icConvertVariable && nType == icConvert8Bit) {
+    sprintf(buf, " Precision=\"1\"");
+    xml += buf;
+  }
+
+  xml += ">\n";
+
   pCLUT->Iterate(&dumper);
 
   dumper.Finish();
@@ -527,7 +536,7 @@ bool icCLUTToXml(std::string &xml, CIccCLUT *pCLUT, icConvertType nType, std::st
 {
   char buf[128];
   xml += blanks + "<" + szName;
- 
+
   if (!bSaveGridPoints) {
     sprintf(buf, " GridGranularity=\"%d\"", pCLUT->GridPoint(0));
     xml += buf;
