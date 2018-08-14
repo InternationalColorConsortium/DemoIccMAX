@@ -1,3 +1,9 @@
+2018-08-14 Max Derhak
+* 2.1.13 Release of IccProflib and related tools
+* 2.1.13 Release of IccLibXML and related tools
+* Change of Sinlgle Sampled Curve Segment to Single Sampled Curve to match specification
+* Remove requirement for GamutTag in v5 profiles (as per Spec)
+
 2018-07-31 Max Derhak
 * 2.1.12 Release of IccProflib and related tools
 * 2.1.12 Release of IccLibXml and reated tools

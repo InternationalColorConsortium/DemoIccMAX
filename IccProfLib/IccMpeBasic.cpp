@@ -991,7 +991,7 @@ icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::str
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::CIccSingleCurveSegment
+* Name: CIccSingleSampledCurve::CIccSingleSampledCurve
 * 
 * Purpose: 
 * 
@@ -999,16 +999,23 @@ icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::str
 * 
 * Return: 
 ******************************************************************************/
-CIccSingleCurveSegment::CIccSingleCurveSegment(icFloatNumber start, icFloatNumber end)
+CIccSingleSampledCurve::CIccSingleSampledCurve(icFloatNumber first, icFloatNumber last)
 {
   m_nReserved = 0;
-  m_startPoint = start;
-  m_endPoint = end;
   m_nCount = 0;
   m_pSamples = 0;
 
-  m_firstEntry = 0.0;
-  m_lastEntry = 1.0;
+  m_storageType = icValueTypeFloat32;
+  m_extensionType = icClipSingleSampledCurve;
+
+  if (first < last) {
+    m_firstEntry = first;
+    m_lastEntry = last;
+  }
+  else {
+    m_firstEntry = last;
+    m_lastEntry = first;
+  }
 
   m_loIntercept = 0;
   m_loSlope = 0;
@@ -1018,7 +1025,7 @@ CIccSingleCurveSegment::CIccSingleCurveSegment(icFloatNumber start, icFloatNumbe
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::CIccSingleCurveSegment
+* Name: CIccSingleSampledCurve::CIccSingleSampledCurve
 * 
 * Purpose: 
 * 
@@ -1026,12 +1033,13 @@ CIccSingleCurveSegment::CIccSingleCurveSegment(icFloatNumber start, icFloatNumbe
 * 
 * Return: 
 ******************************************************************************/
-CIccSingleCurveSegment::CIccSingleCurveSegment(const CIccSingleCurveSegment &curve)
+CIccSingleSampledCurve::CIccSingleSampledCurve(const CIccSingleSampledCurve &curve)
 {
   m_nReserved = curve.m_nReserved;
-  m_startPoint = curve.m_startPoint;
-  m_endPoint = curve.m_endPoint;
   m_nCount = curve.m_nCount;
+
+  m_storageType = curve.m_storageType;
+  m_extensionType = curve.m_extensionType;
 
   if (m_nCount) {
     m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
@@ -1055,7 +1063,7 @@ CIccSingleCurveSegment::CIccSingleCurveSegment(const CIccSingleCurveSegment &cur
 
 /**
 ******************************************************************************
-* Name: &CIccSingleCurveSegment::operator=
+* Name: &CIccSingleSampledCurve::operator=
 * 
 * Purpose: 
 * 
@@ -1063,15 +1071,16 @@ CIccSingleCurveSegment::CIccSingleCurveSegment(const CIccSingleCurveSegment &cur
 * 
 * Return: 
 ******************************************************************************/
-CIccSingleCurveSegment &CIccSingleCurveSegment::operator=(const CIccSingleCurveSegment &curve)
+CIccSingleSampledCurve &CIccSingleSampledCurve::operator=(const CIccSingleSampledCurve &curve)
 {
   if (m_pSamples)
     free(m_pSamples);
 
   m_nReserved = curve.m_nReserved;
-  m_startPoint = curve.m_startPoint;
-  m_endPoint = curve.m_endPoint;
   m_nCount = curve.m_nCount;
+
+  m_storageType = curve.m_storageType;
+  m_extensionType = curve.m_extensionType;
 
   if (m_nCount) {
     m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
@@ -1096,7 +1105,7 @@ CIccSingleCurveSegment &CIccSingleCurveSegment::operator=(const CIccSingleCurveS
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::~CIccSingleCurveSegment
+* Name: CIccSingleSampledCurve::~CIccSingleSampledCurve
 * 
 * Purpose: 
 * 
@@ -1104,7 +1113,7 @@ CIccSingleCurveSegment &CIccSingleCurveSegment::operator=(const CIccSingleCurveS
 * 
 * Return: 
 ******************************************************************************/
-CIccSingleCurveSegment::~CIccSingleCurveSegment()
+CIccSingleSampledCurve::~CIccSingleSampledCurve()
 {
   if (m_pSamples)
     free(m_pSamples);
@@ -1112,7 +1121,7 @@ CIccSingleCurveSegment::~CIccSingleCurveSegment()
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::SetRange
+* Name: CIccSingleSampledCurve::SetRange
 * 
 * Purpose: 
 *  Sets range of sampled lookup table.
@@ -1121,7 +1130,7 @@ CIccSingleCurveSegment::~CIccSingleCurveSegment()
 *  first = first entry input position
 *  last = last entry input position
 ******************************************************************************/
-void CIccSingleCurveSegment::SetRange(icFloatNumber first/* =0.0f */, icFloatNumber last/* =1.0f */)
+void CIccSingleSampledCurve::SetRange(icFloatNumber first/* =0.0f */, icFloatNumber last/* =1.0f */)
 {
   if (first < last) {
     m_firstEntry = first;
@@ -1133,9 +1142,61 @@ void CIccSingleCurveSegment::SetRange(icFloatNumber first/* =0.0f */, icFloatNum
   }
 }
 
+
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::SetSize
+* Name: CIccSingleSampledCurve::SetExtensionType
+*
+* Purpose:
+*  Sets extension type of the single sampled curve
+*
+* Args:
+*  nExtensionType is type of extension to use
+*
+* Return:
+*  true if valid extension type, false otherwise
+******************************************************************************/
+bool CIccSingleSampledCurve::SetExtensionType(icUInt16Number nExtensionType)
+{
+  m_extensionType = nExtensionType;
+
+  switch (nExtensionType) {
+    case icClipSingleSampledCurve:
+    case icExtendSingleSampledCurve:
+      return true;
+  }
+  return false;
+}
+
+/**
+******************************************************************************
+* Name: CIccSingleSampledCurve::SetStorageType
+*
+* Purpose:
+*  Sets storate type of the data stored in the single sampled curve
+*
+* Args:
+*  nStorageType is type of data to use
+*
+* Return:
+*  true if valid storage type, false otherwise
+******************************************************************************/
+bool CIccSingleSampledCurve::SetStorageType(icUInt16Number nStorateType)
+{
+  m_storageType = nStorateType;
+
+  switch (nStorateType) {
+    case icValueTypeUInt8:
+    case icValueTypeUInt16:
+    case icValueTypeFloat16:
+    case icValueTypeFloat32:
+      return true;
+  }
+  return false;
+}
+/**
+******************************************************************************
+* Name: CIccSingleSampledCurve::SetSize
 * 
 * Purpose: 
 *  Sets size of sampled lookup table.  Previous data (if exists) is lost.
@@ -1147,7 +1208,7 @@ void CIccSingleCurveSegment::SetRange(icFloatNumber first/* =0.0f */, icFloatNum
 * Return: 
 *  true if allocation successful.
 ******************************************************************************/
-bool CIccSingleCurveSegment::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=true*/)
+bool CIccSingleSampledCurve::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=true*/)
 {
   if (!nCount) {
     if (m_pSamples)
@@ -1176,7 +1237,7 @@ bool CIccSingleCurveSegment::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=tr
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::Describe
+* Name: CIccSingleSampledCurve::Describe
 * 
 * Purpose: 
 * 
@@ -1184,25 +1245,12 @@ bool CIccSingleCurveSegment::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=tr
 * 
 * Return: 
 ******************************************************************************/
-void CIccSingleCurveSegment::Describe(std::string &sDescription)
+void CIccSingleSampledCurve::Describe(std::string &sDescription)
 {
   icChar buf[128];
 
   if (m_nCount<2) {
-    sDescription += "Empty Simple Segment [";
-    if (m_startPoint==icMinFloat32Number)
-      sDescription += "-Infinity, ";
-    else {
-      sprintf(buf, "%.8f, ", m_startPoint);
-      sDescription += buf;
-    }
-    if (m_endPoint==icMaxFloat32Number)
-      sDescription += "+Infinity ";
-    else {
-      sprintf(buf, "%.8f, ", m_endPoint);
-      sDescription += buf;
-    }
-
+    sDescription += "Empty Single Sampled Curve [";
     sprintf(buf, "%.8f, ", m_firstEntry);
     sDescription += buf;
 
@@ -1213,19 +1261,7 @@ void CIccSingleCurveSegment::Describe(std::string &sDescription)
     sDescription += buf;
   }
   else {
-    sDescription += "Simple Sampled Segment [";
-    if (m_startPoint==icMinFloat32Number)
-      sDescription += "-Infinity, ";
-    else {
-      sprintf(buf, "%.8f, ", m_startPoint);
-      sDescription += buf;
-    }
-    if (m_endPoint==icMaxFloat32Number)
-      sDescription += "+Infinity, ";
-    else {
-      sprintf(buf, "%.8f, ", m_endPoint);
-      sDescription += buf;
-    }
+    sDescription += "Single Sampled Curve [";
 
     sprintf(buf, "%.8f, ", m_firstEntry);
     sDescription += buf;
@@ -1254,11 +1290,11 @@ void CIccSingleCurveSegment::Describe(std::string &sDescription)
         break;
     }
 
-    switch(m_segmentType) {
-      case icClipSingleSegment:
+    switch(m_extensionType) {
+      case icClipSingleSampledCurve:
         sDescription += "Clip End Points\n";
         break;
-      case icExtendSingleSegment:
+      case icExtendSingleSampledCurve:
         sDescription += "Extend End Points\n";
         break;
       default:
@@ -1282,7 +1318,7 @@ void CIccSingleCurveSegment::Describe(std::string &sDescription)
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::Read
+* Name: CIccSingleSampledCurve::Read
 * 
 * Purpose: 
 * 
@@ -1290,7 +1326,7 @@ void CIccSingleCurveSegment::Describe(std::string &sDescription)
 * 
 * Return: 
 ******************************************************************************/
-bool CIccSingleCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
+bool CIccSingleSampledCurve::Read(icUInt32Number size, CIccIO *pIO)
 {
   icCurveSegSignature sig;
 
@@ -1324,7 +1360,7 @@ bool CIccSingleCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->ReadFloat32Float(&m_lastEntry))
     return false;
 
-  if (!pIO->Read16(&m_segmentType))
+  if (!pIO->Read16(&m_extensionType))
     return false;
 
   if (!pIO->Read16(&m_storageType))
@@ -1361,7 +1397,7 @@ bool CIccSingleCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::Write
+* Name: CIccSingleSampledCurve::Write
 * 
 * Purpose: 
 * 
@@ -1369,9 +1405,9 @@ bool CIccSingleCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
 * 
 * Return: 
 ******************************************************************************/
-bool CIccSingleCurveSegment::Write(CIccIO *pIO)
+bool CIccSingleSampledCurve::Write(CIccIO *pIO)
 {
-  icCurveSegSignature sig = GetType();
+  icCurveElemSignature sig = GetType();
 
   if (!pIO)
     return false;
@@ -1391,7 +1427,7 @@ bool CIccSingleCurveSegment::Write(CIccIO *pIO)
   if (!pIO->WriteFloat32Float(&m_lastEntry))
     return false;
 
-  if (!pIO->Write16(&m_segmentType))
+  if (!pIO->Write16(&m_extensionType))
     return false;
 
   if (!pIO->Write16(&m_storageType))
@@ -1427,7 +1463,7 @@ bool CIccSingleCurveSegment::Write(CIccIO *pIO)
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::Begin
+* Name: CIccSingleSampledCurve::Begin
 * 
 * Purpose: 
 * 
@@ -1435,7 +1471,7 @@ bool CIccSingleCurveSegment::Write(CIccIO *pIO)
 * 
 * Return: 
 ******************************************************************************/
-bool CIccSingleCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
+bool CIccSingleSampledCurve::Begin()
 {
   if (m_nCount<2)
     return false;
@@ -1447,8 +1483,8 @@ bool CIccSingleCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
   if (m_range == 0.0)
     return false;
 
-  switch(m_segmentType) {
-    case icClipSingleSegment:
+  switch(m_extensionType) {
+    case icClipSingleSampledCurve:
       m_loSlope=0.0;
       m_loIntercept = m_pSamples[0];
 
@@ -1456,7 +1492,7 @@ bool CIccSingleCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
       m_hiIntercept = m_pSamples[m_nCount-1];
       break;
 
-    case icExtendSingleSegment:
+    case icExtendSingleSampledCurve:
       m_loSlope = (m_pSamples[1]-m_pSamples[0])/stepSize;
       m_loIntercept = m_pSamples[0] - m_loSlope*m_firstEntry;
 
@@ -1471,7 +1507,7 @@ bool CIccSingleCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::Apply
+* Name: CIccSingleSampledCurve::Apply
 * 
 * Purpose: 
 * 
@@ -1479,7 +1515,7 @@ bool CIccSingleCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
 * 
 * Return: 
 ******************************************************************************/
-icFloatNumber CIccSingleCurveSegment::Apply(icFloatNumber v) const
+icFloatNumber CIccSingleSampledCurve::Apply(icFloatNumber v) const
 {
   if (v<m_firstEntry) {
     return m_loSlope * v + m_loIntercept;;
@@ -1500,7 +1536,7 @@ icFloatNumber CIccSingleCurveSegment::Apply(icFloatNumber v) const
 
 /**
 ******************************************************************************
-* Name: CIccSingleCurveSegment::Validate
+* Name: CIccSingleSampledCurve::Validate
 * 
 * Purpose: 
 * 
@@ -1508,7 +1544,7 @@ icFloatNumber CIccSingleCurveSegment::Apply(icFloatNumber v) const
 * 
 * Return: 
 ******************************************************************************/
-icValidateStatus CIccSingleCurveSegment::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
 {
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
@@ -1521,7 +1557,7 @@ icValidateStatus CIccSingleCurveSegment::Validate(std::string sigPath, std::stri
     rv = icValidateWarning;
   }
 
-  if (m_segmentType > icMaxSingleSegmentType) {
+  if (m_extensionType > icMaxSingleSampledCurveType) {
     sReport += icValidateCriticalErrorMsg;
     sReport += sSigPathName;
     sReport += " single sampled curve has unknown extension type\r\n";
@@ -1540,12 +1576,6 @@ icValidateStatus CIccSingleCurveSegment::Validate(std::string sigPath, std::stri
     sReport += sSigPathName;
     sReport += " single sampled curve has too few sample points.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
-  }
-  else if (m_endPoint-m_startPoint <= 0.0) {
-    sReport += icValidateWarningMsg;
-    sReport += sSigPathName;
-    sReport += " single sampled curve has an invalid coverage range.\r\n";
-    rv = icMaxStatus(rv, icValidateWarning);
   }
 
   else if (m_lastEntry-m_firstEntry <= 0.0) {
@@ -1575,8 +1605,6 @@ CIccCurveSegment* CIccCurveSegment::Create(icCurveSegSignature sig, icFloatNumbe
     return new CIccFormulaCurveSegment(start, end);
   case icSigSampledCurveSeg:
     return new CIccSampledCurveSegment(start, end);
-  case icSigSingleSampledCurveSeg:
-    return new CIccSingleCurveSegment(start, end);
   default:
     return NULL;
   }
@@ -2012,6 +2040,8 @@ CIccCurveSetCurve* CIccCurveSetCurve::Create(icCurveElemSignature sig)
   switch (sig) {
   case icSigSegmentedCurve:
     return new CIccSegmentedCurve();
+  case icSigSingleSampledCurve:
+    return new CIccSingleSampledCurve();
   default:
     return NULL;
   }

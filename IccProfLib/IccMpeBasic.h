@@ -202,60 +202,6 @@ protected:
 };
 
 
-/**
-****************************************************************************
-* Class: CIccSingleCurveSegment
-* 
-* Purpose: The single sampled curve segment
-*****************************************************************************
-*/
-class CIccSingleCurveSegment : public CIccCurveSegment
-{
-public:
-  CIccSingleCurveSegment(icFloatNumber start, icFloatNumber end);
-  CIccSingleCurveSegment(const CIccSingleCurveSegment &ITPC);
-  CIccSingleCurveSegment &operator=(const CIccSingleCurveSegment &ParamCurveTag);
-  virtual CIccCurveSegment *NewCopy() const { return new CIccSingleCurveSegment(*this);}
-  virtual ~CIccSingleCurveSegment();
-
-  virtual icCurveSegSignature GetType() const { return icSigSingleSampledCurveSeg; }
-  virtual const icChar *GetClassName() const { return "CIccSingleCurveSegment"; }
-
-  void SetRange(icFloatNumber first=0.0f, icFloatNumber last=1.0f);
-
-  virtual bool SetSize(icUInt32Number nSize, bool bZeroAlloc=true); //nSize must be >= 2
-  virtual icUInt32Number GetSize() { return m_nCount; }
-
-  virtual icFloatNumber *GetSamples() { return m_pSamples; }
-
-  virtual void Describe(std::string &sDescription);
-
-  virtual bool Read(icUInt32Number size, CIccIO *pIO);
-  virtual bool Write(CIccIO *pIO);
-
-  virtual bool Begin(CIccCurveSegment *pPrevSeg);
-  virtual icFloatNumber Apply(icFloatNumber v) const;
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const ;
-
-protected:
-  icUInt32Number m_nCount;   //number of samples used for interpolation
-  icFloatNumber *m_pSamples; //interpolation values
-
-  icUInt16Number m_storageType;
-  icUInt16Number m_segmentType;
-
-  icFloatNumber m_firstEntry;
-  icFloatNumber m_lastEntry;
-
-  icFloatNumber m_range;
-  icFloatNumber m_last;
-
-  icFloatNumber m_loSlope;
-  icFloatNumber m_loIntercept;
-  icFloatNumber m_hiSlope;
-  icFloatNumber m_hiIntercept;
-};
-
 
 /**
 ****************************************************************************
@@ -286,6 +232,8 @@ public:
 
 protected:
 };
+
+typedef CIccCurveSetCurve* icCurveSetCurvePtr;
 
 typedef std::list<CIccCurveSegment*> CIccCurveSegmentList;
 
@@ -326,7 +274,69 @@ protected:
   icUInt32Number m_nReserved2;
 };
 
-typedef CIccCurveSetCurve* icCurveSetCurvePtr;
+
+/**
+****************************************************************************
+* Class: CIccSingleSampledCurve
+*
+* Purpose: The single sampled curve class
+*****************************************************************************
+*/
+class CIccSingleSampledCurve : public CIccCurveSetCurve
+{
+public:
+  CIccSingleSampledCurve(icFloatNumber first=0.0, icFloatNumber last=1.0);
+  CIccSingleSampledCurve(const CIccSingleSampledCurve &ITPC);
+  CIccSingleSampledCurve &operator=(const CIccSingleSampledCurve &SampledCurve);
+  virtual CIccCurveSetCurve *NewCopy() const { return new CIccSingleSampledCurve(*this); }
+  virtual ~CIccSingleSampledCurve();
+
+  virtual icCurveElemSignature GetType() const { return icSigSingleSampledCurve; }
+  virtual const icChar *GetClassName() const { return "CIccSingleSampledCurve"; }
+
+  void SetRange(icFloatNumber first = 0.0f, icFloatNumber last = 1.0f);
+
+  virtual bool SetSize(icUInt32Number nSize, bool bZeroAlloc = true); //nSize must be >= 2
+  virtual icUInt32Number GetSize() { return m_nCount; }
+
+  bool SetExtensionType(icUInt16Number nExtensionType);
+  icUInt16Number GetExtensionType() { return m_extensionType; }
+
+  bool SetStorageType(icUInt16Number nStorateType);
+  icUInt16Number GetStorageType() { return m_storageType; }
+
+  virtual icFloatNumber *GetSamples() { return m_pSamples; }
+
+  virtual void Describe(std::string &sDescription);
+
+  virtual bool Read(icUInt32Number size, CIccIO *pIO);
+  virtual bool Write(CIccIO *pIO);
+
+  virtual bool Begin();
+  virtual icFloatNumber Apply(icFloatNumber v) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE = NULL) const;
+
+protected:
+  icUInt32Number m_nReserved;
+
+  icUInt32Number m_nCount;   //number of samples used for interpolation
+  icFloatNumber *m_pSamples; //interpolation values
+
+  icUInt16Number m_storageType;
+  icUInt16Number m_extensionType;
+
+  icFloatNumber m_firstEntry;
+  icFloatNumber m_lastEntry;
+
+  icFloatNumber m_range;
+  icFloatNumber m_last;
+
+  icFloatNumber m_loSlope;
+  icFloatNumber m_loIntercept;
+  icFloatNumber m_hiSlope;
+  icFloatNumber m_hiIntercept;
+};
+
 
 /**
 ****************************************************************************

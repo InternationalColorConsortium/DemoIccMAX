@@ -1019,7 +1019,6 @@ typedef enum {
 typedef enum {
     icSigFormulaCurveSeg              = 0x70617266,  /* 'parf' */
     icSigSampledCurveSeg              = 0x73616D66,  /* 'samf' */
-    icSigSingleSampledCurveSeg        = 0x736e6766,  /* 'sngf' */
 } icCurveSegSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
@@ -1030,18 +1029,19 @@ typedef enum {
  */
 typedef enum {
     icSigSegmentedCurve               = 0x63757266,  /* 'curf' */
+    icSigSingleSampledCurve           = 0x736e6766,  /* 'sngf' */
 } icCurveElemSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
 #define icMaxCurveElemSignature ((icCurveElemSignature 0xFFFFFFFF)
 
-/** Enum for defining type of Single Segment **/
+/** Enum for defining type of Single Sampled Curve**/
 typedef enum {
-  icClipSingleSegment = 0,
-  icExtendSingleSegment
-} icSingleSegmentType;
+  icClipSingleSampledCurve = 0,
+  icExtendSingleSampledCurve
+} icSingleSampledCurveType;
 
-#define icMaxSingleSegmentType icExtendSingleSegment
+#define icMaxSingleSampledCurveType icExtendSingleSampledCurve
 
 /** Enum to identify single segment curve / clut2 element storage type **/ 
 typedef enum {

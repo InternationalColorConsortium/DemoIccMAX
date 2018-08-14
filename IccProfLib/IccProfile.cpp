@@ -1734,7 +1734,7 @@ icValidateStatus CIccProfile::CheckTagTypes(std::string &sReport) const
     if (!IsTypeValid(tagsig, typesig, structSig, arraySig)) {
       sReport += icValidateNonCompliantMsg;
       sReport += buf;
-      sprintf(buf,"%s: Invalid tag type (Might be critical!).\r\n", Info.GetTagTypeSigName(typesig));
+      sprintf(buf," %s: Invalid tag type (Might be critical!).\r\n", Info.GetTagTypeSigName(typesig));
       sReport += buf;
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -2302,13 +2302,13 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                rv = icMaxStatus(rv, icValidateCriticalError);
              }
 
-          if (!GetTag(icSigGamutTag)) {
+          if (!GetTag(icSigGamutTag) && m_Header.version < icVersionNumberV5) {
             sReport += icValidateNonCompliantMsg;
             sReport += "Gamut tag missing.\r\n";
             rv = icMaxStatus(rv, icValidateNonCompliant);
           }
 
-          if (m_Header.version >= 0x04000000L) {
+          if (m_Header.version >= icVersionNumberV4) {
             switch (m_Header.colorSpace) {
               case icSig2colorData:
               case icSig3colorData:
@@ -2471,7 +2471,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                 rv = icMaxStatus(rv, icValidateCriticalError);
             }
 
-            if (!GetTag(icSigGamutTag)) {
+            if (!GetTag(icSigGamutTag) && m_Header.version < icVersionNumberV5) {
               sReport += icValidateNonCompliantMsg;
               sReport += "Gamut tag missing.\r\n";
               rv = icMaxStatus(rv, icValidateNonCompliant);
