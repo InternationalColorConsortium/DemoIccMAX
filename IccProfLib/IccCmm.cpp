@@ -1221,7 +1221,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
     else
       rv->m_pConnectionConditions = pProfile;
 
-    rv->SetParams(pProfile, bInput, nIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel, nMCS);
+    rv->SetParams(pProfile, bInput, nIntent, nTagIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel, nMCS);
   }
 
   return rv;
@@ -1280,32 +1280,50 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
   if (pTag && !pTag->IsSupported())
     return NULL;
 
-  if (pTag->GetType() == icSigMultiProcessElementType) {
-    rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag, pHintManager);
+  if (bInput) {
+    if (pTag->GetType() == icSigMultiProcessElementType) {
+      rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag, pHintManager);
+    }
+    else {
+      switch (pProfile->m_Header.colorSpace) {
+      case icSigXYZData:
+      case icSigLabData:
+      case icSigLuvData:
+      case icSigYCbCrData:
+      case icSigYxyData:
+      case icSigRgbData:
+      case icSigHsvData:
+      case icSigHlsData:
+      case icSigCmyData:
+      case icSig3colorData:
+        rv = CIccXformCreator::CreateXform(icXformType3DLut, pTag, pHintManager);
+        break;
+
+      case icSigCmykData:
+      case icSig4colorData:
+        rv = CIccXformCreator::CreateXform(icXformType4DLut, pTag, pHintManager);
+        break;
+
+      default:
+        rv = CIccXformCreator::CreateXform(icXformTypeNDLut, pTag, pHintManager);
+        break;
+      }
+    }
   }
   else {
-    switch (pProfile->m_Header.colorSpace) {
-    case icSigXYZData:
-    case icSigLabData:
-    case icSigLuvData:
-    case icSigYCbCrData:
-    case icSigYxyData:
-    case icSigRgbData:
-    case icSigHsvData:
-    case icSigHlsData:
-    case icSigCmyData:
-    case icSig3colorData:
-      rv = CIccXformCreator::CreateXform(icXformType3DLut, pTag, pHintManager);
-      break;
+    if (pTag->GetType() == icSigMultiProcessElementType) {
+      rv = CIccXformCreator::CreateXform(icXformTypeMpe, pTag, pHintManager);
+    }
+    else {
+      switch (pProfile->m_Header.pcs) {
+      case icSigXYZData:
+      case icSigLabData:
+        rv = CIccXformCreator::CreateXform(icXformType3DLut, pTag, pHintManager);
+        break;
 
-    case icSigCmykData:
-    case icSig4colorData:
-      rv = CIccXformCreator::CreateXform(icXformType4DLut, pTag, pHintManager);
-      break;
-
-    default:
-      rv = CIccXformCreator::CreateXform(icXformTypeNDLut, pTag, pHintManager);
-      break;
+      default:
+        break;
+      }
     }
   }
 
@@ -1315,7 +1333,7 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
     else
       rv->m_pConnectionConditions = pProfile;
 
-    rv->SetParams(pProfile, bInput, nIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel, nMCS);
+    rv->SetParams(pProfile, bInput, nIntent, nTagIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel, nMCS);
   }
 
   return rv;
@@ -1334,13 +1352,14 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
  *  nIntent = rendering intent to apply to the profile
  *  nInterp = the interpolation algorithm to use for N-D luts
  ******************************************************************************/
-void CIccXform::SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent nIntent, bool bUseSpectralPCS,
-													icXformInterp nInterp, CIccCreateXformHintManager *pHintManager/* =NULL */,
+void CIccXform::SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent nIntent, icRenderingIntent nTagIntent,
+                          bool bUseSpectralPCS, icXformInterp nInterp, CIccCreateXformHintManager *pHintManager/* =NULL */,
                           bool bAbsToRel/*=false*/, icMCSConnectionType nMCS/*=icNoMCS*/)
 {
   m_pProfile = pProfile;
   m_bInput = bInput;
   m_nIntent = nIntent;
+  m_nTagIntent = nTagIntent;
   m_nInterp = nInterp;
 	m_pAdjustPCS = NULL;
   m_bUseSpectralPCS = bUseSpectralPCS;
@@ -6929,7 +6948,7 @@ CIccXform *CIccXformMpe::Create(CIccProfile *pProfile, bool bInput/* =true */, i
   }
 
   if (rv) {
-    rv->SetParams(pProfile, bInput, nIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel);
+    rv->SetParams(pProfile, bInput, nIntent, nTagIntent, bUseSpectralPCS, nInterp, pHintManager, bAbsToRel);
   }
 
   return rv;
@@ -7124,8 +7143,9 @@ void CIccXformMpe::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, const 
   const CIccTagMultiProcessElement *pTag = m_pTag;
 
   if (!m_bInput) { //PCS comming in?
-    if (m_nIntent != icAbsoluteColorimetric)  //B2D3 tags don't need abs conversion
+    if (m_nIntent != icAbsoluteColorimetric || m_nIntent != m_nTagIntent) {  //B2D3 tags don't need abs conversion
       SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+    }
 
     //Since MPE tags use "real" values for PCS we need to convert from 
     //internal encoding used by IccProfLib
@@ -7169,7 +7189,7 @@ void CIccXformMpe::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, const 
         break;
     }
 
-    if (m_nIntent != icAbsoluteColorimetric) { //D2B3 tags don't need abs conversion
+    if (m_nIntent != icAbsoluteColorimetric || m_nIntent != m_nTagIntent) { //D2B3 tags don't need abs conversion
       CheckDstAbs(DstPixel);
     }
   }

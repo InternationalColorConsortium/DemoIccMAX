@@ -186,7 +186,7 @@ typedef enum {
   icSigArcTan2Op                    = 0x61746e32,  /* 'atn2' */
   icSigCartesianToPolarOp           = 0x63746f70,  /* 'ctop' */
   icSigPolarToCartesianOp           = 0x70746f63,  /* 'ptoc' */
-  icSigReanNumberOp                 = 0x726e756d,  /* 'rnum' */
+  icSigRealNumberOp                 = 0x726e756d,  /* 'rnum' */
   icSigLessThanOp                   = 0x6c742020,  /* 'lt  ' */
   icSigLessThanEqualOp              = 0x6c652020,  /* 'le  ' */
   icSigEqualOp                      = 0x65712020,  /* 'eq  ' */

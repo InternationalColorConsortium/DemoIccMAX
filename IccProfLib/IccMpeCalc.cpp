@@ -1894,7 +1894,7 @@ void SIccCalcOp::Describe(std::string &desc)
     case icSigFloorOp:
     case icSigCeilingOp:
     case icSigRoundOp:
-    case icSigReanNumberOp:
+    case icSigRealNumberOp:
     case icSigNegOp:      
     case icSigExpOp:              
     case icSigLogrithmOp:         
@@ -2009,7 +2009,7 @@ CIccCalcOpMgr::CIccCalcOpMgr()
   m_map[icSigVectorOrOp] = new CIccOpDefVectorOr();
   m_map[icSigMinimumOp] = new CIccOpDefMinimum();          
   m_map[icSigMaximumOp] = new CIccOpDefMaximum();          
-  m_map[icSigReanNumberOp] = new CIccOpDefRealNumber();
+  m_map[icSigRealNumberOp] = new CIccOpDefRealNumber();
   m_map[icSigLessThanOp] = new CIccOpDefLessThan();         
   m_map[icSigLessThanEqualOp] = new CIccOpDefLessThanEqual();    
   m_map[icSigEqualOp] = new CIccOpDefEqual();
@@ -2113,7 +2113,7 @@ bool SIccCalcOp::IsValidOp(icSigCalcOp sig)
     case icSigVectorOrOp:
     case icSigMinimumOp:          
     case icSigMaximumOp:          
-    case icSigReanNumberOp:
+    case icSigRealNumberOp:
     case icSigLessThanOp:         
     case icSigLessThanEqualOp:    
     case icSigEqualOp:
@@ -2282,7 +2282,7 @@ icUInt16Number SIccCalcOp::ArgsUsed(CIccMpeCalculator *pCalc)
     case icSigFloorOp:
     case icSigCeilingOp:
     case icSigRoundOp:
-    case icSigReanNumberOp:
+    case icSigRealNumberOp:
     case icSigNegOp:      
     case icSigExpOp:              
     case icSigLogrithmOp:         
@@ -2409,7 +2409,7 @@ icUInt16Number SIccCalcOp::ArgsPushed(CIccMpeCalculator *pCalc)
     case icSigFloorOp:
     case icSigCeilingOp:
     case icSigRoundOp:
-    case icSigReanNumberOp:
+    case icSigRealNumberOp:
     case icSigNegOp:
     case icSigExpOp:              
     case icSigLogrithmOp:         
@@ -3171,7 +3171,7 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
       case icSigFloorOp:
       case icSigCeilingOp:
       case icSigRoundOp:
-      case icSigReanNumberOp:
+      case icSigRealNumberOp:
       case icSigNegOp:      
       case icSigExpOp:              
       case icSigLogrithmOp:         
@@ -3719,9 +3719,9 @@ icValidateStatus CIccCalculatorFunc::Validate(std::string sigPath, std::string &
     sReport += icValidateCriticalErrorMsg;
     sReport += sSigPathName;
     if (parseStat==icFuncParseStackUnderflow)
-      sReport += " causes a evaluation stack underflow.\r\n";
+      sReport += " causes an evaluation stack underflow.\r\n";
     else
-      sReport += " causes a evaluation stack overflow.\r\n";
+      sReport += " causes an evaluation stack overflow.\r\n";
     return icValidateCriticalError;
   }
 
@@ -3743,8 +3743,8 @@ icUInt32Number CIccCalculatorFunc::GetMaxTemp() const
   icUInt32Number i, nMaxTemp = 0;
 
   for (i=0; i<m_nOps; i++) {
-    if (m_Op[i].sig == icSigTempGetChanOp || m_Op[i].sig == icSigTempPutChanOp || m_Op[i].sig == icSigTempPutChanOp) {
-      icUInt32Number last = m_Op[i].data.select.v1 + m_Op[i].data.select.v2;
+    if (m_Op[i].sig == icSigTempGetChanOp || m_Op[i].sig == icSigTempPutChanOp || m_Op[i].sig == icSigTempSaveChanOp ) {
+      icUInt32Number last = (icUInt32Number)(m_Op[i].data.select.v1) + (icUInt32Number)(m_Op[i].data.select.v2);
       if (last>nMaxTemp)
         nMaxTemp = last;
     }

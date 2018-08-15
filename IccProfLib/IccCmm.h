@@ -387,11 +387,11 @@ public:
   bool IsMCS() const { return m_nMCS!=icNoMCS; }
 
   bool IsAbstract() const { return m_pProfile && m_pProfile->m_Header.deviceClass==icSigAbstractClass; }
-
+    
   /// The following function is for Overridden create function
-  void SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent nIntent, bool bUseSpectralPCS,
-                 icXformInterp nInterp, CIccCreateXformHintManager *pHintManager=NULL, bool bAbsToRel=false,
-                 icMCSConnectionType nMCS=icNoMCS);
+  void SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent nIntent, icRenderingIntent nTagIntet,
+                 bool bUseSpectralPCS, icXformInterp nInterp, CIccCreateXformHintManager *pHintManager=NULL, 
+                 bool bAbsToRel=false, icMCSConnectionType nMCS=icNoMCS);
 
   /// Use these functions to extract the input/output curves from the xform
   virtual LPIccCurve* ExtractInputCurves()=0;
@@ -432,6 +432,7 @@ protected:
   CIccProfile *m_pProfile;
   bool m_bInput;
   icRenderingIntent m_nIntent;
+  icRenderingIntent m_nTagIntent;
   icXYZNumber m_MediaXYZ;
   icXformInterp m_nInterp;
   bool m_bUseD2BTags;

@@ -104,13 +104,15 @@ int main(int argc, char* argv[])
 
   if (argc<=1) {
 print_usage:
-    printf("Usage: iccDumpProfile profile {tagId to dump/\"ALL\")\n");
+    printf("Usage: iccDumpProfile {-v} profile {tagId to dump/\"ALL\"}\n");
+    printf("\nThe -v option causes profile validation to be performed.\n");
     return -1;
   }
 
   CIccProfile *pIcc;
   std::string sReport;
   icValidateStatus nStatus = icValidateOK;
+  bool bDumpValidation = false;
 
   if (!strncmp(argv[1], "-V", 2) || !strncmp(argv[1], "-v", 2)) {
     if (argc<=2)
@@ -119,6 +121,7 @@ print_usage:
     nArg = 2;
 
     pIcc = ValidateIccProfile(argv[nArg], sReport, nStatus);
+    bDumpValidation = true;
   }
   else
     pIcc = OpenIccProfile(argv[nArg]);
@@ -215,7 +218,9 @@ print_usage:
     }
   }
 
-  if (nArg>1) {
+  int nValid = 0;
+
+  if (bDumpValidation) {
     printf("\nValidation Report\n");
     printf(  "-----------------\n");
     switch (nStatus) {
@@ -229,16 +234,19 @@ print_usage:
       printf("Profile violates ICC specification\n\n");
       break;
     case icValidateCriticalError:
-      printf("Profile has Critical Error(s) that violate ICC specificaiton.\n\n");
+      printf("Profile has Critical Error(s) that violate ICC specification.\n\n");
+      nValid = -1;
       break;
     default:
       printf("Profile has unknown status.\n\n");
+      nValid = -2;
       break;
     }
     fwrite(sReport.c_str(), sReport.length(), 1, stdout);
   }
 
   delete pIcc;
-  return 0;
+
+  return nValid;
 }
 
