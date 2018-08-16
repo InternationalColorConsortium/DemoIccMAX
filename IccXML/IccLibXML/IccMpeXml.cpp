@@ -509,6 +509,7 @@ bool CIccSinglSampledeCurveXml::ToXml(std::string &xml, std::string blanks)
   char buf[256];
   char line[256];
 
+  xml += blanks;
   sprintf(line, "<SingleSampledCurve FirstEntry=\"%.8f\"", m_firstEntry);
   xml += line;
 
@@ -931,7 +932,7 @@ bool CIccMpeXmlCurveSet::ToXml(std::string &xml, std::string blanks/* = ""*/)
   for (i=0; i<NumInputChannels(); i++) {
     CIccCurveSetCurve* curve = m_curve[i];
     if (curve->GetType() == icSigSingleSampledCurve) {
-      CIccSegmentedCurveXml *m_ptr = (CIccSegmentedCurveXml*)m_curve[i];
+      CIccSinglSampledeCurveXml *m_ptr = (CIccSinglSampledeCurveXml*)m_curve[i];
 
       if (!(m_ptr->ToXml(xml, blanks + "  ")))
         return false;

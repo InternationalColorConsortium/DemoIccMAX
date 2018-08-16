@@ -1194,6 +1194,8 @@ bool CIccSingleSampledCurve::SetStorageType(icUInt16Number nStorateType)
   }
   return false;
 }
+
+
 /**
 ******************************************************************************
 * Name: CIccSingleSampledCurve::SetSize
@@ -3881,6 +3883,34 @@ void CIccMpeExtCLUT::Describe(std::string &sDescription)
     m_pCLUT->DumpLut(sDescription, desc, icSigUnknownData, icSigUnknownData);
   }
 }
+
+/**
+******************************************************************************
+* Name: CIccMpeExtCLUT::SetStorageType
+*
+* Purpose:
+*  Sets storage type of the data stored in the CLUT
+*
+* Args:
+*  nStorageType is type of data to use
+*
+* Return:
+*  true if valid storage type, false otherwise
+******************************************************************************/
+bool CIccMpeExtCLUT::SetStorageType(icUInt16Number nStorateType)
+{
+  m_storageType = nStorateType;
+
+  switch (nStorateType) {
+  case icValueTypeUInt8:
+  case icValueTypeUInt16:
+  case icValueTypeFloat16:
+  case icValueTypeFloat32:
+    return true;
+  }
+  return false;
+}
+
 
 /**
 ******************************************************************************
