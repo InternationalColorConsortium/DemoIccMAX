@@ -37,13 +37,13 @@ Within the RefIccMAX project are several libraries and tools as follows:
     profile specification](http://www.color.org/iccmax.xalter). Class and object
     interaction documentation for IccProfLib can be found at ().
 
-    1) There are no intentional discrepancies between the RefIccMAX
-       implementation and the iccMAX specification. If any should occur then this
-       should be brought to the attention of and resolved by the RefIccMAX project
-       team within the Architecture Working Group of the ICC organization.
+    * There are no intentional discrepancies between the RefIccMAX
+      implementation and the iccMAX specification. If any should occur then this
+      should be brought to the attention of and resolved by the RefIccMAX project
+      team within the Architecture Working Group of the ICC organization.
 
-    2) Though SampleICC provides a sample implementation, it does NOT
-       represent a reference implementation of ICC.1 color management.
+      Though SampleICC provides a sample implementation, it does NOT
+      represent a reference implementation of ICC.1 color management.
 
   * IccLibXML - The RefIccMax IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
@@ -64,8 +64,8 @@ Within the RefIccMAX project are several libraries and tools as follows:
     edited using a text editor and then converted back to ICC/iccMAX profile
     formats using IccFromXML.
 
-    1) This tool is dependent upon the IccLibXML project (above) as well as
-       libXML and iconv.
+    * This tool is dependent upon the IccLibXML project (above) as well as
+      libXML and iconv.
 
   * IccFromXML is a cross platform command line tool that allows both legacy ICC
     and iccMAX profiles to be created from the same XML representation provided by
@@ -74,8 +74,8 @@ Within the RefIccMAX project are several libraries and tools as follows:
     IccFromXML tool provides a simple direct method to create and manipulate
     iccMAX based profiles.
 
-    1) This tool is dependent upon the IccLibXML project (above) as well as
-       libXML and iconv.
+    * This tool is dependent upon the IccLibXML project (above) as well as
+      libXML and iconv.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
     sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
@@ -89,7 +89,7 @@ Within the RefIccMAX project are several libraries and tools as follows:
     TIFF image. The final destination profile can optionally be embedded in the
     resulting TIFF image.
 
-    1) This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
+    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
 
   * IccDumpProfile is a cross platform command line tool that allows information
     from a legacy ICC and or iccMAX profile to be output to the console.
@@ -106,13 +106,13 @@ Within the RefIccMAX project are several libraries and tools as follows:
     single multi-sample per pixel TIFF image. An iccMAX based profile can optionally
     be embedded in the resulting TIFF image.
 
-    1) This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
+    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
 
   * IccTiffDump is a cross platform command line tool that outputs header and
     embedded ICC profile information about a TIFF image to the console. This tool
     has a dependency on the LibTIFF project.
 
-    1) This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
+    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
 
   * RefIccLabsCMM provides a MacOS-X based Color Management Module that can be used
     within the ColorSync environment.
@@ -208,7 +208,7 @@ referenced using the system environment variables `LIBXML` and `ICONV`.
 For example:
 
 ```bash
-ICONV=C:\DevLibs\iconv\iconv-1.9.2
+ICONV=C:\DevLibs\iconv\iconv-.9.2
 LIBXML2=C:\DevLibs\libxml2\libxml2-2.7.8
 ```
 
