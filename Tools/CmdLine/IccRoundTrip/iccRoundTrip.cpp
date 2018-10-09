@@ -87,6 +87,7 @@ public:
 
   icFloatNumber minDE1, minDE2;
   icFloatNumber maxDE1, maxDE2;
+  icUInt32Number num3, m_nTotal;
 
   icFloatNumber maxLab1[3], maxLab2[3];
 
@@ -101,7 +102,7 @@ CIccMinMaxEval::CIccMinMaxEval()
   minDE1 = minDE2 = 10000;
   maxDE1 = maxDE2 = -1;
   sum1 = sum2 = 0;
-  num1 = num2 = 0;
+  num1 = num2 = num3 = m_nTotal = 0;
 
   memset(&maxLab1[0], 0, sizeof(maxLab1));
   memset(&maxLab2[0], 0, sizeof(maxLab2));
@@ -130,11 +131,16 @@ void CIccMinMaxEval::Compare(icFloatNumber *pixel, icFloatNumber *deviceLab, icF
     memcpy(&maxLab2[0], deviceLab, sizeof(maxLab2));
   }
 
+  if(DE2 <= 1.0)
+    num3 += 1.0;
+
   sum1 += DE1;
   num1 += 1.0;
 
   sum2 += DE2;
   num2 += 1.0;
+
+  m_nTotal += 1.0;
 }
 
 

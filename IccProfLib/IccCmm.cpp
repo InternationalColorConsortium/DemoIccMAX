@@ -826,6 +826,17 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
 
           if (pTag)
             bUseSpectralPCS = true;
+
+          if (!pTag && nTagIntent == icAbsoluteColorimetric && pProfile->m_Header.version < icVersionNumberV5) {
+            pTag = pProfile->FindTag(icSigBToD1Tag);
+
+            //Unsupported elements cause fall back behavior
+            if (pTag && !pTag->IsSupported())
+              pTag = NULL;
+
+            if (pTag)
+              nTagIntent = icRelativeColorimetric;
+          }
         }
 
         if (!pTag) {

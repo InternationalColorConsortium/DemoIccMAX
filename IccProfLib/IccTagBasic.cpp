@@ -1183,16 +1183,22 @@ bool CIccTagZipUtf8Text::GetText(std::string &str) const
   int zstat;
   z_stream zstr;
   memset(&zstr, 0, sizeof(zstr));
-  unsigned char buf[32767] = {0};
-
-  zstr.next_in = buf;
-  zstr.avail_in = zstr.total_in = 32767;
+  unsigned char buf[32767] = { 0 };
 
   zstat = inflateInit(&zstr);
 
   if (zstat != Z_OK) {
     return false;
   }
+
+  zstat = inflateReset(&zstr);
+
+  if (zstat != Z_OK) {
+    return false;
+  }
+
+  zstr.next_in = m_pZipBuf;
+  zstr.avail_in = m_nBufSize;
 
   do {
     unsigned int i, n;
@@ -1207,13 +1213,12 @@ bool CIccTagZipUtf8Text::GetText(std::string &str) const
       return false;
     }
 
-    n=sizeof(buf) - zstr.avail_out;
+    n = sizeof(buf) - zstr.avail_out;
 
-    for (i=0; i<n; i++) {
+    for (i = 0; i < n; i++) {
       str += buf[i];
     }
-  }
-  while(zstat != Z_STREAM_END);
+  } while (zstat != Z_STREAM_END);
 
   inflateEnd(&zstr);
 
@@ -1237,7 +1242,7 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 #ifndef ICC_USE_ZLIB
   return false;
 #else
-  icUInt32Number nSize = (icUInt32Number)strlen((const char*)szText)+1;
+  icUInt32Number nSize = (icUInt32Number)strlen((const char*)szText) + 1;
   icUtf8Vector compress;
   int i;
 
@@ -1246,21 +1251,27 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
   unsigned char buf[32767];
   memset(&zstr, 0, sizeof(zstr));
 
-  zstr.next_in = (Bytef*)szText;
-  zstr.avail_in = nSize;
-
   zstat = deflateInit(&zstr, Z_DEFAULT_COMPRESSION);
 
   if (zstat != Z_OK) {
     return false;
   }
 
+  zstat = deflateReset(&zstr);
+  zstr.next_in = (Bytef*)szText;
+  zstr.avail_in = nSize;
+
+  if (zstat != Z_OK) {
+    return false;
+  }
+
+
   do {
     int n;
     zstr.next_out = buf;
     zstr.avail_out = sizeof(buf);
 
-    zstat = deflate(&zstr, Z_NO_FLUSH);
+    zstat = deflate(&zstr, Z_FINISH);
 
     if (zstat != Z_OK && zstat != Z_STREAM_END) {
       deflateEnd(&zstr);
@@ -1269,20 +1280,19 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 
     n = sizeof(buf) - zstr.avail_out;
 
-    for (i=0; i<n; i++) {
+    for (i = 0; i < n; i++) {
       compress.push_back(buf[i]);
     }
-  }
-  while(zstat!=Z_STREAM_END);
+  } while (zstat != Z_STREAM_END);
 
   deflateEnd(&zstr);
 
   icUChar *pBuf = AllocBuffer(compress.size());
 
   if (pBuf) {
-    for (i=0; i<m_nBufSize; i++) {
-      pBuf[i]=compress[i];
-    }
+    for (i = 0; i < m_nBufSize; i++) {
+      pBuf[i] = compress[i];
+}
   }
 
   return true;

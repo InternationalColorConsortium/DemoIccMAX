@@ -964,10 +964,13 @@ bool CIccMpeXmlCurveSet::ParseXml(xmlNode *pNode, std::string &parseStr)
   SetSize(nChannels);
   int nIndex = 0;
   for (pNode = pNode->children, nIndex = 0;
-       pNode && nIndex<nChannels;
+       pNode;
        pNode=pNode->next) {
     if (pNode->type == XML_ELEMENT_NODE) {
-      if (!strcmp((const char*)pNode->name, "SegmentedCurve")) {
+      if (nIndex >= nChannels) {
+        return false;
+      }
+      else if (!strcmp((const char*)pNode->name, "SegmentedCurve")) {
         CIccSegmentedCurveXml *pCurve = new CIccSegmentedCurveXml();
 
         if (!pCurve->ParseXml(pNode, parseStr)) {

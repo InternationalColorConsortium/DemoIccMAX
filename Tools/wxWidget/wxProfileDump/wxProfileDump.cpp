@@ -764,6 +764,7 @@ public:
 
   icFloatNumber minDE1, minDE2;
   icFloatNumber maxDE1, maxDE2;
+  icUInt32Number num3, m_nTotal;
 
   icFloatNumber maxLab1[3], maxLab2[3];
 
@@ -778,7 +779,7 @@ CIccMinMaxEval::CIccMinMaxEval()
   minDE1 = minDE2 = 10000;
   maxDE1 = maxDE2 = -1;
   sum1 = sum2 = 0;
-  num1 = num2 = 0;
+  num1 = num2 = num3 = m_nTotal = 0;
 
   memset(&maxLab1[0], 0, sizeof(maxLab1));
   memset(&maxLab2[0], 0, sizeof(maxLab2));
@@ -807,11 +808,16 @@ void CIccMinMaxEval::Compare(icFloatNumber *pixel, icFloatNumber *deviceLab, icF
     memcpy(&maxLab2[0], deviceLab, sizeof(maxLab2));
   }
 
+  if(DE2 <= 1.0)
+    num3 += 1.0;
+
   sum1 += DE1;
   num1 += 1.0;
 
   sum2 += DE2;
   num2 += 1.0;
+
+  m_nTotal += 1.0;
 }
 
 wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool bUseMPE)
@@ -826,6 +832,7 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
     report += wxString::Format("Rendering Intent: %s\n", info.GetRenderingIntentName(nIntent));
 
   char * pPath = strdup( profilePath.mb_str() );
+  clock_t start = clock();
   icStatusCMM stat = eval.EvaluateProfile( (const icChar*) pPath, 0, nIntent, icInterpTetrahedral, bUseMPE);
 
   if (stat!=icCmmStatOk) {
@@ -841,6 +848,7 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   CIccPRMG prmg;
 
   stat = prmg.EvaluateProfile( (const icChar*) pPath, nIntent, icInterpTetrahedral, bUseMPE);
+  clock_t elapsed = clock() - start;
 
   if (stat!=icCmmStatOk) {
     report += wxString::Format("  Unable to perform PRMG analysis on '%s'\n", profilePath.c_str());
@@ -864,7 +872,8 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   report += wxString::Format(  "   ------------\n");
   report += wxString::Format("   Min DeltaE:    %8.2" ICFLOATSFX "\n", eval.minDE2);
   report += wxString::Format("   Mean DeltaE:   %8.2" ICFLOATSFX "\n", eval.GetMean2());
-  report += wxString::Format("   Max DeltaE:    %8.2" ICFLOATSFX "\n\n", eval.maxDE2);
+  report += wxString::Format("   Max DeltaE:    %8.2" ICFLOATSFX "\n", eval.maxDE2);
+  report += wxString::Format("   DE <= 1.0 (%8u): %5.1f%%\n\n", eval.num3, (float)eval.num3 / (float)eval.m_nTotal*100.0);
 
   report += wxString::Format("   Max L, a, b:   " ICFLOATFMT ", " ICFLOATFMT ", " ICFLOATFMT "\n", eval.maxLab2[0], eval.maxLab2[1], eval.maxLab2[2]);
 
@@ -881,6 +890,8 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   }
 
   report += "\n";
+
+  report += wxString::Format("Evaluation took %f seconds\n\n", (double)elapsed / (double)CLOCKS_PER_SEC);
 
   return report;
 }

@@ -417,7 +417,7 @@ CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
       return new CIccTagUtf8Text;
 
     case icSigZipUtf8TextType:
-      return new CIccTagUtf8Text;
+      return new CIccTagZipUtf8Text;
 
     case icSigZipXmlType:
       return new CIccTagZipXml;

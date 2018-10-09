@@ -375,11 +375,11 @@ public:
   virtual const icChar *GetClassName() const { return "CIccZipUtf8TagText"; }
 
   /* GetText() may fail if ICC_USE_ZLIB is not defined*/
-  bool GetText(std::string &str) const;
+  virtual bool GetText(std::string &str) const;
 
   /* SetText() may fail if ICC_USE_ZLIB is not defined*/
   bool SetText(const icUChar16 *szText);
-  bool SetText(const icUChar *szText);
+  virtual bool SetText(const icUChar *szText);
   bool SetText(const icChar *szText) { return SetText((icUChar*)szText); }
 
   /*Note: operator= is not supported because ZLIB support might not be enabled*/
