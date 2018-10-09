@@ -1,3 +1,9 @@
+2018-10-10 Max Derhak
+* 2.1.14 Release of IccProflib and related tools
+* Add ZLIB configurations to build projects in MSVC
+* Fixed issues with using ZLIB compression with text tags
+* Added time calculation and dE<1 calculations to round trip tests
+
 2018-08-15 Max Derhak
 * 2.1.13 Release of IccProflib and related tools
 * 2.1.13 Release of IccLibXML and related tools
@@ -13,7 +19,7 @@
 * Fix bugs with CLUT precision during XML parsing and creation
 * Fix bug with CIccMpeCalculator copy construction
 * Improve signature path text conversion
-* Display reason for RountTrip failure to wxProfileDump
+* Display reason for RoundTrip failure to wxProfileDump
 * Added static function to CIccCmm to get text representation of icStatusCMM values
 
 2018-06-06 Max Derhak
