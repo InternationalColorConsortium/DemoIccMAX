@@ -627,6 +627,7 @@
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = IccProfLib;
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -647,6 +648,7 @@
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = IccProfLib;
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
