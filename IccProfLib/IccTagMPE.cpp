@@ -925,6 +925,28 @@ void CIccTagMultiProcessElement::Attach(CIccMultiProcessElement *pElement)
   m_list->push_back(ptr);
 }
 
+/**
+******************************************************************************
+* Name: CIccTagMultiProcessElement::Insert
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+void CIccTagMultiProcessElement::Insert(CIccMultiProcessElement *pElement)
+{
+  if (!m_list) {
+    m_list = new CIccMultiProcessElementList();
+  }
+
+  CIccMultiProcessElementPtr ptr;
+
+  ptr.ptr = pElement;
+
+  m_list->push_front(ptr);
+}
 
 
 /**
@@ -1117,7 +1139,7 @@ bool CIccTagMultiProcessElement::Write(CIccIO *pIO)
 
         end = pIO->Tell();
 
-        if (!pIO->Sync32())
+        if (!pIO->Align32())
           return false;
 
         position.offset = start - tagStart;

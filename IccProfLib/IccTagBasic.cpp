@@ -4396,7 +4396,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
   icSignature sig1 = icGetFirstSigPathSig(sigPath);
   icSignature sig2 = icGetSecondSigPathSig(sigPath);
 
-  if (sig1==icSigSpectralMediaWhitePointTag) {
+  if (sig1==icSigSpectralWhitePointTag) {
     bCheckPCS = true;
   }
 
@@ -6580,6 +6580,32 @@ const icChar *CIccLocalizedUnicode::GetAnsi(icChar *szBuf, icUInt32Number nBufSi
 }
 
 /**
+****************************************************************************
+* Name: CIccLocalizedUnicode::GetText
+*
+* Purpose: Sets a standard string with the text
+*
+* Args:
+*  nSize - length of the string
+*
+*****************************************************************************
+*/
+bool CIccLocalizedUnicode::GetText(std::string &sText)
+{
+  icUInt32Number size = GetAnsiSize();
+  char *buf = (char*)malloc(size+1);
+  if (buf) {
+    GetAnsi(buf, size);
+    sText = buf;
+    free(buf);
+    return true;
+  }
+  sText = "";
+  return false;
+}
+
+
+/**
  ****************************************************************************
  * Name: CIccLocalizedUnicode::SetSize
  * 
@@ -8697,7 +8723,7 @@ bool CIccProfileDescText::Read(icUInt32Number size, CIccIO *pIO)
 
   if (!SetType(sig)) {
     //We couldn't find it, but we may be looking in the wrong place
-    //Re-Syncronize on a 4 byte boundary
+    //Re-Sync to a 4 byte boundary
     pIO->Sync32();
 
     nPos = pIO->Tell();
@@ -10713,6 +10739,83 @@ bool CIccTagSpectralViewingConditions::setObserver(icStandardObserver observerId
   return true;
 }
 
+
+bool icGetTagText(CIccTag *pTag, std::string &text)
+{
+  if (!pTag) {
+    text = "";
+    return false;
+  }
+  switch (pTag->GetType()) {
+    case icSigTextType:
+    {
+      CIccTagText *pTextTag = (CIccTagText*)pTag;
+      const char *szText = pTextTag->GetText();
+      if (szText) {
+        text = szText;
+        return true;
+      }
+    }
+    text = "";
+    return false;
+
+    case icSigUtf8TextType:
+    {
+      CIccTagUtf8Text *pTextTag = (CIccTagUtf8Text*)pTag;
+      const char *szText = (const char*)pTextTag->GetText();
+      if (szText) {
+        text = szText;
+        return true;
+      }
+    }
+    text = "";
+    return false;
+
+    case icSigZipUtf8TextType:
+    {
+      CIccTagZipUtf8Text *pTextTag = (CIccTagZipUtf8Text*)pTag;
+      bool rv = pTextTag->GetText(text);
+      return rv;
+    }
+
+    case icSigUtf16TextType:
+    {
+      CIccTagUtf16Text *pTextTag = (CIccTagUtf16Text*)pTag;
+      const icChar *szText = pTextTag->GetText(text);
+      if (szText)
+        return true;
+    }
+    return false;
+
+    case icSigTextDescriptionType:
+    {
+      CIccTagTextDescription *pTextTag = (CIccTagTextDescription*)pTag;
+      const char *szText = pTextTag->GetText();
+      if (szText) {
+        text = szText;
+        return true;
+      }
+    }
+    text = "";
+    return false;
+
+    case icSigMultiLocalizedUnicodeType:
+    {
+      CIccTagMultiLocalizedUnicode *pTextTag = (CIccTagMultiLocalizedUnicode*)pTag;
+      CIccLocalizedUnicode *pText = pTextTag->Find();
+      if (pText) {
+        bool rv = pText->GetText(text);
+        return rv;
+      }
+    }
+    text = "";
+    return false;
+
+    default:
+      text = "";
+      return false;
+  }
+}
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX

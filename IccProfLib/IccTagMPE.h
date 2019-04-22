@@ -375,7 +375,9 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Attach(CIccMultiProcessElement *pElement);
+  virtual void Attach(CIccMultiProcessElement *pElement); //put element at end
+
+  virtual void Insert(CIccMultiProcessElement *pElement); //put element at beginning
 
   CIccMultiProcessElement *GetElement(int nIndex);
   void DeleteElement(int nIndex);

@@ -452,7 +452,7 @@ typedef enum {
     icSigScreeningDescTag                  = 0x73637264,  /* 'scrd' Removed in V4 */
     icSigScreeningTag                      = 0x7363726E,  /* 'scrn' Removed in V4 */
     icSigSpectralDataInfoTag               = 0x7364696e,  /* 'sdin' */
-    icSigSpectralMediaWhitePointTag        = 0x736d7770,  /* 'smwp' */
+    icSigSpectralWhitePointTag             = 0x73777074,  /* 'swpt' */
     icSigSpectralViewingConditionsTag      = 0x7376636e,  /* 'svcn' */
     icSigStandardToCustomPcsTag            = 0x73326370,  /* 's2cp' */
     icSigTechnologyTag                     = 0x74656368,  /* 'tech' */

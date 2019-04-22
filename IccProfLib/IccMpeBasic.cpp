@@ -104,6 +104,7 @@ CIccFormulaCurveSegment::CIccFormulaCurveSegment(icFloatNumber start, icFloatNum
   m_endPoint = end;
 
   m_nFunctionType = 0;
+  m_nShortcutType = 0;
   m_nParameters = 0;
   m_params = NULL;
 }
@@ -126,6 +127,7 @@ CIccFormulaCurveSegment::CIccFormulaCurveSegment(const CIccFormulaCurveSegment &
   m_endPoint = seg.m_endPoint;
 
   m_nFunctionType = seg.m_nFunctionType;
+  m_nShortcutType = seg.m_nShortcutType;
   m_nParameters = seg.m_nParameters;
 
   if (seg.m_params) {
@@ -157,6 +159,7 @@ CIccFormulaCurveSegment &CIccFormulaCurveSegment::operator=(const CIccFormulaCur
   m_endPoint = seg.m_endPoint;
 
   m_nFunctionType = seg.m_nFunctionType;
+  m_nShortcutType = seg.m_nShortcutType;
   m_nParameters = seg.m_nParameters;
   if (seg.m_params) {
     m_params = (icFloatNumber*)malloc(m_nParameters*sizeof(icFloatNumber));
@@ -439,6 +442,20 @@ bool CIccFormulaCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
     if (!m_params || m_nParameters<4)
       return false;
 
+    if (m_params[0] == (icFloatNumber)1.0) { //don't apply gamma
+      if (m_params[2] == (icFloatNumber)0.0 && m_params[3] == (icFloatNumber)0.0)
+        m_nShortcutType = 1;
+      else if (m_params[2] == 0.0)
+        m_nShortcutType = 2;
+      else if (m_params[3] == 0.0)
+        m_nShortcutType = 3;
+      else
+        m_nShortcutType = 4;
+    }
+    else {
+      m_nShortcutType = 0;
+    }
+
     return true;
 
   case 0x0001:
@@ -476,7 +493,19 @@ icFloatNumber CIccFormulaCurveSegment::Apply(icFloatNumber v) const
   switch (m_nFunctionType) {
   case 0x0000:
     //Y = (a * X + b) ^ g  + c        : g a b c
-    return (pow(m_params[1] * v + m_params[2], m_params[0]) + m_params[3]);
+    switch (m_nShortcutType) {
+    case 0:
+    default:
+      return (pow(m_params[1] * v + m_params[2], m_params[0]) + m_params[3]);
+    case 1:
+      return (m_params[1] * v);
+    case 2:
+      return (m_params[1] * v + m_params[3]);
+    case 3:
+      return (m_params[1] * v + m_params[2]);
+    case 4:
+      return (m_params[1] * v + m_params[2] + m_params[3]);
+    }
 
   case 0x0001:
     // Y = a * log (b * X^g + c) + d  : g a b c d
@@ -1435,7 +1464,6 @@ bool CIccSingleSampledCurve::Write(CIccIO *pIO)
   if (!pIO->Write16(&m_storageType))
     return false;
 
-  //First point in samples is ONLY for interpolation (not saved)
   if (m_nCount) {
 
     switch(m_storageType) {
@@ -1500,6 +1528,8 @@ bool CIccSingleSampledCurve::Begin()
 
       m_hiSlope = (m_pSamples[m_nCount-1] - m_pSamples[m_nCount-2])/stepSize;
       m_hiIntercept = m_pSamples[m_nCount-1] - m_hiSlope*m_lastEntry;
+      break;
+
     default:
       return false;
   }
@@ -2456,7 +2486,7 @@ bool CIccMpeCurveSet::Write(CIccIO *pIO)
           start = pIO->Tell();
           m_curve[i]->Write(pIO);
           end = pIO->Tell();
-          pIO->Sync32();
+          pIO->Align32();
           position.offset = start - elemStart;
           position.size = end - start;
           map[m_curve[i]] = position;

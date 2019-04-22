@@ -123,15 +123,17 @@ typedef enum {
 
 /// CMM Xform LUT types
 typedef enum {
-  icXformLutColor              = 0,
-  icXformLutNamedColor         = 1,
-  icXformLutPreview            = 2,
-  icXformLutGamut              = 3,
-  icXformLutBPC                = 4,
-  icXformLutBRDFParam          = 5,
-  icXformLutBRDFDirect         = 6,
-  icXformLutBRDFMcsParam       = 7,
-  icXformLutMCS                = 8,
+  icXformLutColor              = 0x0,  //This is a combination of icXformLutColorimetric with icXformLutSpectral
+  icXformLutNamedColor         = 0x1,
+  icXformLutPreview            = 0x2,
+  icXformLutGamut              = 0x3,
+  icXformLutBPC                = 0x4,
+  icXformLutBRDFParam          = 0x5,
+  icXformLutBRDFDirect         = 0x6,
+  icXformLutBRDFMcsParam       = 0x7,
+  icXformLutMCS                = 0x8,
+  icXformLutColorimetric       = 0x9,
+  icXformLutSpectral           = 0xA,
  } icXformLutType;
 
 #define icPerceptualRefBlackX 0.00336

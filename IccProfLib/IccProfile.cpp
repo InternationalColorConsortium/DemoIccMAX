@@ -961,6 +961,18 @@ bool CIccProfile::Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId)
   return true;
 }
 
+bool CIccProfile::ReadProfileID(icProfileID &profileID)
+{
+  if (!m_pAttachIO) {
+    memset(&profileID, 0, sizeof(profileID));
+    return false;
+  }
+
+  CalcProfileID(m_pAttachIO, &profileID);
+
+  return true;
+}
+
 /**
  ******************************************************************************
  * Name: CIccProfile::InitHeader
@@ -2987,7 +2999,7 @@ bool CIccProfile::calcMediaWhiteXYZ(icFloatNumber *pXYZ, IIccProfileConnectionCo
   CIccTag *pTag;
   bool rv = true;
 
-  pTag = FindTag(icSigSpectralMediaWhitePointTag);
+  pTag = FindTag(icSigSpectralWhitePointTag);
 
   if (!pView || !pTag) { //Use profile's definition of Media White Point
 getmediaXYZ:

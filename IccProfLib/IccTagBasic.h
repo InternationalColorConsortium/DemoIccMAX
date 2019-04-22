@@ -521,6 +521,10 @@ protected:
   bool m_bInvalidScript;
 };
 
+//The icGetTagText() utility function will extract text information from a
+//tag if it is one of the above text tag types.  It returns false if it the
+//tag is not a text tag or it cannot extract the text from the tag.
+ICCPROFLIB_API bool icGetTagText(CIccTag *pTag, std::string &text);
 
 /**
 ****************************************************************************
@@ -1129,6 +1133,8 @@ public: //member functions
 
   icUInt32Number GetAnsiSize();
   const icChar *GetAnsi(icChar *szBuf, icUInt32Number nBufSize);
+
+  bool GetText(std::string &text);
   
   bool SetSize(icUInt32Number);
 

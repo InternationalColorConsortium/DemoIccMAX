@@ -178,6 +178,8 @@ public:
   icValidateStatus ReadValidate(CIccIO *pIO, std::string &sReport);
   bool Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId=icVersionBasedID);
 
+  bool ReadProfileID(icProfileID &profileID); //works if HasIO() is true 
+
   void InitHeader();
   icValidateStatus Validate(std::string &sReport, std::string sSigPath="") const;
 

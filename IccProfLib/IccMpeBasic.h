@@ -156,6 +156,7 @@ protected:
   icUInt16Number m_nReserved2;
   icUInt8Number m_nParameters;
   icUInt16Number m_nFunctionType;
+  icUInt16Number m_nShortcutType;
   icFloatNumber *m_params;
 };
 

@@ -198,7 +198,7 @@ struct {
   {icSigSaturationRenderingIntentGamutTag, "saturationRenderingIntentGamutTag"},
   {icSigCxFTag, "CxfTag"},
   {icSigSpectralDataInfoTag, "spectralDataInfoTag"},
-  {icSigSpectralMediaWhitePointTag, "spectralMediaWhitePointTag"},
+  {icSigSpectralWhitePointTag, "spectralWhitePointTag"},
   {icSigCustomToStandardPcsTag, "customToStandardPcsTag"},
   {icSigStandardToCustomPcsTag, "standardToCustomPcsTag"},
   {icSigColorEncodingParamsTag, "colorEncodingParamsTag"},

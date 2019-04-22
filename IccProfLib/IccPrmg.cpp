@@ -214,12 +214,12 @@ icStatusCMM CIccPRMG::EvaluateProfile(CIccProfile *pProfile, icRenderingIntent n
 
   CIccCmm Lab2Dev2Lab(icSigLabData, icSigLabData, false);
 
-  icStatusCMM result = Lab2Dev2Lab.AddXform(*pProfile, nIntent, nInterp, NULL, icXformLutColor, buseMpeTags);
+  icStatusCMM result = Lab2Dev2Lab.AddXform(*pProfile, nIntent, nInterp, NULL, icXformLutColorimetric, buseMpeTags);
   if (result != icCmmStatOk) {
     return result;
   }
 
-  result = Lab2Dev2Lab.AddXform(*pProfile, nIntent, nInterp, NULL, icXformLutColor, buseMpeTags);
+  result = Lab2Dev2Lab.AddXform(*pProfile, nIntent, nInterp, NULL, icXformLutColorimetric, buseMpeTags);
   if (result != icCmmStatOk) {
     return result;
   }

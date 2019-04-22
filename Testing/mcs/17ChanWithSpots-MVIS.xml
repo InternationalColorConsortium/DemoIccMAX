@@ -30,24 +30,16 @@
 		<CalculatorElement InputChannels="17" OutputChannels="3" InputNames="Cyan Magenta Yellow Black Spot1 Spot2 Spot3 Spot4 Spot5 Spot6 Spot7 Spot8 Spot9 Spot10 Spot11 Spot12 Spot13">
 			<SubElements>
 				<CurveSetElement Name="CMYK_Shaper" InputChannels="4" OutputChannels="4">
-					<SegmentedCurve>
-						<SingleSampledSegment Start="-infinity" End="+infinity" 
-						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Cyan.txt" Format="text"/>
-					</SegmentedCurve>
-					<SegmentedCurve>
-						<SingleSampledSegment Start="-infinity" End="+infinity" 
-						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+					</SingleSampledCurve>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Magenta.txt" Format="text"/>
-					</SegmentedCurve>
-					<SegmentedCurve>
-						<SingleSampledSegment Start="-infinity" End="+infinity" 
-						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+					</SingleSampledCurve>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Yellow.txt" Format="text"/>
-					</SegmentedCurve>
-					<SegmentedCurve>
-						<SingleSampledSegment Start="-infinity" End="+infinity" 
-						 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+					</SingleSampledCurve>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Black.txt" Format="text"/>
 					</SegmentedCurve>
 				</CurveSetElement>
