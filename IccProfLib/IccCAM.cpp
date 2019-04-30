@@ -71,7 +71,7 @@
 
 #include "IccCAM.h"
 #include "IccUtil.h"
-//#include <cmath>
+#include <math.h>
 #include <string>
 
 /*---------------------------------------------------------------------------------*/
