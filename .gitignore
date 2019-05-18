@@ -41,8 +41,9 @@ Testing/IccToXml
 # Xcode deps
 Build/XCode/libtiff/*.h*
 Build/XCode/libxml/*.h*
+
 # Xcode build files
-**/build
+**/*.noindex
 **/xcuserdata
 **/DerivedData
 **/DataStore
