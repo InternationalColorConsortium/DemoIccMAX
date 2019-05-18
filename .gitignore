@@ -48,6 +48,18 @@ Build/XCode/libxml/*.h*
 **/DataStore
 **/.DS_Store
 
+# Visual Studio
+**/.vs
+*.vcxproj.user
+*.idb
+*.pdb
+*.exp
+*.ilk
+*.tlog
+*.log
+**/Release/**
+**/Debug/**
+
 # copied code
 Tools/CmdLine/IccSpecSepToTiff/TiffImg.cpp
 Tools/CmdLine/IccSpecSepToTiff/TiffImg.h
