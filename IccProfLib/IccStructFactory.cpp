@@ -160,7 +160,7 @@ icStructSignature CIccBasicStructFactory::GetStructSig(const icChar *szStructNam
 }
 
 
-std::auto_ptr<CIccStructCreator> CIccStructCreator::theStructCreator;
+std::unique_ptr<CIccStructCreator> CIccStructCreator::theStructCreator;
 
 CIccStructCreator::~CIccStructCreator()
 {
