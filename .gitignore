@@ -44,6 +44,8 @@ Build/XCode/libxml/*.h*
 
 # Xcode build files
 **/*.noindex
+**/Build
+!/Build
 **/xcuserdata
 **/DerivedData
 **/DataStore
