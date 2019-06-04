@@ -615,7 +615,7 @@ icValidateStatus CIccTagCurve::Validate(std::string sigPath, std::string &sRepor
     if (m_nSize>1) {
       if (m_Curve) {
         if (m_Curve[0]>0.0 || m_Curve[m_nSize-1]<1.0) {
-          sReport += icValidateWarningMsg;
+          sReport += icMsgValidateWarning;
           sReport += sSigPathName;
           sReport += " - Curve cannot be accurately inverted.\r\n";
           rv = icMaxStatus(rv, icValidateWarning);
@@ -1089,7 +1089,7 @@ icValidateStatus CIccTagParametricCurve::Validate(std::string sigPath, std::stri
   icSignature sig = icGetFirstSigPathSig(sigPath);
 
   if (m_nReserved2!=0) {
-    sReport += icValidateNonCompliantMsg;
+    sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
     sReport += " - Reserved Value must be zero.\r\n";
 
@@ -1099,7 +1099,7 @@ icValidateStatus CIccTagParametricCurve::Validate(std::string sigPath, std::stri
   switch(m_nFunctionType) {
 case 0x0000:
   if (m_nNumParam!=1) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Number of parameters inconsistent with function type.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1108,7 +1108,7 @@ case 0x0000:
 
 case 0x0001:
   if (m_nNumParam!=3) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Number of parameters inconsistent with function type.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1117,7 +1117,7 @@ case 0x0001:
 
 case 0x0002:
   if (m_nNumParam!=4) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Number of parameters inconsistent with function type.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1126,7 +1126,7 @@ case 0x0002:
 
 case 0x0003:
   if (m_nNumParam!=5) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Number of parameters inconsistent with function type.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1135,7 +1135,7 @@ case 0x0003:
 
 case 0x0004:
   if (m_nNumParam!=7) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Number of parameters inconsistent with function type.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1143,7 +1143,7 @@ case 0x0004:
   break;
 
 default:
-  sReport += icValidateCriticalErrorMsg;
+  sReport += icMsgValidateCriticalError;
   sReport += sSigPathName;
   sReport += " - Unknown function type.\r\n";
   rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1153,7 +1153,7 @@ default:
     icFloatNumber lval = Apply(0.0);
     icFloatNumber uval = Apply(1.0);
     if (lval>0.0 || uval<1.0) {
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " - Curve cannot be accurately inverted.\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -1583,7 +1583,7 @@ icValidateStatus CIccMatrix::Validate(std::string sigPath, std::string &sReport,
         sum += m_e[i];
       }
       if (m_e[0]!=1.0 || m_e[4]!=1.0 || m_e[9]!=1.0 || sum!=3.0) {
-        sReport += icValidateNonCompliantMsg;
+        sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
         sReport += " - Matrix must be identity.\r\n";
         rv = icValidateNonCompliant;
@@ -3007,7 +3007,7 @@ icValidateStatus CIccCLUT::Validate(std::string sigPath, std::string &sReport, c
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
   if (m_nReserved2[0]!=0 || m_nReserved2[1]!=0 || m_nReserved2[2]!=0) {
-    sReport += icValidateNonCompliantMsg;
+    sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
     sReport += " - Reserved Value must be zero.\r\n";
 
@@ -3018,7 +3018,7 @@ icValidateStatus CIccCLUT::Validate(std::string sigPath, std::string &sReport, c
     char temp[256];
     for (int i=0; i<m_nInput; i++) {
       if (m_GridPoints[i]<2) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sprintf(temp, " - CLUT: At least 2 grid points should be present in dimension %u.\r\n",i );
         sReport += temp;
@@ -3442,7 +3442,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
   icSignature sig = icGetFirstSigPathSig(sigPath);
 
   if (!pProfile) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
     rv = icMaxStatus(rv, icValidateWarning);
@@ -3459,7 +3459,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
     {
       nInput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
       if (m_nInput!=nInput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of input channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -3467,7 +3467,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
 
       nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
       if (m_nOutput!=nOutput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of output channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -3482,7 +3482,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
     {
       nInput = icGetSpaceSamples(pProfile->m_Header.pcs);
       if (m_nInput!=nInput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of input channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -3490,7 +3490,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
 
       nOutput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
       if (m_nOutput!=nOutput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of output channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -3502,7 +3502,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
     {
       nInput = 1;
       if (m_nInput!=nInput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of input channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -3510,7 +3510,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
 
       nOutput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
       if (m_nOutput!=nOutput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of output channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -3528,7 +3528,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
   //CLUT check
   if (nInput!=nOutput) {
     if (!m_CLUT) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " - CLUT must be present.\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);          
@@ -4100,7 +4100,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
             rv = icMaxStatus(rv, m_CurvesB[i]->Validate(sigPath+icGetSigPath(GetType()), sReport, pProfile));
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of B-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4114,7 +4114,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
             rv = icMaxStatus(rv, m_CurvesM[i]->Validate(sigPath+icGetSigPath(GetType()), sReport, pProfile));
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of M-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4124,7 +4124,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
 
       if (m_CurvesA) {
         if (!m_CLUT) {
-          sReport += icValidateNonCompliantMsg;
+          sReport += icMsgValidateNonCompliant;
           sReport += sSigPathName;
           sReport += " - CLUT must be present if using A-curves.\r\n";
 
@@ -4136,7 +4136,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
             rv = icMaxStatus(rv, m_CurvesA[i]->Validate(sigPath+icGetSigPath(GetType()), sReport, pProfile));
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of A-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4229,7 +4229,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
   icSignature sig = icGetFirstSigPathSig(sigPath);
 
   if (!pProfile) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4253,7 +4253,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
       }
 
       if (m_nOutput!=nOutput) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
         sReport += " - Incorrect number of output channels.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4266,7 +4266,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
             rv = icMaxStatus(rv, m_CurvesB[i]->Validate(sigPath+icGetSigPath(GetType()), sReport, pProfile));
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of B-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4280,7 +4280,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
             rv = icMaxStatus(rv, m_CurvesM[i]->Validate(sigPath+icGetSigPath(GetType()), sReport, pProfile));
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of M-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4290,7 +4290,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
 
       if (m_CurvesA) {
         if (!m_CLUT) {
-          sReport += icValidateNonCompliantMsg;
+          sReport += icMsgValidateNonCompliant;
           sReport += sSigPathName;
           sReport += " - CLUT must be present if using A-curves.\r\n";
 
@@ -4302,7 +4302,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
             rv = icMaxStatus(rv, m_CurvesA[i]->Validate(sigPath+icGetSigPath(GetType()), sReport, pProfile));
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of A-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4696,7 +4696,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
             if (m_CurvesB[i]->GetType()==icSigCurveType) {
               CIccTagCurve *pTagCurve = (CIccTagCurve*)m_CurvesB[i];
               if (pTagCurve->GetSize()==1) {
-                sReport += icValidateCriticalErrorMsg;
+                sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
                 sReport += " - lut8Tags do not support single entry gamma curves.\r\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4704,7 +4704,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
             }
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of B-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4721,7 +4721,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
           sum += m_XYZMatrix[i];
         }
         if (m_XYZMatrix[0]!=1.0 || m_XYZMatrix[4]!=1.0 || m_XYZMatrix[8]!=1.0 || sum!=3.0) {
-          sReport += icValidateWarningMsg;
+          sReport += icMsgValidateWarning;
           sReport += sSigPathName;
           sReport += " - Matrix must be identity.\r\n";
           rv = icMaxStatus(rv, icValidateWarning);
@@ -4736,7 +4736,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
             if (m_CurvesA[i]->GetType()==icSigCurveType) {
               CIccTagCurve *pTagCurve = (CIccTagCurve*)m_CurvesA[i];
               if (pTagCurve->GetSize()==1) {
-                sReport += icValidateCriticalErrorMsg;
+                sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
                 sReport += " - lut8Tags do not support single entry gamma curves.\r\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
@@ -4744,7 +4744,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
             }
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of A-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -5120,7 +5120,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
             if (m_CurvesB[i]->GetType()==icSigCurveType) {
               CIccTagCurve *pTagCurve = (CIccTagCurve*)m_CurvesB[i];
               if (pTagCurve->GetSize()==1) {
-                sReport += icValidateCriticalErrorMsg;
+                sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
                 sReport += " - lut16Tags do not support single entry gamma curves.\r\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
@@ -5128,7 +5128,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
             }
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of B-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -5145,7 +5145,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
           sum += m_XYZMatrix[i];
         }
         if (m_XYZMatrix[0]!=1.0 || m_XYZMatrix[4]!=1.0 || m_XYZMatrix[8]!=1.0 || sum!=3.0) {
-          sReport += icValidateWarningMsg;
+          sReport += icMsgValidateWarning;
           sReport += sSigPathName;
           sReport += " - Matrix must be identity.\r\n";
           rv = icMaxStatus(rv, icValidateWarning);
@@ -5160,7 +5160,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
             if (m_CurvesA[i]->GetType()==icSigCurveType) {
               CIccTagCurve *pTagCurve = (CIccTagCurve*)m_CurvesA[i];
               if (pTagCurve->GetSize()==1) {
-                sReport += icValidateCriticalErrorMsg;
+                sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
                 sReport += " - lut16Tags do not support single entry gamma curves.\r\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
@@ -5168,7 +5168,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
             }
           }
           else {
-            sReport += icValidateCriticalErrorMsg;
+            sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
             sReport += " - Incorrect number of A-curves.\r\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
@@ -5695,7 +5695,7 @@ icValidateStatus CIccTagGamutBoundaryDesc::Validate(std::string sigPath, std::st
 	std::string sSigPathName = Info.GetSigPathName(sigPath);
 	
 	if ((m_NumberOfVertices == 0) || (m_NumberOfTriangles == 0) || (m_nPCSChannels < 3)) {
-		sReport += icValidateWarningMsg;
+		sReport += icMsgValidateWarning;
 		sReport += sSigPathName;
 		sReport += " - Invalid tag.\r\n";
 		

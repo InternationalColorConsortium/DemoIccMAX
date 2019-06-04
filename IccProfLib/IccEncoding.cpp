@@ -472,7 +472,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
     }
     pCam->SetCAM(pStdConvert);
     pMpeTag->Attach(pCam);
-    pIcc->AttachTag(icSigCustomToStandardPcsTag, pMpeTag);
+    pIcc->AttachTag(icSigCustomToStandardPccTag, pMpeTag);
 
     pMpeTag = (CIccTagMultiProcessElement*)CIccTag::Create(icSigMultiProcessElementType);
     if (!pMpeTag) {
@@ -499,7 +499,7 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
     }
     pCam->SetCAM(pCstmConvert2);
     pMpeTag->Attach(pCam);
-    pIcc->AttachTag(icSigStandardToCustomPcsTag, pMpeTag);
+    pIcc->AttachTag(icSigStandardToCustomPccTag, pMpeTag);
   }
 
 #if 1 && defined(_DEBUG)

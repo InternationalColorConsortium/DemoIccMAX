@@ -383,7 +383,7 @@ typedef enum {
     icSigColorimetricIntentImageStateTag   = 0x63696973,  /* 'ciis' */
     icSigCopyrightTag                      = 0x63707274,  /* 'cprt' */
     icSigCrdInfoTag                        = 0x63726469,  /* 'crdi' Removed in V4 */
-    icSigCustomToStandardPcsTag            = 0x63327370,  /* 'c2sp' */
+    icSigCustomToStandardPccTag            = 0x63327370,  /* 'c2sp' */
     icSigCxFTag                            = 0x43784620,  /* 'CxF ' */
     icSigDataTag                           = 0x64617461,  /* 'data' Removed in V4 */
     icSigDateTimeTag                       = 0x6474696D,  /* 'dtim' Removed in V4 */
@@ -454,7 +454,8 @@ typedef enum {
     icSigSpectralDataInfoTag               = 0x7364696e,  /* 'sdin' */
     icSigSpectralWhitePointTag             = 0x73777074,  /* 'swpt' */
     icSigSpectralViewingConditionsTag      = 0x7376636e,  /* 'svcn' */
-    icSigStandardToCustomPcsTag            = 0x73326370,  /* 's2cp' */
+    icSigStandardToCustomPccTag            = 0x73326370,  /* 's2cp' */
+    icSigSurfaceMapTag                     = 0x736D6170,  /* 'smap' */
     icSigTechnologyTag                     = 0x74656368,  /* 'tech' */
     icSigUcrBgTag                          = 0x62666420,  /* 'bfd ' Removed in V4 */
     icSigViewingCondDescTag                = 0x76756564,  /* 'vued' */
@@ -519,6 +520,8 @@ typedef enum {
     icSigDictType                       = 0x64696374,  /* 'dict' */
     icSigDateTimeType                   = 0x6474696D,  /* 'dtim' */
     icSigDeviceSettingsType             = 0x64657673,  /* 'devs' Removed in V4 */
+    icSigEmbeddedHeightImageType        = 0x6568696D,  /* 'ehim' */
+    icSigEmbeddedNormalImageType        = 0x656e696d,  /* 'enim' */
     icSigFloat16ArrayType               = 0x666c3136,  /* 'fl16' */
     icSigFloat32ArrayType               = 0x666c3332,  /* 'fl32' */
     icSigFloat64ArrayType               = 0x666c3634,  /* 'fl64' */
@@ -1311,6 +1314,12 @@ typedef enum {
   icSparseMatrixFloat32              = 0x0004,
 } icSparseMatrixType;
 
+
+/* Image encoding type encodings for embeddedHeightImageType and embeddedNormalImageType*/
+typedef enum {
+  icPngImageType                     = 0x0000,
+  icTiffImageType                    = 0x0001,
+} icImageEncodingType;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
 #define icSparseMatrixFloatNum ((icSparseMatrixType)0x0000) //Use internal icFloatNumber encoding

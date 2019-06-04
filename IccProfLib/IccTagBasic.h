@@ -1695,6 +1695,89 @@ protected:
 };
 
 
+
+/**
+****************************************************************************
+* Class: CIccTagEmbeddedHeightImage
+*
+* Purpose: The Embedded Height map tag
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccTagEmbeddedHeightImage : public CIccTag
+{
+public:
+  CIccTagEmbeddedHeightImage(int nSize = 1);
+  CIccTagEmbeddedHeightImage(const CIccTagEmbeddedHeightImage &IEHI);
+  CIccTagEmbeddedHeightImage &operator=(const CIccTagEmbeddedHeightImage &HeightTag);
+  virtual CIccTag* NewCopy() const { return new CIccTagEmbeddedHeightImage(*this); }
+  virtual ~CIccTagEmbeddedHeightImage();
+
+  virtual icTagTypeSignature GetType() const { return icSigEmbeddedHeightImageType; }
+  virtual const icChar *GetClassName() const { return "CIccTagEmbeddedHeightImage"; }
+
+  virtual void Describe(std::string &sDescription);
+
+  virtual bool Read(icUInt32Number size, CIccIO *pIO);
+  virtual bool Write(CIccIO *pIO);
+
+  icUInt32Number GetSize() const { return m_nSize; }
+  bool SetSize(icUInt32Number nSize, bool bZeroNew = true);
+  icUInt8Number &operator[] (icUInt32Number index) { return m_pData[index]; }
+  icUInt8Number *GetData(icUInt32Number index = 0) { return &m_pData[index]; }
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
+
+  icUInt32Number m_nSeamlesIndicator;
+  icImageEncodingType m_nEncodingFormat;
+  icFloatNumber m_fMetersMinPixelValue;
+  icFloatNumber m_fMetersMaxPixelValue;
+
+protected:
+  icUInt8Number *m_pData;
+  icUInt32Number m_nSize;
+};
+
+
+/**
+****************************************************************************
+* Class: CIccTagEmbeddedNormalImage
+*
+* Purpose: The Embedded Normal tag
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccTagEmbeddedNormalImage : public CIccTag
+{
+public:
+  CIccTagEmbeddedNormalImage(int nSize = 1);
+  CIccTagEmbeddedNormalImage(const CIccTagEmbeddedNormalImage &IENI);
+  CIccTagEmbeddedNormalImage &operator=(const CIccTagEmbeddedNormalImage &NormalTag);
+  virtual CIccTag* NewCopy() const { return new CIccTagEmbeddedNormalImage(*this); }
+  virtual ~CIccTagEmbeddedNormalImage();
+
+  virtual icTagTypeSignature GetType() const { return icSigEmbeddedNormalImageType; }
+  virtual const icChar *GetClassName() const { return "CIccTagEmbeddedNormalImage"; }
+
+  virtual void Describe(std::string &sDescription);
+
+  virtual bool Read(icUInt32Number size, CIccIO *pIO);
+  virtual bool Write(CIccIO *pIO);
+
+  icUInt32Number GetSize() const { return m_nSize; }
+  bool SetSize(icUInt32Number nSize, bool bZeroNew = true);
+  icUInt8Number &operator[] (icUInt32Number index) { return m_pData[index]; }
+  icUInt8Number *GetData(icUInt32Number index = 0) { return &m_pData[index]; }
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
+
+  icUInt32Number m_nSeamlesIndicator;
+  icImageEncodingType m_nEncodingFormat;
+
+protected:
+  icUInt8Number *m_pData;
+  icUInt32Number m_nSize;
+};
+
+
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX
 #endif

@@ -194,11 +194,11 @@ public:
                                                                                 FindTagOfType(icSigSpectralViewingConditionsTag, 
                                                                                               icSigSpectralViewingConditionsType); }
   virtual CIccTagMultiProcessElement *getCustomToStandardPcc() { return (CIccTagMultiProcessElement*)
-                                                                   FindTagOfType(icSigCustomToStandardPcsTag, 
+                                                                   FindTagOfType(icSigCustomToStandardPccTag, 
                                                                                  icSigMultiProcessElementType); }
 
   virtual CIccTagMultiProcessElement *getStandardToCustomPcc() { return (CIccTagMultiProcessElement*)
-                                                                   FindTagOfType(icSigStandardToCustomPcsTag, 
+                                                                   FindTagOfType(icSigStandardToCustomPccTag, 
                                                                                  icSigMultiProcessElementType); }
   virtual icIlluminant getPccIlluminant();
   virtual icFloatNumber getPccCCT();

@@ -208,6 +208,12 @@ CIccTag* CIccTagXmlFactory::CreateTag(icTagTypeSignature tagSig)
   case icSigEmbeddedProfileType:
     return new CIccTagXmlEmbeddedProfile;
 
+  case icSigEmbeddedHeightImageType:
+    return new CIccTagXmlEmbeddedHeightImage;
+
+  case icSigEmbeddedNormalImageType:
+    return new CIccTagXmlEmbeddedNormalImage;
+
   case icSigScreeningType:
   case icSigUcrBgType:
   case icSigCrdInfoType:

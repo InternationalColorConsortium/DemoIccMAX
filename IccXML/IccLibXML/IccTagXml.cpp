@@ -4951,6 +4951,189 @@ bool CIccTagXmlEmbeddedProfile::ToXml(std::string &xml, std::string blanks/* = "
   return pProfile->ToXmlWithBlanks(xml, blanks);
 }
 
+bool CIccTagXmlEmbeddedHeightImage::ParseXml(xmlNode *pNode, std::string &parseStr)
+{
+  // parse tag
+  xmlNode *tagNode;
+
+  tagNode = icXmlFindNode(pNode, "HeightImage");
+  if (!tagNode)
+    return false;
+
+  m_nSeamlesIndicator = atoi(icXmlAttrValue(tagNode, "SeamlessIndicator", "0"));
+  m_nEncodingFormat = (icImageEncodingType)atoi(icXmlAttrValue(tagNode, "EncodingFormat", "0"));
+  m_fMetersMinPixelValue = (icFloatNumber)atof(icXmlAttrValue(tagNode, "MetersMinPixelValue", "0.0"));
+  m_fMetersMaxPixelValue = (icFloatNumber)atof(icXmlAttrValue(tagNode, "MetersMaxPixelValue", "0.0"));
+
+  xmlNode *pImageNode;
+  pImageNode = icXmlFindNode(tagNode->children, "Image");
+
+  if (pImageNode) {
+    const char *filename = icXmlAttrValue(pImageNode, "File");
+    if (!filename || !filename[0]) {
+      filename = icXmlAttrValue(pImageNode, "Filename");
+    }
+
+    // file exists
+    if (filename[0]) {
+      CIccIO *file = IccOpenFileIO(filename, "rb");
+      if (!file) {
+        parseStr += "Error! - File '";
+        parseStr += filename;
+        parseStr += "' not found.\n";
+        delete file;
+        return false;
+      }
+
+      icUInt32Number num = file->GetLength();
+
+      SetSize(num);
+      icUInt8Number *dst = GetData(0);
+      if (file->Read8(dst, num)!=num) {
+        perror("Read-File Error");
+        parseStr += "'";
+        parseStr += filename;
+        parseStr += "' may not be a valid binary file.\n";
+        delete file;
+        return false;
+      }
+      delete file;
+      return true;
+    }
+    // no file
+    else if (pImageNode->children && pImageNode->children->content){
+      unsigned long nSize = icXmlGetHexDataSize((const icChar*)pImageNode->children->content);
+
+      SetSize(nSize);
+      if (m_pData) {
+        if (icXmlGetHexData(m_pData, (const icChar*)pImageNode->children->content, m_nSize) != m_nSize)
+          return false;
+      }
+
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CIccTagXmlEmbeddedHeightImage::ToXml(std::string &xml, std::string blanks/*= ""*/)
+{
+  char buf[200];
+
+  xml += blanks + "<HeightImage";
+  sprintf(buf, " SeamlessIndicator=\"%d\"", m_nSeamlesIndicator);
+  xml += buf;
+
+  sprintf(buf, " EncodingFormat=\"%d\"", m_nEncodingFormat);
+  xml += buf;
+
+  sprintf(buf, " MetersMinPixelValue=\"%.12f\"", m_fMetersMinPixelValue);
+  xml += buf;
+
+  sprintf(buf, " MetersMaxPixelValue=\"%.12f\"", m_fMetersMaxPixelValue);
+  xml += buf;
+
+  if (!m_nSize) {
+    xml += blanks + "/>\n";
+  }
+  else {
+    xml += ">\n";
+    xml += blanks + " <Image>\n";
+    icXmlDumpHexData(xml, blanks + "  ", m_pData, m_nSize);
+    xml += blanks + " </Image>\n";
+    xml += blanks + "</HeightImage>\n";
+  }
+
+  return true;
+}
+
+bool CIccTagXmlEmbeddedNormalImage::ParseXml(xmlNode *pNode, std::string &parseStr)
+{
+  // parse tag
+  xmlNode *tagNode;
+
+  tagNode = icXmlFindNode(pNode, "NormalImage");
+  if (!tagNode)
+    return false;
+
+  m_nSeamlesIndicator = atoi(icXmlAttrValue(tagNode, "SeamlessIndicator", "0"));
+  m_nEncodingFormat = (icImageEncodingType)atoi(icXmlAttrValue(tagNode, "EncodingFormat", "0"));
+
+  xmlNode *pImageNode;
+  pImageNode = icXmlFindNode(tagNode->children, "Image");
+
+  if (pImageNode) {
+    const char *filename = icXmlAttrValue(pImageNode, "File");
+    if (!filename || !filename[0]) {
+      filename = icXmlAttrValue(pImageNode, "Filename");
+    }
+
+    // file exists
+    if (filename[0]) {
+      CIccIO *file = IccOpenFileIO(filename, "rb");
+      if (!file) {
+        parseStr += "Error! - File '";
+        parseStr += filename;
+        parseStr += "' not found.\n";
+        delete file;
+        return false;
+      }
+
+      icUInt32Number num = file->GetLength();
+
+      SetSize(num);
+      icUInt8Number *dst = GetData(0);
+      if (file->Read8(dst, num) != num) {
+        perror("Read-File Error");
+        parseStr += "'";
+        parseStr += filename;
+        parseStr += "' may not be a valid binary file'.\n";
+        delete file;
+        return false;
+      }
+      delete file;
+      return true;
+    }
+    // no file
+    else if (pImageNode->children && pImageNode->children->content) {
+      unsigned long nSize = icXmlGetHexDataSize((const icChar*)pImageNode->children->content);
+
+      SetSize(nSize);
+      if (m_pData) {
+        if (icXmlGetHexData(m_pData, (const icChar*)pImageNode->children->content, m_nSize) != m_nSize)
+          return false;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CIccTagXmlEmbeddedNormalImage::ToXml(std::string &xml, std::string blanks/*= ""*/)
+{
+  char buf[200];
+
+  xml += blanks + "<NormalImage";
+  sprintf(buf, " SeamlessIndicator=\"%d\"", m_nSeamlesIndicator);
+  xml += buf;
+
+  sprintf(buf, " EncodingFormat=\"%d\"", m_nEncodingFormat);
+  xml += buf;
+
+  if (!m_nSize) {
+    xml += blanks + "/>\n";
+  }
+  else {
+    xml += ">\n";
+    xml += blanks + " <Image>\n";
+    icXmlDumpHexData(xml, blanks + "  ", m_pData, m_nSize);
+    xml += blanks + " </Image>\n";
+    xml += blanks + "</NormalImage>\n";
+  }
+
+  return true;
+}
+
 
 #ifdef USEREFICCMAXNAMESPACE
 }

@@ -70,6 +70,7 @@
     <ProjectName>IccProfLib_CRTDLL</ProjectName>
     <ProjectGuid>{AA703D3A-6A76-40EF-B4F2-2E3C57AF3E71}</ProjectGuid>
     <RootNamespace>IccProfLib_CRTDLL</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'" Label="Configuration">
@@ -292,16 +293,16 @@
     <IntDir>$(Platform)\Release_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen+ZLIB|Win32'">
-    <OutDir>$(Platform)\Release_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Release_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Platform)\Release_CRTDLL\\</OutDir>
+    <IntDir>$(Platform)\$(Platform)\Release_CRTDLL\\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen|x64'">
     <OutDir>$(Platform)\Release_CRTDLL\</OutDir>
     <IntDir>$(Platform)\Release_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen+ZLIB|x64'">
-    <OutDir>$(Platform)\Release_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Release_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Platform)\Release_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Platform)\Release_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">
     <OutDir>$(Platform)\Debug_CRTDLL\</OutDir>
@@ -565,8 +566,8 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(EIGEN);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;ICC_USE_EIGEN_SOLVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(EIGEN);$(ZLIB);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;ICC_USE_EIGEN_SOLVER;ICC_USE_ZLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -673,8 +674,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen+ZLIB|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(EIGEN);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;ICC_USE_EIGEN_SOLVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(EIGEN);$(ZLIB);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;ICC_USE_EIGEN_SOLVER;ICC_USE_ZLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>$(Platform)\Debug_CRTDLL/IccProfLib_CRTDLL.pch</PrecompiledHeaderOutputFile>

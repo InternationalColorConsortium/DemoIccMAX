@@ -453,7 +453,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  bool SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels);
+  bool SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, bool bUseConstants = true);
 
   icFloatNumber *GetMatrix() {return m_pMatrix;}
   icFloatNumber *GetConstants() {return m_pConstants;}

@@ -1,3 +1,8 @@
+2019-06-04 Max Derhak
+* 2.1.15 Release of IccProflib and related tools
+* Added support for surfaceMapTag and associated embeddedHeightImageType and embeddedNormalImageType
+* Fixed bugs with error/warning repoorting during profile validation (refactored messaging variable names)
+
 2019-04-28 Max Derhak
 * 2.1.15 Release of IccProflib and related tools
 * Added selection of Colorimetric and spectral transform types

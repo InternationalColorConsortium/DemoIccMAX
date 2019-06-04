@@ -3680,35 +3680,35 @@ icValidateStatus CIccCalculatorFunc::Validate(std::string sigPath, std::string &
 
   icValidateStatus rv = icValidateOK;
   if (m_nReserved) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " function has non zero reserved data.\r\n";
     rv = icValidateWarning;
   }
 
   if (GetMaxTemp()>65535) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " accesses illegal temporary channels.\r\n";
     return icValidateCriticalError;
   }
 
   if (!HasValidOperations(sReport)) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " function has invalid operations.\r\n";
     return icValidateCriticalError;
   }
 
   if (DoesOverflowInput(pChannelCalc->NumInputChannels())) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " accesses illegal input channels.\r\n";
     return icValidateCriticalError;
   }
 
   if (DoesOverflowOutput(pChannelCalc->NumOutputChannels())) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " accesses illegal output channels.\r\n";
     return icValidateCriticalError;
@@ -3716,7 +3716,7 @@ icValidateStatus CIccCalculatorFunc::Validate(std::string sigPath, std::string &
 
   icFuncParseStatus parseStat = DoesStackUnderflowOverflow(sReport);
   if (parseStat!=icFuncParseNoError) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     if (parseStat==icFuncParseStackUnderflow)
       sReport += " causes an evaluation stack underflow.\r\n";
@@ -4753,7 +4753,7 @@ icValidateStatus CIccMpeCalculator::Validate(std::string sigPath, std::string &s
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has an Empty Calculator Functions!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
