@@ -28,6 +28,7 @@ SET( CFILES
 	${SRC_PATH}/IccProfLib/IccTagBasic.cpp
 	${SRC_PATH}/IccProfLib/IccTagComposite.cpp
 	${SRC_PATH}/IccProfLib/IccTagDict.cpp
+	${SRC_PATH}/IccProfLib/IccTagEmbedIcc.cpp
 	${SRC_PATH}/IccProfLib/IccTagFactory.cpp
 	${SRC_PATH}/IccProfLib/IccTagLut.cpp
 	${SRC_PATH}/IccProfLib/IccTagMPE.cpp

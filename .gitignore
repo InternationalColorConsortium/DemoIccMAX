@@ -41,9 +41,27 @@ Testing/IccToXml
 # Xcode deps
 Build/XCode/libtiff/*.h*
 Build/XCode/libxml/*.h*
+
 # Xcode build files
-**/build
+**/*.noindex
+**/Build
+!/Build
 **/xcuserdata
+**/DerivedData
+**/DataStore
+**/.DS_Store
+
+# Visual Studio
+**/.vs
+*.vcxproj.user
+*.idb
+*.pdb
+*.exp
+*.ilk
+*.tlog
+*.log
+**/Release/**
+**/Debug/**
 
 # copied code
 Tools/CmdLine/IccSpecSepToTiff/TiffImg.cpp
