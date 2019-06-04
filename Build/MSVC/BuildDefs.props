@@ -1,21 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
+    <Import Project="..\..\..\..\Common\VSProps\Developer Defs.props" Condition="exists('..\..\..\..\Common\VSProps\Developer Defs.props')" Label="DeveloperDefs" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <EIGEN>D:\Workspace\vendor-VS15\eigen\eigen-3.2.8</EIGEN>
-	<ICONV>D:\Workspace\vendor-VS15\iconv\iconv-1.9.2</ICONV>
+    <EIGEN>$(VendorTreeDir)\eigen\eigen-3.2.8</EIGEN>
+	<ICONV>$(VendorTreeDir)\iconv\iconv-1.9.2</ICONV>
     <LIBTIFF_DLIB>libtiff.lib</LIBTIFF_DLIB>
-    <LIBTIFF_INCLUDE>D:\Workspace\vendor-VS15\libtiff\tiff-4.0.3\libtiff</LIBTIFF_INCLUDE>
-    <LIBTIFF_INCLUDEx64>D:\Workspace\vendor-VS15\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_INCLUDEx64>
+    <LIBTIFF_INCLUDE>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiff</LIBTIFF_INCLUDE>
+    <LIBTIFF_INCLUDEx64>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_INCLUDEx64>
     <LIBTIFF_LIB>libtiff.lib</LIBTIFF_LIB>
-	<LIBTIFF_LIBDIR>D:\Workspace\vendor-VS15\libtiff\tiff-4.0.3\libtiff</LIBTIFF_LIBDIR>
-	<LIBTIFF_LIBDIRx64>D:\Workspace\vendor-VS15\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_LIBDIRx64>
-	<LIBXML2>D:\Workspace\vendor-VS15\libxml2\libxml2-2.8.0</LIBXML2>
+	<LIBTIFF_LIBDIR>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiff</LIBTIFF_LIBDIR>
+	<LIBTIFF_LIBDIRx64>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_LIBDIRx64>
+	<LIBXML2>$(VendorTreeDir)\libxml2\libxml2-2.8.0</LIBXML2>
 	<WXVER>30</WXVER>
-	<WXWIN>D:\Workspace\vendor-VS15\WXWidgets\wxWidgets-3.0.2</WXWIN>
-    <ZLIB>D:\Workspace\vendor-VS15\ZLib\zlib-1.2.8</ZLIB>
-    <ZLIBLIB>D:\Workspace\vendor-VS15\ZLib\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatRelease</ZLIBLIB>
+	<WXWIN>$(VendorTreeDir)\WXWidgets\wxWidgets-3.0.2</WXWIN>
+    <ZLIB>$(VendorTreeDir)\ZLib\zlib-1.2.8</ZLIB>
+    <ZLIBLIB>$(VendorTreeDir)\ZLib\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatRelease</ZLIBLIB>
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
