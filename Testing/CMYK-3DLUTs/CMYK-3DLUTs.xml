@@ -42,26 +42,20 @@
 							<!--0 1 2 3 4 5 6 7 8 9 A B C D E F-->
 								<Data>
 									0 0 0 0 0 0 0 0 1 1 1 1 2 2 3 4
-				      	</Data>
+				      	        </Data>
 							</float32NumberType>
 						</TintArrayElement>
 						<!--Element 1 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-Y.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 2 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -70,21 +64,15 @@
 						</CLutElement>
 						<!--Element 3 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-k.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 4 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -93,21 +81,15 @@
 						</CLutElement>
 						<!--Element 5 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 6 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -116,21 +98,15 @@
 						</CLutElement>
 						<!--Element 7 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 8 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -139,26 +115,18 @@
 						</CLutElement>
 						<!--Element 9 -->
 						<CurveSetElement InputChannels="4" OutputChannels="4">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A0-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 10 -->
 						<CLutElement InputChannels="4" OutputChannels="3">
@@ -203,21 +171,15 @@ out(0,3)
 						</TintArrayElement>
 						<!--Element 1 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-Y.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 2 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -226,21 +188,15 @@ out(0,3)
 						</CLutElement>
 						<!--Element 3 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-k.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 4 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -249,21 +205,15 @@ out(0,3)
 						</CLutElement>
 						<!--Element 5 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 6 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -272,21 +222,15 @@ out(0,3)
 						</CLutElement>
 						<!--Element 7 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 8 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -295,26 +239,18 @@ out(0,3)
 						</CLutElement>
 						<!--Element 9 -->
 						<CurveSetElement InputChannels="4" OutputChannels="4">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A1-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 10 -->
 						<CLutElement InputChannels="4" OutputChannels="3">
@@ -359,21 +295,15 @@ out(0,3)
 						</TintArrayElement>
 						<!--Element 1 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-Y.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 2 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -382,21 +312,15 @@ out(0,3)
 						</CLutElement>
 						<!--Element 3 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-k.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 4 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -405,21 +329,15 @@ out(0,3)
 						</CLutElement>
 						<!--Element 5 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 6 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -428,21 +346,15 @@ out(0,3)
 						</CLutElement>
 						<!--Element 7 -->
 						<CurveSetElement InputChannels="3" OutputChannels="3">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 8 -->
 						<CLutElement InputChannels="3" OutputChannels="3">
@@ -451,26 +363,18 @@ out(0,3)
 						</CLutElement>
 						<!--Element 9 -->
 						<CurveSetElement InputChannels="4" OutputChannels="4">
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-C.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-M.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-Y.txt" Format="text"/>
-							</SegmentedCurve>
-							<SegmentedCurve>
-								<SingleSampledSegment Start="-infinity" End="+infinity" 
+							<SingleSampledCurve Start="-infinity" End="+infinity" 
 								 FirstEntry="0." LastEntry="1.0" StorageType="2" ExtensionType="0" 
 								 Filename="A2-K.txt" Format="text"/>
-							</SegmentedCurve>
 						</CurveSetElement>
 						<!--Element 10 -->
 						<CLutElement InputChannels="4" OutputChannels="3">

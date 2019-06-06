@@ -3981,9 +3981,11 @@ bool CIccTagXmlMultiProcessElement::ParseXml(xmlNode *pNode, std::string &parseS
   for (elemNode = pNode->children; elemNode; elemNode = elemNode->next) {
     if (elemNode->type == XML_ELEMENT_NODE) {
       if (!ParseElement(elemNode, parseStr)) {
+        char str[100];
         parseStr += "Unable to parse element (";
         parseStr += (char*)elemNode->name;
-        parseStr += ")\r\n";
+        sprintf(str, ") starting on line %d\r\n", elemNode->line);
+        parseStr += str;
         return false;
       }
     }

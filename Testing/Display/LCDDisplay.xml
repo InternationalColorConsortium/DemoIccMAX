@@ -25,8 +25,7 @@
       <TagSignature>A2B1</TagSignature>
       <MultiProcessElements InputChannels="3" OutputChannels="3">
         <CurveSetElement InputChannels="3" OutputChannels="3">
-          <SegmentedCurve>
-            <SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
+          <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
               0.00000000 0.00000467 0.00000934 0.00001401 0.00005668 0.00011916 0.00020193 0.00030546
               0.00043026 0.00057678 0.00074553 0.00093697 0.00115160 0.00138989 0.00165233 0.00193940
               0.00225158 0.00258935 0.00295321 0.00334362 0.00376107 0.00420604 0.00467902 0.00518049
@@ -59,10 +58,8 @@
               0.87717140 0.88325274 0.88928342 0.89526099 0.90118313 0.90704745 0.91285157 0.91859305
               0.92426956 0.92987871 0.93541813 0.94088542 0.94627821 0.95159411 0.95683074 0.96198571
               0.96705663 0.97204113 0.97693688 0.98174137 0.98645234 0.99106735 0.99558401 1.00000000
-            </SingleSampledSegment>
-          </SegmentedCurve>
-          <SegmentedCurve>
-            <SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
+          </SingleSampledCurve>
+          <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
               0.00000000 0.00000559 0.00001119 0.00001678 0.00005657 0.00011433 0.00019059 0.00028589
               0.00040074 0.00053567 0.00069121 0.00086789 0.00106623 0.00128677 0.00153002 0.00179651
               0.00208678 0.00240135 0.00274074 0.00310549 0.00349612 0.00391315 0.00435711 0.00482854
@@ -95,10 +92,8 @@
               0.85193640 0.85868806 0.86542338 0.87214065 0.87883800 0.88551378 0.89216626 0.89879364
               0.90539426 0.91196626 0.91850799 0.92501765 0.93149358 0.93793392 0.94433701 0.95070112
               0.95702440 0.96330523 0.96954179 0.97573239 0.98187524 0.98796862 0.99401081 1.00000000
-            </SingleSampledSegment>
-          </SegmentedCurve>
-          <SegmentedCurve>
-            <SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
+          </SingleSampledCurve>
+          <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
               0.00000000 0.00000638 0.00001276 0.00001913 0.00006211 0.00012420 0.00020589 0.00030767
               0.00043004 0.00057348 0.00073847 0.00092552 0.00113511 0.00136773 0.00162386 0.00190400
               0.00220864 0.00253827 0.00289337 0.00327443 0.00368195 0.00411641 0.00457831 0.00506813
@@ -131,8 +126,7 @@
               0.90425587 0.90970105 0.91505313 0.92030877 0.92546463 0.93051726 0.93546337 0.94029963
               0.94502270 0.94962913 0.95411563 0.95847887 0.96271545 0.96682203 0.97079527 0.97463179
               0.97832823 0.98188126 0.98528755 0.98854369 0.99164641 0.99459225 0.99737787 1.00000000
-            </SingleSampledSegment>
-          </SegmentedCurve>
+          </SingleSampledCurve>
         </CurveSetElement>
         <EmissionMatrixElement InputChannels="3" OutputChannels="3">
           <Wavelengths start="380.00000000" end="780.00000000" steps="401"/>
@@ -168,8 +162,7 @@
           </OffsetData>
         </InvEmissionMatrixElement>
         <CurveSetElement InputChannels="3" OutputChannels="3">
-          <SegmentedCurve>
-            <SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
+          <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
               0.00000000 0.07987434 0.10808717 0.12892176 0.14600061 0.16071257 0.17375150 0.18551449
               0.19626649 0.20619515 0.21543856 0.22410154 0.23226562 0.23999633 0.24735500 0.25439548
               0.26115996 0.26768216 0.27398953 0.28010479 0.28604689 0.29183203 0.29747400 0.30298471
@@ -202,10 +195,8 @@
               0.93126899 0.93392748 0.93660575 0.93930483 0.94202578 0.94476974 0.94753778 0.95033121
               0.95315140 0.95599979 0.95887786 0.96178734 0.96473002 0.96770781 0.97072285 0.97377747
               0.97687411 0.98001552 0.98320478 0.98644525 0.98974061 0.99309498 0.99651307 1.00000000
-            </SingleSampledSegment>
-          </SegmentedCurve>
-          <SegmentedCurve>
-            <SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
+          </SingleSampledCurve>
+          <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
               0.00000000 0.08242962 0.11120134 0.13231719 0.14955775 0.16436520 0.17745791 0.18925476
               0.20003209 0.20998298 0.21924815 0.22793372 0.23612186 0.24388172 0.25127882 0.25836542
               0.26518238 0.27176252 0.27813259 0.28431472 0.29032749 0.29618672 0.30190596 0.30749691
@@ -238,10 +229,8 @@
               0.94380581 0.94615084 0.94850242 0.95086092 0.95322663 0.95559978 0.95798075 0.96036977
               0.96276730 0.96517354 0.96758890 0.97001374 0.97244841 0.97489333 0.97734886 0.97981542
               0.98229343 0.98478335 0.98728561 0.98980075 0.99232924 0.99487156 0.99742830 1.00000000
-            </SingleSampledSegment>
-          </SegmentedCurve>
-          <SegmentedCurve>
-            <SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
+          </SingleSampledCurve>
+          <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
               0.00000000 0.08062451 0.10913949 0.13015695 0.14736462 0.16217393 0.17528357 0.18709362
               0.19787347 0.20781463 0.21705832 0.22571175 0.23385841 0.24156600 0.24889760 0.25590578
               0.26263195 0.26910943 0.27536544 0.28142259 0.28729987 0.29301351 0.29857737 0.30400354
@@ -274,8 +263,7 @@
               0.91380018 0.91666770 0.91957337 0.92251980 0.92550987 0.92854673 0.93163395 0.93477553
               0.93797582 0.94123983 0.94457328 0.94798267 0.95147550 0.95506042 0.95874780 0.96254975
               0.96648097 0.97055942 0.97480744 0.97925335 0.98393428 0.98890007 0.99422055 1.00000000
-            </SingleSampledSegment>
-          </SegmentedCurve>
+          </SingleSampledCurve>
         </CurveSetElement>
       </MultiProcessElements>
     </multiProcessElementType>
@@ -537,7 +525,7 @@
       </SpectralRange>
     </spectralDataInfoType>
     <float16NumberType>
-      <TagSignature>smwp</TagSignature>
+      <TagSignature>swpt</TagSignature>
       <Data>
             0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000006 0.00000006 0.00000018
             0.00000024 0.00000018 0.00000012 0.00000048 0.00000089 0.00000167 0.00000250 0.00000352

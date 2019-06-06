@@ -125,7 +125,7 @@
     </XYZType>
 	
 	<float16NumberType>
-		<TagSignature>smwp</TagSignature>
+		<TagSignature>swpt</TagSignature>
 		<Data>
 		 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
 		</Data>

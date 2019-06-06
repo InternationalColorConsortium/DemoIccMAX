@@ -32,16 +32,12 @@
 				<CurveSetElement Name="CMYK_Shaper" InputChannels="4" OutputChannels="4">
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Cyan.txt" Format="text"/>
-					</SingleSampledCurve>
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Magenta.txt" Format="text"/>
-					</SingleSampledCurve>
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Yellow.txt" Format="text"/>
-					</SingleSampledCurve>
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-MVIS/Shaper-Black.txt" Format="text"/>
-					</SegmentedCurve>
 				</CurveSetElement>
 				<ExtCLutElement Name="CMYK_CLUT" InputChannels="4" OutputChannels="3" Flags="0" StorageType="1"> <!-- Map adjusted CMYK to XYZ -->
 				  <GridPoints>17 17 17 17</GridPoints>

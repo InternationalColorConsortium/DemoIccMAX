@@ -506,7 +506,6 @@ public:
 
 bool CIccSinglSampledeCurveXml::ToXml(std::string &xml, std::string blanks)
 {
-  char buf[256];
   char line[256];
 
   xml += blanks;
@@ -2192,7 +2191,9 @@ bool CIccMpeXmlCalculator::ParseImport(xmlNode *pNode, std::string importPath, s
               }
             }
             else {
-              parseStr += std::string("Unable to parse element of type ") + pMpe->GetClassName() + "\n";
+              char str[100];
+              sprintf(str, " starting on line %d", pNext->line);
+              parseStr += std::string("Unable to parse element of type ") + pMpe->GetClassName() + str + "\n";
               delete pMpe;
               return false;
             }
