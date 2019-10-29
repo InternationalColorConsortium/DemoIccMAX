@@ -307,4 +307,4 @@ development `*-DCMAKE_CXX_FLAGS="-Wall -Wextra -g"` is recommended.
 
 ## License
 
-[The ICC Software License](License.md)
+[The ICC Software License](LICENSE.md)

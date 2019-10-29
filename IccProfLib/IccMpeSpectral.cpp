@@ -523,7 +523,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Cannot have zero spectral range steps!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -533,7 +533,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Output Channels must be 3!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -543,7 +543,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has Empty White data!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -553,7 +553,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has Empty Matrix data!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -563,7 +563,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has Empty Matrix Constant data!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -573,7 +573,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has an invalid spectral range!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -766,7 +766,7 @@ icValidateStatus CIccMpeInvEmissionMatrix::Validate(std::string sigPath, std::st
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Input Channels must be 3!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1293,7 +1293,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Invalid storageType value!\r\n";
     return icMaxStatus(rv, icValidateCriticalError);
@@ -1303,7 +1303,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has No CLUT!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1313,7 +1313,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has Empty White data!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1323,7 +1323,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Cannot have zero spectral range steps!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1333,7 +1333,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has an invalid spectral range!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1925,7 +1925,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Cannot have zero spectral range steps!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1935,7 +1935,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Output Channels must be 3!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1945,7 +1945,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has Empty White data!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1956,7 +1956,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has an invalid spectral range!\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);

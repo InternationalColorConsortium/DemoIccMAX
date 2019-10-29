@@ -5,7 +5,7 @@
     <ProfileVersion>5.00</ProfileVersion>
     <ProfileDeviceClass>nmcl</ProfileDeviceClass>
     <DataColourSpace></DataColourSpace>
-	  <PCS></PCS>
+	<PCS></PCS>
     <CreationDateTime>now</CreationDateTime>
     <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
     <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
@@ -248,7 +248,7 @@
     </XYZType>
 	
 	<sparseMatrixArrayType>
-		<TagSignature>smwp</TagSignature>
+		<TagSignature>swpt</TagSignature>
 		<SparseMatrixArray outputChannels="768" matrixType="1">
 		 <FullMatrix rows="31" cols="41">
 			0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0

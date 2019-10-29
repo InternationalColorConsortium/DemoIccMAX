@@ -120,6 +120,7 @@ struct {
   {icSigBRDFDToB1Tag, "BRDFDToB1Tag"},
   {icSigBRDFDToB2Tag, "BRDFDToB2Tag"},
   {icSigBRDFDToB3Tag, "BRDFDToB3Tag"},
+  {icSigSurfaceMapTag, "surfaceMapTag"},
   {icSigBToA0Tag, "BToA0Tag"},
   {icSigBToA1Tag, "BToA1Tag"},
   {icSigBToA2Tag, "BToA2Tag"},
@@ -199,8 +200,8 @@ struct {
   {icSigCxFTag, "CxfTag"},
   {icSigSpectralDataInfoTag, "spectralDataInfoTag"},
   {icSigSpectralWhitePointTag, "spectralWhitePointTag"},
-  {icSigCustomToStandardPcsTag, "customToStandardPcsTag"},
-  {icSigStandardToCustomPcsTag, "standardToCustomPcsTag"},
+  {icSigCustomToStandardPccTag, "customToStandardPccTag"},
+  {icSigStandardToCustomPccTag, "standardToCustomPccTag"},
   {icSigColorEncodingParamsTag, "colorEncodingParamsTag"},
   {icSigColorSpaceNameTag, "colorSpaceNameTag"},
   {icSigReferenceNameTag, "referenceNameTag"},
@@ -231,6 +232,8 @@ struct {
   {icSigDateTimeType, "dateTimeType"},
   {icSigDeviceSettingsType, "deviceSettingsType"},
   {icSigDictType, "dictType"},
+  {icSigEmbeddedHeightImageType, "embeddedHeightImageType"},
+  {icSigEmbeddedNormalImageType, "embeddedNormalImageType" },
   {icSigGamutBoundaryDescType, "gamutBoundaryDescType"},
   {icSigLut16Type, "lut16Type"},
   {icSigLut8Type, "lut8Type"},
@@ -433,6 +436,12 @@ CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
 
     case icSigEmbeddedProfileType:
       return new CIccTagEmbeddedProfile;
+
+    case icSigEmbeddedHeightImageType:
+      return new CIccTagEmbeddedHeightImage;
+
+    case icSigEmbeddedNormalImageType:
+      return new CIccTagEmbeddedNormalImage;
 
     case icSigScreeningType:
     case icSigUcrBgType:

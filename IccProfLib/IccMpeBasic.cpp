@@ -541,7 +541,7 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
 
   icValidateStatus rv = icValidateOK;
   if (m_nReserved || m_nReserved2) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " formula curve has non zero reserved data.\r\n";
     rv = icMaxStatus(rv, icValidateWarning);
@@ -550,13 +550,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
   switch (m_nFunctionType) {
   case 0x0000:
     if (!m_params || m_nParameters<4) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 4) {
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -565,13 +565,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
 
   case 0x0001:
     if (!m_params || m_nParameters<5) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -580,13 +580,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
 
   case 0x0002:
     if (!m_params || m_nParameters<5) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -595,13 +595,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
 
   case 0x0003:
     if (!m_params || m_nParameters<5) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -611,7 +611,7 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
   default:
     {
       icChar buf[128];
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sprintf(buf, " formula curve uses unknown formulaCurveSegment function type %d\r\n", m_nFunctionType);
       sReport += buf;
@@ -994,20 +994,20 @@ icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::str
 
   icValidateStatus rv = icValidateOK;
   if (m_nReserved) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " sampled curve has non zero reserved data.\r\n";
     rv = icValidateWarning;
   }
 
   if (m_nCount<1) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " sampled curve has too few sample points.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   else if (m_endPoint-m_startPoint == 0.0) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " sampled curve has a range of zero.\r\n";
     rv = icMaxStatus(rv, icValidateWarning);
@@ -1583,35 +1583,35 @@ icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::stri
 
   icValidateStatus rv = icValidateOK;
   if (m_nReserved) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " single sampled curve has non zero reserved data.\r\n";
     rv = icValidateWarning;
   }
 
   if (m_extensionType > icMaxSingleSampledCurveType) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " single sampled curve has unknown extension type\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   if (m_storageType > icMaxValueType) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " single sampled curve uses unknown value type\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   if (m_nCount<2) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " single sampled curve has too few sample points.\r\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   else if (m_lastEntry-m_firstEntry <= 0.0) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " single sampled curve has an invalid sample range.\r\n";
     rv = icMaxStatus(rv, icValidateWarning);
@@ -2034,14 +2034,14 @@ icValidateStatus CIccSegmentedCurve::Validate(std::string sigPath, std::string &
 
   icValidateStatus rv = icValidateOK;
   if (m_nReserved1 || m_nReserved2) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " Segmented curve has non zero reserved data.\r\n";
     rv = icValidateWarning;
   }
 
   if (m_list->size()==0) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " Has Empty CurveSegment!\r\n";
     return icMaxStatus(rv, icValidateCriticalError);
@@ -2587,7 +2587,7 @@ icValidateStatus CIccMpeCurveSet::Validate(std::string sigPath, std::string &sRe
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " -  Has Empty Curve Element(s)!\r\n";
     return icValidateCriticalError;
@@ -2915,7 +2915,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " -  Bad number of input channels!\r\n";
     return icValidateCriticalError;
@@ -2925,7 +2925,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " -  Bad number of output channels!\r\n";
     return icValidateCriticalError;
@@ -2935,7 +2935,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " -  Has no tint values(s)!\r\n";
     return icValidateCriticalError;
@@ -2953,7 +2953,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
       CIccInfo Info;
       std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " -  Needs two or more tint steps!\r\n";
       bBad = true;
@@ -2963,7 +2963,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
       CIccInfo Info;
       std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " -  Array size must be multiple of output channels!\r\n";
       bBad = true;
@@ -3108,11 +3108,15 @@ CIccMpeMatrix::~CIccMpeMatrix()
  * 
  * Return: 
  ******************************************************************************/
-bool CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels)
+bool CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, bool bUseConstants)
 {
   if (m_pMatrix) {
     free(m_pMatrix);
     m_pMatrix = NULL;
+  }
+  if (m_pConstants) {
+    free(m_pConstants);
+    m_pConstants = NULL;
   }
 
   m_size = (icUInt32Number)nInputChannels * nOutputChannels;
@@ -3123,10 +3127,12 @@ bool CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutpu
       return false;
   }
 
-  m_pConstants = (icFloatNumber*)calloc(nOutputChannels, sizeof(icFloatNumber));
-  
-  if (!m_pConstants)
-    return false;
+  if (bUseConstants) {
+    m_pConstants = (icFloatNumber*)calloc(nOutputChannels, sizeof(icFloatNumber));
+
+    if (!m_pConstants)
+      return false;
+  }
 
   m_nInputChannels = nInputChannels;
   m_nOutputChannels = nOutputChannels;
@@ -3161,8 +3167,10 @@ void CIccMpeMatrix::Describe(std::string &sDescription)
         sprintf(buf, "%12.8lf", data[i]);
         sDescription += buf;
       }
-      sprintf(buf, "  +  %12.8lf\r\n", m_pConstants[j]);
-      sDescription += buf;
+      if (m_pConstants) {
+        sprintf(buf, "  +  %12.8lf\r\n", m_pConstants[j]);
+        sDescription += buf;
+      }
       data += i;
     }
     else {
@@ -3195,6 +3203,8 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
   if (headerSize > size)
     return false;
 
+  icUInt32Number dataSize = size - headerSize;
+
   if (!pIO) {
     return false;
   }
@@ -3213,10 +3223,22 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read16(&nOutputChannels))
     return false;
 
-  //Check if zero matrix is implied
-  if (size < headerSize + nInputChannels * nOutputChannels *sizeof(icFloatNumber) &&
-      size >= headerSize + nOutputChannels * sizeof(icFloatNumber)) {
+  if (dataSize >= nInputChannels * nOutputChannels * sizeof(icFloatNumber) &&
+      dataSize < (nInputChannels+1) * nOutputChannels * sizeof(icFloatNumber)) {
+    //Matrix with no constants
+    if (!SetSize(nInputChannels, nOutputChannels, false))
+      return false;
 
+    if (!m_pMatrix)
+      return false;
+
+    //Read Matrix data
+    if (pIO->ReadFloat32Float(m_pMatrix, m_size) != (icInt32Number)m_size)
+      return false;
+  }
+  else if (dataSize < nInputChannels * nOutputChannels *sizeof(icFloatNumber) &&
+           dataSize >= nOutputChannels * sizeof(icFloatNumber)) {
+    //Constants with no matrix
     if (!SetSize(0, nOutputChannels))
       return false;
 
@@ -3227,13 +3249,14 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
       return false;
   }
   else {
+    //Matrix with constants
     if (!SetSize(nInputChannels, nOutputChannels))
       return false;
 
     if (!m_pMatrix) 
       return false;
 
-    if (headerSize + m_size*sizeof(icFloat32Number) > size)
+    if (headerSize + (m_size + nOutputChannels)*sizeof(icFloat32Number) > size)
       return false;
 
     //Read Matrix data
@@ -3243,7 +3266,6 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
     //Read Constant data
     if (pIO->ReadFloat32Float(m_pConstants, m_nOutputChannels)!=m_nOutputChannels)
       return false;
-
   }
   
   return true;
@@ -3287,6 +3309,15 @@ bool CIccMpeMatrix::Write(CIccIO *pIO)
   if (m_pConstants) {
     if (pIO->WriteFloat32Float(m_pConstants, m_nOutputChannels)!=m_nOutputChannels)
       return false;
+  }
+  else {
+    //Write zero constants because spec says it they have to be there
+    icFloat32Number zero = 0;
+    int i;
+    for (i = 0; i < m_nOutputChannels; i++) {
+      if (!pIO->WriteFloat32Float(&zero, 1))
+        return false;
+    }
   }
 
   return true;
@@ -3465,7 +3496,7 @@ icValidateStatus CIccMpeMatrix::Validate(std::string sigPath, std::string &sRepo
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has Empty Matrix Constant data!\r\n";
     return icValidateCriticalError;
@@ -3827,7 +3858,7 @@ icValidateStatus CIccMpeCLUT::Validate(std::string sigPath, std::string &sReport
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Has No CLUT!\r\n";
     return icValidateCriticalError;
@@ -4135,7 +4166,7 @@ icValidateStatus CIccMpeExtCLUT::Validate(std::string sigPath, std::string &sRep
     CIccInfo Info;
     std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
 
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " - Invalid value type!\r\n";
     return icValidateCriticalError;
@@ -4304,17 +4335,17 @@ icValidateStatus CIccMpeCAM::Validate(std::string sigPath, std::string &sReport,
   icValidateStatus rv = icValidateOK;
 
   if (m_nInputChannels!=3) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += "CAM Element Must have 3 input channels\n";
     rv = icMaxStatus(icValidateCriticalError, rv);
   }
   if (m_nOutputChannels!=3) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += "CAM Element Must have 3 output channels";
     return icMaxStatus(icValidateCriticalError, rv);
   }
   if (!m_pCAM) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += "Invalid CAM";
     return icMaxStatus(icValidateCriticalError, rv);
   }

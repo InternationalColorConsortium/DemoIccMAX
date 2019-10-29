@@ -506,7 +506,7 @@ icValidateStatus CIccTagStruct::Validate(std::string sigPath, std::string &sRepo
 
   // Check for duplicate tags
   if (!AreElemsUnique()) {
-    sReport += icValidateWarning;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - There are duplicate tags.\r\n";
     rv =icMaxStatus(rv, icValidateWarning);
@@ -1417,7 +1417,7 @@ icValidateStatus CIccTagArray::Validate(std::string sigPath, std::string &sRepor
         m_nSize != icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs)) {
       std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " - Number of material channel names does not match MCS in header.\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);

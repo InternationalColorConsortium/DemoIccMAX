@@ -339,7 +339,7 @@ icValidateStatus CIccTagEmbeddedProfile::Validate(std::string sigPath, std::stri
   CIccInfo Info;
 
   if (!m_pProfile) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += Info.GetSigPathName(sigPath);
     sReport += " - No Profile defined for embedded profile tag.\r\n";
 
@@ -351,14 +351,14 @@ icValidateStatus CIccTagEmbeddedProfile::Validate(std::string sigPath, std::stri
 
   if (pProfile) {
     if (m_pProfile->m_Header.colorSpace != pProfile->m_Header.colorSpace) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += Info.GetSigPathName(sigPath);
       sReport += " - color space does not match for embedded profile.\r\n";
 
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     if (m_pProfile->m_Header.deviceClass != pProfile->m_Header.deviceClass) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += Info.GetSigPathName(sigPath);
       sReport += " - device class does not match for embedded profile.\r\n";
 

@@ -195,9 +195,9 @@ ICCPROFLIB_API icUInt32Number icGetMaterialColorSpaceSamples(icMaterialColorSign
 
 bool ICCPROFLIB_API icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng2);
 
-ICCPROFLIB_API extern const char *icValidateWarningMsg;
-ICCPROFLIB_API extern const char *icValidateNonCompliantMsg;
-ICCPROFLIB_API extern const char *icValidateCriticalErrorMsg;
+ICCPROFLIB_API extern const char *icMsgValidateWarning;
+ICCPROFLIB_API extern const char *icMsgValidateNonCompliant;
+ICCPROFLIB_API extern const char *icMsgValidateCriticalError;
 
 #ifdef ICC_BYTE_ORDER_LITTLE_ENDIAN
 inline void icSwab16Ptr(void *pVoid)

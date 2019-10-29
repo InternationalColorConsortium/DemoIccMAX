@@ -911,14 +911,14 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
 
   // Check for duplicate tags
   if (!AreNamesUnique()) {
-    sReport += icValidateWarning;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - There are duplicate tags.\r\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
   if (!AreNamesNonzero()) {
-    sReport += icValidateWarning;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - There are duplicate tags.\r\n";
     rv =icMaxStatus(rv, icValidateWarning);
@@ -926,7 +926,7 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
 
   // Check for duplicate tags
   if (m_bBadAlignment) {
-    sReport += icValidateWarning;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - Some Data elements are not aligned correctly\r\n";
     rv =icMaxStatus(rv, icValidateWarning);

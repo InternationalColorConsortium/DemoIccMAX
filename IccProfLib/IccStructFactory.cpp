@@ -74,6 +74,7 @@
 #include "IccStructFactory.h"
 #include "IccUtil.h"
 #include "IccProfile.h"
+#include <cstring>
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {

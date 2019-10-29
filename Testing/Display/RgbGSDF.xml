@@ -32,8 +32,7 @@
 							<SubElements>
 								<!--curve{LogLtoJND} converts Log base 10 luminance to JND value -->
 								<CurveSetElement Name="LogLtoJND" InputChannels="1" OutputChannels="1">
-									<SegmentedCurve>
-									<SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="-1.30118770000000" LastEntry="3.60133515578040" StorageType="0" ExtensionType="0">
+									<SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="-1.30118770000000" LastEntry="3.60133515578040" StorageType="0" ExtensionType="0">
 											 1.000000 1.028504 1.057170 1.085997 1.114982 1.144123 1.173416 1.202861 1.232454 1.262193 1.292075 1.322099 1.352261 1.382559 1.412991 1.443554
 											 1.474246 1.505065 1.536008 1.567072 1.598256 1.629556 1.660971 1.692497 1.724133 1.755876 1.787724 1.819674 1.851723 1.883870 1.916112 1.948446
 											 1.980870 2.013382 2.045979 2.078659 2.111419 2.144257 2.177170 2.210156 2.243213 2.276339 2.309529 2.342784 2.376099 2.409472 2.442902 2.476385
@@ -290,13 +289,11 @@
 											 1002.634398 1003.058693 1003.482987 1003.907282 1004.331577 1004.755871 1005.180166 1005.604460 1006.028754 1006.453048 1006.877342 1007.301636 1007.725929 1008.150222 1008.574515 1008.998807
 											 1009.423099 1009.847390 1010.271681 1010.695971 1011.120261 1011.544550 1011.968839 1012.393126 1012.817413 1013.241700 1013.665985 1014.090270 1014.514554 1014.938837 1015.363119 1015.787400
 											 1016.211680 1016.635960 1017.060238 1017.484515 1017.908790 1018.333065 1018.757339 1019.181611 1019.605882 1020.030152 1020.454420 1020.878687 1021.302952 1021.727217 1022.151479 1022.575740
-										</SingleSampledSegment>
-									</SegmentedCurve>
+									</SingleSampledCurve>
 								</CurveSetElement>
 								<!--curve{JNDtoL} converts Just Noticeable Difference level (JND) to Luminance (L) -->
 								<CurveSetElement Name="JNDtoL" InputChannels="1" OutputChannels="1"> 
-									<SegmentedCurve>
-									<SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="1.0" LastEntry="1023.0" StorageType="0" ExtensionType="0">
+									<SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="1.0" LastEntry="1023.0" StorageType="0" ExtensionType="0">
 										 0.049982 0.051232 0.052394 0.053532 0.054670 0.055818 0.056981 0.058160 0.059356 0.060569 0.061799 0.063045 0.064308 0.065586 0.066879 0.068188
 										 0.069511 0.070850 0.072203 0.073570 0.074952 0.076347 0.077757 0.079181 0.080619 0.082071 0.083537 0.085016 0.086509 0.088016 0.089537 0.091072
 										 0.092621 0.094183 0.095759 0.097349 0.098952 0.100570 0.102201 0.103846 0.105505 0.107178 0.108865 0.110566 0.112281 0.114010 0.115753 0.117509
@@ -553,20 +550,17 @@
 										 3694.440536 3700.432991 3706.435171 3712.447092 3718.468771 3724.500222 3730.541462 3736.592507 3742.653374 3748.724078 3754.804635 3760.895062 3766.995375 3773.105590 3779.225724 3785.355792
 										 3791.495811 3797.645797 3803.805767 3809.975737 3816.155724 3822.345743 3828.545812 3834.755947 3840.976164 3847.206481 3853.446912 3859.697476 3865.958189 3872.229068 3878.510129 3884.801388
 										 3891.102864 3897.414571 3903.736529 3910.068752 3916.411258 3922.764064 3929.127187 3935.500644 3941.884452 3948.278627 3954.683187 3961.098149 3967.523530 3973.959347 3980.405617 3986.862358
-									</SingleSampledSegment>
-									</SegmentedCurve>
+									</SingleSampledCurve>
 								</CurveSetElement>
 								<!--curve{LtoDL} converts measured Luminance (L) to display Drive Level (DL) -->
 								<CurveSetElement Name="LtoDL" InputChannels="1" OutputChannels="1"> 
-									<SegmentedCurve>
-										<!-- This example assumes linear luminance response of device -->
-										<!-- To work with actual device measure luminance for each drive level.-->
-										<!-- Then invert to determine fractional drive levels for each linear increment of luminance, and put in SingleSampledCurveSegment-->
-										<!-- Set FirstEntry and LastEntry to measured min and max luminances of display-->
-										<SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="10" LastEntry="1000" StorageType="0" ExtensionType="0">
-											0.0 1.0
-										</SingleSampledSegment>
-									</SegmentedCurve>
+									<!-- This example assumes linear luminance response of device -->
+									<!-- To work with actual device measure luminance for each drive level.-->
+									<!-- Then invert to determine fractional drive levels for each linear increment of luminance, and put in SingleSampledCurveSegment-->
+									<!-- Set FirstEntry and LastEntry to measured min and max luminances of display-->
+									<SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="10" LastEntry="1000" StorageType="0" ExtensionType="0">
+										0.0 1.0
+									</SingleSampledCurve>
 								</CurveSetElement>
 							</SubElements>
 							<Variables>
@@ -622,24 +616,18 @@ out[0]
 
 						<!--curv{BalanceRGB} -->
 						<CurveSetElement Name="BalanceRGB" InputChannels="3" OutputChannels="3"> <!-- RGB Gray balance curves -->
-							<SegmentedCurve>
 							<!-- Red balance -->
-							<SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0">
+							<SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0">
 								0.0 1.0
-							</SingleSampledSegment>
-							</SegmentedCurve>
-							<SegmentedCurve>
+							</SingleSampledCurve>
 							<!-- Green balance -->
-							<SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0">
+							<SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0">
 								0.0 1.0
-							</SingleSampledSegment>
-							</SegmentedCurve>
-							<SegmentedCurve>
+							</SingleSampledCurve>
 							<!-- Blue balance -->
-							<SingleSampledSegment Start="-infinity" End="+infinity" FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0">
+							<SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0">
 								0.0 1.0
-							</SingleSampledSegment>
-							</SegmentedCurve>
+							</SingleSampledCurve>
 						</CurveSetElement>
 					</SubElements>
 					<MainFunction>

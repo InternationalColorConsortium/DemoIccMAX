@@ -275,7 +275,7 @@ icValidateStatus CIccStructBRDF::Validate(std::string sigPath, std::string &sRep
       std::string sSigPathName = Info.GetSigPathName(sigPath);
 
       rv = icValidateCriticalError;
-      sReport += icValidateWarning;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " - Missing required struct member(s).\r\n";
     }
@@ -372,7 +372,7 @@ icValidateStatus CIccStructColorantInfo::Validate(std::string sigPath, std::stri
       std::string sSigPathName = Info.GetSigPathName(sigPath);
 
       rv = icValidateCriticalError;
-      sReport += icValidateWarning;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " - Missing required struct member(s).\r\n";
     }
@@ -559,12 +559,12 @@ icValidateStatus CIccStructNamedColor::Validate(std::string sigPath, std::string
 {
   icValidateStatus rv = icValidateOK;
   if (m_pTagStruct) {
-    if (!m_pTagStruct->FindElem(icSigNmclNameMbr)) {
+    if (m_pTagStruct->GetTagStructType()==icSigNamedColorStruct && !m_pTagStruct->FindElem(icSigNmclNameMbr)) {
       CIccInfo Info;
       std::string sSigPathName = Info.GetSigPathName(sigPath);
 
       rv = icValidateCriticalError;
-      sReport += icValidateWarning;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " - Missing required struct member(s).\r\n";
     }

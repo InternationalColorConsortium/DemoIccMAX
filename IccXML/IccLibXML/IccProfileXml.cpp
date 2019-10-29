@@ -604,20 +604,23 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
           AttachTag(sigTag, pTag);
         }
         else {
+          char str[100];
           parseStr += "Unable to Parse \"";
           parseStr += (const char*)pTypeNode->name;
           parseStr += "\" (";
           parseStr += nodeName;
-          parseStr += ") Tag\n";
+          sprintf(str, ") Tag on line %d\n", pTypeNode->line);
+          parseStr += str;
           return false;
         }
       }
       else {
+        char str[100];
         parseStr += "Invalid tag extension for \"";
         parseStr += (const char*)pTypeNode->name;
         parseStr += "\" (";
-        parseStr += nodeName;
-        parseStr += ") Tag\n";
+        sprintf(str, ") Tag on line %d\n", pTypeNode->line);
+        parseStr += str;
         return false;
       }
     }
@@ -655,20 +658,24 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
         }
       }
       else {
+        char str[100];
         parseStr += "Unable to Parse \"";
         parseStr += info.GetTagTypeSigName(sigType);
         parseStr += "\" (";
         parseStr += nodeName;
-        parseStr += ") Tag\n";
+        sprintf(str, ") Tag on line %d\n", pNode->line);
+        parseStr += str;
         return false;
       }
     }
     else {
+      char str[100];
       parseStr += "Invalid tag extension for \"";
       parseStr += info.GetTagTypeSigName(sigType);
       parseStr += "\" (";
       parseStr += nodeName;
-      parseStr += ") Tag\n";
+      sprintf(str, ") Tag on line %d\n", pNode->line);
+      parseStr += str;
       return false;
     }
   }

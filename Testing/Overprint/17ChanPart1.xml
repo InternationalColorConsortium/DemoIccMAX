@@ -30,16 +30,12 @@
 				<CurveSetElement Name="CMYK_Shaper" InputChannels="4" OutputChannels="4">
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-OSIM/Shaper-Cyan.txt" Format="text"/>
-					</SingleSampledCurve>
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-OSIM/Shaper-Magenta.txt" Format="text"/>
-					</SingleSampledCurve>
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-OSIM/Shaper-Yellow.txt" Format="text"/>
-					</SingleSampledCurve>
 					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
 						 Filename="Spot-OSIM/Shaper-Black.txt" Format="text"/>
-					</SingleSampledCurve>
 				</CurveSetElement>
 				<ExtCLutElement Name="CMYK_CLUT" InputChannels="4" OutputChannels="3" StorageType="1"> <!-- Map adjusted CMYK to XYZ -->
 				  <GridPoints>17 17 17 17</GridPoints>

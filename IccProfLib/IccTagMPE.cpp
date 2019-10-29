@@ -426,7 +426,7 @@ icValidateStatus CIccMpeUnknown::Validate(std::string sigPath, std::string &sRep
   icChar buf[40];
   std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-  sReport += icValidateCriticalErrorMsg;
+  sReport += icMsgValidateCriticalError;
   sReport += sSigPathName;
   sReport += " - Contains unknown processing element type (";
   icGetSig(buf, m_sig, true);
@@ -454,7 +454,7 @@ icValidateStatus CIccMultiProcessElement::Validate(std::string sigPath, std::str
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath+icGetSigPath(GetType()));
   if (m_nReserved!=0) {
-    sReport += icValidateNonCompliantMsg;
+    sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
     sReport += " - Reserved Value must be zero.\r\n";
 
@@ -1482,13 +1482,13 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
   if (!m_list || !m_list->size()) {
     if (m_nInputChannels != m_nOutputChannels) {
-      sReport += icValidateCriticalErrorMsg;
+      sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
       sReport += " No processing elements and input and output channels do not match!\r\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else {
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " No processing elements.\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -1496,7 +1496,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
   }
 
   if (!pProfile) {
-    sReport += icValidateWarningMsg;
+    sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
     rv = icMaxStatus(rv, icValidateWarning);
@@ -1513,7 +1513,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         nInput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
         if (m_nInputChannels != nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1521,7 +1521,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
         if (m_nOutputChannels != nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1536,7 +1536,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         nInput = icGetSpaceSamples(pProfile->m_Header.pcs);
         if (m_nInputChannels!=nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1544,7 +1544,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
         if (m_nOutputChannels!=nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1559,7 +1559,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         nInput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
         if (m_nInputChannels != nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1567,7 +1567,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpectralSpaceSamples(&pProfile->m_Header);
         if (m_nOutputChannels != nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1582,7 +1582,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         nInput = icGetSpectralSpaceSamples(&pProfile->m_Header);
         if (m_nInputChannels!=nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1590,7 +1590,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
         if (m_nOutputChannels!=nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1598,18 +1598,18 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         break;
       }
-    case icSigCustomToStandardPcsTag:
-    case icSigStandardToCustomPcsTag:
+    case icSigCustomToStandardPccTag:
+    case icSigStandardToCustomPccTag:
       {
         if (m_nInputChannels != 3) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
         if (m_nOutputChannels != 3) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1674,7 +1674,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         nInput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
         if (m_nInputChannels != nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1682,7 +1682,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
         if (m_nOutputChannels != nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1695,7 +1695,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       {
         nInput = icGetSpaceSamples(pProfile->m_Header.colorSpace);
         if (m_nInputChannels != nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1703,7 +1703,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
         if (m_nOutputChannels != nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1719,7 +1719,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
     {
         nInput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
         if (m_nInputChannels != nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1727,7 +1727,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
         if (m_nOutputChannels != nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1743,7 +1743,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
     {
         nInput = icGetMaterialColorSpaceSamples(pProfile->m_Header.mcs);
         if (m_nInputChannels != nInput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of input channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1751,7 +1751,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         nOutput = icGetSpectralSpaceSamples(&pProfile->m_Header);
         if (m_nOutputChannels != nOutput) {
-          sReport += icValidateCriticalErrorMsg;
+          sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
           sReport += " - Incorrect number of output channels.\r\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1761,7 +1761,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
       }
 
     default:
-      sReport += icValidateWarningMsg;
+      sReport += icMsgValidateWarning;
       sReport += sSigPathName;
       sReport += " - Unknown tag - Cannot validate input and output channels!\r\n";
       rv = icMaxStatus(rv, icValidateWarning);
@@ -1777,7 +1777,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
   CIccMultiProcessElement *last=NULL;
 
   if (bMatchChannels && i->ptr->NumInputChannels() != m_nInputChannels) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += "Mis-matching number of input channels in first process element!\r\n";
     return icValidateCriticalError;
@@ -1786,7 +1786,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
   for (; i!= m_list->end(); i++) {
     if (last) {
       if (i->ptr->NumInputChannels() != last->NumOutputChannels()) {
-        sReport += icValidateCriticalErrorMsg;
+        sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
 
         sReport += "(";
@@ -1804,7 +1804,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
   }
 
   if (bMatchChannels && last && last->NumOutputChannels() != m_nOutputChannels) {
-    sReport += icValidateCriticalErrorMsg;
+    sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     sReport += " Mis-matching number of output channels!\r\n";
     return icValidateCriticalError;
