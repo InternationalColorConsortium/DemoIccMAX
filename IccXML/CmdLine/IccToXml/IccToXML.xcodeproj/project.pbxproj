@@ -8,10 +8,48 @@
 
 /* Begin PBXBuildFile section */
 		302BFC6D1C214FC80063E0D2 /* IccToXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302BFC6C1C214FC80063E0D2 /* IccToXml.cpp */; };
-		302BFCA21C21569C0063E0D2 /* libIccLibXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA11C21569C0063E0D2 /* libIccLibXML.a */; };
-		302BFCA41C21577D0063E0D2 /* libIccProfLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA31C21577D0063E0D2 /* libIccProfLib.a */; };
 		302BFCA61C2157A60063E0D2 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 302BFCA51C2157A60063E0D2 /* libxml2.dylib */; };
+		843CBA5D2278DAF8003ADACB /* libIccLibXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 848F46B32278DAAD00C5E9AB /* libIccLibXML.a */; };
+		843CBA5E2278DAFD003ADACB /* libIccProfLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 848F46BA2278DAB300C5E9AB /* libIccProfLib.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		843CBA552278DAE4003ADACB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848F46AE2278DAAD00C5E9AB /* IccLibXML.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 302BFC771C21502E0063E0D2;
+			remoteInfo = "IccLibXML-macOS";
+		};
+		843CBA5A2278DAE9003ADACB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848F46B42278DAB300C5E9AB /* IccProfLib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = "IccProfLib-macOS";
+		};
+		848F46B22278DAAD00C5E9AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848F46AE2278DAAD00C5E9AB /* IccLibXML.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 302BFC781C21502E0063E0D2;
+			remoteInfo = "IccLibXML-macOS";
+		};
+		848F46B92278DAB300C5E9AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848F46B42278DAB300C5E9AB /* IccProfLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
+			remoteInfo = "IccProfLib-macOS";
+		};
+		848F46BB2278DAB300C5E9AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848F46B42278DAB300C5E9AB /* IccProfLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FAC854752073E6A000BE8A7B;
+			remoteInfo = "IccProfLib-iOS";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		302BFC481C214F030063E0D2 /* CopyFiles */ = {
@@ -31,6 +69,8 @@
 		302BFCA11C21569C0063E0D2 /* libIccLibXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccLibXML.a; path = ../../lib/libIccLibXML.a; sourceTree = SOURCE_ROOT; };
 		302BFCA31C21577D0063E0D2 /* libIccProfLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIccProfLib.a; path = ../../lib/libIccProfLib.a; sourceTree = SOURCE_ROOT; };
 		302BFCA51C2157A60063E0D2 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = ../../../../usr/lib/libxml2.dylib; sourceTree = DEVELOPER_DIR; };
+		848F46AE2278DAAD00C5E9AB /* IccLibXML.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IccLibXML.xcodeproj; path = ../../../IccLibXML/IccLibXML.xcodeproj; sourceTree = "<group>"; };
+		848F46B42278DAB300C5E9AB /* IccProfLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IccProfLib.xcodeproj; path = ../../../../IccProfLib/IccProfLib.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,8 +78,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				302BFCA41C21577D0063E0D2 /* libIccProfLib.a in Frameworks */,
-				302BFCA21C21569C0063E0D2 /* libIccLibXML.a in Frameworks */,
+				843CBA5E2278DAFD003ADACB /* libIccProfLib.a in Frameworks */,
+				843CBA5D2278DAF8003ADACB /* libIccLibXML.a in Frameworks */,
 				302BFCA61C2157A60063E0D2 /* libxml2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,8 +90,10 @@
 		302BFC411C214F030063E0D2 = {
 			isa = PBXGroup;
 			children = (
+				848F46AD2278DA9C00C5E9AB /* Dependancies */,
 				302BFC4C1C214F030063E0D2 /* IccToXML */,
 				302BFC4B1C214F030063E0D2 /* Products */,
+				843CBA5C2278DAF8003ADACB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -74,6 +116,39 @@
 			path = IccToXML;
 			sourceTree = "<group>";
 		};
+		843CBA5C2278DAF8003ADACB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		848F46AD2278DA9C00C5E9AB /* Dependancies */ = {
+			isa = PBXGroup;
+			children = (
+				848F46AE2278DAAD00C5E9AB /* IccLibXML.xcodeproj */,
+				848F46B42278DAB300C5E9AB /* IccProfLib.xcodeproj */,
+			);
+			path = Dependancies;
+			sourceTree = "<group>";
+		};
+		848F46AF2278DAAD00C5E9AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				848F46B32278DAAD00C5E9AB /* libIccLibXML.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		848F46B52278DAB300C5E9AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				848F46BA2278DAB300C5E9AB /* libIccProfLib.a */,
+				848F46BC2278DAB300C5E9AB /* libIccProfLib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -88,6 +163,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				843CBA5B2278DAE9003ADACB /* PBXTargetDependency */,
+				843CBA562278DAE4003ADACB /* PBXTargetDependency */,
 			);
 			name = IccToXML;
 			productName = IccToXML;
@@ -113,17 +190,52 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 302BFC411C214F030063E0D2;
 			productRefGroup = 302BFC4B1C214F030063E0D2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 848F46AF2278DAAD00C5E9AB /* Products */;
+					ProjectRef = 848F46AE2278DAAD00C5E9AB /* IccLibXML.xcodeproj */;
+				},
+				{
+					ProductGroup = 848F46B52278DAB300C5E9AB /* Products */;
+					ProjectRef = 848F46B42278DAB300C5E9AB /* IccProfLib.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				302BFC491C214F030063E0D2 /* IccToXML */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		848F46B32278DAAD00C5E9AB /* libIccLibXML.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libIccLibXML.a;
+			remoteRef = 848F46B22278DAAD00C5E9AB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		848F46BA2278DAB300C5E9AB /* libIccProfLib.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libIccProfLib.a;
+			remoteRef = 848F46B92278DAB300C5E9AB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		848F46BC2278DAB300C5E9AB /* libIccProfLib.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libIccProfLib.a;
+			remoteRef = 848F46BB2278DAB300C5E9AB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		302BFC461C214F030063E0D2 /* Sources */ = {
@@ -135,6 +247,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		843CBA562278DAE4003ADACB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "IccLibXML-macOS";
+			targetProxy = 843CBA552278DAE4003ADACB /* PBXContainerItemProxy */;
+		};
+		843CBA5B2278DAE9003ADACB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "IccProfLib-macOS";
+			targetProxy = 843CBA5A2278DAE9003ADACB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		302BFC4F1C214F030063E0D2 /* Debug */ = {
@@ -217,7 +342,9 @@
 		302BFC521C214F030063E0D2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				HEADER_SEARCH_PATHS = (
 					"../../../IccProfLib/**",
 					"../../IccLibXML/**",
@@ -225,14 +352,18 @@
 					/usr/include/libxml2,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../Build/XCode/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
 		302BFC531C214F030063E0D2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				HEADER_SEARCH_PATHS = (
 					"../../../IccProfLib/**",
 					"../../IccLibXML/**",
@@ -240,7 +371,9 @@
 					/usr/include/libxml2,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../Build/XCode/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};

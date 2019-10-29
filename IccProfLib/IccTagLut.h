@@ -505,7 +505,7 @@ public:
   CIccTagLutBtoA();
   CIccTagLutBtoA(const CIccTagLutBtoA &ITLB2A);
   CIccTagLutBtoA &operator=(const CIccTagLutBtoA &ITLB2A);
-  virtual CIccTag* NewCopy() { return new CIccTagLutBtoA(*this); }
+  virtual CIccTag* NewCopy() const { return new CIccTagLutBtoA(*this); }
 
   virtual icTagTypeSignature GetType() const { return icSigLutBtoAType; }
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL);
