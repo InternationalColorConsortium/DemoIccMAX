@@ -544,7 +544,7 @@ typedef enum {
   icPcsStepOffset,
   icPcsStepScale,
   icPcsStepMatrix,
-//  icPcsStepMpe,
+  icPcsStepMpe,
   icPcsStepSrcMatrix,
   icPcsStepSparseMatrix,
   icPcsStepSrcSparseMatrix,
@@ -740,6 +740,7 @@ protected:
 };
 
 class CIccPcsStepMatrix;
+class CIccMpeMatrix;
 
 class ICCPROFLIB_API CIccPcsStepScale : public CIccPcsStep
 {
@@ -758,6 +759,7 @@ public:
 
   CIccPcsStepScale *Mult(const CIccPcsStepScale *scale) const;
   CIccPcsStepMatrix *Mult(const CIccPcsStepMatrix *matrix) const;
+  CIccPcsStepMatrix *Mult(const CIccMpeMatrix *matrix) const;
 
   virtual CIccPcsStep *concat(CIccPcsStep *pNext) const;
   virtual bool isIdentity() const;
@@ -799,7 +801,7 @@ class ICCPROFLIB_API CIccPcsStepMpe : public CIccPcsStep //Apply a matrix to a v
 {
 public:
   CIccPcsStepMpe(CIccTagMultiProcessElement *pMpe);
-  virtual icPcsStepType GetType() { return icPcsStepMatrix; }
+  virtual icPcsStepType GetType() { return icPcsStepMpe; }
 
   virtual ~CIccPcsStepMpe();
 
@@ -810,6 +812,8 @@ public:
   virtual icUInt16Number GetDstChannels() const;
 
   virtual bool isIdentity() const;
+
+  CIccMpeMatrix *GetMatrix() const;
 
   //Begin must be called before Apply
   bool Begin();
@@ -1598,7 +1602,7 @@ public:
   icColorSpaceSignature GetSourceSpace() const { return m_nSrcSpace; }
   ///Returns the destination color space
   icColorSpaceSignature GetDestSpace() const { return m_nDestSpace; }
-  ///Returns the color space of the last profile added
+    ///Returns the color space of the last profile added
   icColorSpaceSignature GetLastSpace() const { return m_nLastSpace; }
   ///Returns the rendering intent of the last profile added
   icRenderingIntent GetLastIntent() const { return m_nLastIntent; }
@@ -1861,7 +1865,7 @@ public:
   virtual ~CIccMruCmm();
 
   //This is the function used to create a new CIccMruCmm.  The pCmm must be valid and its Begin() already called.
-  static CIccMruCmm* Attach(CIccCmm *pCmm, icUInt8Number nCacheSize=6);  //The returned object will own pCmm, and pCmm is deleted on failure.
+  static CIccMruCmm* Attach(CIccCmm *pCmm, icUInt8Number nCacheSize=6, bool bDeleteCmm=true);  //The returned object will own pCmm, and pCmm is deleted on failure.
 
   //override AddXform/Begin functions to return bad status.
   virtual icStatusCMM AddXform(const icChar *szProfilePath, icRenderingIntent nIntent=icUnknownIntent,
@@ -1890,6 +1894,7 @@ public:
 protected:
   CIccCmm *m_pCmm;
   icUInt16Number m_nCacheSize;
+  bool m_bDeleteCmm;
 
 };
 

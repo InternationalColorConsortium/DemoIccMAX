@@ -2088,10 +2088,19 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
 
   case icSigCxFTag:
     {
-      if (typeSig!=icSigUtf8TextType &&
-          typeSig!=icSigZipUtf8TextType)
-        return false;
-      return true;
+      if (m_Header.version >= icVersionNumberV5) {
+        if (typeSig != icSigUtf8TextType &&
+            typeSig != icSigZipUtf8TextType)
+          return false;
+        return true;
+      }
+      else {
+        if (typeSig != icSigUtf8TextType &&
+            typeSig != icSigZipUtf8TextType &&
+            typeSig != icSigZipXmlType) 
+          return false;
+        return true;
+      }
     }
 
   case icSigColorSpaceNameTag:
@@ -2256,10 +2265,9 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
          sReport += "Required tags missing.\r\n";
          rv = icMaxStatus(rv, icValidateNonCompliant);
     }
-  
 
     if (sig != icSigLinkClass && sig != icSigMaterialIdentificationClass && sig != icSigMaterialLinkClass) {
-      if (!GetTag(icSigMediaWhitePointTag)) {
+      if ((m_Header.version<icVersionNumberV5 || m_Header.pcs != 0) && !GetTag(icSigMediaWhitePointTag)) {
         sReport += icMsgValidateCriticalError;
         sReport += "Media white point tag missing.\r\n";
         rv = icMaxStatus(rv, icValidateCriticalError);

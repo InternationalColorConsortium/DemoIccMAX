@@ -246,6 +246,7 @@ CIccProfile ICCPROFLIB_API *ValidateIccProfile(CIccIO *pIO, std::string &sReport
 CIccProfile ICCPROFLIB_API *ValidateIccProfile(const icChar *szFilename, std::string &sReport, icValidateStatus &nStatus);
 
 bool ICCPROFLIB_API SaveIccProfile(const icChar *szFilename, CIccProfile *pIcc, icProfileIDSaveMethod nWriteId=icVersionBasedID);
+bool ICCPROFLIB_API SaveIccProfile(FILE *f, CIccProfile *pIcc, icProfileIDSaveMethod nWriteId = icVersionBasedID);
 
 void ICCPROFLIB_API CalcProfileID(CIccIO *pIO, icProfileID *profileID);
 bool ICCPROFLIB_API CalcProfileID(const icChar *szFilename, icProfileID *profileID);

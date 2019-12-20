@@ -111,25 +111,19 @@ void Usage()
 	printf("    1 - Relative\n");
 	printf("    2 - Saturation\n");
 	printf("    3 - Absolute\n");
-	printf("    10 - Perceptual without D2Bx/B2Dx\n");
-	printf("    11 - Relative without D2Bx/B2Dx\n");
-	printf("    12 - Saturation without D2Bx/B2Dx\n");
-	printf("    13 - Absolute without D2Bx/B2Dx \n");
-	printf("    20 - Preview Perceptual\n");
-	printf("    21 - Preview Relative\n");
-	printf("    22 - Preview Saturation\n");
-	printf("    23 - Preview Absolute\n");
+	printf("    10 + Intent - without D2Bx/B2Dx\n");
+	printf("    20 + Intent - Preview\n");
 	printf("    30 - Gamut\n");
   printf("    33 - Gamut Absolute\n");
-	printf("    40 - Perceptual with BPC\n");
-	printf("    41 - Relative Colorimetric with BPC\n");
-	printf("    42 - Saturation with BPC\n");
+	printf("    40 + Intent - with BPC\n");
   printf("    50 - BDRF Model\n");
   printf("    60 - BDRF Light\n");
   printf("    70 - BDRF Output\n");
   printf("    80 - MCS connection\n");
-  printf("   +100 - Use Luminance based PCS adjustment\n");
-  printf("  +1000 - Use V5 sub-profile if present\n");
+  printf("    90 + Intent - Colorimetric Only\n");
+  printf("   100 + Intent - Spectral Only\n");
+  printf(" +1000 - Use Luminance based PCS adjustment\n");
+  printf("+10000 - Use V5 sub-profile if present\n");
 }
 
 
@@ -222,8 +216,19 @@ int main(int argc, icChar* argv[])
 
   int nIntent, nType, nLuminance;
 
+  //If first profile colorspace is PCS and it matches the source data space then treat as input profile
+  bool bInputProfile = !IsSpacePCS(SrcspaceSig);
+  if (!bInputProfile) {
+    CIccProfile *pProf = OpenIccProfile(argv[minargs]);
+    if (pProf) {
+      if (pProf->m_Header.deviceClass!=icSigAbstractClass && IsSpacePCS(pProf->m_Header.colorSpace))
+        bInputProfile = true;
+      delete pProf;
+    }
+  }
+
   //Allocate a CIccCmm to use to apply profiles
-  CIccNamedColorCmm namedCmm(SrcspaceSig, icSigUnknownData, !IsSpacePCS(SrcspaceSig));
+  CIccNamedColorCmm namedCmm(SrcspaceSig, icSigUnknownData, bInputProfile);
   IccProfilePtrList pccList;
 
   int nCount;
@@ -243,10 +248,10 @@ int main(int argc, icChar* argv[])
     else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
       bUseD2BxB2Dx = true;
       nIntent = atoi(argv[nCount+1]);
-      bUseSubProfile = (nIntent / 1000) > 0;
+      bUseSubProfile = (nIntent / 10000) > 0;
+      nIntent = nIntent % 10000;
+      nLuminance = nIntent / 1000;
       nIntent = nIntent % 1000;
-      nLuminance = nIntent / 100;
-      nIntent = nIntent % 100;
       nType = abs(nIntent) / 10;
       nIntent = nIntent % 10;
       CIccProfile *pPccProfile = NULL;
@@ -302,6 +307,8 @@ int main(int argc, icChar* argv[])
     return -1;
   }
 
+  CIccCmm *pMruCmm = NULL; // CIccMruCmm::Attach(&namedCmm, 6, false);
+
   //Now we can release the pccProfile nodes.
   IccProfilePtrList::iterator pcc;
   for (pcc=pccList.begin(); pcc!=pccList.end(); pcc++) {
@@ -313,6 +320,18 @@ int main(int argc, icChar* argv[])
   //Get and validate the source color space from namedCmm.
   SrcspaceSig = namedCmm.GetSourceSpace();
   int nSrcSamples = icGetSpaceSamples(SrcspaceSig);
+
+  bool bClip = true;
+  //We don't want to interpret device data as pcs encoded data
+  if (bInputProfile && IsSpacePCS(SrcspaceSig)) {
+    if (SrcspaceSig == icSigXYZPcsData)
+      SrcspaceSig = icSigDevXYZData;
+    else if (SrcspaceSig == icSigLabPcsData)
+      SrcspaceSig = icSigDevLabData;
+
+    if (srcEncoding == icEncodeFloat)
+      bClip = false;
+  }
 
   //Get and validate the destination color space from namedCmm.
   icColorSpaceSignature DestspaceSig = namedCmm.GetDestSpace();
@@ -443,7 +462,7 @@ int main(int argc, icChar* argv[])
         continue;
 
       OutPutData.erase();
-      if(CIccCmm::ToInternalEncoding(SrcspaceSig, srcEncoding, SrcPixel, Pixel)) {
+      if(CIccCmm::ToInternalEncoding(SrcspaceSig, srcEncoding, SrcPixel, Pixel, bClip)) {
         printf("Invalid source data encoding\n");
         return -1;
       }
@@ -451,7 +470,13 @@ int main(int argc, icChar* argv[])
       switch(namedCmm.GetInterface()) {
         case icApplyPixel2Pixel:
           {
-            if(namedCmm.Apply(DestPixel, SrcPixel)) {
+            if (pMruCmm) {
+              if (pMruCmm->Apply(DestPixel, SrcPixel)) {
+                printf("Profile application failed.\n");
+                return -1;
+              }
+            }
+            else if(namedCmm.Apply(DestPixel, SrcPixel)) {
               printf("Profile application failed.\n");
               return -1;
             }
@@ -496,6 +521,8 @@ int main(int argc, icChar* argv[])
     fwrite(OutPutData.c_str(), 1, OutPutData.length(), stdout);
   }
 
+  if (pMruCmm)
+    delete pMruCmm;
 
   return 0;
 }

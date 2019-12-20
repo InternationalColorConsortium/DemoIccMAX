@@ -4,6 +4,8 @@
     <PreferredCMMType></PreferredCMMType>
     <ProfileVersion>5.00</ProfileVersion>
     <ProfileDeviceClass>spac</ProfileDeviceClass>
+	<ProfileDeviceSubClass>sref</ProfileDeviceSubClass>
+	<ProfileSubClassVersion>1.00</ProfileSubClassVersion>
     <DataColourSpace>nc0191</DataColourSpace>
 	<PCS></PCS>
     <CreationDateTime>now</CreationDateTime>
@@ -138,7 +140,7 @@
     
 	<multiLocalizedUnicodeType>
       <TagSignature>cprt</TagSignature>
-      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2017 International Color Consortium]]></LocalizedText>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2019 International Color Consortium]]></LocalizedText>
     </multiLocalizedUnicodeType>
 
   </Tags>

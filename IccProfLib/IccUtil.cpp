@@ -1018,18 +1018,24 @@ const icChar *icGetColorSig(icChar *pBuf, icUInt32Number nSig, bool bGetHexVal)
 
       int i, j=-1;
       icUInt8Number c;
+      bool bNeedHexVal = false;
 
       pBuf[0] = '\'';
       for (i=1; i<5; i++) {
         c=(icUInt8Number)(sig>>24);
-        if (!isprint(c))
-          c='?';
+        if (!isprint(c)) {
+          c = '?';
+          bNeedHexVal = true;
+        }
         pBuf[i]=c;
         sig <<=8;
       }
 
       if (bGetHexVal)
         sprintf(pBuf+5, "' = %08X", nSig);
+      else if (bNeedHexVal) {
+        sprintf(pBuf, "%08Xh", nSig);
+      }
       else
         sprintf(pBuf+5, "'");
     }
@@ -1316,6 +1322,16 @@ const icChar *CIccInfo::GetVersionName(icUInt32Number val)
 {
   icFloatNumber ver = (icFloatNumber)(((val>>28)&0xf)*10.0 + ((val>>24)&0xf) +
                                       ((val>>20)&0xf)/10.0 + ((val>>16)&0xf)/100.0);
+
+  sprintf(m_szStr, "%.2lf", ver);
+
+  return m_szStr;
+}
+
+const icChar *CIccInfo::GetSubClassVersionName(icUInt32Number val)
+{
+  icFloatNumber ver = (icFloatNumber)(((val >> 12) & 0xf)*10.0 + ((val >> 8) & 0xf) +
+    ((val >> 4) & 0xf) / 10.0 + (val & 0xf) / 100.0);
 
   sprintf(m_szStr, "%.2lf", ver);
 
@@ -1961,20 +1977,26 @@ const icChar *CIccInfo::GetMeasurementGeometryName(icMeasurementGeometry val)
   }
 }
 
-const icChar *CIccInfo::GetRenderingIntentName(icRenderingIntent val)
+const icChar *CIccInfo::GetRenderingIntentName(icRenderingIntent val, bool bIsV5)
 {
   switch (val) {
   case icPerceptual:
     return "Perceptual";
 
   case icRelativeColorimetric:
-    return "Relative Colorimetric";
+    if (bIsV5)
+      return "Relative";
+    else
+      return "Relative Colorimetric";
 
   case icSaturation:
     return "Saturation";
 
   case icAbsoluteColorimetric:
-    return "Absolute Colorimetric";
+    if (bIsV5)
+      return "Absolute";
+    else
+      return "Absolute Colorimetric";
 
   default:
     sprintf(m_szStr, "Unknown Intent '%d", val);

@@ -4141,6 +4141,38 @@ CIccPcsStepMatrix *CIccPcsStepScale::Mult(const CIccPcsStepMatrix *matrix) const
   return pNew;
 }
 
+/**
+**************************************************************************
+* Name: CIccPcsStepScale::Mult
+*
+* Purpose:
+*  Creates a new CIccPcsStepMatrix step that is the result of multiplying the
+*  scale of this object to the scale of another matrix.
+**************************************************************************
+*/
+CIccPcsStepMatrix *CIccPcsStepScale::Mult(const CIccMpeMatrix *matrix) const
+{
+  if (matrix->NumInputChannels() != m_nChannels)
+    return NULL;
+
+  CIccPcsStepMatrix *pNew = new CIccPcsStepMatrix(matrix->NumOutputChannels(), matrix->NumInputChannels());
+
+  if (pNew) {
+    int i, j;
+    icFloatNumber *mtx = matrix->GetMatrix();
+    for (j = 0; j < matrix->NumOutputChannels(); j++) {
+      const icFloatNumber *row = &mtx[j*matrix->NumInputChannels()];
+      icFloatNumber *to = pNew->entry(j);
+
+      for (i = 0; i < m_nChannels; i++) {
+        to[i] = m_vals[i] * row[i];
+      }
+    }
+  }
+
+  return pNew;
+}
+
 
 /**
 **************************************************************************
@@ -4159,6 +4191,12 @@ CIccPcsStep *CIccPcsStepScale::concat(CIccPcsStep *pNext) const
       return Mult((const CIccPcsStepScale*)pNext);
     if (pNext->GetType()==icPcsStepMatrix && m_nChannels==pNext->GetSrcChannels())
       return Mult((const CIccPcsStepMatrix*)pNext);
+    if (pNext->GetType() == icPcsStepMpe && m_nChannels == pNext->GetSrcChannels()) {
+      CIccPcsStepMpe *pMpe = (CIccPcsStepMpe*)pNext;
+      CIccMpeMatrix *pMatrix = pMpe->GetMatrix();
+      if (pMatrix)
+        return Mult(pMatrix);
+    }
   }
 
   return NULL;
@@ -4447,6 +4485,36 @@ icUInt16Number CIccPcsStepMpe::GetDstChannels() const
 {
   return m_pMpe->NumOutputChannels();
 }
+
+
+/**
+**************************************************************************
+* Name: CIccPcsStepMpe::GetMatrix()
+*
+* Purpose:
+*  Returns single CIccMpeMatrix element associated with PCS step or
+*  NULL if the MPE is more complex
+**************************************************************************
+*/
+CIccMpeMatrix *CIccPcsStepMpe::GetMatrix() const
+{
+  //Must be single element
+  if (m_pMpe->NumElements() == 1) {
+    CIccMultiProcessElement *pElem = m_pMpe->GetElement(0);
+    //Must be a matrix
+    if (pElem && pElem->GetType() == icSigMatrixElemType) {
+      CIccMpeMatrix *pMtx = (CIccMpeMatrix*)pElem;
+
+      //Should not apply any constants
+      if (!pMtx->GetConstants() || !pMtx->GetApplyConstants())
+        return pMtx;
+    }
+  }
+
+  return NULL;
+}
+
+
 
 
 /**
@@ -9286,7 +9354,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
     pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
   }
 
-  m_pPCS->CheckLast(DstPixel, m_pCmm->GetDestSpace());
+  m_pPCS->CheckLast(DstPixel, m_pCmm->GetDestSpace(), true);
 
   return icCmmStatOk;
 }
@@ -10304,6 +10372,7 @@ icStatusCMM CIccNamedColorCmm::SetLastXformDest(icColorSpaceSignature nDestSpace
 CIccMruCmm::CIccMruCmm()
 {
   m_pCmm = NULL;
+  m_bDeleteCmm = false;
 }
 
 
@@ -10316,7 +10385,7 @@ CIccMruCmm::CIccMruCmm()
 */
 CIccMruCmm::~CIccMruCmm()
 {
-   if (m_pCmm)
+   if (m_pCmm && m_bDeleteCmm)
      delete m_pCmm;
 }
 
@@ -10331,21 +10400,24 @@ CIccMruCmm::~CIccMruCmm()
 * Args:
 *  pCmm - pointer to cmm object that we are attaching to.
 *  nCacheSize - number of most recently used transformations to cache
+*  bDeleteCmm - flag to indicate whether cmm should be deleted when
+*    this is destroyed.
 *
 * Return:
 *  A CIccMruCmm object that represents a cached form of the pCmm passed in.
-*  The pCmm will be owned by the returned object.
+*  The pCmm will be owned by the returned object unless.
 *
 *  If this function fails the pCmm object will be deleted.
 *****************************************************************************
 */
-CIccMruCmm* CIccMruCmm::Attach(CIccCmm *pCmm, icUInt8Number nCacheSize/* =4 */)
+CIccMruCmm* CIccMruCmm::Attach(CIccCmm *pCmm, icUInt8Number nCacheSize/* =4 */, bool bDeleteCmm/*=true*/)
 {
   if (!pCmm || !nCacheSize)
     return NULL;
 
   if (!pCmm->Valid()) {
-    delete pCmm;
+    if (bDeleteCmm)
+      delete pCmm;
     return NULL;
   }
 
@@ -10353,6 +10425,7 @@ CIccMruCmm* CIccMruCmm::Attach(CIccCmm *pCmm, icUInt8Number nCacheSize/* =4 */)
 
   rv->m_pCmm = pCmm;
   rv->m_nCacheSize = nCacheSize;
+  rv->m_bDeleteCmm = bDeleteCmm;
 
   rv->m_nSrcSpace = pCmm->GetSourceSpace();
   rv->m_nDestSpace = pCmm->GetDestSpace();
@@ -10495,6 +10568,12 @@ bool CIccMruCache<T>::Apply(T *DstPixel, const T *SrcPixel)
   for (ptr = m_pFirst, i = 0; ptr; ptr = ptr->pNext, i++) {
     if (!memcmp(SrcPixel, ptr->pPixelData, m_nSrcSize)) {
       memcpy(DstPixel, &ptr->pPixelData[m_nSrcSamples], m_nDstSize);
+      if (ptr != m_pFirst) {
+        last->pNext = ptr->pNext;
+
+        ptr->pNext = m_pFirst;
+        m_pFirst = ptr;
+      }
       return true;
     }
     prev = last;
@@ -10508,13 +10587,10 @@ bool CIccMruCache<T>::Apply(T *DstPixel, const T *SrcPixel)
     ptr = &m_cache[i];
     ptr->pPixelData = pixel;
 
-    if (!last) {
-      m_pFirst = ptr;
+    if (m_pFirst) {
+      ptr->pNext = m_pFirst;
     }
-    else {
-
-      last->pNext = ptr;
-    }
+    m_pFirst = ptr;
   }
   else {  //Reuse oldest value and put it at the front of the list
     prev->pNext = NULL;

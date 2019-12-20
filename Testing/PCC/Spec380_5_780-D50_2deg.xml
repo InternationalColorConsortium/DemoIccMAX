@@ -4,6 +4,8 @@
     <PreferredCMMType></PreferredCMMType>
     <ProfileVersion>5.00</ProfileVersion>
     <ProfileDeviceClass>spac</ProfileDeviceClass>
+	<ProfileDeviceSubClass>sref</ProfileDeviceSubClass>
+	<ProfileSubClassVersion>1.00</ProfileSubClassVersion>
     <DataColourSpace>nc0051</DataColourSpace>
 	<PCS></PCS>
     <CreationDateTime>now</CreationDateTime>

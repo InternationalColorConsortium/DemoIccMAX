@@ -528,7 +528,7 @@
       <AdditionalDependencies>zlibstat.lib;IccProfLib_CRTDLL.lib;wxmsw$(WXVER)_core.lib;wxbase$(WXVER).lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregex.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;oleacc.lib;odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)\wxProfileDump.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Platform)\Release_CRTDLL;$(WXWIN)\lib\$(Platform)\vc_lib;$(WXWIN)\lib\vc_x64_lib;$(ZLIBLIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\Release_CRTDLL;$(WXWIN)\lib\$(Platform)\vc_lib;$(WXWIN)\lib\vc_x64_lib;$(ZLIBLIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)\wxProfileDump.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>

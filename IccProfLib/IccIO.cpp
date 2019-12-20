@@ -423,6 +423,23 @@ bool CIccFileIO::Open(const icWChar *szFilename, const icWChar *szAttr)
 #endif
 
 
+bool CIccFileIO::Attach(FILE *f)
+{
+  if (m_fFile)
+    fclose(m_fFile);
+
+  m_fFile = f;
+
+  return m_fFile != NULL;
+}
+
+
+void CIccFileIO::Detach()
+{
+  m_fFile = NULL;
+}
+
+
 void CIccFileIO::Close()
 {
   if (m_fFile) {

@@ -299,6 +299,7 @@ public:
   virtual ~CIccInfo();
   //Signature values
   const icChar *GetVersionName(icUInt32Number val);
+  const icChar *GetSubClassVersionName(icUInt32Number val);
   const icChar *GetDeviceAttrName(icUInt64Number val);
   const icChar *GetProfileFlagsName(icUInt32Number val, bool bCheckMCS=false);
 
@@ -325,7 +326,7 @@ public:
   //Other values
   const icChar *GetMeasurementFlareName(icMeasurementFlare val);
   const icChar *GetMeasurementGeometryName(icMeasurementGeometry val);
-  const icChar *GetRenderingIntentName(icRenderingIntent val);
+  const icChar *GetRenderingIntentName(icRenderingIntent val, bool bIsV5=false);
   const icChar *GetSpotShapeName(icSpotShape val);
   const icChar *GetStandardObserverName(icStandardObserver val);
   const icChar *GetIlluminantName(icIlluminant val);

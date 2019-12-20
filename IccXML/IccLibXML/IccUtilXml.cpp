@@ -884,7 +884,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
 // replaced "_inline" with "inline"
 static inline bool icIsNumChar(char c)
 {
-  if ((c>='0' && c<='9') || c=='.' || c=='+' || c=='-' || c=='e')
+  if ((c>='0' && c<='9') || c=='.' || c=='+' || c=='-' || c=='e' || c == 'n' || c == 'a')
     return true;
   return false;
 }
@@ -978,7 +978,12 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSiz
     }
     else if (bInNum) {
       num[b] = 0;
-      pBuf[n] = (T)atof(num);
+      if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
+        pBuf[n] = (T)nanf(num);
+      }
+      else {
+        pBuf[n] = (T)atof(num);
+      }
       n++;
       bInNum = false;
     }
@@ -986,7 +991,12 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSiz
   }
   if (bInNum) {
     num[b] = 0;
-    pBuf[n] = (T)atof(num);
+    if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
+      pBuf[n] = (T)nanf(num);
+    }
+    else {
+      pBuf[n] = (T)atof(num);
+    }
     n++;
   } 
 

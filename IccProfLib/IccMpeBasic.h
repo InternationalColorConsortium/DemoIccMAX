@@ -455,8 +455,9 @@ public:
 
   bool SetSize(icUInt16Number nInputChannels, icUInt16Number nOutputChannels, bool bUseConstants = true);
 
-  icFloatNumber *GetMatrix() {return m_pMatrix;}
-  icFloatNumber *GetConstants() {return m_pConstants;}
+  icFloatNumber *GetMatrix() const {return m_pMatrix;}
+  icFloatNumber *GetConstants() const {return m_pConstants;}
+  bool GetApplyConstants() const {return m_bApplyConstants;}
 
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;

@@ -473,6 +473,9 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 		sizerBox->Add(CreateSizerWithText(_("Version:"), &m_textVersion), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Profile Class:"), &m_textClass), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Profile SubClass:"), &m_textSubClass), wxSizerFlags().Expand().Border(wxALL, 0));
+    if (m_pIcc && (m_pIcc->m_Header.version & 0x0000ffff)) {
+      sizerBox->Add(CreateSizerWithText(_("SubClass Version:"), &m_textSubClassVersion), wxSizerFlags().Expand().Border(wxALL, 0));
+    }
     sizerBox->Add(CreateSizerWithText(_("Data Color Space:"), &m_textColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Creation Date:"), &m_textCreationDate), wxSizerFlags().Expand().Border(wxALL, 0));
@@ -548,6 +551,10 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
       m_textSubClass->SetLabel(_T("Not Defined"));
 
 		m_textVersion->SetLabel(Fmt.GetVersionName(pHdr->version));
+    
+    if (pHdr->version & 0x0000ffff)
+      m_textSubClassVersion->SetLabel(Fmt.GetSubClassVersionName(pHdr->version));
+
 		m_textIlluminant->SetLabel(wxString::Format(_T("X=%.4lf, Y=%.4lf, Z=%.4lf"),
 			icFtoD(pHdr->illuminant.X),
 			icFtoD(pHdr->illuminant.Y),

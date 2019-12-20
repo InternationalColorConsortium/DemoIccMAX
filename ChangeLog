@@ -1,3 +1,18 @@
+2019-12-20 Max Derhak
+* 2.1.17 Release of IccProflib and related tools
+* 2.1.17 Release of IccLibXML and related tools
+* Fixed bugs related to round tripping between XML and ICC profiles with nan values in arrays
+* Improved formatting profile header when generating of IccXML
+* Fixed verification bug related to mediaWhitePoint in v5 profiles
+* Added profiles associated with ICS documents in Testing\ICS folder
+* Fixed naming of XML nodes to match those in iccMAX specification
+* Implemented ProfileDeviceSubClass version parsing of IccXML files
+* Implemented ProvidDeviceSubClass signature parsing of IccXML files
+* Extended Data/Array parsing form XML files
+* Update sample profiles to be agree with XML parsing changes and ICS requirements
+* Improvements to iccApplyNamedCMM related to Lab/XYZ device channel encoding
+* Display of SubClass version in wxProfileDump
+
 2019-06-05 Max Derhak
 * 2.1.16 Release of IccProflib and related tools
 * 2.1.16 Release of IccLibXML and related tools

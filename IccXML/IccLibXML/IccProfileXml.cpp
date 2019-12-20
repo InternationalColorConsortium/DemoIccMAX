@@ -99,9 +99,19 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
   xml += blanks + line;
   sprintf(line, "    <ProfileVersion>%s</ProfileVersion>\n", info.GetVersionName(m_Header.version));
   xml += blanks + line;
+  if (m_Header.version & 0x0000ffff) {
+    sprintf(line, "    <ProfileSubClassVersion>%s</ProfileSubClassVersion>\n", info.GetSubClassVersionName(m_Header.version));
+    xml += blanks + line;
+  }
   sprintf(line, "    <ProfileDeviceClass>%s</ProfileDeviceClass>\n", icFixXml(fix, icGetSigStr(buf, m_Header.deviceClass)));
   xml += blanks + line;
-  sprintf(line, "    <DataColourSpace>%s</DataColourSpace>\n", icFixXml(fix, icGetSigStr(buf, m_Header.colorSpace)));
+
+  if (m_Header.deviceSubClass) {
+    sprintf(line, "    <ProfileDeviceSubClass>%s</ProfileDeviceSubClass>\n", icFixXml(fix, icGetSigStr(buf, m_Header.deviceSubClass)));
+    xml += blanks + line;
+  }
+
+  sprintf(line, "    <DataColourSpace>%s</DataColourSpace>\n", icFixXml(fix, icGetColorSigStr(buf, m_Header.colorSpace)));
   xml += blanks + line;
   sprintf(line, "    <PCS>%s</PCS>\n",  icFixXml(fix, icGetColorSigStr(buf, m_Header.pcs)));
   xml += blanks + line;
@@ -141,7 +151,7 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
   xml+= "    ";
   xml += blanks + icGetDeviceAttrName(m_Header.attributes);
 
-  sprintf(line, "    <RenderingIntent>%s</RenderingIntent>\n", info.GetRenderingIntentName((icRenderingIntent)m_Header.renderingIntent));
+  sprintf(line, "    <RenderingIntent>%s</RenderingIntent>\n", info.GetRenderingIntentName((icRenderingIntent)m_Header.renderingIntent, m_Header.version>=icVersionNumberV5));
   xml += blanks + line;
   sprintf(line, "    <PCSIlluminant>\n%s      <XYZNumber X=\"%.8f\" Y=\"%.8f\" Z=\"%.8f\"/>\n%s    </PCSIlluminant>\n", blanks.c_str(),
                                                              (float)icFtoD(m_Header.illuminant.X),
@@ -173,7 +183,7 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
 
     if (m_Header.spectralRange.steps) {
       xml += blanks + "    <SpectralRange>\n";
-      sprintf(line, "     <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n)", 
+      sprintf(line, "     <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", 
               icF16toF(m_Header.spectralRange.start), icF16toF(m_Header.spectralRange.end), m_Header.spectralRange.steps);
       xml += blanks + line;
       xml += blanks + "    </SpectralRange>\n";
@@ -189,11 +199,6 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
 
   if (m_Header.mcs) {
     sprintf(line, "    <MCS>%s</MCS>\n",  icFixXml(fix, icGetColorSigStr(buf, m_Header.mcs)));
-    xml += blanks + line;
-  }
-
-  if (m_Header.deviceSubClass) {
-    sprintf(line, "    <ProfileDeviceSubClass>%s</ProfileDeviceSubClass>\n",  icFixXml(fix, icGetSigStr(buf, m_Header.deviceSubClass)));
     xml += blanks + line;
   }
 
@@ -308,6 +313,14 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
   return true;
 }
 
+static unsigned char parseVersion(const char *szVer)
+{
+  unsigned char rv;
+  int val = atoi(szVer);
+  rv = ((val / 10) % 10) * 16 + (val % 10);
+
+  return rv;
+}
 
 /**
 *****************************************************************************
@@ -330,28 +343,72 @@ bool CIccProfileXml::ParseBasic(xmlNode *pNode, std::string &parseStr)
   for (pNode=pNode->children; pNode; pNode=pNode->next) {
 	  if (pNode->type==XML_ELEMENT_NODE) {
 		if (!icXmlStrCmp((const char*)pNode->name, "ProfileVersion")) {
-		  icFloatNumber v = (icFloatNumber)atof((const char*)pNode->children->content);
+      const char *szVer = (const char*)pNode->children->content;
+      std::string ver;
+      unsigned long verMajor=0, verMinor=0, verClassMajor=0, verClassMinor=0;
 
-		  m_Header.version = 0;
-		  icFloatNumber divisor = 10.0;
-		  int i;
-		  icUInt32Number units;
+      for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
+        ver = *szVer;
+      }
+      verMajor = parseVersion(ver.c_str());
+      ver.clear();
 
-		  for (i=0; i<8; i++) {
-			units = (icUInt32Number)(v / divisor + 0.001);
-			v-= divisor * units;
-			divisor /= 10.0f;
+      if (szVer) {
+        for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
+          ver = *szVer;
+        }
+        verMinor = parseVersion(ver.c_str());
+        ver.clear();
 
-			m_Header.version += units << ((7-i)*4);
-		  }
+        if (szVer) {
+          for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
+            ver = *szVer;
+          }
+          verClassMajor = parseVersion(ver.c_str());
+          ver.clear();
+
+          if (szVer) {
+            for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
+              ver = *szVer;
+            }
+            verClassMinor = parseVersion(ver.c_str());
+            ver.clear();
+          }
+        }
+      }
+
+      m_Header.version = (verMajor << 24) | (verMinor << 16) | (verClassMajor << 8) | verClassMinor;
 		}
-		else if (!icXmlStrCmp(pNode->name, "PreferredCMMType")) {			
+    else if (!icXmlStrCmp((const char*)pNode->name, "ProfileSubClassVersion")) {
+      const char *szVer = (const char*)pNode->children->content;
+      std::string ver;
+      unsigned long verClassMajor = 0, verClassMinor = 0;
+
+      for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
+        ver = *szVer;
+      }
+      verClassMajor = (unsigned char)atoi(ver.c_str());
+      ver.clear();
+
+      if (szVer) {
+        for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
+          ver = *szVer;
+        }
+        verClassMinor = (unsigned char)atoi(ver.c_str());
+      }
+
+      m_Header.version = (m_Header.version & 0xffff0000) | (((verClassMajor << 8) | verClassMinor) & 0x0000ffff);
+    }
+    else if (!icXmlStrCmp(pNode->name, "PreferredCMMType")) {
 			m_Header.cmmId = icXmlGetChildSigVal(pNode);
 		}
 		else if (!icXmlStrCmp(pNode->name, "ProfileDeviceClass")) {
 			m_Header.deviceClass = (icProfileClassSignature)icXmlGetChildSigVal(pNode);
 		}
-		else if (!icXmlStrCmp(pNode->name, "DataColourSpace")) {
+    else if (!icXmlStrCmp(pNode->name, "ProfileDeviceSubClass")) {
+      m_Header.deviceSubClass = (icSignature)icXmlGetChildSigVal(pNode);
+    }
+    else if (!icXmlStrCmp(pNode->name, "DataColourSpace")) {
 			m_Header.colorSpace = (icColorSpaceSignature)icXmlGetChildSigVal(pNode);
 		}
 		else if (!icXmlStrCmp(pNode->name, "PCS")) {

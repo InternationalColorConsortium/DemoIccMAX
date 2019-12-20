@@ -156,6 +156,10 @@ public:
 #ifdef WIN32
   bool Open(const icWChar *szFilename, const icWChar *szAttr);
 #endif
+
+  bool Attach(FILE *f);
+  void Detach();
+
   virtual void Close();
 
   virtual icInt32Number Read8(void *pBuf, icInt32Number nNum=1);

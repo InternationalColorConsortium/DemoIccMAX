@@ -178,6 +178,7 @@ protected:
 		wxStaticText *m_textClass;
     wxStaticText *m_textSubClass;
 		wxStaticText *m_textVersion;
+    wxStaticText *m_textSubClassVersion;
 
 		wxSizer *CreateSizerWithText(const wxString &labelText, wxStaticText **ppText);
 

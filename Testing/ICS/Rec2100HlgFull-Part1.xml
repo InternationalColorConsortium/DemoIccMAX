@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType>RICC</PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileSubClassVersion>1.00</ProfileSubClassVersion>
+    <ProfileDeviceClass>mntr</ProfileDeviceClass>
+    <ProfileDeviceSubClass>xrng</ProfileDeviceSubClass>
+    <DataColourSpace>RGB </DataColourSpace>
+    <PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.964245565128246" Y="1.00000000" Z="0.824679094091967"/>
+    </PCSIlluminant>
+    <ProfileCreator>RICC</ProfileCreator>
+    <ProfileID>1</ProfileID>
+  </Header>
+  <Tags>
+    <profileDescriptionTag> <multiLocalizedUnicodeType>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[LutBased Rec. 2100 RGB with HLG using D50 PCS]]></LocalizedText>
+    </multiLocalizedUnicodeType> </profileDescriptionTag>
+	
+	<copyrightTag> <multiLocalizedUnicodeType>
+	  <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2019 International Color Consortium]]></LocalizedText>
+	</multiLocalizedUnicodeType> </copyrightTag>
+
+	<AToB1Tag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+		<CurveSetElement InputChannels="3" OutputChannels="3">
+			<SingleSampledCurve Start="-infinity" End="+infinity" 
+				 FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0" 
+				 Filename="EOTF.txt" Format="text"/>
+			<SingleSampledCurve Start="-infinity" End="+infinity" 
+				 FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0" 
+				 Filename="EOTF.txt" Format="text"/>
+			<SingleSampledCurve Start="-infinity" End="+infinity" 
+				 FirstEntry="0.0" LastEntry="1.0" StorageType="0" ExtensionType="0" 
+				 Filename="EOTF.txt" Format="text"/>
+		</CurveSetElement>
+	    <!-- CMM's should optimally concatenate these matrices before applying transforms -->
+		<MatrixElement Name="RGB2XYZ" InputChannels="3" OutputChannels="3">
+			<MatrixData>
+			 0.63695805 0.14461690 0.16888098
+			 0.26270021 0.67799807 0.05930172
+			 0.00000000 0.02807269 1.06098506
+			</MatrixData>
+		</MatrixElement>
+	    <MatrixElement Name="D65toD50" InputChannels="3" OutputChannels="3">
+		  <MatrixData>
+			 1.1521347832336029  -0.0622621452112932  -0.0629273756872617
+			 0.0989206789384718   0.9340704465316697  -0.0257968215805849
+			-0.0283670115255878   0.0346911198327194   0.7503199827505577
+		  </MatrixData>
+	    </MatrixElement>
+	  </MultiProcessElements>
+	</multiProcessElementType> </AToB1Tag>
+	
+	<BToA1Tag> <multiProcessElementType>
+      <MultiProcessElements InputChannels="3" OutputChannels="3">
+	    <!-- CMM's should optimally concatenate these matrices before applying transforms -->
+	    <MatrixElement Name="D50toD65" InputChannels="3" OutputChannels="3">
+		  <MatrixData>
+			 0.8650732875533031   0.0548983751529947   0.0744389015830534
+			-0.0905947584963372   1.0634685447601919   0.0289652660227392
+			 0.0368940960898257  -0.0470940567974316   1.3342397839314815
+		  </MatrixData>
+	    </MatrixElement>
+		<MatrixElement Name="XYZ2RGB" InputChannels="3" OutputChannels="3">
+		  <MatrixData InvertMatrix="true">
+			 0.63695805 0.14461690 0.16888098
+			 0.26270021 0.67799807 0.05930172
+			 0.00000000 0.02807269 1.06098506
+		  </MatrixData>
+		</MatrixElement>
+		<CurveSetElement InputChannels="3" OutputChannels="3">
+			<SingleSampledCurve Start="-infinity" End="+infinity" 
+				 FirstEntry="0.030029" LastEntry="4.8046" StorageType="0" ExtensionType="0" 
+				 Filename="InvEOTF.txt" Format="text"/>
+			<SingleSampledCurve Start="-infinity" End="+infinity" 
+				 FirstEntry="0.030029" LastEntry="4.8046" StorageType="0" ExtensionType="0" 
+				 Filename="InvEOTF.txt" Format="text"/>
+			<SingleSampledCurve Start="-infinity" End="+infinity" 
+				 FirstEntry="0.030029" LastEntry="4.8046" StorageType="0" ExtensionType="0" 
+				 Filename="InvEOTF.txt" Format="text"/>
+		</CurveSetElement>
+      </MultiProcessElements>
+    </multiProcessElementType> </BToA1Tag>
+	
+	<mediaWhitePointTag> <XYZArrayType>
+	  <XYZNumber X="0.964245565128246" Y="1.00000000" Z="0.824679094091967"/>
+	</XYZArrayType> </mediaWhitePointTag>
+
+  </Tags>
+</IccProfile>

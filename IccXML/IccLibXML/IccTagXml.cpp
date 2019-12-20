@@ -1254,8 +1254,15 @@ bool CIccTagXmlNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/* = "
 template <class T, class A, icTagTypeSignature Tsig>
 bool CIccTagXmlNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
-  pNode = icXmlFindNode(pNode, "Data");
-  pNode = pNode->children;  
+  xmlNode *pDataNode = icXmlFindNode(pNode, "Data");
+  if (!pDataNode) {
+    pDataNode = icXmlFindNode(pNode, "Array");
+  }
+  if (!pDataNode) {
+    return false;
+  }
+
+  pNode = pDataNode->children;  
 
   A a;
 
@@ -3144,9 +3151,12 @@ bool icCurvesFromXml(LPIccCurve *pCurve, icUInt32Number nChannels, xmlNode *pNod
               pCurve[i] = pCurveTag;
               i++;
             }
-
-            // added else stament
+            // added else statement
             else  {
+              char num[40];
+              parseStr += "Unable to parse curve at Line";
+              sprintf(num, "%d\n", pCurveNode->line);
+              parseStr += num;
               return false;
             }
           }
@@ -3157,10 +3167,21 @@ bool icCurvesFromXml(LPIccCurve *pCurve, icUInt32Number nChannels, xmlNode *pNod
               pCurve[i] = pCurveTag;
               i++;
             }
+            // added else statement
+            else {
+              char num[40];
+              parseStr += "Unable to parse curve tag at Line";
+              sprintf(num, "%d\n", pCurveNode->line);
+              parseStr += num;
+              return false;
+            }
           }
         }
       }
     }
+  }
+  if (!i != nChannels) {
+    parseStr += "Channel number mismatch!\n";
   }
   return i==nChannels;
 }
@@ -3680,21 +3701,21 @@ bool icMBBFromXml(CIccMBB *pMBB, xmlNode *pNode, icConvertType nType, std::strin
       if (!icXmlStrCmp(pNode->name, "ACurves") && !pMBB->GetCurvesA()) {
         LPIccCurve *pCurves = pMBB->NewCurvesA();
         if (!icCurvesFromXml(pCurves, !pMBB->IsInputB() ? nIn : nOut, pNode->children, nType, parseStr)) {
-          parseStr += "Error! - Failed to set parse ACurves.\n";
+          parseStr += "Error! - Failed to parse ACurves.\n";
           return false;
         }
       }
       else if (!icXmlStrCmp(pNode->name, "BCurves") && !pMBB->GetCurvesB()) {
         LPIccCurve *pCurves = pMBB->NewCurvesB();
         if (!icCurvesFromXml(pCurves, pMBB->IsInputB() ? nIn : nOut, pNode->children, nType, parseStr)) {
-          parseStr += "Error! - Failed to set parse BCurves.\n";
+          parseStr += "Error! - Failed to parse BCurves.\n";
           return false;
         }
       }
       else if (!icXmlStrCmp(pNode->name, "MCurves") && !pMBB->GetCurvesM()) {
         LPIccCurve *pCurves = pMBB->NewCurvesM();
         if (!icCurvesFromXml(pCurves, !pMBB->IsInputMatrix() ? nIn : nOut, pNode->children, nType, parseStr)) {
-          parseStr += "Error! - Failed to set parse MCurves.\n";
+          parseStr += "Error! - Failed to parse MCurves.\n";
           return false;
         }
       }
@@ -4263,7 +4284,7 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
               sprintf(line, "  <%s>", icFixXml(fix, tagName.c_str()));
             }
             else {
-              sprintf(line, "  <PrivateSubTag Signature=\"%s\">", icFixXml(fix, icGetSigStr(buf, i->TagInfo.sig)));
+              sprintf(line, "  <PrivateSubTag TagSignature=\"%s\">", icFixXml(fix, icGetSigStr(buf, i->TagInfo.sig)));
               tagName = "PrivateSubTag";
             }
             xml += blanks + line;
