@@ -4899,7 +4899,7 @@ bool CIccTagXmlGamutBoundaryDesc::ParseXml(xmlNode *pNode, std::string &parseStr
 
     memcpy(m_DeviceValues, vals.GetBuf(), m_NumberOfVertices * m_nDeviceChannels * sizeof(icFloatNumber));
   }
-  else
+  else if (!m_PCSValues)
     m_NumberOfVertices = 0;
 
   childNode = icXmlFindNode(pNode, "Triangles");
