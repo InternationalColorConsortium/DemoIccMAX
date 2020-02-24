@@ -73,6 +73,7 @@
 #endif
 #endif
 #include <cstring> /* C strings strcpy, memcpy ... */
+#include <math.h>  /* nanf */
 
 
 
