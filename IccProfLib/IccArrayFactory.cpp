@@ -140,7 +140,7 @@ icArraySignature CIccBasicArrayFactory::GetArraySig(const icChar *szArrayName)
 }
 
 
-std::auto_ptr<CIccArrayCreator> CIccArrayCreator::theArrayCreator;
+std::unique_ptr<CIccArrayCreator> CIccArrayCreator::theArrayCreator;
 
 CIccArrayCreator::~CIccArrayCreator()
 {

@@ -204,7 +204,7 @@ public:
 
 class CIccStructCreator;
 
-typedef std::auto_ptr<CIccStructCreator> CIccStructCreatorPtr;
+typedef std::unique_ptr<CIccStructCreator> CIccStructCreatorPtr;
 
 /**
  ***********************************************************************
