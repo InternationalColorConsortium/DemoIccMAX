@@ -69,6 +69,7 @@ IF(ENABLE_INSTALL_RIM)
     ${SRC_PATH}/IccProfLib/IccTagBasic.h
     ${SRC_PATH}/IccProfLib/IccTagComposite.h
     ${SRC_PATH}/IccProfLib/IccTagDict.h
+    ${SRC_PATH}/IccProfLib/IccTagEmbedIcc.h
     ${SRC_PATH}/IccProfLib/IccTagFactory.h
     ${SRC_PATH}/IccProfLib/IccTag.h
     ${SRC_PATH}/IccProfLib/IccTagLut.h
