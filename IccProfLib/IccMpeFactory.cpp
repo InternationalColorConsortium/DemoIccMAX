@@ -206,7 +206,9 @@ bool CIccBasicMpeFactory::GetElementSigName(std::string &elemName, icElemTypeSig
       break;
 
     default:
-      elemName = "Unknown Element Type";
+      char buf[30], str[100];
+      sprintf(str, "Unknown Element Type (%s)", icGetSig(buf, elemTypeSig));
+      elemName = str;
       break;
   }
 

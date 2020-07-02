@@ -808,9 +808,15 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
   TagEntryList::iterator i;
 
   for (i=m_Tags->begin(); i!=m_Tags->end(); i++) {
+    if ((i->TagInfo.offset % 4) != 0) {
+        sReport += icMsgValidateNonCompliant;
+        sReport += Info.GetTagSigName(i->TagInfo.sig);
+        sReport += " - Offset is not aligned on 4-byte boundary!\r\n";
+
+        rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
     if (!LoadTag((IccTagEntry*)&(i->TagInfo), pIO)) {
       sReport += icMsgValidateCriticalError;
-      sReport += " - ";
       sReport += Info.GetTagSigName(i->TagInfo.sig);
       sReport += " - Tag has invalid structure!\r\n";
 
@@ -1528,7 +1534,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
     }
 
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_Header.date));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_Header.date, "Header date"));
 
     switch(m_Header.platform) {
     case icSigMacintosh:
@@ -1546,6 +1552,68 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       rv = icMaxStatus(rv, icValidateWarning);
     }
 
+    // Report on various bits of profile flags as per Table 21 in v4.3.0
+    if(m_Header.flags & 0x0000FFFC) {
+        sReport += icMsgValidateNonCompliant;
+        sReport += "Reserved profile flags (bits 2-15) are non-zero.\r\n";
+        rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+    if(m_Header.flags & 0xFFFF0000) {
+        sReport += icMsgValidateWarning;
+        sReport += "Vendor-specific profile flags (bits 16-32) are non-zero.\r\n";
+        rv = icMaxStatus(rv, icValidateWarning);
+    }
+
+    // Report on various bits of device attributes as per Table 22 in v4.3.0 
+    if(m_Header.attributes & 0x0000FFF0) {
+        sReport += icMsgValidateNonCompliant;
+        sReport += "Reserved device attributes (bits 4-31) are non-zero.\r\n";
+        rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+    if(m_Header.attributes & 0xFFFF0000) {
+        sReport += icMsgValidateWarning;
+        sReport += "Vendor-specific device attributes (bits 32-63) are non-zero.\r\n";
+        rv = icMaxStatus(rv, icValidateWarning);
+    }
+
+    // Report on unusual version (stored as BCD)
+    if (m_Header.version & 0x0000FFFF) {
+        sReport += icMsgValidateWarning;
+        sReport += "Version number bytes 10 and 11 are reserved but non-zero.\r\n";
+        rv = icMaxStatus(rv, icValidateWarning);
+    }
+    uint8_t  bcdpair = (m_Header.version >> 24);
+    switch (bcdpair) {
+    case 0x02:
+        bcdpair = (m_Header.version & 0x00FF0000) >> 16;
+        if ((bcdpair > 0x40) || (bcdpair & 0x0F)) {
+            sReport += icMsgValidateWarning;
+            sReport += "Version 2 minor number is unexpected.\r\n";
+            rv = icMaxStatus(rv, icValidateWarning);
+        }
+        break;
+    case 0x04:
+        bcdpair = (m_Header.version & 0x00FF0000) >> 16;
+        if ((bcdpair > 0x30) || (bcdpair & 0x0F)) {
+            sReport += icMsgValidateWarning;
+            sReport += "Version 4 minor number is unexpected.\r\n";
+            rv = icMaxStatus(rv, icValidateWarning);
+        }
+        break;
+    case 0x05:
+        bcdpair = (m_Header.version & 0x00FF0000) >> 16;
+        if (bcdpair) {
+            sReport += icMsgValidateWarning;
+            sReport += "Version 5 minor number is unexpected.\r\n";
+            rv = icMaxStatus(rv, icValidateWarning);
+        }
+        break;
+    default:
+        sReport += icMsgValidateWarning;
+        sprintf(buf, "Major version number (%d) is unexpected.\r\n", ((bcdpair >> 4) * 10 + (bcdpair & 0x0F)));
+        sReport += buf;
+        rv = icMaxStatus(rv, icValidateWarning);
+    }
 
     switch((icCmmSignature)m_Header.cmmId) {
     //Account for registered CMM's as well:
@@ -1599,7 +1667,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
 
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_Header.illuminant));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_Header.illuminant, "Header Illuminant"));
     icFloatNumber X = icFtoD(m_Header.illuminant.X);
     icFloatNumber Y = icFtoD(m_Header.illuminant.Y);
     icFloatNumber Z = icFtoD(m_Header.illuminant.Z);
@@ -3458,7 +3526,7 @@ CIccProfile* ValidateIccProfile(const icChar *szFilename, std::string &sReport, 
 
   delete pFileIO;
 
-  nStatus = pIcc->Validate(sReport);
+  nStatus = icMaxStatus(nStatus, pIcc->Validate(sReport));
 
   return pIcc;
 }

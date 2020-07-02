@@ -1310,8 +1310,9 @@ CIccInfo::~CIccInfo()
 const icChar *CIccInfo::GetUnknownName(icUInt32Number val)
 {
   icChar buf[24];
-  if (!val)
-    return "Unknown";
+  // icGetSig() will print 'NULL' if val is 0x00000000 which is easier to post-process
+  // if (!val)
+  //  return "Unknown";
 
   sprintf(m_szStr, "Unknown %s", icGetSig(buf, val)); 
 
@@ -2258,21 +2259,21 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icFloatXYZNumbe
   if (XYZ.X < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative X value!\r\n";
+    sReport += " - FloatXYZNumber: Negative X value!\r\n";
     rv = icValidateNonCompliant;
   }
 
   if (XYZ.Y < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative Y value!\r\n";
+    sReport += " - FloatXYZNumber: Negative Y value!\r\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (XYZ.Z < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative Z value!\r\n";
+    sReport += " - FloatXYZNumber: Negative Z value!\r\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
