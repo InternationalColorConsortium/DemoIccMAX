@@ -160,6 +160,9 @@ print_usage:
     else
       printf("Profile SubClass:   Not Defined\n");
     printf("Version:            %s\n", Fmt.GetVersionName(pHdr->version));
+    if (pHdr->version >= icVersionNumberV5 && pHdr->deviceSubClass) {
+      printf("SubClass Version:   %s\n", Fmt.GetSubClassVersionName(pHdr->version));
+    }
     printf("Illuminant:         X=%.4lf, Y=%.4lf, Z=%.4lf\n",
                                 icFtoD(pHdr->illuminant.X),
                                 icFtoD(pHdr->illuminant.Y),
