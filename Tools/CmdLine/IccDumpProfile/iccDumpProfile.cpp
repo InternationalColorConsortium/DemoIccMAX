@@ -136,7 +136,7 @@ print_usage:
 
     printf("Profile:            '%s'\n", argv[nArg]);
     if(Fmt.IsProfileIDCalculated(&pHdr->profileID))
-      printf("Profile ID:          %s\n", Fmt.GetProfileID(&pHdr->profileID));
+      printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
     else
       printf("Profile ID:         Profile ID not calculated.\n");
     printf("Size:               %d(0x%x) bytes\n", pHdr->size, pHdr->size);
@@ -160,6 +160,9 @@ print_usage:
     else
       printf("Profile SubClass:   Not Defined\n");
     printf("Version:            %s\n", Fmt.GetVersionName(pHdr->version));
+    if (pHdr->version >= icVersionNumberV5 && pHdr->deviceSubClass) {
+      printf("SubClass Version:   %s\n", Fmt.GetSubClassVersionName(pHdr->version));
+    }
     printf("Illuminant:         X=%.4lf, Y=%.4lf, Z=%.4lf\n",
                                 icFtoD(pHdr->illuminant.X),
                                 icFtoD(pHdr->illuminant.Y),
@@ -194,21 +197,104 @@ print_usage:
     printf("\nProfile Tags\n");
     printf(  "------------\n");
 
-    printf("%28s    ID    %8s\t%8s\n", "Tag", "Offset", "Size");
-    printf("%28s  ------  %8s\t%8s\n", "----", "------", "----");
+    printf("%28s    ID    %8s\t%8s\t%8s\n", "Tag",  "Offset", "Size", "Pad");
+    printf("%28s  ------  %8s\t%8s\t%8s\n", "----", "------", "----", "---");
 
-    int n;
-    TagEntryList::iterator i;
+    int n, closest, pad;
+    TagEntryList::iterator i, j;
 
+    // n is number of Tags in Tag Table
     for (n=0, i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++, n++) {
-      printf("%28s  %s  %8d\t%8d\n", Fmt.GetTagSigName(i->TagInfo.sig),
-                                   icGetSig(buf, i->TagInfo.sig, false), 
-                                   i->TagInfo.offset, i->TagInfo.size);
+        // Find closest tag after this tag, by scanning all offsets of other tags 
+        closest = pHdr->size;
+        for (j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++) {
+            if ((i != j) && (j->TagInfo.offset >= i->TagInfo.offset + i->TagInfo.size) && ((int)j->TagInfo.offset <= closest)) {
+                closest = j->TagInfo.offset;
+            }
+        }
+        // Number of actual padding bytes between this tag and closest neighbour (or EOF)
+        // Should be 0-3 if compliant. Negative number if tags overlap!
+        pad = closest - i->TagInfo.offset - i->TagInfo.size;
+
+        printf("%28s  %s  %8d\t%8d\t%8d\n", Fmt.GetTagSigName(i->TagInfo.sig),
+            icGetSig(buf, i->TagInfo.sig, false), i->TagInfo.offset, i->TagInfo.size, pad);
     }
 
+    printf("\n");
+
+    // Check additional details if doing detailed validation:
+    // - First tag data offset is immediately after the Tag Table
+    // - Tag data offsets are all 4-byte aligned
+    // - Tag data should be tightly abutted with adjacent tags (or the end of the Tag Table)
+    //   (note that tag data can be reused by multiple tags and tags do NOT have to be order)
+    //   Last tag does NOT have to be padded and thus file size is NOT always a multiple of 4.
+    // - Tag offset + Tag Size should never go beyond EOF 
+    // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and 
+    //   occurs in real-world ICC profiles
+    // - Tags with overlapping tag data are considered highly suspect (but officially valid)
+    // - 1-3 padding bytes after each tag's data need to be all zero *** NOT DONE - TODO ***
+    if (bDumpValidation) {
+      char str[256];
+      int  rndup, smallest_offset = pHdr->size;
+
+      for (i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++) {
+        rndup = 4 * ((i->TagInfo.size + 3) / 4); // Round up to a 4-byte aligned size as per ICC spec
+        pad = rndup - i->TagInfo.size;           // Optimal smallest number of bytes of padding for this tag (0-3)
+
+        // Is the Tag offset + Tag Size beyond EOF?
+        if (i->TagInfo.offset + i->TagInfo.size > pHdr->size) {
+            sReport += icMsgValidateNonCompliant;
+            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\r\n", 
+                    Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size);
+            sReport += str;
+            nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
+        }
+
+        // Is it the first tag data in the file?
+        if ((int)i->TagInfo.offset < smallest_offset) {
+            smallest_offset = (int)i->TagInfo.offset;
+        }
+
+        // Find closest tag after this tag, by scanning all other tag offsets
+        closest = pHdr->size;
+        for (j=pIcc->m_Tags->begin(); j!=pIcc->m_Tags->end(); j++) {
+           if ((i!=j) && (j->TagInfo.offset > i->TagInfo.offset) && ((int)j->TagInfo.offset <= closest)) {
+             closest = j->TagInfo.offset;
+           }
+        }
+
+        // Check if closest tag after this tag is less than offset+size - in which case it overlaps! Ignore last tag.
+        if ((closest < (int)i->TagInfo.offset + (int)i->TagInfo.size) && (closest < (int)pHdr->size)) {
+            sReport += icMsgValidateWarning;
+            sprintf(str, "Tag %s (offset %d, size %d) overlaps with following tag data starting at offset %d.\r\n",
+                Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size, closest);
+            sReport += str;
+            nStatus = icMaxStatus(nStatus, icValidateWarning);
+        }
+
+        // Check for gaps between tag data (accounting for 4-byte alignment)
+        if (closest > (int)i->TagInfo.offset + rndup) {
+          sReport += icMsgValidateWarning;
+          sprintf(str, "Tag %s (size %d) is followed by %d unnecessary additional bytes (from offset %d).\r\n",
+                Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.size, closest-(i->TagInfo.offset+rndup), (i->TagInfo.offset+rndup));
+          sReport += str;
+          nStatus = icMaxStatus(nStatus, icValidateWarning);
+        }
+      }
+
+      // 1st tag offset should be = Header (128) + Tag Count (4) + Tag Table (n*12)
+      if ((n > 0) && (smallest_offset > 128 + 4 + (n * 12))) {
+        sReport += icMsgValidateWarning;
+        sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\r\n",
+            smallest_offset, 128 + 4 + (n * 12));
+        sReport += str;
+        nStatus = icMaxStatus(nStatus, icValidateWarning);
+      }
+    }
+    
     if (argc>nArg+1) {
       if (!stricmp(argv[nArg+1], "ALL")) {
-        for (n=0, i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++, n++) {
+        for (i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++) {
           DumpTag(pIcc, i->TagInfo.sig);
         }
       }

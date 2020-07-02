@@ -649,7 +649,7 @@ icValidateStatus CIccTagText::Validate(std::string sigPath, std::string &sReport
       if (m_szText[i]&0x80) {
         sReport += icMsgValidateWarning;
         sReport += sSigPathName;
-        sReport += " - Text do not contain 7bit data.\r\n";
+        sReport += " - Text does not contain just 7-bit data.\r\n";
         rv = icMaxStatus(rv, icValidateWarning);
       }
     }
@@ -3592,7 +3592,7 @@ icValidateStatus CIccTagXYZ::Validate(std::string sigPath, std::string &sReport,
   }
 
   for (int i=0; i<(int)m_nSize; i++) {
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_XYZ[i]));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_XYZ[i], sSigPathName + ":XYZ"));
   }
 
   return rv;
@@ -4875,9 +4875,9 @@ void CIccTagFixedNum<T, Tsig>::Describe(std::string &sDescription)
 
     for (i=0; i<m_nSize; i++) {
       if (Tsig==icSigS15Fixed16ArrayType) 
-        sprintf(buf, "Value[%u] = %.4lf\r\n", i, icFtoD(m_Num[i]));
+        sprintf(buf, "Value[%u] = %8.4lf\r\n", i, icFtoD(m_Num[i]));
       else
-        sprintf(buf, "Value[%u] = %.4lf\r\n", i, icUFtoD(m_Num[i]));
+        sprintf(buf, "Value[%u] = %8.4lf\r\n", i, icUFtoD(m_Num[i]));
       sDescription += buf;
     }
   }
@@ -7382,46 +7382,43 @@ void CIccTagData::Describe(std::string &sDescription)
 {
   icChar buf[128];
 
+  sDescription = "\r\n";
+  if (IsTypeCompressed())
+    sDescription += "Compressed ";  // If data is compressed, prepend appropriate text
+
   if (IsTypeAscii()) {
-    sDescription = "\r\nAscii Data:\r\n";
+    sDescription = "Ascii Data:\r\n";
 
     for (int i=0; i<(int)m_nSize; i++)
       sDescription += (icChar)m_pData[i];
-    sDescription += "\r\n";
   }
   else if (IsTypeUtf()) {
     if (m_nSize>2 && 
-        ((m_pData[0]==0xff && m_pData[1]==0xfe) ||
-        (m_pData[0]==0xfe && m_pData[1]==0xff))) { //UTF-16
-      sDescription = "\r\nUTF-16 Data:\r\n";
+        ((m_pData[0]==0xff && m_pData[1]==0xfe) ||  //UTF-16LE
+         (m_pData[0]==0xfe && m_pData[1]==0xff))) { //UTF-16BE
+      sprintf(buf, "UTF-16%s Data:", m_pData[0]==0xff ? "LE" : "BE" );
+      sDescription = buf;
 
-      for (int i = 0; i<(int)m_nSize; i++) {
-        if (!(i&0xf))
-          sDescription += "\r\n";
-        sprintf(buf, "%02X", m_pData[i]);
-        sDescription += buf;
-      }
-      sDescription += "\r\n";
+      icMemDump(sDescription, m_pData, m_nSize);
     }
     else { //UTF-8
-      sDescription = "\r\nUTF-8 Data:\r\n";
+      sDescription = "UTF-8 Data:\r\n";
 
       for (int i=0; i<(int)m_nSize; i++)
         sDescription += (icChar)m_pData[i];
-      sDescription += "\r\n";
     }
   }
   else {
-    sDescription = "\r\nData:\r\n";
-
-    for (int i = 0; i<(int)m_nSize; i++) {
-      if (!(i&0xf))
-        sDescription += "\r\n";
-      sprintf(buf, "%02X", m_pData[i]);
-      sDescription += buf;
+    if (IsTypeBinary()) {
+      sDescription = "Binary Data:\r\n";
     }
-    sDescription += "\r\n";
+    else {
+      sDescription = "Other Data:\r\n";
+    }
+
+    icMemDump(sDescription, m_pData, m_nSize);
   }
+  sDescription += "\r\n";
 }
 
 /**
@@ -7477,8 +7474,19 @@ icValidateStatus CIccTagData::Validate(std::string sigPath, std::string &sReport
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-  switch(m_nDataFlag) {
+  // Mask bits to match processing in Describe() so warnings are appropriate
+  switch(m_nDataFlag&(icCompressedData|icDataTypeMask)) {
   case icAsciiData:
+    for (int i = 0; i < (int)m_nSize; i++) {
+      if (m_pData[i] & 0x80) {
+        sReport += icMsgValidateWarning;
+        sReport += sSigPathName;
+        sReport += " - Ascii Data is not just 7-bit data.\r\n";
+        rv = icMaxStatus(rv, icValidateWarning);
+        break;
+      }
+    }
+    break;
   case icBinaryData:
   case icUtfData:
   case icCompressedAsciiData:
@@ -7490,6 +7498,13 @@ icValidateStatus CIccTagData::Validate(std::string sigPath, std::string &sReport
     sReport += sSigPathName;
     sReport += " - Invalid data flag encoding.\r\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
+  }
+  
+  if (m_nDataFlag & ~(icCompressedData | icDataTypeMask)) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += sSigPathName;
+      sReport += " - Invalid data flag encoding (reserved high order bits).\r\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   return rv;
@@ -8530,8 +8545,8 @@ icValidateStatus CIccTagViewingConditions::Validate(std::string sigPath, std::st
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-  rv = icMaxStatus(rv, Info.CheckData(sReport, m_XYZIllum));
-  rv = icMaxStatus(rv, Info.CheckData(sReport, m_XYZSurround));
+  rv = icMaxStatus(rv, Info.CheckData(sReport, m_XYZIllum, "XYZ Illuminant"));
+  rv = icMaxStatus(rv, Info.CheckData(sReport, m_XYZSurround, "XYZ Surround"));
 
   return rv;
 }
@@ -9485,7 +9500,7 @@ icValidateStatus CIccResponseCurveStruct::Validate(std::string &sReport)
     return rv;
   }
   for (int i=0; i<m_nChannels; i++) {
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_maxColorantXYZ[i]));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_maxColorantXYZ[i], "Max Colorant XYZ"));
   }
 
   return rv;
@@ -10167,9 +10182,9 @@ icValidateStatus CIccTagSpectralDataInfo::Validate(std::string sigPath, std::str
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
   }
-  rv = icMaxStatus(rv, Info.CheckData(sReport, m_spectralRange));
+  rv = icMaxStatus(rv, Info.CheckData(sReport, m_spectralRange, "Spectral Range"));
   if (m_biSpectralRange.steps)
-    rv = icMaxStatus(rv, Info.CheckData(sReport, m_biSpectralRange));
+    rv = icMaxStatus(rv, Info.CheckData(sReport, m_biSpectralRange, "Bispectral Range"));
   return rv;
 }
 
