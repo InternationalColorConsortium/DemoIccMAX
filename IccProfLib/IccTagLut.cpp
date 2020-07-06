@@ -230,9 +230,10 @@ bool CIccTagCurve::Read(icUInt32Number size, CIccIO *pIO)
 {
   icTagTypeSignature sig;
 
-  if (sizeof(icTagTypeSignature) + 
-    sizeof(icUInt32Number) + 
-    sizeof(icUInt32Number) > size)
+  icUInt32Number headerSize = sizeof(icTagTypeSignature) +
+                              sizeof(icUInt32Number) +
+                              sizeof(icUInt32Number);
+  if (headerSize > size)
     return false;
 
   if (!pIO) {
@@ -248,6 +249,9 @@ bool CIccTagCurve::Read(icUInt32Number size, CIccIO *pIO)
   icUInt32Number nSize;
 
   if (!pIO->Read32(&nSize))
+    return false;
+
+  if (headerSize + (icUInt64Number)nSize * sizeof(icUInt16Number) > size)
     return false;
 
   if (!SetSize(nSize, icInitNone))
@@ -1754,11 +1758,11 @@ CIccCLUT::~CIccCLUT()
  *  nGridPoints = number of grid points in the CLUT
  *****************************************************************************
  */
-bool CIccCLUT::Init(icUInt8Number nGridPoints)
+bool CIccCLUT::Init(icUInt8Number nGridPoints, icUInt32Number nMaxSize, icUInt8Number nBytesPerPoint)
 {
   memset(&m_GridPoints, 0, sizeof(m_GridPoints));
   memset(m_GridPoints, nGridPoints, m_nInput);
-  return Init(&m_GridPoints[0]);
+  return Init(&m_GridPoints[0], nMaxSize, nBytesPerPoint);
 }
 
 /**
@@ -1771,8 +1775,12 @@ bool CIccCLUT::Init(icUInt8Number nGridPoints)
  *  pGridPoints = number of grid points in the CLUT
  *****************************************************************************
  */
-bool CIccCLUT::Init(const icUInt8Number *pGridPoints)
+bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, icUInt8Number nBytesPerPoint)
 {
+  if (nMaxSize && !nBytesPerPoint)
+    return false;
+
+  icUInt64Number nNumPoints;
   memset(m_nReserved2, 0, sizeof(m_nReserved2));
   if (pGridPoints!=&m_GridPoints[0]) {
     memcpy(m_GridPoints, pGridPoints, m_nInput);
@@ -1787,11 +1795,14 @@ bool CIccCLUT::Init(const icUInt8Number *pGridPoints)
   int i=m_nInput-1;
 
   m_DimSize[i] = m_nOutput;
-  m_nNumPoints = m_GridPoints[i];
+  nNumPoints = m_GridPoints[i];
   for (i--; i>=0; i--) {
     m_DimSize[i] = m_DimSize[i+1] * m_GridPoints[i+1];
-    m_nNumPoints *= m_GridPoints[i];
+    nNumPoints *= m_GridPoints[i];
+    if (nMaxSize && nNumPoints * m_nOutput * nBytesPerPoint > nMaxSize)
+      return false;
   }
+  m_nNumPoints = (icUInt32Number)nNumPoints;
 
   icUInt32Number nSize = NumPoints() * m_nOutput;
 
@@ -1900,7 +1911,7 @@ bool CIccCLUT::Read(icUInt32Number size, CIccIO *pIO)
       pIO->Read8(&m_nReserved2[0], 3)!=3)
     return false;
 
-  Init(m_GridPoints);
+  Init(m_GridPoints, size-20, m_nPrecision);
 
   return ReadData(size-20, pIO, m_nPrecision);
 }
@@ -4451,7 +4462,7 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
   //CLUT
   m_CLUT = new CIccCLUT(m_nInput, m_nOutput);
 
-  m_CLUT->Init(nGrid);
+  m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 1);
 
   if (!m_CLUT->ReadData(nEnd - pIO->Tell(), pIO, 1))
     return false;
@@ -4897,7 +4908,7 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
   //CLUT
   m_CLUT = new CIccCLUT(m_nInput, m_nOutput);
 
-  m_CLUT->Init(nGrid);
+  m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 2);
 
   if (!m_CLUT->ReadData(nEnd - pIO->Tell(), pIO, 2))
     return false;
@@ -5384,9 +5395,9 @@ bool CIccTagGamutBoundaryDesc::Read(icUInt32Number size, CIccIO *pIO)
   if (sizeof(icTagTypeSignature) + 
       sizeof(icUInt32Number)*3 +
       sizeof(icUInt16Number)*2 + 
-      m_NumberOfVertices*3*sizeof(icUInt32Number) +
-      m_NumberOfVertices*m_nPCSChannels*sizeof(icFloat32Number) + 
-      m_NumberOfVertices*m_nDeviceChannels*sizeof(icFloat32Number) > size)
+      (icUInt64Number)m_NumberOfVertices*3*sizeof(icUInt32Number) +
+      (icUInt64Number)m_NumberOfVertices*m_nPCSChannels*sizeof(icFloat32Number) +
+      (icUInt64Number)m_NumberOfVertices*m_nDeviceChannels*sizeof(icFloat32Number) > size)
     return false;
 	
 	if (m_PCSValues)

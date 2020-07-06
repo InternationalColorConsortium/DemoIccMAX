@@ -137,6 +137,8 @@ xmlAttr *icXmlFindAttr(xmlNode *pNode, const char *szAttrName);
 xmlNode *icXmlFindNode(xmlNode *pNode, const char *szNodeName);
 
 icUInt32Number icXmlNodeCount(xmlNode *pNode, const char *szNodeName);
+icUInt32Number icXmlNodeCount2(xmlNode *pNode, const char *szNodeName1, const char *szNodeName2);
+icUInt32Number icXmlNodeCount3(xmlNode *pNode, const char *szNodeName1, const char *szNodeName2, const char *szNodeName3);
 
 template <class T, icTagTypeSignature Tsig>
 class CIccXmlArrayType

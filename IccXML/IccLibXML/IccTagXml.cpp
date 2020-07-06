@@ -665,13 +665,16 @@ bool CIccTagXmlNamedColor2::ToXml(std::string &xml, std::string blanks/* = ""*/)
   for (i=0; i<(int)m_nSize; i++) {
     SIccNamedColorEntry *pEntry= GetEntry(i);
 
+    const char *szNodeName = "";
+
     if (pEntry) {
       if (m_csPCS==icSigLabData) {
         icFloatNumber lab[3];
 
         Lab2ToLab4(lab, pEntry->pcsCoords);
         icLabFromPcs(lab);
-        sprintf(line, "  <NamedColor Name=\"%s\" L=\"%.8f\" a=\"%.8f\" b=\"%.8f\"", 
+        szNodeName = "LabNamedColor";
+        sprintf(line, "  <%s Name=\"%s\" L=\"%.8f\" a=\"%.8f\" b=\"%.8f\"", szNodeName,
           icFixXml(fix, icAnsiToUtf8(str, pEntry->rootName)), lab[0], lab[1], lab[2]);
         xml += blanks + line;
       }
@@ -680,7 +683,8 @@ bool CIccTagXmlNamedColor2::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
         memcpy(xyz, pEntry->pcsCoords, 3*sizeof(icFloatNumber));
         icXyzFromPcs(xyz);
-        sprintf(line, "  <NamedColor Name=\"%s\" X=\"%.8f\" Y=\"%.8f\" Z=\"%.8f\"", 
+        szNodeName = "XYZNamedColor";
+        sprintf(line, "  <%s Name=\"%s\" X=\"%.8f\" Y=\"%.8f\" Z=\"%.8f\"", szNodeName,
           icFixXml(fix, icAnsiToUtf8(str, pEntry->rootName)), xyz[0], xyz[1], xyz[2]);
         xml += blanks + line;
       }
@@ -698,7 +702,7 @@ bool CIccTagXmlNamedColor2::ToXml(std::string &xml, std::string blanks/* = ""*/)
         }
         xml += "\n";
 
-        xml += blanks + " </NamedColor>\n";
+        xml += blanks + " </" + szNodeName + ">\n";
       }
     }
   }
@@ -733,7 +737,7 @@ bool CIccTagXmlNamedColor2::ParseXml(xmlNode *pNode, std::string &parseStr)
         m_szSufix[sizeof(m_szSufix)-1] = '\0';
 
         m_nDeviceCoords = atoi(szDeviceCoords);
-        icUInt32Number n = icXmlNodeCount(pNode->children, "NamedColor");
+        icUInt32Number n = icXmlNodeCount3(pNode->children, "NamedColor", "LabNamedColor", "XYZNamedColor");
         SetSize(n, m_nDeviceCoords);
 
         icUInt32Number i;
@@ -741,10 +745,11 @@ bool CIccTagXmlNamedColor2::ParseXml(xmlNode *pNode, std::string &parseStr)
         SIccNamedColorEntry *pNamedColor = m_NamedColor;
 
         for (i=0, pNode=pNode->children; pNode; pNode=pNode->next) {
+          const icChar *szName = NULL;
           if (pNode->type == XML_ELEMENT_NODE &&
             !icXmlStrCmp(pNode->name, "NamedColor") &&
             i<n) {
-              const icChar *szName = icXmlAttrValue(pNode, "Name");
+              szName = icXmlAttrValue(pNode, "Name");
               xmlAttr *L = icXmlFindAttr(pNode, "L");
               xmlAttr *a = icXmlFindAttr(pNode, "a");
               xmlAttr *b = icXmlFindAttr(pNode, "b");
@@ -772,49 +777,90 @@ bool CIccTagXmlNamedColor2::ParseXml(xmlNode *pNode, std::string &parseStr)
                 else
                   return false;
               }
-              strncpy(pNamedColor->rootName, icUtf8ToAnsi(str, szName), sizeof(pNamedColor->rootName));
-              pNamedColor->rootName[sizeof(pNamedColor->rootName)-1] = 0;
+          }
+          else if (pNode->type == XML_ELEMENT_NODE &&
+            !icXmlStrCmp(pNode->name, "LabNamedColor") &&
+            i < n) {
+            szName = icXmlAttrValue(pNode, "Name");
+            xmlAttr *L = icXmlFindAttr(pNode, "L");
+            xmlAttr *a = icXmlFindAttr(pNode, "a");
+            xmlAttr *b = icXmlFindAttr(pNode, "b");
 
-              if (m_nDeviceCoords && pNode->children) {
-                if (!strcmp(szDeviceEncoding, "int8")) {
-                  CIccUInt8Array coords;
+            if (L && a && b) {
+              pNamedColor->pcsCoords[0] = (icFloatNumber)atof(icXmlAttrValue(L));
+              pNamedColor->pcsCoords[1] = (icFloatNumber)atof(icXmlAttrValue(a));
+              pNamedColor->pcsCoords[2] = (icFloatNumber)atof(icXmlAttrValue(b));
 
-                  coords.ParseArray(pNode->children);
-                  icUInt8Number *pBuf = coords.GetBuf();
+              icLabToPcs(pNamedColor->pcsCoords);
+              Lab4ToLab2(pNamedColor->pcsCoords, pNamedColor->pcsCoords);
+            }
+            else {
+              return false;
+            }
+          }
+          else if (pNode->type == XML_ELEMENT_NODE &&
+            !icXmlStrCmp(pNode->name, "XYZNamedColor") &&
+            i < n) {
+            szName = icXmlAttrValue(pNode, "Name");
+            xmlAttr *x = icXmlFindAttr(pNode, "X");
+            xmlAttr *y = icXmlFindAttr(pNode, "Y");
+            xmlAttr *z = icXmlFindAttr(pNode, "Z");
 
-                  icUInt32Number j;
-                  for (j=0; j<m_nDeviceCoords && j<coords.GetSize(); j++) {
-                    pNamedColor->deviceCoords[j] = (icFloatNumber)pBuf[i] / 255.0f;
-                  }
+            if (x && y && z) {
+              pNamedColor->pcsCoords[0] = (icFloatNumber)atof(icXmlAttrValue(x));
+              pNamedColor->pcsCoords[1] = (icFloatNumber)atof(icXmlAttrValue(y));
+              pNamedColor->pcsCoords[2] = (icFloatNumber)atof(icXmlAttrValue(z));
+
+              icXyzToPcs(pNamedColor->pcsCoords);
+            }
+            else
+              return false;
+          }
+
+          if (szName) {
+            strncpy(pNamedColor->rootName, icUtf8ToAnsi(str, szName), sizeof(pNamedColor->rootName));
+            pNamedColor->rootName[sizeof(pNamedColor->rootName) - 1] = 0;
+
+            if (m_nDeviceCoords && pNode->children) {
+              if (!strcmp(szDeviceEncoding, "int8")) {
+                CIccUInt8Array coords;
+
+                coords.ParseArray(pNode->children);
+                icUInt8Number *pBuf = coords.GetBuf();
+
+                icUInt32Number j;
+                for (j = 0; j < m_nDeviceCoords && j < coords.GetSize(); j++) {
+                  pNamedColor->deviceCoords[j] = (icFloatNumber)pBuf[i] / 255.0f;
                 }
-                else if (!strcmp(szDeviceEncoding, "int16")) {
-                  CIccUInt16Array coords;
-
-                  coords.ParseArray(pNode->children);
-                  icUInt16Number *pBuf = coords.GetBuf();
-
-                  icUInt32Number j;
-                  for (j=0; j<m_nDeviceCoords && j<coords.GetSize(); j++) {
-                    pNamedColor->deviceCoords[j] = (icFloatNumber)pBuf[i] / 65535.0f;
-                  }
-                }
-                else if (!strcmp(szDeviceEncoding, "float")) {
-                  CIccFloatArray coords;
-
-                  coords.ParseArray(pNode->children);
-                  icFloatNumber *pBuf = coords.GetBuf();
-
-                  icUInt32Number j;
-                  for (j=0; j<m_nDeviceCoords && j<coords.GetSize(); j++) {
-                    pNamedColor->deviceCoords[j] = (icFloatNumber)pBuf[i];
-                  }
-                }
-                else
-                  return false;
               }
+              else if (!strcmp(szDeviceEncoding, "int16")) {
+                CIccUInt16Array coords;
 
-              i++;
-              pNamedColor = (SIccNamedColorEntry*)((icChar*)pNamedColor + m_nColorEntrySize);
+                coords.ParseArray(pNode->children);
+                icUInt16Number *pBuf = coords.GetBuf();
+
+                icUInt32Number j;
+                for (j = 0; j < m_nDeviceCoords && j < coords.GetSize(); j++) {
+                  pNamedColor->deviceCoords[j] = (icFloatNumber)pBuf[i] / 65535.0f;
+                }
+              }
+              else if (!strcmp(szDeviceEncoding, "float")) {
+                CIccFloatArray coords;
+
+                coords.ParseArray(pNode->children);
+                icFloatNumber *pBuf = coords.GetBuf();
+
+                icUInt32Number j;
+                for (j = 0; j < m_nDeviceCoords && j < coords.GetSize(); j++) {
+                  pNamedColor->deviceCoords[j] = (icFloatNumber)pBuf[i];
+                }
+              }
+              else
+                return false;
+            }
+
+            i++;
+            pNamedColor = (SIccNamedColorEntry*)((icChar*)pNamedColor + m_nColorEntrySize);
           }
         }
         return i==n;

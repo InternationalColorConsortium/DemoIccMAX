@@ -487,7 +487,7 @@ bool CIccTagProfileSequenceId::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&count))
     return false;
 
-  if (headerSize + count*sizeof(icUInt32Number)*2 > size)
+  if (headerSize + (icUInt64Number)count*sizeof(icUInt32Number)*2 > size)
     return false;
 
   if (!count) {

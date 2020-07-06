@@ -995,7 +995,7 @@ bool CIccTagMultiProcessElement::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&m_nProcElements))
     return false;
 
-  if (headerSize + m_nProcElements*sizeof(icUInt32Number) > size)
+  if (headerSize + (icUInt64Number)m_nProcElements*sizeof(icUInt32Number) > size)
     return false;
 
   m_list = new CIccMultiProcessElementList();

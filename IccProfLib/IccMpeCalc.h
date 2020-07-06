@@ -195,7 +195,7 @@ typedef enum {
   icSigGreaterThanOp                = 0x67742020,  /* 'gt  ' */
   icSigNotOp                        = 0x6e6f7420,  /* 'not ' */
   icSigToLabOp                      = 0x744c6162,  /* 'tLab' */
-  icSigFromLabOp                    = 0x664c6162,  /* 'fLab' */
+  icSigToXYZOp                      = 0x7458595a,  /* 'tXYZ' */
   icSigVectorMinimumOp              = 0x766d696e,  /* 'vmin' */
   icSigVectorMaximumOp              = 0x766d6178,  /* 'vmax' */
   icSigVectorAndOp                  = 0x76616e64,  /* 'vand' */

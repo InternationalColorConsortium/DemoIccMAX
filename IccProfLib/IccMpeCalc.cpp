@@ -108,7 +108,7 @@ public:
       printf("Start:");
         std::string opDesc;
       op->Describe(opDesc);
-      printf("%s\t", opDesc.c_str());
+      printf("%9s\t", opDesc.c_str());
       for (int j = 0; j < (int)os.pStack->size(); j++)
         printf(" %.4f", (*os.pStack)[j]);
       printf("\n");
@@ -119,7 +119,7 @@ public:
   virtual bool AfterOp(SIccCalcOp *op, SIccOpState &os, SIccCalcOp *ops)
   {
     if (op->sig == icSigDataOp) {
-      printf("data\t");
+      printf("%9s\t", "data");
     }
     else {
       if (op->sig == icSigIfOp || op->sig == icSigSelectOp) {
@@ -127,7 +127,7 @@ public:
       }
       std::string opDesc;
       op->Describe(opDesc);
-      printf("%s\t", opDesc.c_str());
+      printf("%9s\t", opDesc.c_str());
     }
 
     for (int j = 0; j < (int)os.pStack->size(); j++)
@@ -1909,7 +1909,7 @@ void SIccCalcOp::Describe(std::string &desc)
     case icSigPolarToCartesianOp:
     case icSigNotOp:
     case icSigToLabOp:
-    case icSigFromLabOp:
+    case icSigToXYZOp:
     case icSigVectorMinimumOp:
     case icSigVectorMaximumOp:
     case icSigVectorAndOp:
@@ -2020,7 +2020,7 @@ CIccCalcOpMgr::CIccCalcOpMgr()
   m_map[icSigOrOp] = new CIccOpDefOr();
   m_map[icSigNotOp] = new CIccOpDefNot();
   m_map[icSigToLabOp] = new CIccOpDefToLab();
-  m_map[icSigFromLabOp] = new CIccOpDefFromLab();
+  m_map[icSigToXYZOp] = new CIccOpDefFromLab();
 }
 
 CIccCalcOpMgr *CIccCalcOpMgr::GetInstance()
@@ -2124,7 +2124,7 @@ bool SIccCalcOp::IsValidOp(icSigCalcOp sig)
     case icSigOrOp:
     case icSigNotOp:
     case icSigToLabOp:
-    case icSigFromLabOp:
+    case icSigToXYZOp:
     case icSigIfOp:
     case icSigElseOp:
     case icSigSelectOp:
@@ -2297,7 +2297,7 @@ icUInt16Number SIccCalcOp::ArgsUsed(CIccMpeCalculator *pCalc)
       return data.select.v1+1;
     
     case icSigToLabOp:
-    case icSigFromLabOp:
+    case icSigToXYZOp:
       return (data.select.v1+1)*3;
 
     case icSigIfOp:
@@ -2439,7 +2439,7 @@ icUInt16Number SIccCalcOp::ArgsPushed(CIccMpeCalculator *pCalc)
       return (data.select.v1+1)*2;
 
     case icSigToLabOp:
-    case icSigFromLabOp:
+    case icSigToXYZOp:
       return (data.select.v1+1)*3;
 
     default:
@@ -3186,7 +3186,7 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
       case icSigPolarToCartesianOp:
       case icSigNotOp:
       case icSigToLabOp:
-      case icSigFromLabOp:
+      case icSigToXYZOp:
       case icSigVectorMinimumOp:
       case icSigVectorMaximumOp:
       case icSigVectorAndOp:
@@ -3323,6 +3323,9 @@ bool CIccCalculatorFunc::Read(icUInt32Number size, CIccIO *pIO)
     return false;
 
   if (!pIO->Read32(&m_nOps))
+    return false;
+
+  if ((icUInt64Number)m_nOps * sizeof(icUInt32Number) * 2 > (icUInt64Number)size - headerSize)
     return false;
 
   if (m_Op) {
@@ -4428,7 +4431,7 @@ bool CIccMpeCalculator::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number nPos = nSubElem + 1;
 
-  if (headerSize + nPos*sizeof(icPositionNumber) > size) {
+  if (headerSize + (icUInt64Number)nPos*sizeof(icPositionNumber) > size) {
     return false;
   }
 

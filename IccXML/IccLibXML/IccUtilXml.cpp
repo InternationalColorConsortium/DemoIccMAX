@@ -710,6 +710,30 @@ icUInt32Number icXmlNodeCount(xmlNode *pNode, const char *szNodeName)
   return rv;
 }
 
+icUInt32Number icXmlNodeCount2(xmlNode *pNode, const char *szNodeName1, const char *szNodeName2)
+{
+  icUInt32Number rv = 0;
+  for (; pNode; pNode = pNode->next) {
+    if (pNode->type == XML_ELEMENT_NODE &&
+      (!icXmlStrCmp(pNode->name, szNodeName1) || !icXmlStrCmp(pNode->name, szNodeName2))) {
+      rv++;
+    }
+  }
+  return rv;
+}
+
+icUInt32Number icXmlNodeCount3(xmlNode *pNode, const char *szNodeName1, const char *szNodeName2, const char *szNodeName3)
+{
+  icUInt32Number rv = 0;
+  for (; pNode; pNode = pNode->next) {
+    if (pNode->type == XML_ELEMENT_NODE &&
+      (!icXmlStrCmp(pNode->name, szNodeName1) || !icXmlStrCmp(pNode->name, szNodeName2) || !icXmlStrCmp(pNode->name, szNodeName3))) {
+      rv++;
+    }
+  }
+  return rv;
+}
+
 template <class T, icTagTypeSignature Tsig>
 CIccXmlArrayType<T, Tsig>::CIccXmlArrayType()
 {

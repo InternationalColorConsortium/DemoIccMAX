@@ -1,3 +1,7 @@
+2020-01-09 Max Derhak
+* 2.1.17 Re-release
+* Fixed bug in GamutBoundaryType XML parsing
+
 2019-12-20 Max Derhak
 * 2.1.17 Release of IccProflib and related tools
 * 2.1.17 Release of IccLibXML and related tools

@@ -861,6 +861,9 @@ bool CIccSampledCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&m_nCount))
     return false;
 
+  if (m_nCount > size - headerSize || m_nCount * sizeof(icFloat32Number) > size - headerSize)
+    return false;
+
   //Reserve room for first point who's value comes from previous segment
   m_nCount++;
 
@@ -1400,21 +1403,36 @@ bool CIccSingleSampledCurve::Read(icUInt32Number size, CIccIO *pIO)
   if (!SetSize(m_nCount, false))
     return false;
 
+  if (m_nCount > size - headerSize)
+    return false;
+
   if (m_nCount) {
     switch(m_storageType) {
       case icValueTypeUInt8:
+        if (m_nCount * sizeof(icUInt8Number) > size - headerSize)
+          return false;
+
         if (pIO->ReadUInt8Float(m_pSamples, m_nCount)!=(icInt32Number)(m_nCount))
           return false;
         break;
       case icValueTypeUInt16:
+        if (m_nCount * 2 > size - headerSize)
+          return false;
+
         if (pIO->ReadUInt16Float(m_pSamples, m_nCount)!=(icInt32Number)(m_nCount))
           return false;
         break;
       case icValueTypeFloat16:
+        if (m_nCount * 2 > size - headerSize)
+          return false;
+
         if (pIO->ReadFloat16Float(m_pSamples, m_nCount)!=(icInt32Number)(m_nCount))
           return false;
         break;
       case icValueTypeFloat32:
+        if (m_nCount * sizeof(icFloat32Number) > size - headerSize)
+          return false;
+
         if (pIO->ReadFloat32Float(m_pSamples, m_nCount)!=(icInt32Number)(m_nCount))
           return false;
         break;
@@ -1803,6 +1821,9 @@ bool CIccSegmentedCurve::Read(icUInt32Number size, CIccIO *pIO)
   CIccCurveSegment *pSeg;
 
   if (nSegments==1) {
+    if (sizeof(segSig) > size - headerSize)
+      return false;
+
     if (!pIO->Read32(&segSig))
       return false;
     pSeg = CIccCurveSegment::Create(segSig, icMinFloat32Number, icMaxFloat32Number);
@@ -1819,6 +1840,9 @@ bool CIccSegmentedCurve::Read(icUInt32Number size, CIccIO *pIO)
     m_list->push_back(pSeg);
   }
   else if (nSegments) {
+    if (nSegments > size - headerSize)
+      return false;
+
     icFloatNumber *breakpoints=(icFloatNumber*)calloc(nSegments-1, sizeof(icFloatNumber));
 
     if (!breakpoints)
@@ -2371,6 +2395,9 @@ bool CIccMpeCurveSet::Read(icUInt32Number size, CIccIO *pIO)
     return false;
 
   if (nInputChannels != nOutputChannels)
+    return false;
+
+  if (nInputChannels > size - headerSize || nInputChannels * 2*sizeof(icUInt32Number) > size - headerSize)
     return false;
 
   if (!SetSize(nInputChannels))
@@ -3223,8 +3250,8 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read16(&nOutputChannels))
     return false;
 
-  if (dataSize >= nInputChannels * nOutputChannels * sizeof(icFloatNumber) &&
-      dataSize < (nInputChannels+1) * nOutputChannels * sizeof(icFloatNumber)) {
+  if (dataSize >= (icUInt32Number)nInputChannels * nOutputChannels * sizeof(icFloatNumber) &&
+      dataSize < ((icUInt32Number)nInputChannels+1) * nOutputChannels * sizeof(icFloatNumber)) {
     //Matrix with no constants
     if (!SetSize(nInputChannels, nOutputChannels, false))
       return false;
@@ -3236,8 +3263,8 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
     if (pIO->ReadFloat32Float(m_pMatrix, m_size) != (icInt32Number)m_size)
       return false;
   }
-  else if (dataSize < nInputChannels * nOutputChannels *sizeof(icFloatNumber) &&
-           dataSize >= nOutputChannels * sizeof(icFloatNumber)) {
+  else if (dataSize < (icUInt32Number)nInputChannels * nOutputChannels *sizeof(icFloatNumber) &&
+           dataSize >= (icUInt32Number)nOutputChannels * sizeof(icFloatNumber)) {
     //Constants with no matrix
     if (!SetSize(0, nOutputChannels))
       return false;
@@ -3249,6 +3276,11 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
       return false;
   }
   else {
+    if ((icUInt32Number)nInputChannels*nOutputChannels > dataSize ||
+        ((icUInt32Number)nInputChannels*nOutputChannels + nOutputChannels) > dataSize ||
+        ((icUInt32Number)nInputChannels*nOutputChannels + nOutputChannels) * sizeof(icFloat32Number) > dataSize)
+      return false;
+
     //Matrix with constants
     if (!SetSize(nInputChannels, nOutputChannels))
       return false;
@@ -3256,7 +3288,7 @@ bool CIccMpeMatrix::Read(icUInt32Number size, CIccIO *pIO)
     if (!m_pMatrix) 
       return false;
 
-    if (headerSize + (m_size + nOutputChannels)*sizeof(icFloat32Number) > size)
+    if ((m_size + nOutputChannels)*sizeof(icFloat32Number) > dataSize)
       return false;
 
     //Read Matrix data
@@ -3658,6 +3690,8 @@ bool CIccMpeCLUT::Read(icUInt32Number size, CIccIO *pIO)
   if (headerSize > size)
     return false;
 
+  icUInt32Number dataSize = size - headerSize;
+
   if (!pIO) {
     return false;
   }
@@ -3680,6 +3714,11 @@ bool CIccMpeCLUT::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
+  icUInt32Number nPoints = (icUInt32Number)m_nInputChannels * m_nOutputChannels;
+
+  if (m_nInputChannels > 16 || nPoints > dataSize || nPoints * sizeof (icFloat32Number) > dataSize)
+    return false;
+
   m_pCLUT = new CIccCLUT((icUInt8Number)m_nInputChannels, (icUInt16Number)m_nOutputChannels, 4);
 
   if (!m_pCLUT)
@@ -3694,7 +3733,7 @@ bool CIccMpeCLUT::Read(icUInt32Number size, CIccIO *pIO)
   if (!pData)
     return false;
 
-  icInt32Number nPoints = m_pCLUT->NumPoints()*m_nOutputChannels;
+  nPoints = m_pCLUT->NumPoints()*m_nOutputChannels;
 
   if (pIO->ReadFloat32Float(pData,nPoints)!= nPoints)
     return false;
@@ -3998,6 +4037,8 @@ bool CIccMpeExtCLUT::Read(icUInt32Number size, CIccIO *pIO)
   if (headerSize > size)
     return false;
 
+  icUInt32Number dataSize = size - headerSize;
+
   if (!pIO) {
     return false;
   }
@@ -4026,6 +4067,11 @@ bool CIccMpeExtCLUT::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
+  icUInt32Number nPoints = (icUInt32Number)m_nInputChannels * m_nOutputChannels;
+
+  if (m_nInputChannels > 16 || nPoints > dataSize)
+    return false;
+  
   m_pCLUT = new CIccCLUT((icUInt8Number)m_nInputChannels, (icUInt16Number)m_nOutputChannels, 4);
 
   if (!m_pCLUT)
@@ -4033,14 +4079,18 @@ bool CIccMpeExtCLUT::Read(icUInt32Number size, CIccIO *pIO)
 
   m_pCLUT->SetClipFunc(NoClip);
 
-  m_pCLUT->Init(gridPoints);
+  if (!m_pCLUT->Init(gridPoints, dataSize))
+    return false;
 
   icFloatNumber *pData = m_pCLUT->GetData(0);
 
   if (!pData)
     return false;
 
-  icInt32Number nPoints = m_pCLUT->NumPoints()*m_nOutputChannels;
+  nPoints = m_pCLUT->NumPoints()*m_nOutputChannels;
+
+  if (nPoints > dataSize)
+    return false;
 
   switch(m_storageType) {
     case icValueTypeUInt8:
@@ -4049,11 +4099,17 @@ bool CIccMpeExtCLUT::Read(icUInt32Number size, CIccIO *pIO)
       break;
 
     case icValueTypeUInt16:
+      if (nPoints * 2 > dataSize)
+        return false;
+
       if (pIO->ReadUInt16Float(pData,nPoints)!= nPoints)
         return false;
       break;
 
     case icValueTypeFloat16:
+      if (nPoints * 2 > dataSize)
+        return false;
+
       if (pIO->ReadFloat16Float(pData,nPoints)!= nPoints)
         return false;
       break;

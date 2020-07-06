@@ -65,6 +65,7 @@ cd ..\mcs\Flexo-CMYKOGP
 ..\..\iccFromXML OMYK-SelectMID.xml OMYK-SelectMID.icc
 
 cd ..\..\PCC
+..\iccFromXML Lab_int-D50_2deg.xml Lab_int-D50_2deg.icc
 ..\iccFromXML Lab_float-D50_2deg.xml Lab_float-D50_2deg.icc
 ..\iccFromXML Lab_float-D93_2deg-MAT.xml Lab_float-D93_2deg-MAT.icc
 ..\iccFromXML Lab_int-D65_2deg-MAT.xml Lab_int-D65_2deg-MAT.icc

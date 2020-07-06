@@ -984,6 +984,7 @@ icValidateStatus CIccTagUtf8Text::Validate(std::string sigPath, std::string &sRe
 }
 
 
+static unsigned char icFaultyXmlZipData[4] = { 0,0,0,1 };
 
 /**
  ****************************************************************************
@@ -1145,7 +1146,15 @@ void CIccTagZipUtf8Text::Describe(std::string &sDescription)
 {
   std::string str;
 #ifdef ICC_USE_ZLIB
-  GetText(str);
+  if (!GetText(str)) {
+    sDescription += "Error! - Unable to decompress text data.\r\n";
+  }
+  else if (m_nBufSize > 4 && !memcmp(m_pZipBuf, icFaultyXmlZipData, 4)) {
+    sDescription += "Warning! - Correcting for improperly encoded ";
+    sDescription += CIccTagCreator::GetTagTypeSigName(GetType());
+    sDescription += " tag.\r\n\r\n";
+  }
+
   sDescription += "ZLib Compressed String=\"";
   sDescription += str;
   sDescription += "\"\r\n";
@@ -1197,8 +1206,15 @@ bool CIccTagZipUtf8Text::GetText(std::string &str) const
     return false;
   }
 
-  zstr.next_in = m_pZipBuf;
-  zstr.avail_in = m_nBufSize;
+  if (m_nBufSize > 4 && !memcmp(m_pZipBuf, icFaultyXmlZipData, 4)) {
+    //xrite creates invalid zipXMLType tags
+    zstr.next_in = m_pZipBuf+4;
+    zstr.avail_in = m_nBufSize-4;
+  }
+  else {
+    zstr.next_in = m_pZipBuf;
+    zstr.avail_in = m_nBufSize;
+  }
 
   do {
     unsigned int i, n;
@@ -1389,8 +1405,31 @@ icValidateStatus CIccTagZipUtf8Text::Validate(std::string sigPath, std::string &
     sReport += " - Empty Tag.\r\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
-
-
+  else {
+#ifdef ICC_USE_ZLIB
+    std::string sText;
+    if (!GetText(sText)) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += sSigPathName;
+      sReport += " - Unable to get text for tag (possibly corrupt compressed data).\r\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+    else if (m_nBufSize > 4 && !memcmp(m_pZipBuf, icFaultyXmlZipData, 4)) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += sSigPathName;
+      sReport += " - Improperly encoded ";
+      sReport += CIccTagCreator::GetTagTypeSigName(GetType());
+      sReport += " tag.\r\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+#else
+    sReport += icMsgValidateWarning;
+    sReport += sSigPathName;
+    sReport += " - Zip compression not supported by CMM - unable to validate text compression.\r\n";
+    rv = icMaxStatus(rv, icValidateWarning);
+#endif
+  }
+  
   return rv;
 }
 
@@ -7612,6 +7651,9 @@ bool CIccTagDateTime::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number nsize = (size-2*sizeof(icUInt32Number))/sizeof(icUInt16Number);
 
+  if (nsize > sizeof(m_DateTime) / sizeof(icUInt16Number))
+    return false;
+
   if (pIO->Read16(&m_DateTime,nsize) != (icInt32Number)nsize)
     return false;
 
@@ -7831,7 +7873,7 @@ bool CIccTagColorantOrder::Read(icUInt32Number size, CIccIO *pIO)
   if (!SetSize((icUInt16Number)nCount))
     return false;
 
-  if (pIO->Read8(&m_pData[0],nNum) != (icInt32Number)nNum)
+  if (pIO->Read8(&m_pData[0], m_nCount) != (icInt32Number)m_nCount)
     return false;
 
   return true;
@@ -8116,7 +8158,7 @@ bool CIccTagColorantTable::Read(icUInt32Number size, CIccIO *pIO)
   icUInt32Number nNum8 = sizeof(m_pData->name);
   icUInt32Number nNum16 = sizeof(m_pData->data)/sizeof(icUInt16Number);
 
-  if (nNum < nCount)
+  if (nNum < nCount || nCount > 0xffff)
     return false;
   
   if (!SetSize((icUInt16Number)nCount))
@@ -9300,9 +9342,9 @@ bool CIccResponseCurveStruct::Read(icUInt32Number size, CIccIO *pIO)
     return false;
 
   if (sizeof(icTagTypeSignature) + 
-      2*sizeof(icUInt32Number) +
-      sizeof(icXYZNumber) + 
-      sizeof(icResponse16Number) > size)
+      m_nChannels * (sizeof(icUInt32Number) +
+        sizeof(icXYZNumber) + 
+        sizeof(icResponse16Number)) > size)
     return false;
 
   if (!pIO) {
@@ -9608,9 +9650,12 @@ bool CIccTagResponseCurveSet16::Read(icUInt32Number size, CIccIO *pIO)
 {
   icTagTypeSignature sig;
 
-  if (sizeof(icTagTypeSignature) + 
-      sizeof(icUInt32Number)*4 +
-      sizeof(CIccResponseCurveStruct) > size)
+  icUInt32Number startPos = pIO->Tell();
+
+  unsigned long headerSize = sizeof(icTagTypeSignature) +
+                             sizeof(icUInt32Number) +
+                             sizeof(icUInt16Number) * 2;
+  if (headerSize > size)
     return false;
 
   if (!pIO) {
@@ -9626,7 +9671,9 @@ bool CIccTagResponseCurveSet16::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read16(&m_nChannels) ||
       !pIO->Read16(&nCountMeasmntTypes))
     return false;
-
+  
+  if ((icUInt32Number)nCountMeasmntTypes * sizeof(icUInt32Number) > size - headerSize)
+    return false;
 
   icUInt32Number* nOffset = new icUInt32Number[nCountMeasmntTypes];
 
@@ -9635,17 +9682,25 @@ bool CIccTagResponseCurveSet16::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
-  delete [] nOffset;
-
   CIccResponseCurveStruct entry;
 
   for (icUInt16Number i=0; i<nCountMeasmntTypes; i++) {
-    entry = CIccResponseCurveStruct(m_nChannels);
-    if (!entry.Read(size, pIO))
+    if (nOffset[i] + 4 > size) {
+      delete[] nOffset;
       return false;
+    }
+    pIO->Seek(startPos + nOffset[i], icSeekSet);
+    entry = CIccResponseCurveStruct(m_nChannels);
+    if (!entry.Read(size-nOffset[i], pIO)) {
+      delete[] nOffset;
+      return false;
+    }
 
     m_ResponseCurves->push_back(entry);
   }
+  delete[] nOffset;
+
+
   m_Curve->inited = false;
 
   return true;
@@ -10371,9 +10426,9 @@ bool CIccTagSpectralViewingConditions::Read(icUInt32Number size, CIccIO *pIO)
   icTagTypeSignature sig;
 
   //check size properly
-  if (sizeof(icTagTypeSignature) + 
-      sizeof(icUInt32Number)*4 +
-      sizeof(CIccResponseCurveStruct) > size)
+  icUInt32Number headerSize = sizeof(icTagTypeSignature) + 
+                              sizeof(icUInt32Number)*4;
+  if (headerSize > size)
     return false;
 
   if (!pIO) {
@@ -10399,8 +10454,15 @@ bool CIccTagSpectralViewingConditions::Read(icUInt32Number size, CIccIO *pIO)
     m_observer = NULL;
   }
 
+  icUInt32Number observerSize = 0;
+
   if (m_observerRange.steps) {
     vals = m_observerRange.steps * 3;
+
+    observerSize = vals * sizeof(icFloat32Number);
+
+    if (headerSize + observerSize > size)
+      return false;
     
     m_observer = new icFloat32Number[vals];
     if (!m_observer)
@@ -10410,6 +10472,10 @@ bool CIccTagSpectralViewingConditions::Read(icUInt32Number size, CIccIO *pIO)
       return false;
   }
 
+  icUInt32Number illumInfoSize = 2 * sizeof(icUInt32Number) + 4 * sizeof(icUInt16Number);
+  if (headerSize + observerSize +illumInfoSize > size)
+    return false;
+
   if (!pIO->Read32(&m_stdIlluminant) ||
       !pIO->ReadFloat32Float(&m_colorTemperature) ||
       !pIO->Read16(&m_illuminantRange.start) ||
@@ -10418,13 +10484,21 @@ bool CIccTagSpectralViewingConditions::Read(icUInt32Number size, CIccIO *pIO)
       !pIO->Read16(&m_reserved3))
     return false;
 
+
   if (m_illuminant) {
     delete [] m_illuminant;
     m_illuminant = NULL;
   }
 
+  icUInt32Number illuminantSize = 0;
+
   if (m_illuminantRange.steps) {
     vals = m_illuminantRange.steps;
+
+    illuminantSize = vals * sizeof(icFloat32Number);
+
+    if (headerSize + observerSize + illumInfoSize + illuminantSize > size)
+      return false;
 
     m_illuminant = new icFloat32Number[vals];
     if (!m_illuminant)
@@ -10436,6 +10510,9 @@ bool CIccTagSpectralViewingConditions::Read(icUInt32Number size, CIccIO *pIO)
   else {
     setIlluminant(m_stdIlluminant, m_illuminantRange, NULL, m_colorTemperature);
   }
+
+  if (headerSize + observerSize + illumInfoSize + illuminantSize + 6*sizeof(icFloat32Number) > size)
+    return false;
 
   if (pIO->ReadFloat32Float(&m_illuminantXYZ, 3)!=3 ||
       pIO->ReadFloat32Float(&m_surroundXYZ, 3)!=3)

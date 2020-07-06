@@ -1281,6 +1281,21 @@ icUInt32Number icGetSpectralSpaceSamples(const icHeader *pHdr)
     return icGetSpaceSamples(pHdr->pcs);
 }
 
+icUInt32Number icGetStorageTypeBytes(icUInt16Number nStorageType)
+{
+  switch (nStorageType) {
+  case icValueTypeUInt8:
+    return 1;
+  case icValueTypeUInt16:
+  case icValueTypeFloat16:
+    return 2;
+  case icValueTypeFloat32:
+    return 4;
+  default:
+    return 0;
+  }
+}
+
 
 icUInt32Number icGetMaterialColorSpaceSamples(icMaterialColorSignature sig)
 {

@@ -209,13 +209,13 @@ bool CIccBasicMpeFactory::GetElementSigName(std::string &elemName, icElemTypeSig
       char buf[30], str[100];
       sprintf(str, "Unknown Element Type (%s)", icGetSig(buf, elemTypeSig));
       elemName = str;
-      break;
+      return false;
   }
 
   return true;
 }
 
-std::unique_ptr<CIccMpeCreator> CIccMpeCreator::theElementCreator;
+CIccMpeCreatorPtr CIccMpeCreator::theElementCreator;
 
 CIccMpeCreator::~CIccMpeCreator()
 {

@@ -306,8 +306,8 @@ public:
   CIccCLUT &operator=(const CIccCLUT &CLUTClass);
   virtual ~CIccCLUT();
 
-  bool Init(icUInt8Number nGridPoints);
-  bool Init(const icUInt8Number *pGridPoints);
+  bool Init(icUInt8Number nGridPoints, icUInt32Number nMaxSize = 0, icUInt8Number nBytesPerPoint = 4);
+  bool Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize=0, icUInt8Number nBytesPerPoint=4);
 
   bool ReadData(icUInt32Number size, CIccIO *pIO, icUInt8Number nPrecision);
   bool WriteData(CIccIO *pIO, icUInt8Number nPrecision);
