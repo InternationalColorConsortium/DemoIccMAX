@@ -1578,7 +1578,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
     uint8_t  bcdpair = (m_Header.version >> 24);
     // Report on unusual version (stored as BCD)
-    if (bcdPair<0x05 && (m_Header.version & 0x0000FFFF)) {
+    if (bcdpair<0x05 && (m_Header.version & 0x0000FFFF)) {
         sReport += icMsgValidateWarning;
         sReport += "Version number bytes 10 and 11 are reserved but non-zero.\r\n";
         rv = icMaxStatus(rv, icValidateWarning);
