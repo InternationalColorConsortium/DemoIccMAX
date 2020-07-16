@@ -301,9 +301,6 @@ copy $(Platform)\$(Configuration)\iccApplyProfiles.pdb ..\..\..\Testing
   <ItemGroup>
     <ClInclude Include="TiffImg.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

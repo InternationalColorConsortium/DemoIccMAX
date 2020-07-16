@@ -224,9 +224,6 @@ copy $(Platform)\$(Configuration)\iccToXml.pdb ..\..\..\Testing
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\IccLibXML\IccLibXML_v19.vcxproj">
       <Project>{40023c16-b89b-48f6-92ed-b28fabbdb6fd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

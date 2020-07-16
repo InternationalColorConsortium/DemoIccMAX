@@ -174,9 +174,6 @@
     <ClInclude Include="IccUtilXml.h" />
     <ClInclude Include="IccXmlConfig.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
