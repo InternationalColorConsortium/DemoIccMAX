@@ -227,7 +227,8 @@ print_usage:
     // - Tag data offsets are all 4-byte aligned
     // - Tag data should be tightly abutted with adjacent tags (or the end of the Tag Table)
     //   (note that tag data can be reused by multiple tags and tags do NOT have to be order)
-    //   Last tag does NOT have to be padded and thus file size is NOT always a multiple of 4.
+    // - Last tag also has to be padded and thus file size is always a multiple of 4. See clause
+    //   7.2.1, bullet (c) of ICC.1:2010 and ICC.2:2019 specs.
     // - Tag offset + Tag Size should never go beyond EOF 
     // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and 
     //   occurs in real-world ICC profiles
@@ -236,6 +237,15 @@ print_usage:
     if (bDumpValidation) {
       char str[256];
       int  rndup, smallest_offset = pHdr->size;
+
+      // File size is required to be a multiple of 4 bytes according to clause 7.2.1 bullet (c):
+      // "all tagged element data, including the last, shall be padded by no more than three 
+      //  following pad bytes to reach a 4 - byte boundary"
+      if (pHdr->size % 4 != 0) {
+          sReport += icMsgValidateNonCompliant;
+          sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\r\n";
+          nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
+      }
 
       for (i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++) {
         rndup = 4 * ((i->TagInfo.size + 3) / 4); // Round up to a 4-byte aligned size as per ICC spec
@@ -282,13 +292,14 @@ print_usage:
         }
       }
 
+      // Clause 7.2.1, bullet (b): "the first set of tagged element data shall immediately follow the tag table"
       // 1st tag offset should be = Header (128) + Tag Count (4) + Tag Table (n*12)
       if ((n > 0) && (smallest_offset > 128 + 4 + (n * 12))) {
-        sReport += icMsgValidateWarning;
+        sReport += icMsgValidateNonCompliant;
         sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\r\n",
             smallest_offset, 128 + 4 + (n * 12));
         sReport += str;
-        nStatus = icMaxStatus(nStatus, icValidateWarning);
+        nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
       }
     }
     
