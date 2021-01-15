@@ -1,3 +1,9 @@
+2021-01-15 Max Derhak
+* 2.1.18 Release of IccProflib and related tools
+* 2.1.18 Release of IccLibXml and related tools
+* Added VS2019 projects
+* Fixed bugs related to improve parsing security
+
 2020-01-09 Max Derhak
 * 2.1.17 Re-release
 * Fixed bug in GamutBoundaryType XML parsing
