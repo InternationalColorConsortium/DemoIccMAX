@@ -138,17 +138,17 @@ icFloatNumber CIccApplyBPC::calcsum(icFloatNumber* x, icFloatNumber* y, int n, i
 	int i;
 	if (j && k) {
 		for (i=0; i<n; i++) {
-			dSum += pow(x[i], j)*pow(y[i], k);
+			dSum += (icFloatNumber)(pow(x[i], j)*pow(y[i], k));
 		}
 	}
 	else if (j) {
 		for (i=0; i<n; i++) {
-			dSum += pow(x[i], j);
+			dSum += (icFloatNumber)pow(x[i], j);
 		}
 	}
 	else if (k) {
 		for (i=0; i<n; i++) {
-			dSum += pow(y[i], k);
+			dSum += (icFloatNumber)pow(y[i], k);
 		}
 	}
 	else {
@@ -550,7 +550,7 @@ bool CIccApplyBPC::pixelXfm(icFloatNumber *DstPixel, icFloatNumber *SrcPixel, ic
 	if (!pICC) return false;
 
 	// add the xform
-	if (cmm.AddXform(pICC, nIntent, icInterpTetrahedral, NULL, icXformLutColor, pICC->m_Header.version >= icVersionNumberV5 ? false : true)!=icCmmStatOk) {
+	if (cmm.AddXform(pICC, nIntent, icInterpTetrahedral, NULL, icXformLutColorimetric, pICC->m_Header.version >= icVersionNumberV5 ? false : true)!=icCmmStatOk) {
 		delete pICC;
 		return false;
 	}

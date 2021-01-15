@@ -195,7 +195,7 @@ ICCPROFLIB_API icUInt32Number icGetMaterialColorSpaceSamples(icMaterialColorSign
 
 bool ICCPROFLIB_API icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng2);
 
-ICCPROFLIB_API icUInt32Number icGetStorageTypeBytes(icUInt16Number nStorageType);
+ICCPROFLIB_API icUInt8Number icGetStorageTypeBytes(icUInt16Number nStorageType);
 
 ICCPROFLIB_API extern const char *icMsgValidateWarning;
 ICCPROFLIB_API extern const char *icMsgValidateNonCompliant;

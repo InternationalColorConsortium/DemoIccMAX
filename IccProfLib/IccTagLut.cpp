@@ -114,8 +114,8 @@ icFloatNumber CIccCurve::Find(icFloatNumber v,
     return p1;
 
   if (p1-p0 <= 0.00001) {
-    icFloatNumber d0 = fabs(v-v0);
-    icFloatNumber d1 = fabs(v1-v);
+    icFloatNumber d0 = (icFloatNumber)fabs(v-v0);
+    icFloatNumber d1 = (icFloatNumber)fabs(v1-v);
 
     if (d0<d1)
       return p0;
@@ -575,7 +575,7 @@ icFloatNumber CIccTagCurve::Apply(icFloatNumber v) const
   if (m_nSize==1) {
     //Convert 0.0 to 1.0 float to 16bit and then convert from u8Fixed8Number
     icFloatNumber dGamma = (icFloatNumber)(m_Curve[0] * 65535.0 / 256.0);
-    return pow(v, dGamma);
+    return (icFloatNumber)pow(v, dGamma);
   }
   if (nIndex == m_nMaxIndex) {
     return m_Curve[nIndex];
@@ -1024,7 +1024,7 @@ icFloatNumber CIccTagParametricCurve::Apply(icFloatNumber X) const
 
   switch(m_nFunctionType) {
     case 0x0000:
-      return pow(X, m_dParam[0]);
+      return (icFloatNumber)pow(X, m_dParam[0]);
 
     case 0x0001:
       a=m_dParam[1];

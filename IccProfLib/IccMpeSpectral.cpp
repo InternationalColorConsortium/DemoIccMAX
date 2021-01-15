@@ -1052,7 +1052,7 @@ bool CIccMpeSpectralCLUT::Read(icUInt32Number size, CIccIO *pIO)
   if (!nBytesPerPoint)
     return false;
 
-  m_pCLUT->Init(gridPoints, size - headerSize, nBytesPerPoint);
+  m_pCLUT->Init(gridPoints, size - headerSize, (icUInt8Number)nBytesPerPoint);
 
   icFloatNumber *pData = m_pCLUT->GetData(0);
 

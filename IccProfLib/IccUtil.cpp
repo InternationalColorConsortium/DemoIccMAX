@@ -464,7 +464,7 @@ static inline icFloatNumber icSq(icFloatNumber x)
 
 icFloatNumber icDeltaE(const icFloatNumber *lab1, const icFloatNumber *lab2)
 {
-  return sqrt(icSq(lab1[0]-lab2[0]) + icSq(lab1[1]-lab2[1]) + icSq(lab1[2]-lab2[2]));
+  return (icFloatNumber)sqrt(icSq(lab1[0]-lab2[0]) + icSq(lab1[1]-lab2[1]) + icSq(lab1[2]-lab2[2]));
 }
 
 icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt32Number nSample)
@@ -477,7 +477,7 @@ icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt3
   if (nSample)
     sum /= nSample;
 
-  return sqrt(sum);
+  return (icFloatNumber)sqrt(sum);
 }
 
 icS15Fixed16Number icDtoF(icFloatNumber num)
@@ -824,7 +824,7 @@ void icLab2Lch(icFloatNumber *Lch, icFloatNumber *Lab /*=NULL*/)
   else
     Lch[0] = Lab[0];
 
-  icFloatNumber c = sqrt(Lab[1]*Lab[1] + Lab[2]*Lab[2]);
+  icFloatNumber c = (icFloatNumber)sqrt((double)Lab[1]*Lab[1] + (double)Lab[2]*Lab[2]);
   icFloatNumber h = (icFloatNumber)(atan2(Lab[2], Lab[1]) * 180.0 / PI);
   while (h<0.0)
     h+=360.0;
@@ -1281,7 +1281,7 @@ icUInt32Number icGetSpectralSpaceSamples(const icHeader *pHdr)
     return icGetSpaceSamples(pHdr->pcs);
 }
 
-icUInt32Number icGetStorageTypeBytes(icUInt16Number nStorageType)
+icUInt8Number icGetStorageTypeBytes(icUInt16Number nStorageType)
 {
   switch (nStorageType) {
   case icValueTypeUInt8:

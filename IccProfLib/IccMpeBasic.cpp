@@ -496,7 +496,7 @@ icFloatNumber CIccFormulaCurveSegment::Apply(icFloatNumber v) const
     switch (m_nShortcutType) {
     case 0:
     default:
-      return (pow(m_params[1] * v + m_params[2], m_params[0]) + m_params[3]);
+      return (icFloatNumber)(pow(m_params[1] * v + m_params[2], m_params[0]) + m_params[3]);
     case 1:
       return (m_params[1] * v);
     case 2:
@@ -509,15 +509,15 @@ icFloatNumber CIccFormulaCurveSegment::Apply(icFloatNumber v) const
 
   case 0x0001:
     // Y = a * log (b * X^g + c) + d  : g a b c d
-    return (m_params[1] * log10(m_params[2] * pow(v, m_params[0]) + m_params[3]) + m_params[4]);
+    return (icFloatNumber)(m_params[1] * log10(m_params[2] * pow(v, m_params[0]) + m_params[3]) + m_params[4]);
 
   case 0x0002:
     //Y = a * b^(c*X+d) + e           : a b c d e
-    return (m_params[0] * pow(m_params[1], m_params[2] * v + m_params[3]) + m_params[4]);
+    return (icFloatNumber)(m_params[0] * pow(m_params[1], m_params[2] * v + m_params[3]) + m_params[4]);
 
   case 0x0003:
     //Y = a * (b * X + c) ^ g  + d        : g a b c d
-    return (m_params[1] * pow(m_params[2] * v + m_params[3], m_params[0]) + m_params[4]);
+    return (icFloatNumber)(m_params[1] * pow(m_params[2] * v + m_params[3], m_params[0]) + m_params[4]);
   }
 
   //Shouldn't get here!
@@ -4079,7 +4079,7 @@ bool CIccMpeExtCLUT::Read(icUInt32Number size, CIccIO *pIO)
 
   m_pCLUT->SetClipFunc(NoClip);
 
-  if (!m_pCLUT->Init(gridPoints, dataSize))
+  if (!m_pCLUT->Init(gridPoints, dataSize, icGetStorageTypeBytes(m_storageType)))
     return false;
 
   icFloatNumber *pData = m_pCLUT->GetData(0);

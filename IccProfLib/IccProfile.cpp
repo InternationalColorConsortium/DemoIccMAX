@@ -817,6 +817,7 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
     }
     if (!LoadTag((IccTagEntry*)&(i->TagInfo), pIO)) {
       sReport += icMsgValidateCriticalError;
+      sReport += " - ";
       sReport += Info.GetTagSigName(i->TagInfo.sig);
       sReport += " - Tag has invalid structure!\r\n";
 
@@ -3560,6 +3561,39 @@ bool SaveIccProfile(const icChar *szFilename, CIccProfile *pIcc, icProfileIDSave
   if (!pIcc->Write(&FileIO, nWriteId)) {
     return false;
   }
+
+  return true;
+}
+
+/**
+******************************************************************************
+* Name: SaveIccProfile
+*
+* Purpose: Save an ICC profile file.
+*
+* Args:
+*  f - handle to file io stream (closed outside of this function)
+*
+* Return:
+*  true = success, false = failure
+*******************************************************************************
+*/
+bool SaveIccProfile(FILE *f, CIccProfile *pIcc, icProfileIDSaveMethod nWriteId)
+{
+  CIccFileIO FileIO;
+
+  if (!pIcc)
+    return false;
+
+  if (!FileIO.Attach(f)) {
+    return false;
+  }
+
+  if (!pIcc->Write(&FileIO, nWriteId)) {
+    return false;
+  }
+
+  FileIO.Detach();
 
   return true;
 }

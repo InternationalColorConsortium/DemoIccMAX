@@ -960,7 +960,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-tn];
     icFloatNumber p = s[n];
     for (j=0; j<n; j++) {
-      s[j] = pow(s[j], p);
+      s[j] = (icFloatNumber)pow(s[j], p);
     }
     OsShrinkArgs(1);
     return true;
@@ -1059,7 +1059,7 @@ public:
       return false;
     icFloatNumber *s = &(*os.pStack)[ss-tn];
     for (j=0; j<n; j++) {
-      s[j] = pow(s[j], s[j+n]);
+      s[j] = (icFloatNumber)pow(s[j], s[j+n]);
     }
     OsShrinkArgs(n);
     return true;
@@ -1098,7 +1098,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = sqrt(a1);
+      s[j] = (icFloatNumber)sqrt(a1);
     }
     return true;
   }
@@ -1209,7 +1209,7 @@ public:
       return false;
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
-      s[j] = floor(s[j]);
+      s[j] = (icFloatNumber)floor(s[j]);
     }
     return true;
   }
@@ -1226,7 +1226,7 @@ public:
       return false;
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
-      s[j] = ceil(s[j]);
+      s[j] = (icFloatNumber)ceil(s[j]);
     }
     return true;
   }
@@ -1265,7 +1265,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = exp(a1);
+      s[j] = (icFloatNumber)exp(a1);
     }
     return true;
   }
@@ -1284,7 +1284,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = log10(a1);
+      s[j] = (icFloatNumber)log10(a1);
     }
     return true;
   }
@@ -1303,7 +1303,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = log(a1);
+      s[j] = (icFloatNumber)log(a1);
     }
     return true;
   }
@@ -1322,7 +1322,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = sin(a1);
+      s[j] = (icFloatNumber)sin(a1);
     }
     return true;
   }
@@ -1341,7 +1341,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = cos(a1);
+      s[j] = (icFloatNumber)cos(a1);
     }
     return true;
   }
@@ -1360,7 +1360,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = tan(a1);
+      s[j] = (icFloatNumber)tan(a1);
     }
     return true;
   }
@@ -1379,7 +1379,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = asin(a1);
+      s[j] = (icFloatNumber)asin(a1);
     }
     return true;
   }
@@ -1398,7 +1398,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = acos(a1);
+      s[j] = (icFloatNumber)acos(a1);
     }
     return true;
   }
@@ -1417,7 +1417,7 @@ public:
     icFloatNumber *s = &(*os.pStack)[ss-n];
     for (j=0; j<n; j++) {
       a1 = s[j];
-      s[j] = atan(a1);
+      s[j] = (icFloatNumber)atan(a1);
     }
     return true;
   }
@@ -1438,7 +1438,7 @@ public:
     for (j=0; j<n; j++) {
       a1 = s[j];
       a2 = s[j+n];
-      s[j] = atan2(a2, a1);
+      s[j] = (icFloatNumber)atan2(a2, a1);
     }
     OsShrinkArgs(n);
     return true;
@@ -1460,7 +1460,7 @@ public:
         for (j=0; j<n; j++) {
           a1 = s[j];
           a2 = s[j+n];
-          s[j] = sqrt(a2*a2 + a1*a1);
+          s[j] = (icFloatNumber)sqrt(a2*a2 + a1*a1);
           icFloatNumber h = (icFloatNumber)atan2(a2, a1) * 180.0f / (icFloatNumber)icPiNum;
           if (h<0.0f)
             h += 360.0f;

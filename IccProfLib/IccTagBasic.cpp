@@ -3195,7 +3195,7 @@ icInt32Number CIccTagNamedColor2::FindDeviceColor(icFloatNumber *pDevColor) cons
     for (icUInt32Number j=0; j<m_nDeviceCoords; j++) {
       dCalcDiff += (pDevColor[j]-pDevOut[j])*(pDevColor[j]-pDevOut[j]);
     }
-    dCalcDiff = sqrt(dCalcDiff);
+    dCalcDiff = (icFloatNumber)sqrt(dCalcDiff);
 
     if (i==0) {
       dLeastDiff = dCalcDiff;

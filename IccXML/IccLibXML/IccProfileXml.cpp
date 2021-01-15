@@ -74,11 +74,6 @@ typedef  std::map<icUInt32Number, icTagSignature> IccOffsetTagSigMap;
 bool CIccProfileXml::ToXml(std::string &xml)
 {
   CIccInfo info;
-  char line[256];
-  char buf[256];
-  char fix[256];
-  int n;
-  bool nonzero;
 
   xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
   return ToXmlWithBlanks(xml, "");

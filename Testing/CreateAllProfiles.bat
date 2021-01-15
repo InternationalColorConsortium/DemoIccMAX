@@ -20,6 +20,9 @@ cd ..\Display
 ..\iccFromXML sRGB_D65_MAT-300lx.xml sRGB_D65_MAT-300lx.icc
 ..\iccFromXML sRGB_D65_MAT-500lx.xml sRGB_D65_MAT-500lx.icc
 
+cd ..\ICC5
+..\iccFromXML opRGBwICC5.xml opRGBwICC5.icc
+
 cd ..\Encoding
 ..\iccFromXML ISO22028-Encoded-bg-sRGB.xml ISO22028-Encoded-bg-sRGB.icc
 ..\iccFromXML ISO22028-Encoded-sRGB.xml ISO22028-Encoded-sRGB.icc

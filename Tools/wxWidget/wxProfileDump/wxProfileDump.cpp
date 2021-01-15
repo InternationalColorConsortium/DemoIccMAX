@@ -112,6 +112,7 @@ Copyright:  (c) see ICC Software License
 #define wxFILE_MUST_EXIST wxFD_FILE_MUST_EXIST
 #endif
 
+#undef wxT
 #define wxT(x) x
 
 IMPLEMENT_APP(MyApp)
@@ -390,31 +391,31 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
     int currentX = 5;
 
     index = 0;
-    toolBar->AddTool( MDI_OPEN_PROFILE, *(bitmaps[index]), wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Open Profile"));
+    toolBar->AddTool(MDI_OPEN_PROFILE, _T("Open"), *(bitmaps[index]), _T("Open Profile"));
     currentX += width + 5;
 
     //index++;
-    //toolBar->AddTool(index+1, *bitmaps[index], wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Save Profile"));
+    //toolBar->AddTool(index+1,_T("Save"), *bitmaps[index], _T("Save Profile"));
     //currentX += width + 5;
 
     //toolBar->AddSeparator();
 
     //index++;
-    //toolBar->AddTool(index+1, *bitmaps[index], wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Copy"));
+    //toolBar->AddTool(index+1, _T("Copy"), *bitmaps[index], _T("Copy"));
     //currentX += width + 5;
 
     //index++;
-    //toolBar->AddTool(index+1, *bitmaps[index], wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Cut"));
+    //toolBar->AddTool(index+1, _T("Cut"), *bitmaps[index], _T("Cut"));
     //currentX += width + 5;
 
     //index++;
-    //toolBar->AddTool(index+1, *bitmaps[index], wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Paste"));
+    //toolBar->AddTool(index+1, _T("Paste"), *bitmaps[index], wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Paste"));
     //currentX += width + 5;
 
     toolBar->AddSeparator();
 
     index++;
-    toolBar->AddTool( MDI_ABOUT, *bitmaps[index], wxNullBitmap, true, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Help"));
+    toolBar->AddTool(MDI_ABOUT, _T("Help"), *bitmaps[index], _T("Help"));
 
     toolBar->Realize();
 
@@ -480,7 +481,7 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 		sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Creation Date:"), &m_textCreationDate), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Primary Platform:"), &m_textPlatform), wxSizerFlags().Expand().Border(wxALL, 0));
-    sizerBox->Add(CreateSizerWithText(_("Primary Platform:"), &m_textDeviceManufacturer), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Device Manufacturer:"), &m_textDeviceManufacturer), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Flags:"), &m_textFlags), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Attributes:"), &m_textAttribute), wxSizerFlags().Expand().Border(wxALL, 0));
 		sizerBox->Add(CreateSizerWithText(_("Rendering Intent:"), &m_textRenderingIntent), wxSizerFlags().Expand().Border(wxALL, 0));

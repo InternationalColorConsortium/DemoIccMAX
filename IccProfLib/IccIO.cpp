@@ -553,7 +553,7 @@ icInt32Number CIccEmbedIO::Read8(void *pBuf, icInt32Number nNum)
     icUInt32Number nPos = m_pIO->Tell();
     icUInt32Number nOffset = nPos - m_nStartPos;
 
-    if (nOffset + nNum > m_nSize)
+    if (nOffset + nNum > (icUInt64Number)m_nSize)
       nNum = m_nSize - nOffset;
   }
 
@@ -635,7 +635,7 @@ icInt32Number CIccEmbedIO::Tell()
 
   icUInt32Number nPos = m_pIO->Tell();
 
-  if (nPos >= m_nStartPos)
+  if ((icInt32Number)nPos >= m_nStartPos)
     return nPos - m_nStartPos;
 
   return nPos;
