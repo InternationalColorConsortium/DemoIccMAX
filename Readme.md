@@ -1,11 +1,11 @@
-![Ref ICC Max Logo](ReadMeFiles/RefIccMAX-Logo.png)
-# RefIccMAX
+![Demo ICC Max Logo](ReadMeFiles/DemoIccMAX-Logo.png)
+# DemoIccMAX
 ## Introduction
 
-The RefIccMAX project provides an open source set of
-libraries and tools that allow for the interaction, manipulation, and
-application of iccMAX based color management profiles based on the [iccMAX
-profile specification](http://www.color.org/iccmax.xalter)
+The DemoIccMAX project (formally knowna as RefIccMAX) provides an open
+source set of libraries and tools that allow for the interaction, 
+manipulation, and application of iccMAX based color management profiles
+based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter)
 in addition to legacy ICC profiles defined by [earlier ICC profile
 specifications](http://www.color.org/icc_specs2.xalter).
 
@@ -18,34 +18,34 @@ and Color Information Archiving. A more full description of
 capabilities and functionality can be found on the ICC web site,
 http://www.color.org/iccmax.xalter.
 
-Note: The code in RefIccMAX was initially based on the
+Note: The code in DemoIccMAX was initially based on the
 [SampleICC](https://sourceforge.net/projects/sampleicc/) and
 [IccXML](https://sourceforge.net/projects/iccxml/) open source projects, and
-therefore concepts, files and data structures within RefIccMAX may have
+therefore concepts, files and data structures within DemoIccMAX may have
 similarities (as well as various differences) to those in the SampleICC and
 IccXML projects.
 
 ## Overview
 
-Within the RefIccMAX project are several libraries and tools as follows:
+Within the DemoIccMAX project are several libraries and tools as follows:
 
 * Libraries that allow applications to interact with iccMAX profiles
 
-  * IccProfLib - The RefIccMAX IccProfLib project represents an open source &
+  * IccProfLib - The DemoIccMAX IccProfLib project represents an open source &
     cross platform reference implementation of a C++ library for reading,
     writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
     profile specification](http://www.color.org/iccmax.xalter). Class and object
     interaction documentation for IccProfLib can be found at ().
 
-    * There are no intentional discrepancies between the RefIccMAX
+    * There are no intentional discrepancies between the DemoIccMAX
       implementation and the iccMAX specification. If any should occur then this
-      should be brought to the attention of and resolved by the RefIccMAX project
+      should be brought to the attention of and resolved by the DemoIccMAX project
       team within the Architecture Working Group of the ICC organization.
 
       Though SampleICC provides a sample implementation, it does NOT
       represent a reference implementation of ICC.1 color management.
 
-  * IccLibXML - The RefIccMax IccLibXML project contains a parallel C++
+  * IccLibXML - The DemoIccMAX IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
     objects defined by IccProfLib using an XML representation thus allowing iccMAX
     profiles to be expressed as or created from text based XML files. The
@@ -190,7 +190,7 @@ abridged spectral encoding is provided.
 
 The project solution BuildAll.sln file for the Visual Studio development IDE can
 be found in the ./Build/MSVC folder. This references additional .vcproj files
-for the various libraries and applications provided by RefIccMAX. Projects
+for the various libraries and applications provided by DemoIccMAX. Projects
 without any further dependencies should build and link correctly. Both 32 and
 64bit compile options are supported. Some of the projects have further
 dependencies on third party libraries requiring that the SDK libraries are
@@ -266,7 +266,7 @@ these folders not set up before running the BuildAll.sh script).
 
 The BuildAll.sh script file will make a copy of the libIccProfLib.a and
 libIccXML.a library binaries into the Build/XCode/lib folder. The libraries in
-Build/XCode/lib are then referenced by the rest of the projects in RefIccMAX.
+Build/XCode/lib are then referenced by the rest of the projects in DemoIccMAX.
 Executables for the various tools will be placed into the Testing folder after a
 successful run of `BuildAll.sh`.
 
@@ -303,7 +303,7 @@ development `*-DCMAKE_CXX_FLAGS="-Wall -Wextra -g"` is recommended.
 
 ### Linux Packages
 
-* Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libRefIccMAX-devel)
+* Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libDemoIccMAX-devel)
 
 ## License
 
