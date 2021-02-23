@@ -2,7 +2,7 @@
 # DemoIccMAX
 ## Introduction
 
-The DemoIccMAX project (formally knowna as RefIccMAX) provides an open
+The DemoIccMAX project (formally known as RefIccMAX) provides an open
 source set of libraries and tools that allow for the interaction, 
 manipulation, and application of iccMAX based color management profiles
 based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter)
