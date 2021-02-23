@@ -1833,6 +1833,9 @@ const icChar *CIccInfo::GetCmmSigName(icCmmSignature sig)
   case icSigRefIccMAX:
     return "RefIccMAX";
 
+  case icSigDemoIccMAX:
+    return "DemoIccMAX";
+
   case icSigRolfGierling:
     return "Rolf Gierling Multitools";
 

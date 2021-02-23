@@ -78,12 +78,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "FileDescription", "RefIccMAX CMM"
+            VALUE "FileDescription", "DemoIccMAX CMM"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "RefIccMAXCmm"
+            VALUE "InternalName", "DemoIccMAXCmm"
             VALUE "LegalCopyright", "Copyright (C) 2008"
-            VALUE "OriginalFilename", "RefIccMAXCmm.dll"
-            VALUE "ProductName", " RefIccMAX CMM"
+            VALUE "OriginalFilename", "DemoIccMAXCmm.dll"
+            VALUE "ProductName", " DemoIccMAX CMM"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
@@ -101,7 +101,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_DESCRIPTION         "RefIccMAX CMM"
+    IDS_DESCRIPTION         "DemoIccMAX CMM"
 END
 
 #endif    // English (U.S.) resources

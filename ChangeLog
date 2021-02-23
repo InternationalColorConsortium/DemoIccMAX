@@ -1,3 +1,8 @@
+2022-02-23 Max Derhak
+* Changed name of project from RefIccMAX to DemoIccMAX
+* 2.1.19 Release of IccProfLib and related tools
+* Fix bug related to parsing badly sized UTF8 text tag
+
 2021-01-15 Max Derhak
 * 2.1.18 Release of IccProflib and related tools
 * 2.1.18 Release of IccLibXml and related tools

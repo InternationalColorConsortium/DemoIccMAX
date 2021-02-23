@@ -1637,6 +1637,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     case icSigWindowsCMS:
     case icSigMutoh:
     case icSigRefIccMAX:
+    case icSigDemoIccMAX:
     case icSigRolfGierling:
     case icSigSampleICC:
     case icSigToshiba:

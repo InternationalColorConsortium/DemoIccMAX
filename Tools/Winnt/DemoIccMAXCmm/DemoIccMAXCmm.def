@@ -1,4 +1,4 @@
-LIBRARY	RefIccMAXCmm
+LIBRARY	DemoIccMAXCmm
 EXPORTS
 
 	CMCheckColors                     @1
