@@ -765,6 +765,9 @@ bool CIccTagUtf8Text::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&m_nReserved))
     return false;
 
+  if (size < sizeof(icTagTypeSignature) + sizeof(icUInt32Number))
+    return false;
+
   icUInt32Number nSize = size - sizeof(icTagTypeSignature) - sizeof(icUInt32Number);
 
   icUChar *pBuf = GetBuffer(nSize);
