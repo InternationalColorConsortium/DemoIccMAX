@@ -15,6 +15,10 @@ cd ..\Display
 ..\iccFromXML LCDDisplay.xml LCDDisplay.icc
 ..\iccFromXML GrayGSDF.xml GrayGSDF.icc
 ..\iccFromXML RgbGSDF.xml RgbGSDF.icc
+..\iccFromXML Rec2020rgbSpectral.xml Rec2020rgbSpectral.icc
+..\iccFromXML Rec2020rgbColorimetric.xml Rec2020rgbColorimetric.icc
+..\iccFromXML Rec2100HlgFull.xml Rec2100HlgFull.icc
+..\iccFromXML Rec2100HlgNarrow.xml Rec2100HlgNarrow.icc
 ..\iccFromXML sRGB_D65_colorimetric.xml sRGB_D65_colorimetric.icc
 ..\iccFromXML sRGB_D65_MAT.xml sRGB_D65_MAT.icc
 ..\iccFromXML sRGB_D65_MAT-300lx.xml sRGB_D65_MAT-300lx.icc
@@ -73,7 +77,7 @@ cd ..\..\PCC
 ..\iccFromXML Lab_float-D93_2deg-MAT.xml Lab_float-D93_2deg-MAT.icc
 ..\iccFromXML Lab_int-D65_2deg-MAT.xml Lab_int-D65_2deg-MAT.icc
 ..\iccFromXML Lab_int-IllumA_2deg-MAT.xml Lab_int-IllumA_2deg-MAT.icc
-..\iccFromXML Lab_int-IllumA_2deg-LutCAT-Lvl2.xml Lab_int-IllumA_2deg-LutCAT-Lvl2.icc
+rem ..\iccFromXML Lab_int-IllumA_2deg-LutCAT-Lvl2.xml Lab_int-IllumA_2deg-LutCAT-Lvl2.icc
 ..\iccFromXML Lab_int-IllumA_2deg-MtxCAT-Lvl2.xml Lab_int-IllumA_2deg-MtxCAT-Lvl2.icc
 ..\iccFromXML Spec380_10_730-D50_2deg.xml Spec380_10_730-D50_2deg.icc
 ..\iccFromXML Spec380_10_730-D65_2deg-MAT.xml Spec380_10_730-D65_2deg-MAT.icc

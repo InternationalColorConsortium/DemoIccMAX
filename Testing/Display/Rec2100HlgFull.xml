@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>mntr</ProfileDeviceClass>
+    <DataColourSpace>RGB </DataColourSpace>
+    <PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.9504222269" Y="1.0000000000" Z="1.0884541014"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+  </Header>
+  <Tags>
+    <profileDescriptionTag> <multiLocalizedUnicodeType>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Rec. 2100 RGB with Hlg]]></LocalizedText>
+    </multiLocalizedUnicodeType> </profileDescriptionTag>
+	
+	<AToB1Tag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+		<CalculatorElement InputChannels="3" OutputChannels="3">
+		  <Macros>
+			<!-- Macro constants for inverse OETF -->
+			<Macro Name="a">0.17883277</Macro>
+			<Macro Name="b">2.846689200000000e-001</Macro> <!-- b=1-4*a -->
+			<Macro Name="c">5.599107295295620e-001</Macro> <!-- c=0.5-a*ln(4*a) -->
+		  </Macros>
+		  <Variables>
+			<Declare Name="rgb">r g b</Declare>
+			<Declare Name="Lw"/>
+			<Declare Name="Lb"/>
+			<Declare Name="alpha"/>
+			<Declare Name="beta"/>
+			<Declare Name="gamma"/>
+		  </Variables>
+		  <SubElements>
+			<MatrixElement Name="RGB2XYZ" InputChannels="3" OutputChannels="3">
+				<MatrixData>
+				 0.63695805 0.14461690 0.16888098
+				 0.26270021 0.67799807 0.05930172
+				 0.00000000 0.02807269 1.06098506
+				</MatrixData>
+			</MatrixElement>
+		  </SubElements>
+		  <MainFunction>
+{
+%define constants for OOTF
+env(MxLm) if { tput{Lw} } else { pop 800 tput{Lw} }
+env(MnLm) if { tput{Lb} } else { pop 5 tput{Lb} }
+tget{Lw} tget{Lb} sub tget{Lw} div tput{alpha}
+tget{Lb} tget{Lw} div tput{beta}
+tget{Lw} 1000 le if { 0.2 } else { 0.2 0.42 tget{Lw} 1000 div log mul add } tput{gamma} % -1.0 applied
+
+%Note - computations before access of input channels can be cached by CMM for better performance
+
+%get input channels
+in(0,3)
+
+%clip as needed and store RGB results
+0 0 0 vmax(3) tput{rgb}
+
+%apply EOTF
+tget{rgb.r} 0.5 le if { tget{rgb.r} copy mul 3 div } else { tget{rgb.r} #c sub #a div exp #b add 12 div }
+tget{rgb.g} 0.5 le if { tget{rgb.g} copy mul 3 div } else { tget{rgb.g} #c sub #a div exp #b add 12 div }
+tget{rgb.b} 0.5 le if { tget{rgb.b} copy mul 3 div } else { tget{rgb.b} #c sub #a div exp #b add 12 div }
+
+%apply OOTF
+copy(3,1) 0.2627 0.6780 0.0593 mul(3) sum(3) tget{gamma} gama tget{alpha} mul smul(3) tget{beta} sadd(3)
+
+%convert rgb to xyz with matrix
+mtx{RGB2XYZ}
+
+%store output channels
+out(0,3)
+}
+		  </MainFunction>
+		</CalculatorElement>
+	  </MultiProcessElements>
+	</multiProcessElementType> </AToB1Tag>
+	
+	<BToA1Tag> <multiProcessElementType>
+      <MultiProcessElements InputChannels="3" OutputChannels="3">
+		<CalculatorElement InputChannels="3" OutputChannels="3">
+		  <Macros>
+			<!-- Macro constants for inverse OETF -->
+			<Macro Name="a">0.17883277</Macro>
+			<Macro Name="b">2.846689200000000e-001</Macro> <!-- b=1-4*a -->
+			<Macro Name="c">5.599107295295620e-001</Macro> <!-- c=0.5-a*ln(4*a) -->
+			<Macro Name="one_twelth">8.333333333333333e-002</Macro>
+		  </Macros>
+		  <Variables>
+			<Declare Name="rgb">r g b</Declare>
+			<Declare Name="Lw"/>
+			<Declare Name="Lb"/>
+			<Declare Name="alpha"/>
+			<Declare Name="beta"/>
+			<Declare Name="gamma"/>
+			<Declare Name="s"/>
+		  </Variables>
+		  <SubElements>
+			<MatrixElement Name="XYZ2RGB" InputChannels="3" OutputChannels="3">
+			  <MatrixData InvertMatrix="true">
+				 0.63695805 0.14461690 0.16888098
+				 0.26270021 0.67799807 0.05930172
+				 0.00000000 0.02807269 1.06098506
+              </MatrixData>
+			</MatrixElement>
+		  </SubElements>
+		  <MainFunction>
+{
+%define constants for inverse OOTF
+env(MxLm) if { tput{Lw} } else { pop 800 tput{Lw} }
+env(MnLm) if { tput{Lb} } else { pop 5 tput{Lb} }
+tget{Lw} tget{Lb} sub tget{Lw} div tput{alpha}
+tget{Lb} tget{Lw} div tput{beta}
+tget{Lw} 1000 le if { 1.2 } else { 1.2 0.42 tget{Lw} 1000 div log mul add } tput{gamma} 
+1 tget{gamma} sub tget{gamma} div tput{gamma}
+
+%Note - computations before access of input channels can be cached by CMM for better performance
+
+%Convert XYZ to RGB
+in(0,3) mtx{XYZ2RGB}
+
+%clip as needed and store RGB results
+tget{beta} copy(1,2) vmax(3) tsav{rgb}
+
+%apply inverse OOTF
+0.2627 0.6780 0.0593 mul(3) sum(3) tget{beta} sub tget{alpha} div 
+copy 0 gt if { tget{gamma} gama } else { pop 0 } tput{s}
+tget{rgb} tget{beta} ssub(3) tget{alpha} sdiv(3) tget{s} smul(3) tput{rgb}
+
+%apply inverse EOTF
+tget{rgb.r} #one_twelth le if { tget{rgb.r} 3 mul sqrt } else { 12 tget{rgb.r} mul #b sub ln #a mul #c add }
+tget{rgb.g} #one_twelth le if { tget{rgb.g} 3 mul sqrt } else { 12 tget{rgb.g} mul #b sub ln #a mul #c add }
+tget{rgb.b} #one_twelth le if { tget{rgb.b} 3 mul sqrt } else { 12 tget{rgb.b} mul #b sub ln #a mul #c add }
+
+%store results
+out(0,3)
+}
+		  </MainFunction>
+		</CalculatorElement>
+      </MultiProcessElements>
+    </multiProcessElementType> </BToA1Tag>
+	
+    <customToStandardPccTag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+	    <MatrixElement InputChannels="3" OutputChannels="3">
+		  <MatrixData>
+		    1.15213478 -0.06226214 -0.06292737
+		    0.09892068 0.93407047 -0.02579682
+		   -0.02836701 0.03469112 0.75031996
+		  </MatrixData>
+	    </MatrixElement>
+	  </MultiProcessElements>
+    </multiProcessElementType> </customToStandardPccTag>
+
+    <standardToCustomPccTag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+	    <MatrixElement InputChannels="3" OutputChannels="3">
+		  <MatrixData InvertMatrix="true">
+		    1.15213478 -0.06226214 -0.06292737
+		    0.09892068 0.93407047 -0.02579682
+		   -0.02836701 0.03469112 0.75031996
+		  </MatrixData>
+	    </MatrixElement>
+	  </MultiProcessElements>
+    </multiProcessElementType> </standardToCustomPccTag>
+	
+	<spectralViewingConditionsTag> <spectralViewingConditionsType>
+	  <StdObserver>CIE 1931 (two degree) standard observer</StdObserver>
+	  <IlluminantXYZ X="760.3437296879144" Y="800.00000000" Z="871.0404544405391"/>
+	  <ObserverFuncs start="380.00000000" end="780.00000000" steps="81">
+		 0.00136800 0.00223600 0.00424300 0.00765000 0.01431000 0.02319000 0.04351000 0.07763000
+		 0.13438000 0.21477000 0.28389999 0.32850000 0.34828001 0.34806001 0.33620000 0.31869999
+		 0.29080001 0.25110000 0.19536000 0.14210001 0.09564000 0.05795000 0.03201000 0.01470000
+		 0.00490000 0.00240000 0.00930000 0.02910000 0.06327000 0.10960000 0.16550000 0.22575000
+		 0.29040000 0.35969999 0.43345001 0.51204997 0.59450001 0.67839998 0.76209998 0.84249997
+		 0.91630000 0.97860003 1.02629995 1.05669999 1.06219995 1.04560006 1.00259995 0.93839997
+		 0.85444999 0.75139999 0.64240003 0.54189998 0.44790000 0.36080000 0.28349999 0.21870001
+		 0.16490000 0.12120000 0.08740000 0.06360000 0.04677000 0.03290000 0.02270000 0.01584000
+		 0.01135900 0.00811100 0.00579000 0.00410900 0.00289900 0.00204900 0.00144000 0.00100000
+		 0.00069000 0.00047600 0.00033200 0.00023500 0.00016600 0.00011700 0.00008300 0.00005900
+		 0.00004200
+		 0.00003900 0.00006400 0.00012000 0.00021700 0.00039600 0.00064000 0.00121000 0.00218000
+		 0.00400000 0.00730000 0.01160000 0.01684000 0.02300000 0.02980000 0.03800000 0.04800000
+		 0.06000000 0.07390000 0.09098000 0.11260000 0.13902000 0.16930000 0.20802000 0.25860000
+		 0.32300001 0.40730000 0.50300002 0.60820001 0.70999998 0.79320002 0.86199999 0.91485000
+		 0.95400000 0.98030001 0.99495000 1.00000000 0.99500000 0.97860003 0.95200002 0.91540003
+		 0.87000000 0.81629997 0.75700003 0.69489998 0.63099998 0.56680000 0.50300002 0.44119999
+		 0.38100001 0.32100001 0.26499999 0.21699999 0.17500000 0.13820000 0.10700000 0.08160000
+		 0.06100000 0.04458000 0.03200000 0.02320000 0.01700000 0.01192000 0.00821000 0.00572300
+		 0.00410200 0.00292900 0.00209100 0.00148400 0.00104700 0.00074000 0.00052000 0.00036100
+		 0.00024900 0.00017200 0.00012000 0.00008500 0.00006000 0.00004200 0.00003000 0.00002100
+		 0.00001500
+		 0.00645000 0.01055000 0.02005000 0.03621000 0.06785000 0.11020000 0.20739999 0.37130001
+		 0.64560002 1.03904998 1.38559997 1.62295997 1.74705994 1.78260005 1.77210999 1.74409997
+		 1.66919994 1.52810001 1.28763998 1.04190004 0.81295002 0.61619997 0.46518001 0.35330001
+		 0.27200001 0.21230000 0.15820000 0.11170000 0.07825000 0.05725000 0.04216000 0.02984000
+		 0.02030000 0.01340000 0.00875000 0.00575000 0.00390000 0.00275000 0.00210000 0.00180000
+		 0.00165000 0.00140000 0.00110000 0.00100000 0.00080000 0.00060000 0.00034000 0.00024000
+		 0.00019000 0.00010000 0.00005000 0.00003000 0.00002000 0.00001000 0.00000000 0.00000000
+		 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+		 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+		 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+		 0.00000000
+	  </ObserverFuncs>
+	  <StdIlluminant>Illuminant D65</StdIlluminant>
+	  <ColorTemperature>6500.00000000</ColorTemperature>
+	  <IlluminantSPD start="380.00000000." end="780.00000000" steps="81">
+		 49.97549820 52.31179810 54.64820099 68.70149994 82.75489807 87.12039948 91.48600006 92.45890045
+		 93.43180084 90.05699921 86.68229675 95.77359772 104.86499786 110.93599701 117.00800323 117.41000366
+		 117.81199646 116.33599854 114.86100006 115.39199829 115.92299652 112.36699677 108.81099701 109.08200073
+		 109.35399628 108.57800293 107.80200195 106.29599762 104.79000092 106.23899841 107.68900299 106.04699707
+		 104.40499878 104.22499847 104.04599762 102.02300262 100.00000000 98.16709900 96.33419800 96.06109619
+		 95.78800201 92.23680115 88.68560028 89.34590149 90.00620270 89.80259705 89.59909821 88.64890289
+		 87.69869995 85.49359894 83.28859711 83.49389648 83.69920349 81.86299896 80.02680206 80.12069702
+		 80.21459961 81.24620056 82.27780151 80.28099823 78.28420258 74.00270081 69.72129822 70.66519928
+		 71.60910034 72.97899628 74.34899902 67.97650146 61.60400009 65.74479675 69.88559723 72.48629761
+		 75.08699799 69.33979797 63.59270096 55.00540161 46.41820145 56.61180115 66.80539703 65.09410095
+		 63.38280106
+	  </IlluminantSPD>
+	  <SurroundXYZ X="4.752148310549465" Y="5.00000000" Z="5.444002840253368"/>
+	</spectralViewingConditionsType> </spectralViewingConditionsTag>
+
+	<mediaWhitePointTag> <XYZArrayType>
+	  <XYZNumber X="0.95050049" Y="1.00000000" Z="1.08909607"/>
+	</XYZArrayType> </mediaWhitePointTag>
+
+	<copyrightTag> <multiLocalizedUnicodeType>
+	  <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2018 International Color Consortium]]></LocalizedText>
+	</multiLocalizedUnicodeType> </copyrightTag>
+
+  </Tags>
+</IccProfile>
