@@ -113,9 +113,9 @@ IIccArray* CIccArrayUnknown::NewCopy(CIccTagArray *pTagArray) const
 }
 
 
-bool CIccArrayUnknown::Describe(std::string &sDescription) const
+void CIccArrayUnknown::Describe(std::string &sDescription) const
 {
-  return false;
+
 }
 
 
@@ -171,9 +171,9 @@ IIccArray* CIccArrayColorantInfo::NewCopy(CIccTagArray *pTagArray) const
 }
 
 
-bool CIccArrayColorantInfo::Describe(std::string &sDescription) const
+void CIccArrayColorantInfo::Describe(std::string &sDescription) const
 {
-  return false;
+
 }
 
 
@@ -248,9 +248,9 @@ IIccArray* CIccArrayNamedColor::NewCopy(CIccTagArray *pTagArray) const
 }
 
 
-bool CIccArrayNamedColor::Describe(std::string &sDescription) const
+void CIccArrayNamedColor::Describe(std::string &sDescription) const
 {
-  return false;
+
 }
 
 

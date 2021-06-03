@@ -112,7 +112,7 @@ IIccStruct* CIccStructUnknown::NewCopy(CIccTagStruct *pTagStruct) const
 }
 
 
-bool CIccStructUnknown::Describe(std::string &sDescription) const
+void CIccStructUnknown::Describe(std::string &sDescription) const
 {
   char buf[256];
   CIccInfo info;
@@ -134,7 +134,6 @@ bool CIccStructUnknown::Describe(std::string &sDescription) const
       }
     }
   }
-  return true;
 }
 
 

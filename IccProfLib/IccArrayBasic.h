@@ -94,7 +94,7 @@ public:
   virtual ~CIccArrayUnknown();
   virtual IIccArray* NewCopy(CIccTagArray *pTagArray) const;
 
-  virtual bool Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription) const;
 
   virtual const icChar *GetClassName() const { return "CIccArrayUnknown"; }
 
@@ -120,7 +120,7 @@ public:
   virtual ~CIccArrayColorantInfo();
   virtual IIccArray* NewCopy(CIccTagArray *pTagArray) const;
 
-  virtual bool Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription) const;
 
   virtual const icChar *GetClassName() const { return "CIccArrayColorantInfo"; }
 
@@ -147,7 +147,7 @@ public:
   virtual ~CIccArrayNamedColor();
   virtual IIccArray* NewCopy(CIccTagArray *pTagArray) const;
 
-  virtual bool Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription) const;
 
   virtual const icChar *GetClassName() const { return "CIccArrayNamedColor"; }
 

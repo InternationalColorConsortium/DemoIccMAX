@@ -99,7 +99,7 @@ public:
   virtual ~IIccStruct() {}
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const = 0;
 
-  virtual bool Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription) const;
 
   virtual const icChar *GetClassName() const = 0;
   virtual const icChar *GetDisplayName() const = 0;
@@ -132,7 +132,7 @@ public:
   virtual ~IIccArray() {}
   virtual IIccArray* NewCopy(CIccTagArray *pNewTagArray) const = 0;
 
-  virtual bool Describe(std::string &sDescription) const { return false; }
+  virtual void Describe(std::string &sDescription) const { }
 
   virtual const icChar *GetClassName() const = 0;
 

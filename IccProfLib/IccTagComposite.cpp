@@ -83,12 +83,9 @@
 #include "IccStructFactory.h"
 #include "IccArrayFactory.h"
 
-bool IIccStruct::Describe(std::string &sDescription) const
+void IIccStruct::Describe(std::string &sDescription) const
 {
-  if (!m_pTagStruct) {
-    return false;
-  }
-  else {
+  if (m_pTagStruct) {
     char buf[256];
     CIccInfo info;
 
@@ -108,8 +105,6 @@ bool IIccStruct::Describe(std::string &sDescription) const
     sDescription += buf;
     sDescription += "\r\n";
   }
-
-  return true;
 }
 
 TagEntryList* IIccStruct::getTagEntries() const
