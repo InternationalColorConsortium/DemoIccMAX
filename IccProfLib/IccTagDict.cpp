@@ -76,6 +76,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include <codecvt>
 #include "IccTagDict.h"
 #include "IccUtil.h"
 #include "IccIO.h"
@@ -83,6 +84,9 @@
 
 //MSVC 6.0 doesn't support std::string correctly so we disable support in this case
 #ifndef ICC_UNSUPPORTED_TAG_DICT
+
+using convert_type = std::codecvt_utf8<wchar_t>;
+
 
 /*=============================================================================
 * CLASS CIccDictEntry
@@ -206,14 +210,17 @@ CIccDictEntry::~CIccDictEntry()
 ******************************************************************************/
 void CIccDictEntry::Describe(std::string &sDescription)
 {
-  std::string s;
+  std::wstring ws;
+
+  //setup converter
+  std::wstring_convert<convert_type, wchar_t> converter;
 
   sDescription += "BEGIN DICT_ENTRY\r\nName=";
-  s.assign(m_sName->begin(), m_sName->end());
-  sDescription += s;
+  ws.assign(m_sName->begin(), m_sName->end());
+  sDescription += converter.to_bytes(ws);
   sDescription += "\r\nValue=";
-  s.assign(m_sValue->begin(), m_sValue->end());
-  sDescription += s;
+  ws.assign(m_sValue->begin(), m_sValue->end());
+  sDescription += converter.to_bytes(ws);
   sDescription += "\r\n";
 
   if (m_pNameLocalized) {
