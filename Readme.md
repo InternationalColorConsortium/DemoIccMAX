@@ -3,7 +3,7 @@
 ## Introduction
 
 The DemoIccMAX project (formally known as RefIccMAX) provides an open
-source set of libraries and tools that allow for the interaction, 
+source set of libraries and tools that allow for the interaction,
 manipulation, and application of iccMAX based color management profiles
 based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter)
 in addition to legacy ICC profiles defined by [earlier ICC profile
@@ -96,10 +96,10 @@ Within the DemoIccMAX project are several libraries and tools as follows:
 
   * IccRoundTrip is a cross platform command line tool that allows round trip
     colorimetric processing characteristics of rendering intent of a profile to be
-    evaluated. (Evaluation goes from device values to PCS to establish intial PCS
-    values. These are then coverted to device values and then PCS values for the
+    evaluated. (Evaluation goes from device values to PCS to establish initial PCS
+    values. These are then converted to device values and then PCS values for the
     first round trip. Second round trip comparison then converts the second PCS
-    values to device values to PCS values for campison to the second PCS values.
+    values to device values to PCS values for comparison to the second PCS values.
 
   * IccSpecSepToTiff is a cross platform command line tool that combines separate
     individual TIFF images associated with different spectral wavelengths into a
@@ -117,10 +117,10 @@ Within the DemoIccMAX project are several libraries and tools as follows:
   * RefIccLabsCMM provides a MacOS-X based Color Management Module that can be used
     within the ColorSync environment.
 
-    * Many features of iccMAX based profiles are not accessable due to the
+    * Many features of iccMAX based profiles are not accessible due to the
       limitation in support for only legacy ICC concepts within ColorSync.
 
-  * wxProfileDump provies a [wxWidgets](https://www.wxwidgets.org/) GUI based
+  * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
     iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
     wxWidgets 2.x, and is therefore dependent on this version of wxWidgets. At
     present only Windows based testing has been performed on this (though wxWidgets
@@ -169,7 +169,7 @@ colorimetry as well as Material Adjusted colorimetry are present.
 
 ### [SpecRef](Testing/SpaceRef)
 
-This folder contains various profiles that convert data to/from/betweteen a
+This folder contains various profiles that convert data to/from/between a
 spectral reflectance PCS. The argbRef (AdobeRGB) and srgbRef (sRGB) convert RGB
 values to/from spectral reflectance. RefDecC, RefDecH, and RefIncW are abstract
 spectral reflectance profiles that modify "chroma", "hue", and "lightness" of
@@ -239,9 +239,9 @@ WXVER=28
 
 When the `ICC_USE_EIGEN_SOLVER` is defined in
 [IccProfLibConf.h](IccProfLib/IccProfLibConf.h) then the Calc element solv
-operator will be implementd using the Eigen math C++ template library,
+operator will be implemented using the Eigen math C++ template library,
 http://eigen.tuxfamily.org/index.php?title=Main_Page. It must be referenced
-using the system environeent variable `EIGEN`.
+using the system environment variable `EIGEN`.
 
 For example:
 
