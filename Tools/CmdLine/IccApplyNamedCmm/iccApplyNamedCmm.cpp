@@ -6,6 +6,7 @@
 #include "IccApplyBPC.h"
 #include "IccEnvVar.h"
 #include "IccMpeCalc.h"
+#include "IccProfLibVer.h"
 
 //----------------------------------------------------
 // Function Declarations
@@ -90,6 +91,7 @@ typedef std::list<CIccProfile*> IccProfilePtrList;
 void Usage() 
 {
   printf("Usage: iccApplyNamedCmm {-debugcalc} data_file_path final_data_encoding{:FmtPrecision{:FmtDigits}} interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Built with IccProfLib version " ICCPROFLIBVER "\n");
 	printf("  For final_data_encoding:\n");
 	printf("    0 - icEncodeValue (converts to/from lab encoding when samples=3)\n");
 	printf("    1 - icEncodePercent\n");

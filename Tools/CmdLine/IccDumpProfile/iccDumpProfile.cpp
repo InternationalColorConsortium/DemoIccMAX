@@ -74,6 +74,7 @@
 #include "IccProfile.h"
 #include "IccTag.h"
 #include "IccUtil.h"
+#include "IccProfLibVer.h"
 
 void DumpTag(CIccProfile *pIcc, icTagSignature sig)
 {
@@ -105,6 +106,7 @@ int main(int argc, char* argv[])
   if (argc<=1) {
 print_usage:
     printf("Usage: iccDumpProfile {-v} profile {tagId to dump/\"ALL\"}\n");
+    printf("Built with IccProfLib version " ICCPROFLIBVER "\n");
     printf("\nThe -v option causes profile validation to be performed.\n");
     return -1;
   }
