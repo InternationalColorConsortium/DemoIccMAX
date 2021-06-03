@@ -1586,7 +1586,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     }
     switch (bcdpair) {
     case 0x02:
-        bcdpair = (m_Header.version & 0x00FF0000) >> 16;
+        bcdpair = (uint8_t)((m_Header.version & 0x00FF0000) >> 16);
         if ((bcdpair > 0x40) || (bcdpair & 0x0F)) {
             sReport += icMsgValidateWarning;
             sReport += "Version 2 minor number is unexpected.\r\n";
@@ -1594,7 +1594,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         }
         break;
     case 0x04:
-        bcdpair = (m_Header.version & 0x00FF0000) >> 16;
+        bcdpair = (uint8_t)((m_Header.version & 0x00FF0000) >> 16);
         if ((bcdpair > 0x30) || (bcdpair & 0x0F)) {
             sReport += icMsgValidateWarning;
             sReport += "Version 4 minor number is unexpected.\r\n";
@@ -1602,7 +1602,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         }
         break;
     case 0x05:
-        bcdpair = (m_Header.version & 0x00FF0000) >> 16;
+        bcdpair = (uint8_t)((m_Header.version & 0x00FF0000) >> 16);
         if (bcdpair) {
             sReport += icMsgValidateWarning;
             sReport += "Version 5 minor number is unexpected.\r\n";
