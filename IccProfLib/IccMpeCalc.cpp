@@ -2831,7 +2831,7 @@ void CIccCalculatorFunc::DescribeSequence(std::string &sDescription,
     op->Describe(opName);
     funcDesc += opName;
     funcDesc += " ";
-    pos += opName.size() + 1;
+    pos += (int)opName.size() + 1;
 
     if (op->sig == icSigIfOp) {
       SIccCalcOp *ifop = op;

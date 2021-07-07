@@ -1128,7 +1128,7 @@ icSignature icGetFirstSigPathSig(std::string sigPath)
 
 icSignature icGetLastSigPathSig(std::string sigPath)
 {
-  int n = sigPath.length();
+  size_t n = sigPath.length();
   if (!n)
     return icGetSigVal(sigPath.c_str());
 
