@@ -163,7 +163,7 @@ public:
 
   virtual bool IsSupported() { return true; }
 
-  virtual void Describe(std::string &sDescription) = 0;
+  virtual void Describe(std::string &sDescription, int verboseness) = 0;
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO) = 0;
   virtual bool Write(CIccIO *pIO) = 0;
@@ -242,7 +242,7 @@ public:
 
   virtual bool IsSupported() { return false; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   void SetType(icElemTypeSignature sig);
   void SetChannels(icUInt16Number nInputChannels, icUInt16Number nOutputChannels);
@@ -370,7 +370,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigMultiProcessElementType; }
   virtual const icChar *GetClassName() const { return "CIccTagMultiProcessElement"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

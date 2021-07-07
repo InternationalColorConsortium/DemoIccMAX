@@ -4022,7 +4022,7 @@ bool CIccTagXmlMultiProcessElement::ParseXml(xmlNode *pNode, std::string &parseS
   pNode = icXmlFindNode(pNode, "MultiProcessElements");
 
   if (!pNode) {
-    parseStr += "Cannot Find MultiProcessElements\r\n";
+    parseStr += "Cannot Find MultiProcessElements\n";
     return false;
   }
 
@@ -4030,7 +4030,7 @@ bool CIccTagXmlMultiProcessElement::ParseXml(xmlNode *pNode, std::string &parseS
   xmlAttr *pOutputChannels = icXmlFindAttr(pNode, "OutputChannels");
 
   if (!pInputChannels || !pOutputChannels) {
-    parseStr += "Invalid channels in MultiProcessElements\r\n";
+    parseStr += "Invalid channels in MultiProcessElements\n";
     return false;
   }
 
@@ -4051,7 +4051,7 @@ bool CIccTagXmlMultiProcessElement::ParseXml(xmlNode *pNode, std::string &parseS
         char str[100];
         parseStr += "Unable to parse element (";
         parseStr += (char*)elemNode->name;
-        sprintf(str, ") starting on line %d\r\n", elemNode->line);
+        sprintf(str, ") starting on line %d\n", elemNode->line);
         parseStr += str;
         return false;
       }
@@ -4623,7 +4623,7 @@ bool CIccTagXmlStruct::ParseXml(xmlNode *pNode, std::string &parseStr)
   else {
     tagNode = icXmlFindNode(firstNode, "StructureSignature");
     if (!tagNode) {
-      parseStr += "Unable to find StructureSignature\r\n";
+      parseStr += "Unable to find StructureSignature\n";
       return false;
     }
 
@@ -4632,14 +4632,14 @@ bool CIccTagXmlStruct::ParseXml(xmlNode *pNode, std::string &parseStr)
       m_pStruct = CIccStructCreator::CreateStruct(m_sigStructType, this);
     }
     else {
-      parseStr += "Invalid XNode type for StructureSignature\r\n";
+      parseStr += "Invalid XNode type for StructureSignature\n";
       return false;
     }
   }
 
   tagNode = icXmlFindNode(pNode, "MemberTags");
   if (!tagNode) {
-    parseStr += "Unable to find structure MemberTags\r\n";
+    parseStr += "Unable to find structure MemberTags\n";
     return false;
   }
 
@@ -4648,7 +4648,7 @@ bool CIccTagXmlStruct::ParseXml(xmlNode *pNode, std::string &parseStr)
       if (!ParseTag(tagNode, parseStr)) {
         parseStr += "Failed to parse tag member (";
         parseStr += (char*)tagNode->name;
-        parseStr += ")\r\n";
+        parseStr += ")\n";
         return false;
       }
     }
@@ -4742,7 +4742,7 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
   else {
     tagNode = icXmlFindNode(firstNode, "ArraySignature");
     if (!tagNode) {
-      parseStr += "Unable to find ArraySignature\r\n";
+      parseStr += "Unable to find ArraySignature\n";
       return false;
     }
 
@@ -4751,7 +4751,7 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
       m_pArray = CIccArrayCreator::CreateArray(m_sigArrayType, this);
     }
     else {
-      parseStr += "Invalid XNode type for ArraySignature\r\n";
+      parseStr += "Invalid XNode type for ArraySignature\n";
       return false;
     }
   }
@@ -4803,7 +4803,7 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
           else {
             parseStr += "Tag Array Index ";
             parseStr += n;
-            parseStr += " already filled!\r\n";
+            parseStr += " already filled!\n";
             return false;
           }
         }

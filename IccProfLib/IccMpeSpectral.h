@@ -98,7 +98,7 @@ public:
   CIccMpeSpectralMatrix(const CIccMpeSpectralMatrix &ITPC);
   virtual ~CIccMpeSpectralMatrix();
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -207,7 +207,7 @@ public:
   CIccMpeSpectralCLUT(const CIccMpeSpectralCLUT &ITPC);
   virtual ~CIccMpeSpectralCLUT();
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -310,7 +310,7 @@ public:
   CIccMpeSpectralObserver(const CIccMpeSpectralObserver &ITPC);
   virtual ~CIccMpeSpectralObserver();
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

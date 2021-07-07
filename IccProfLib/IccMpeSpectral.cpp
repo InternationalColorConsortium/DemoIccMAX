@@ -307,38 +307,38 @@ bool CIccMpeSpectralMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Numbe
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeSpectralMatrix::Describe(std::string &sDescription)
+void CIccMpeSpectralMatrix::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[81];
   int i, j;
   icFloatNumber *data = m_pMatrix;
 
-  sprintf(buf, "BEGIN_%s %d %d \r\n", GetDescribeName(), m_nInputChannels, m_nOutputChannels);
+  sprintf(buf, "BEGIN_%s %d %d \n", GetDescribeName(), m_nInputChannels, m_nOutputChannels);
   sDescription += buf;
 
-  sprintf(buf, "RANGE %f %f %d\r\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "RANGE %f %f %d\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   sDescription += buf;
 
-  sDescription += "White\r\n";
+  sDescription += "White\n";
   for (j=0; j<(int)m_Range.steps; j++) {
     if (j)
       sDescription += " ";
     sprintf(buf, "%12.8lf", m_pWhite[j]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  sDescription += "BLACK_OFFSET\r\n";
+  sDescription += "BLACK_OFFSET\n";
   for (j=0; j<(int)m_Range.steps; j++) {
     if (j)
       sDescription += " ";
     sprintf(buf, "%12.8lf", m_pOffset[j]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 
   if (data) {
-    sDescription += "CHANNEL_DATA\r\n";
+    sDescription += "CHANNEL_DATA\n";
     for (j=0; j<m_nOutputChannels; j++) {
       for (i=0; i<(int)m_Range.steps; i++) {
         if (i)
@@ -346,12 +346,12 @@ void CIccMpeSpectralMatrix::Describe(std::string &sDescription)
         sprintf(buf, "%12.8lf", data[i]);
         sDescription += buf;
       }
-      sDescription += "\r\n";
+      sDescription += "\n";
       data += m_nInputChannels;
     }
   }
 
-  sprintf(buf, "END_%s\r\n", GetDescribeName());
+  sprintf(buf, "END_%s\n", GetDescribeName());
   sDescription += buf;
 }
 
@@ -525,7 +525,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Cannot have zero spectral range steps!\r\n";
+    sReport += " - Cannot have zero spectral range steps!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -535,7 +535,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Output Channels must be 3!\r\n";
+    sReport += " - Output Channels must be 3!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -545,7 +545,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty White data!\r\n";
+    sReport += " - Has Empty White data!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -555,7 +555,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty Matrix data!\r\n";
+    sReport += " - Has Empty Matrix data!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -565,7 +565,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty Matrix Constant data!\r\n";
+    sReport += " - Has Empty Matrix Constant data!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -575,7 +575,7 @@ icValidateStatus CIccMpeSpectralMatrix::Validate(std::string sigPath, std::strin
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has an invalid spectral range!\r\n";
+    sReport += " - Has an invalid spectral range!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -768,7 +768,7 @@ icValidateStatus CIccMpeInvEmissionMatrix::Validate(std::string sigPath, std::st
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Input Channels must be 3!\r\n";
+    sReport += " - Input Channels must be 3!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -968,10 +968,10 @@ void CIccMpeSpectralCLUT::SetData(CIccCLUT *pCLUT, icUInt16Number nStorageType,
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeSpectralCLUT::Describe(std::string &sDescription)
+void CIccMpeSpectralCLUT::Describe(std::string &sDescription, int verboseness)
 {
   if (m_pCLUT) {
-    m_pCLUT->DumpLut(sDescription, GetDescribeName(), icSigUnknownData, icSigUnknownData);
+    m_pCLUT->DumpLut(sDescription, GetDescribeName(), icSigUnknownData, icSigUnknownData, verboseness);
   }
 }
 
@@ -1302,7 +1302,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Invalid storageType value!\r\n";
+    sReport += " - Invalid storageType value!\n";
     return icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1312,7 +1312,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has No CLUT!\r\n";
+    sReport += " - Has No CLUT!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1322,7 +1322,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty White data!\r\n";
+    sReport += " - Has Empty White data!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1332,7 +1332,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Cannot have zero spectral range steps!\r\n";
+    sReport += " - Cannot have zero spectral range steps!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1342,7 +1342,7 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has an invalid spectral range!\r\n";
+    sReport += " - Has an invalid spectral range!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1738,27 +1738,27 @@ bool CIccMpeSpectralObserver::SetSize(icUInt16Number nInputChannels, icUInt16Num
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeSpectralObserver::Describe(std::string &sDescription)
+void CIccMpeSpectralObserver::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[81];
   int j;
 
-  sprintf(buf, "BEGIN_%s %d %d \r\n", GetDescribeName(), m_nInputChannels, m_nOutputChannels);
+  sprintf(buf, "BEGIN_%s %d %d \n", GetDescribeName(), m_nInputChannels, m_nOutputChannels);
   sDescription += buf;
 
-  sprintf(buf, "RANGE %f %f %d\r\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "RANGE %f %f %d\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   sDescription += buf;
 
-  sDescription += "White\r\n";
+  sDescription += "White\n";
   for (j=0; j<(int)m_Range.steps; j++) {
     if (j)
       sDescription += " ";
     sprintf(buf, "%12.8lf", m_pWhite[j]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  sprintf(buf, "END_%s\r\n", GetDescribeName());
+  sprintf(buf, "END_%s\n", GetDescribeName());
   sDescription += buf;
 }
 
@@ -1934,7 +1934,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Cannot have zero spectral range steps!\r\n";
+    sReport += " - Cannot have zero spectral range steps!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1944,7 +1944,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Output Channels must be 3!\r\n";
+    sReport += " - Output Channels must be 3!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1954,7 +1954,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty White data!\r\n";
+    sReport += " - Has Empty White data!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1965,7 +1965,7 @@ icValidateStatus CIccMpeSpectralObserver::Validate(std::string sigPath, std::str
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has an invalid spectral range!\r\n";
+    sReport += " - Has an invalid spectral range!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 

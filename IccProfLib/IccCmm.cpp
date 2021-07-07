@@ -2419,7 +2419,7 @@ icStatusCMM CIccPcsXform::Optimize()
   for (next = steps.begin(); next != steps.end(); next++) {
     next->ptr->dump(str);
   }
-  printf("PCS_Steps:\r\n%s", str.c_str());
+  printf("PCS_Steps:\n%s", str.c_str());
 #endif
 
   while (!done) {
@@ -4438,7 +4438,7 @@ void CIccPcsStepMpe::Apply(CIccApplyPcsStep *pApply, icFloatNumber *pDst, const 
 void CIccPcsStepMpe::dump(std::string &str) const
 {
   str += "\nCIccPcsStepMpe\n\n";
-  m_pMpe->Describe(str);
+  m_pMpe->Describe(str, 100); // TODO propogate verboseness 
 }
 
 

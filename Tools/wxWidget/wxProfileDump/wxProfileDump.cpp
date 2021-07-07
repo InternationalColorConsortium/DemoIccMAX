@@ -713,7 +713,7 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
   wxString theReport, theValidateStatus;
 
 	if (profilePath.IsEmpty()) {
-		theReport = "Invalid Profile Path\r\n";
+		theReport = "Invalid Profile Path\n";
 		nStat = (icValidateStatus)-1;
 	}
 	else {
@@ -726,7 +726,7 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
 		wxEndBusyCursor();
 
 		if (sReport.empty())
-			sReport = "There is nothing to report\r\n";
+			sReport = "There is nothing to report\n";
 
 		theReport = sReport.c_str();
 	}
@@ -917,7 +917,7 @@ MyRoundTripDialog::MyRoundTripDialog(wxWindow *pParent, const wxString& title, w
   wxString theReport;
 
   if (profilePath.IsEmpty()) {
-    theReport = "Invalid Profile Path\r\n";
+    theReport = "Invalid Profile Path\n";
   }
   else {
     bool bRelative = false;
@@ -969,7 +969,7 @@ MyRoundTripDialog::MyRoundTripDialog(wxWindow *pParent, const wxString& title, w
     wxEndBusyCursor();
 
     if (theReport.IsEmpty())
-      theReport = "There is nothing to report\r\n";
+      theReport = "There is nothing to report\n";
   }
 
   textReport->SetLabel(theReport);
@@ -1001,7 +1001,7 @@ wxDialog(pParent, wxID_ANY, _T("View Tag"), wxDefaultPosition, wxDefaultSize, wx
 	  sTagType += Fmt.GetTagTypeSigName(pTag->GetType());
 
 	  wxBeginBusyCursor();
-	  pTag->Describe(desc);
+	  pTag->Describe(desc, 100);
 	  wxEndBusyCursor();
   }
   else if (pIcc) {
@@ -1012,15 +1012,15 @@ wxDialog(pParent, wxID_ANY, _T("View Tag"), wxDefaultPosition, wxDefaultSize, wx
       std::string dump;
       icMemDump(dump, pIO->GetData(), pIO->GetLength());
       delete pIO;
-      desc = "Data contents of tag:\r\n\r\n";
+      desc = "Data contents of tag:\n\n";
       desc += dump;
     }
     else {
-      desc = "Invalid Tag Directory Entry!\r\n";
+      desc = "Invalid Tag Directory Entry!\n";
     }
   }
   else {
-    desc = "Invalid Tag Entry!\r\n";
+    desc = "Invalid Tag Entry!\n";
     sTagType = "***Invalid Tag***";
   }
 	

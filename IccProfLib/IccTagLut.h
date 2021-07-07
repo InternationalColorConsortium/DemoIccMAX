@@ -95,7 +95,7 @@ public:
   virtual ~CIccCurve() {}
 
   virtual void DumpLut(std::string &sDescription, const icChar *szName,
-    icColorSpaceSignature csSig, int nIndex) {}
+    icColorSpaceSignature csSig, int nIndex, int verboseness) {}
 
   virtual void Begin() {}
   virtual icFloatNumber Apply(icFloatNumber v) const { return v; }
@@ -136,9 +136,9 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigCurveType; }
   virtual const icChar *GetClassName() const { return "CIccTagCurve"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
   virtual void DumpLut(std::string &sDescription, const icChar *szName, 
-    icColorSpaceSignature csSig, int nIndex);
+    icColorSpaceSignature csSig, int nIndex, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -179,9 +179,9 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigParametricCurveType; }
   virtual const icChar *GetClassName() const { return "CIccTagParametricCurve"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
   virtual void DumpLut(std::string &sDescription, const icChar *szName,
-    icColorSpaceSignature csSig, int nIndex);
+    icColorSpaceSignature csSig, int nIndex, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -229,9 +229,9 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigSegmentedCurveType; }
   virtual const icChar *GetClassName() const { return "CIccTagSegmentedCurve"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
   virtual void DumpLut(std::string &sDescription, const icChar *szName, 
-    icColorSpaceSignature csSig, int nIndex);
+    icColorSpaceSignature csSig, int nIndex, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -264,7 +264,7 @@ public:
   CIccMatrix &operator=(const CIccMatrix &MatrixClass);
   virtual ~CIccMatrix() {}
 
-  void DumpLut(std::string &sDescription, const icChar *szName);
+  void DumpLut(std::string &sDescription, const icChar *szName, int verboseness);
 
   icFloatNumber m_e[12]; //e = element
   bool m_bUseConstants;
@@ -317,7 +317,7 @@ public:
 
   void DumpLut(std::string  &sDescription, const icChar *szName,
                icColorSpaceSignature csInput, icColorSpaceSignature csOutput,
-               bool bUseLegacy=false);
+               int verboseness, bool bUseLegacy=false);
 
   icFloatNumber& operator[](int index) { return m_pData[index]; }
   icFloatNumber* GetData(int index) { return &m_pData[index]; }
@@ -426,7 +426,7 @@ public:
   icUInt8Number InputChannels() const { return m_nInput; }
   icUInt8Number OutputChannels() const { return m_nOutput; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual void SetColorSpaces(icColorSpaceSignature csInput, icColorSpaceSignature csOutput);
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL);
@@ -598,7 +598,7 @@ public:
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   bool	setVertex(icInt32Number vertexNumber,icFloatNumber* pcsCoords,icFloatNumber* deviceCoords = NULL);
   icFloatNumber*	getVertexPCSCoord(icInt32Number vertexNumber);

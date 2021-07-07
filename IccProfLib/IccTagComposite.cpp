@@ -83,7 +83,7 @@
 #include "IccStructFactory.h"
 #include "IccArrayFactory.h"
 
-void IIccStruct::Describe(std::string &sDescription) const
+void IIccStruct::Describe(std::string &sDescription, int verboseness) const
 {
   if (m_pTagStruct) {
     char buf[256];
@@ -92,18 +92,18 @@ void IIccStruct::Describe(std::string &sDescription) const
     sprintf(buf, "BEGIN UNKNOWN_TAG_STRUCT ");
     sDescription += buf;
     sDescription += info.GetStructSigName(m_pTagStruct->GetTagStructType());
-    sDescription += "\r\n\r\n";
+    sDescription += "\n\n";
 
     TagEntryList::iterator i;
     TagEntryList *pList = m_pTagStruct->GetElemList();
     for (i=pList->begin(); i!=pList->end(); i++) {
-      i->pTag->Describe(sDescription);
+      i->pTag->Describe(sDescription, verboseness);
     }
 
-    sDescription += "\r\n";
-    sprintf(buf, "END TAG_STRUCT\r\n");
+    sDescription += "\n";
+    sprintf(buf, "END TAG_STRUCT\n");
     sDescription += buf;
-    sDescription += "\r\n";
+    sDescription += "\n";
   }
 }
 
@@ -284,31 +284,31 @@ CIccTagStruct* CIccTagStruct::ParseMem(icUInt8Number *pMem, icUInt32Number size)
  * 
  * Return: 
  ******************************************************************************/
-void CIccTagStruct::Describe(std::string &sDescription)
+void CIccTagStruct::Describe(std::string &sDescription, int verboseness)
 {
   std::string name;
   CIccStructCreator::GetStructSigName(name, m_sigStructType);
 
   sDescription += "BEGIN STRUCT \"";
-  sDescription += name + "\"\r\n";
+  sDescription += name + "\"\n";
 
   if (m_pStruct) {
-    m_pStruct->Describe(sDescription);
+    m_pStruct->Describe(sDescription, verboseness);
   }
   else {
     IIccStruct *pStruct = CIccStructCreator::CreateStruct(m_sigStructType, this);
     if (pStruct) {
-      pStruct->Describe(sDescription);
+      pStruct->Describe(sDescription, verboseness);
       delete pStruct;
     }
     else {
       CIccStructUnknown structHandler(this);
 
-      structHandler.Describe(sDescription);
+      structHandler.Describe(sDescription, verboseness);
     }
   }
   sDescription += "END STRUCT \"";
-  sDescription += name + "\"\r\n";
+  sDescription += name + "\"\n";
 }
 
 
@@ -503,7 +503,7 @@ icValidateStatus CIccTagStruct::Validate(std::string sigPath, std::string &sRepo
   if (!AreElemsUnique()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There are duplicate tags.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1112,7 +1112,7 @@ bool CIccTagArray::AreAllOfType(icTagTypeSignature sigTagType)
 * 
 * Return: 
 ******************************************************************************/
-void CIccTagArray::Describe(std::string &sDescription)
+void CIccTagArray::Describe(std::string &sDescription, int verboseness)
 {
   std::string name;
   icChar buf[128];
@@ -1123,27 +1123,27 @@ void CIccTagArray::Describe(std::string &sDescription)
 
   sDescription += "BEGIN TAG_ARRAY \"";
   sDescription += name;
-  sDescription += "\"\r\n\r\n";
+  sDescription += "\"\n\n";
 
   icUInt32Number i;
 
   for (i=0; i<m_nSize; i++) {
     if (i)
-      sDescription += "\r\n";
-    sprintf(buf, "BEGIN INDEX[%d]\r\n", i);
+      sDescription += "\n";
+    sprintf(buf, "BEGIN INDEX[%d]\n", i);
     sDescription +=  buf;
     
     if (m_TagVals[i].ptr) {
-      m_TagVals[i].ptr->Describe(sDescription);
+      m_TagVals[i].ptr->Describe(sDescription, verboseness);
     }
-    sprintf(buf, "END INDEX[%d]\r\n", i);
+    sprintf(buf, "END INDEX[%d]\n", i);
     sDescription += buf;
   }
 
-  sDescription += "\r\n";
+  sDescription += "\n";
   sDescription += "END TAG_ARRAY \"";
   sDescription += name;
-  sDescription += "\"\r\n";
+  sDescription += "\"\n";
 }
 
 
@@ -1414,7 +1414,7 @@ icValidateStatus CIccTagArray::Validate(std::string sigPath, std::string &sRepor
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - Number of material channel names does not match MCS in header.\r\n";
+      sReport += " - Number of material channel names does not match MCS in header.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     icUInt32Number i;

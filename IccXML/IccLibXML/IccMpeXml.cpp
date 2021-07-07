@@ -1901,7 +1901,7 @@ bool CIccMpeXmlCalculator::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
     xml += blanks2 + "<MainFunction>\n";
 
-    m_calcFunc->Describe(desc, (int)blanks2.size()+2);
+    m_calcFunc->Describe(desc, 100, (int)blanks2.size()+2);
     xml += desc;
 
     xml+= blanks2 + "</MainFunction>\n";
@@ -2765,7 +2765,7 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
           parseStr += "Unable to parse Main Calculator Function from \"";
       }
       parseStr += buf;
-      parseStr += "\"\r\n";
+      parseStr += "\"\n";
       return false;
     }
   }

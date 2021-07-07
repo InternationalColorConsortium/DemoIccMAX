@@ -315,48 +315,49 @@ bool CIccTagCurve::Write(CIccIO *pIO)
 *  sDescription - string to concatenate tag dump to
 *****************************************************************************
 */
-void CIccTagCurve::Describe(std::string &sDescription)
+void CIccTagCurve::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[128], *ptr;
 
   if (!m_nSize) {
-    sprintf(buf, "BEGIN_CURVE In_Out\r\n");
+    sprintf(buf, "BEGIN_CURVE In_Out\n");
     sDescription += buf;
-    sDescription += "Y = X\r\n";
+    sDescription += "Y = X\n";
   }
   else if (m_nSize==1) {
     icFloatNumber dGamma = (icFloatNumber)(m_Curve[0] * 256.0);
-    sprintf(buf, "BEGIN_CURVE In_Out\r\n");
+    sprintf(buf, "BEGIN_CURVE In_Out\n");
     sDescription += buf;
-    sprintf(buf, "Y = X ^ %.4lf\r\n", dGamma);
+    sprintf(buf, "Y = X ^ %.4lf\n", dGamma);
     sDescription += buf;
   }
   else {
     int i;
 
-    sprintf(buf, "BEGIN_LUT In_Out 1 1\r\n");
+    sprintf(buf, "BEGIN_LUT In_Out 1 1\n");
     sDescription += buf;
-    sDescription += "IN OUT\r\n";
 
-    for (i=0; i<(int)m_nSize; i++) {
-      ptr = buf;
+    if (verboseness > 75) {
+      sDescription += "IN OUT\n";
 
-      icColorValue(buf, (icFloatNumber)i/(m_nSize-1), icSigMCH1Data, 1);
-      ptr += strlen(buf);
+      for (i=0; i<(int)m_nSize; i++) {
+        ptr = buf;
 
-      strcpy(ptr, " ");
-      ptr ++;
+        icColorValue(buf, (icFloatNumber)i/(m_nSize-1), icSigMCH1Data, 1);
+        ptr += strlen(buf);
 
-      icColorValue(ptr, m_Curve[i], icSigMCH1Data, 1);
+        strcpy(ptr, " ");
+        ptr ++;
 
-      ptr += strlen(ptr);
+        icColorValue(ptr, m_Curve[i], icSigMCH1Data, 1);
 
-      strcpy(ptr, "\r\n");
+        ptr += strlen(ptr);
 
-      sDescription += buf;
+        strcpy(ptr, "\n");
+       sDescription += buf;
+      }
     }
   }
-  sDescription += "\r\n";
 }
 
 
@@ -375,50 +376,52 @@ void CIccTagCurve::Describe(std::string &sDescription)
 *****************************************************************************
 */
 void CIccTagCurve::DumpLut(std::string &sDescription, const icChar *szName,
-  icColorSpaceSignature csSig, int nIndex)
+  icColorSpaceSignature csSig, int nIndex, int verboseness)
 {
   icChar buf[128], *ptr;
 
   if (!m_nSize) {
-    sprintf(buf, "BEGIN_CURVE %s\r\n", szName);
+    sprintf(buf, "BEGIN_CURVE %s\n", szName);
     sDescription += buf;
-    sDescription += "Y = X\r\n";
+    sDescription += "Y = X\n";
   }
   else if (m_nSize==1) {
     icFloatNumber dGamma = (icFloatNumber)(m_Curve[0] * 256.0);
-    sprintf(buf, "BEGIN_CURVE %s\r\n", szName);
+    sprintf(buf, "BEGIN_CURVE %s\n", szName);
     sDescription += buf;
-    sprintf(buf, "Y = X ^ %.4lf\r\n", dGamma);
+    sprintf(buf, "Y = X ^ %.4lf\n", dGamma);
     sDescription += buf;
   }
   else {
     int i;
 
-    sprintf(buf, "BEGIN_LUT %s 1 1\r\n", szName);
-    sDescription += buf;
-    sDescription += "IN OUT\r\n";
+    sprintf(buf, "BEGIN_LUT %s 1 1\n", szName);
 
-    sDescription.reserve(sDescription.size() + m_nSize * 20);
-
-    for (i=0; i<(int)m_nSize; i++) {
-      ptr = buf;
-
-      icColorValue(buf, (icFloatNumber)i/(m_nSize-1), csSig, nIndex);
-      ptr += strlen(buf);
-
-      strcpy(ptr, " ");
-      ptr ++;
-
-      icColorValue(ptr, m_Curve[i], csSig, nIndex);
-
-      ptr += strlen(ptr);
-
-      strcpy(ptr, "\r\n");
-
+    if (verboseness > 75) {
       sDescription += buf;
+      sDescription += "IN OUT\n";
+
+      sDescription.reserve(sDescription.size() + m_nSize * 20);
+
+      for (i=0; i<(int)m_nSize; i++) {
+        ptr = buf;
+
+        icColorValue(buf, (icFloatNumber)i/(m_nSize-1), csSig, nIndex);
+        ptr += strlen(buf);
+
+        strcpy(ptr, " ");
+        ptr ++;
+
+        icColorValue(ptr, m_Curve[i], csSig, nIndex);
+
+        ptr += strlen(ptr);
+
+        strcpy(ptr, "\n");
+
+        sDescription += buf;
+      }
     }
   }
-  sDescription += "\r\n";
 }
 
 
@@ -621,7 +624,7 @@ icValidateStatus CIccTagCurve::Validate(std::string sigPath, std::string &sRepor
         if (m_Curve[0]>0.0 || m_Curve[m_nSize-1]<1.0) {
           sReport += icMsgValidateWarning;
           sReport += sSigPathName;
-          sReport += " - Curve cannot be accurately inverted.\r\n";
+          sReport += " - Curve cannot be accurately inverted.\n";
           rv = icMaxStatus(rv, icValidateWarning);
         }
       }
@@ -826,36 +829,36 @@ bool CIccTagParametricCurve::Write(CIccIO *pIO)
 *  sDescription - string to concatenate tag dump to
 *****************************************************************************
 */
-void CIccTagParametricCurve::Describe(std::string &sDescription)
+void CIccTagParametricCurve::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "FunctionType: %04Xh\r\n", m_nFunctionType);
+  sprintf(buf, "FunctionType: %04Xh\n", m_nFunctionType);
   sDescription += buf;
 
   switch(m_nFunctionType) {
 case 0x0000:
-  sprintf(buf, "Y = X ^ %.4lf\r\n", m_dParam[0]);
+  sprintf(buf, "Y = X ^ %.4lf\n", m_dParam[0]);
   sDescription += buf;
   return;
 
 case 0x0001:
-  sprintf(buf, "Y = 0 when (X < %.4lf / %.4lf)\r\n",
+  sprintf(buf, "Y = 0 when (X < %.4lf / %.4lf)\n",
     -m_dParam[2], m_dParam[1]);
   sDescription += buf;
 
-  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf   when (X >= %.4lf / %.4lf)\r\n",
+  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf   when (X >= %.4lf / %.4lf)\n",
     m_dParam[1], m_dParam[2], m_dParam[0],
     m_dParam[2], m_dParam[1]);
   sDescription += buf;
   return;
 
 case 0x0002:
-  sprintf(buf, "Y = %.4lf   when (X < %.4lf / %.4lf)\r\n", m_dParam[3],
+  sprintf(buf, "Y = %.4lf   when (X < %.4lf / %.4lf)\n", m_dParam[3],
     -m_dParam[2], m_dParam[1]);
   sDescription += buf;
 
-  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf + %.4lf   when (X >= %.4lf / %.4lf)\r\n",
+  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf + %.4lf   when (X >= %.4lf / %.4lf)\n",
     m_dParam[1], m_dParam[2], m_dParam[0],
     m_dParam[3],
     -m_dParam[2], m_dParam[1]);
@@ -863,22 +866,22 @@ case 0x0002:
   return;
 
 case 0x0003:
-  sprintf(buf, "Y = %lf * X   when (X < %.4lf)\r\n",
+  sprintf(buf, "Y = %lf * X   when (X < %.4lf)\n",
     m_dParam[3], m_dParam[4]);
   sDescription += buf;
 
-  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf   when (X >= %.4lf)\r\n",
+  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf   when (X >= %.4lf)\n",
     m_dParam[1], m_dParam[2], m_dParam[0],
     m_dParam[4]);
   sDescription += buf;
   return;
 
 case 0x0004:
-  sprintf(buf, "Y = %lf * X + %.4lf  when (X < %.4lf)\r\n",
+  sprintf(buf, "Y = %lf * X + %.4lf  when (X < %.4lf)\n",
     m_dParam[3], m_dParam[6], m_dParam[4]);
   sDescription += buf;
 
-  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf + %.4lf  when (X >= %.4lf)\r\n",
+  sprintf(buf, "Y = (%.4lf * X + %.4lf) ^ %.4lf + %.4lf  when (X >= %.4lf)\n",
     m_dParam[1], m_dParam[2], m_dParam[0],
     m_dParam[5], m_dParam[4]);
   sDescription += buf;
@@ -886,11 +889,11 @@ case 0x0004:
 
 default:
   int i;
-  sprintf(buf, "Unknown Function with %d parameters:\r\n", m_nNumParam);
+  sprintf(buf, "Unknown Function with %d parameters:\n", m_nNumParam);
   sDescription += buf;
 
   for (i=0; i<m_nNumParam; i++) {
-    sprintf(buf, "Param[%d] = %.4lf\r\n", i, m_dParam[i]);
+    sprintf(buf, "Param[%d] = %.4lf\n", i, m_dParam[i]);
     sDescription += buf;
   }
   }
@@ -911,14 +914,13 @@ default:
 *****************************************************************************
 */
 void CIccTagParametricCurve::DumpLut(std::string &sDescription, const icChar *szName,
-  icColorSpaceSignature csSig, int nIndex)
+  icColorSpaceSignature csSig, int nIndex, int verboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN_CURVE %s\r\n", szName);
+  sprintf(buf, "BEGIN_CURVE %s\n", szName);
   sDescription += buf;
-  Describe(sDescription);
-  sDescription += "\r\n";
+  Describe(sDescription, verboseness);
 }
 
 
@@ -1095,7 +1097,7 @@ icValidateStatus CIccTagParametricCurve::Validate(std::string sigPath, std::stri
   if (m_nReserved2!=0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Reserved Value must be zero.\r\n";
+    sReport += " - Reserved Value must be zero.\n";
 
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
@@ -1105,7 +1107,7 @@ case 0x0000:
   if (m_nNumParam!=1) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Number of parameters inconsistent with function type.\r\n";
+    sReport += " - Number of parameters inconsistent with function type.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   break;
@@ -1114,7 +1116,7 @@ case 0x0001:
   if (m_nNumParam!=3) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Number of parameters inconsistent with function type.\r\n";
+    sReport += " - Number of parameters inconsistent with function type.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   break;
@@ -1123,7 +1125,7 @@ case 0x0002:
   if (m_nNumParam!=4) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Number of parameters inconsistent with function type.\r\n";
+    sReport += " - Number of parameters inconsistent with function type.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   break;
@@ -1132,7 +1134,7 @@ case 0x0003:
   if (m_nNumParam!=5) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Number of parameters inconsistent with function type.\r\n";
+    sReport += " - Number of parameters inconsistent with function type.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   break;
@@ -1141,7 +1143,7 @@ case 0x0004:
   if (m_nNumParam!=7) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Number of parameters inconsistent with function type.\r\n";
+    sReport += " - Number of parameters inconsistent with function type.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   break;
@@ -1149,7 +1151,7 @@ case 0x0004:
 default:
   sReport += icMsgValidateCriticalError;
   sReport += sSigPathName;
-  sReport += " - Unknown function type.\r\n";
+  sReport += " - Unknown function type.\n";
   rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -1159,7 +1161,7 @@ default:
     if (lval>0.0 || uval<1.0) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Curve cannot be accurately inverted.\r\n";
+      sReport += " - Curve cannot be accurately inverted.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
   }
@@ -1239,10 +1241,10 @@ CIccTagSegmentedCurve::~CIccTagSegmentedCurve()
 * 
 *****************************************************************************
 */
-void CIccTagSegmentedCurve::Describe(std::string &sDescription)
+void CIccTagSegmentedCurve::Describe(std::string &sDescription, int verboseness)
 {
   if (m_pCurve) {
-    m_pCurve->Describe(sDescription);
+    m_pCurve->Describe(sDescription, verboseness);
   }
   else {
     sDescription += "TagSegmentedCurve is undefined\n";
@@ -1258,15 +1260,13 @@ void CIccTagSegmentedCurve::Describe(std::string &sDescription)
 *****************************************************************************
 */
 void CIccTagSegmentedCurve::DumpLut(std::string &sDescription, const icChar *szName, 
-                     icColorSpaceSignature csSig, int nIndex)
+                     icColorSpaceSignature csSig, int nIndex, int verboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN_SEGMENTED_CURVE %s\r\n", szName);
+  sprintf(buf, "BEGIN_SEGMENTED_CURVE %s\n", szName);
   sDescription += buf;
-  Describe(sDescription);
-  sDescription += "\r\n";
-
+  Describe(sDescription, verboseness);
 }
 
 /**
@@ -1363,7 +1363,7 @@ icFloatNumber CIccTagSegmentedCurve::Apply(icFloatNumber v) const
 icValidateStatus CIccTagSegmentedCurve::Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile/*=NULL*/) const
 {
   if (!m_pCurve) {
-    sReport += "Invalid Segmented Curve Data!\r\n";
+    sReport += "Invalid Segmented Curve Data!\n";
 
     return icValidateCriticalError;
   }
@@ -1462,36 +1462,35 @@ CIccMatrix &CIccMatrix::operator=(const CIccMatrix &MatrixClass)
 *  szName = name of the curve to be printed
 *****************************************************************************
 */
-void CIccMatrix::DumpLut(std::string &sDescription, const icChar *szName)
+void CIccMatrix::DumpLut(std::string &sDescription, const icChar *szName, int verboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN_MATRIX %s\r\n", szName);
+  sprintf(buf, "BEGIN_MATRIX %s\n", szName);
   sDescription += buf;
 
   if (!m_bUseConstants) {
-    sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n",
+    sprintf(buf, "%8.4lf %8.4lf %8.4lf\n",
       m_e[0], m_e[1], m_e[2]);
     sDescription += buf;
-    sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n",
+    sprintf(buf, "%8.4lf %8.4lf %8.4lf\n",
       m_e[3], m_e[4], m_e[5]);
     sDescription += buf;
-    sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n",
+    sprintf(buf, "%8.4lf %8.4lf %8.4lf\n",
       m_e[6], m_e[7], m_e[8]);
     sDescription += buf;
   }
   else {
-    sprintf(buf, "%8.4lf %8.4lf %8.4lf  +  %8.4lf\r\n",
+    sprintf(buf, "%8.4lf %8.4lf %8.4lf  +  %8.4lf\n",
       m_e[0], m_e[1], m_e[2], m_e[9]);
     sDescription += buf;
-    sprintf(buf, "%8.4lf %8.4lf %8.4lf  +  %8.4lf\r\n",
+    sprintf(buf, "%8.4lf %8.4lf %8.4lf  +  %8.4lf\n",
       m_e[3], m_e[4], m_e[5], m_e[10]);
     sDescription += buf;
-    sprintf(buf, "%8.4lf %8.4lf %8.4lf  +  %8.4lf\r\n",
+    sprintf(buf, "%8.4lf %8.4lf %8.4lf  +  %8.4lf\n",
       m_e[6], m_e[7], m_e[8], m_e[11]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
 }
 
 /**
@@ -1589,7 +1588,7 @@ icValidateStatus CIccMatrix::Validate(std::string sigPath, std::string &sReport,
       if (m_e[0]!=1.0 || m_e[4]!=1.0 || m_e[9]!=1.0 || sum!=3.0) {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sReport += " - Matrix must be identity.\r\n";
+        sReport += " - Matrix must be identity.\n";
         rv = icValidateNonCompliant;
       }
     }
@@ -1981,7 +1980,7 @@ void CIccCLUT::Iterate(std::string &sDescription, icUInt8Number nIndex, icUInt32
 
       ptr += sprintf(ptr, " %s", m_pVal);
     }
-    strcpy(ptr, "\r\n");
+    strcpy(ptr, "\n");
     sDescription += (const icChar*)m_pOutText;
 
   }
@@ -2085,57 +2084,61 @@ void CIccCLUT::SubIterate(IIccCLUTExec* pExec, icUInt8Number nIndex, icUInt32Num
  *  szName = name of the LUT to be printed,
  *  csInput = color space signature of the input data,
  *  csOutput = color space signature of the output data
+ *  verboseness = how verbose the output is (bigger = more verbose)
  *****************************************************************************
  */
 void CIccCLUT::DumpLut(std::string  &sDescription, const icChar *szName,
                        icColorSpaceSignature csInput, icColorSpaceSignature csOutput,
-                       bool bUseLegacy)
+                       int verboseness, bool bUseLegacy)
 {
   icChar szOutText[200000], szColor[40];
-  int i, len;
+  int i;
 
-  sprintf(szOutText, "BEGIN_LUT %s %d %d\r\n", szName, m_nInput, m_nOutput);
+  sprintf(szOutText, "BEGIN_LUT %s %d %d\n", szName, m_nInput, m_nOutput);
   sDescription += szOutText;
 
-  for (i=0; i<m_nInput; i++) {
-    icColorIndexName(szColor, csInput, i, m_nInput, "In");
-    sprintf(szOutText, " %s=%d", szColor, m_GridPoints[i]);
-    sDescription += szOutText;
+  if (verboseness > 75) {
+
+    for (i=0; i<m_nInput; i++) {
+      icColorIndexName(szColor, csInput, i, m_nInput, "In");
+      sprintf(szOutText, " %s=%d", szColor, m_GridPoints[i]);
+      sDescription += szOutText;
+    }
+
+    sDescription += "  ";
+
+    for (i=0; i<m_nOutput; i++) {
+      icColorIndexName(szColor, csOutput, i, m_nOutput, "Out");
+      sprintf(szOutText, " %s", szColor);
+      sDescription += szOutText;
+    }
+
+    sDescription += "\n";
+
+    if (verboseness > 75) {
+      size_t len = 0;
+      for (i=0; i<m_nInput; i++) {
+        icColorValue(szColor, 1.0, csInput, i, bUseLegacy);
+        len += strlen(szColor);
+      }
+      for (i=0; i<m_nOutput; i++) {
+        icColorValue(szColor, 1.0, csOutput, i, bUseLegacy);
+        len += strlen(szColor);
+      }
+      len += m_nInput + m_nOutput + 6;
+
+      sDescription.reserve(sDescription.size() + NumPoints()*len);
+
+      //Initialize iteration member variables
+      m_csInput = csInput;
+      m_csOutput = csOutput;
+      m_pOutText = szOutText;
+      m_pVal = szColor;
+      memset(m_GridAdr, 0, 16);
+
+      Iterate(sDescription, 0, 0, bUseLegacy);
+    }
   }
-
-  sDescription += "  ";
-
-  for (i=0; i<m_nOutput; i++) {
-    icColorIndexName(szColor, csOutput, i, m_nOutput, "Out");
-    sprintf(szOutText, " %s", szColor);
-    sDescription += szOutText;
-  }
-
-  sDescription += "\r\n";
-
-  len = 0;
-  for (i=0; i<m_nInput; i++) {
-    icColorValue(szColor, 1.0, csInput, i, bUseLegacy);
-    len+= (int)strlen(szColor);
-  }
-  for (i=0; i<m_nOutput; i++) {
-    icColorValue(szColor, 1.0, csOutput, i, bUseLegacy);
-    len+= (int)strlen(szColor);
-  }
-  len += m_nInput + m_nOutput + 6;
-
-  sDescription.reserve(sDescription.size() + NumPoints()*len);
-
-  //Initialize iteration member variables
-  m_csInput = csInput;
-  m_csOutput = csOutput;
-  m_pOutText = szOutText;
-  m_pVal = szColor;
-  memset(m_GridAdr, 0, 16);
-
-  Iterate(sDescription, 0, 0, bUseLegacy);
-  
-  sDescription += "\r\n";
 }
 
 
@@ -3020,7 +3023,7 @@ icValidateStatus CIccCLUT::Validate(std::string sigPath, std::string &sReport, c
   if (m_nReserved2[0]!=0 || m_nReserved2[1]!=0 || m_nReserved2[2]!=0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Reserved Value must be zero.\r\n";
+    sReport += " - Reserved Value must be zero.\n";
 
     rv = icValidateNonCompliant;
   }
@@ -3031,7 +3034,7 @@ icValidateStatus CIccCLUT::Validate(std::string sigPath, std::string &sReport, c
       if (m_GridPoints[i]<2) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sprintf(temp, " - CLUT: At least 2 grid points should be present in dimension %u.\r\n",i );
+        sprintf(temp, " - CLUT: At least 2 grid points should be present in dimension %u.\n",i );
         sReport += temp;
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
@@ -3356,7 +3359,7 @@ void CIccMBB::SetColorSpaces(icColorSpaceSignature csInput, icColorSpaceSignatur
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccMBB::Describe(std::string &sDescription)
+void CIccMBB::Describe(std::string &sDescription, int verboseness)
 {
   int i;
   icChar buf[128], color[40];
@@ -3367,12 +3370,12 @@ void CIccMBB::Describe(std::string &sDescription)
       for (i=0; i<m_nInput; i++) {
         icColorIndexName(color, m_csInput, i, m_nInput, "");
         sprintf(buf, "B_Curve_%s", color);
-        m_CurvesB[i]->DumpLut(sDescription, buf, m_csInput, i);
+        m_CurvesB[i]->DumpLut(sDescription, buf, m_csInput, i, verboseness);
       }
     }
 
     if (m_Matrix)
-      m_Matrix->DumpLut(sDescription, "Matrix");
+      m_Matrix->DumpLut(sDescription, "Matrix", verboseness);
 
     if (m_CurvesM) {
       for (i=0; i<m_nInput; i++) {
@@ -3381,18 +3384,18 @@ void CIccMBB::Describe(std::string &sDescription)
           sprintf(buf, "M_Curve_%s", color);
         else 
           sprintf(buf, "B_Curve_%s", color);
-        m_CurvesM[i]->DumpLut(sDescription, buf, m_csInput, i);
+        m_CurvesM[i]->DumpLut(sDescription, buf, m_csInput, i, verboseness);
       }
     }
 
     if (m_CLUT)
-      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, GetType()==icSigLut16Type);
+      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, GetType()==icSigLut16Type, verboseness);
 
     if (m_CurvesA) {
       for (i=0; i<m_nOutput; i++) {
         icColorIndexName(color, m_csOutput, i, m_nOutput, "");
         sprintf(buf, "A_Curve_%s", color);
-        m_CurvesA[i]->DumpLut(sDescription, buf, m_csOutput, i);
+        m_CurvesA[i]->DumpLut(sDescription, buf, m_csOutput, i, verboseness);
       }
     }
   }
@@ -3401,29 +3404,29 @@ void CIccMBB::Describe(std::string &sDescription)
       for (i=0; i<m_nInput; i++) {
         icColorIndexName(color, m_csInput, i, m_nInput, "");
         sprintf(buf, "A_Curve_%s", color);
-        m_CurvesA[i]->DumpLut(sDescription, buf, m_csInput, i);
+        m_CurvesA[i]->DumpLut(sDescription, buf, m_csInput, i, verboseness);
       }
     }
 
     if (m_CLUT)
-      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput);
+      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, verboseness);
 
     if (m_CurvesM && this->GetType()!=icSigLut8Type) {
       for (i=0; i<m_nOutput; i++) {
         icColorIndexName(color, m_csOutput, i, m_nOutput, "");
         sprintf(buf, "M_Curve_%s", color);
-        m_CurvesM[i]->DumpLut(sDescription, buf, m_csOutput, i);
+        m_CurvesM[i]->DumpLut(sDescription, buf, m_csOutput, i, verboseness);
       }
     }
 
     if (m_Matrix)
-      m_Matrix->DumpLut(sDescription, "Matrix");
+      m_Matrix->DumpLut(sDescription, "Matrix", verboseness);
 
     if (m_CurvesB) {
       for (i=0; i<m_nOutput; i++) {
         icColorIndexName(color, m_csOutput, i, m_nOutput, "");
         sprintf(buf, "B_Curve_%s", color);
-        m_CurvesB[i]->DumpLut(sDescription, buf, m_csOutput, i);
+        m_CurvesB[i]->DumpLut(sDescription, buf, m_csOutput, i, verboseness);
       }
     }
   }
@@ -3455,7 +3458,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
   if (!pProfile) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
   }
@@ -3472,7 +3475,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
       if (m_nInput!=nInput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of input channels.\r\n";
+        sReport += " - Incorrect number of input channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -3480,7 +3483,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
       if (m_nOutput!=nOutput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of output channels.\r\n";
+        sReport += " - Incorrect number of output channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -3495,7 +3498,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
       if (m_nInput!=nInput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of input channels.\r\n";
+        sReport += " - Incorrect number of input channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -3503,7 +3506,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
       if (m_nOutput!=nOutput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of output channels.\r\n";
+        sReport += " - Incorrect number of output channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -3515,7 +3518,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
       if (m_nInput!=nInput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of input channels.\r\n";
+        sReport += " - Incorrect number of input channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -3523,7 +3526,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
       if (m_nOutput!=nOutput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of output channels.\r\n";
+        sReport += " - Incorrect number of output channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -3541,7 +3544,7 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
     if (!m_CLUT) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - CLUT must be present.\r\n";
+      sReport += " - CLUT must be present.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);          
     }
   }
@@ -4113,7 +4116,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of B-curves.\r\n";
+            sReport += " - Incorrect number of B-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4127,7 +4130,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of M-curves.\r\n";
+            sReport += " - Incorrect number of M-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4137,7 +4140,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
         if (!m_CLUT) {
           sReport += icMsgValidateNonCompliant;
           sReport += sSigPathName;
-          sReport += " - CLUT must be present if using A-curves.\r\n";
+          sReport += " - CLUT must be present if using A-curves.\n";
 
           rv = icMaxStatus(rv, icValidateNonCompliant);
         }
@@ -4149,7 +4152,7 @@ icValidateStatus CIccTagLutAtoB::Validate(std::string sigPath, std::string &sRep
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of A-curves.\r\n";
+            sReport += " - Incorrect number of A-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4242,7 +4245,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
   if (!pProfile) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
     return rv;
   }
@@ -4266,7 +4269,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
       if (m_nOutput!=nOutput) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of output channels.\r\n";
+        sReport += " - Incorrect number of output channels.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
 
@@ -4279,7 +4282,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of B-curves.\r\n";
+            sReport += " - Incorrect number of B-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4293,7 +4296,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of M-curves.\r\n";
+            sReport += " - Incorrect number of M-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4303,7 +4306,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
         if (!m_CLUT) {
           sReport += icMsgValidateNonCompliant;
           sReport += sSigPathName;
-          sReport += " - CLUT must be present if using A-curves.\r\n";
+          sReport += " - CLUT must be present if using A-curves.\n";
 
           rv = icMaxStatus(rv, icValidateNonCompliant);
         }
@@ -4315,7 +4318,7 @@ icValidateStatus CIccTagLutBtoA::Validate(std::string sigPath, std::string &sRep
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of A-curves.\r\n";
+            sReport += " - Incorrect number of A-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4709,7 +4712,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
               if (pTagCurve->GetSize()==1) {
                 sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
-                sReport += " - lut8Tags do not support single entry gamma curves.\r\n";
+                sReport += " - lut8Tags do not support single entry gamma curves.\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
               }
             }
@@ -4717,7 +4720,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of B-curves.\r\n";
+            sReport += " - Incorrect number of B-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -4734,7 +4737,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
         if (m_XYZMatrix[0]!=1.0 || m_XYZMatrix[4]!=1.0 || m_XYZMatrix[8]!=1.0 || sum!=3.0) {
           sReport += icMsgValidateWarning;
           sReport += sSigPathName;
-          sReport += " - Matrix must be identity.\r\n";
+          sReport += " - Matrix must be identity.\n";
           rv = icMaxStatus(rv, icValidateWarning);
         }
       }
@@ -4749,7 +4752,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
               if (pTagCurve->GetSize()==1) {
                 sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
-                sReport += " - lut8Tags do not support single entry gamma curves.\r\n";
+                sReport += " - lut8Tags do not support single entry gamma curves.\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
               }
             }
@@ -4757,7 +4760,7 @@ icValidateStatus CIccTagLut8::Validate(std::string sigPath, std::string &sReport
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of A-curves.\r\n";
+            sReport += " - Incorrect number of A-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -5133,7 +5136,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
               if (pTagCurve->GetSize()==1) {
                 sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
-                sReport += " - lut16Tags do not support single entry gamma curves.\r\n";
+                sReport += " - lut16Tags do not support single entry gamma curves.\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
               }
             }
@@ -5141,7 +5144,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of B-curves.\r\n";
+            sReport += " - Incorrect number of B-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -5158,7 +5161,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
         if (m_XYZMatrix[0]!=1.0 || m_XYZMatrix[4]!=1.0 || m_XYZMatrix[8]!=1.0 || sum!=3.0) {
           sReport += icMsgValidateWarning;
           sReport += sSigPathName;
-          sReport += " - Matrix must be identity.\r\n";
+          sReport += " - Matrix must be identity.\n";
           rv = icMaxStatus(rv, icValidateWarning);
         }
       }
@@ -5173,7 +5176,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
               if (pTagCurve->GetSize()==1) {
                 sReport += icMsgValidateCriticalError;
                 sReport += sSigPathName;
-                sReport += " - lut16Tags do not support single entry gamma curves.\r\n";
+                sReport += " - lut16Tags do not support single entry gamma curves.\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
               }
             }
@@ -5181,7 +5184,7 @@ icValidateStatus CIccTagLut16::Validate(std::string sigPath, std::string &sRepor
           else {
             sReport += icMsgValidateCriticalError;
             sReport += sSigPathName;
-            sReport += " - Incorrect number of A-curves.\r\n";
+            sReport += " - Incorrect number of A-curves.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -5517,48 +5520,49 @@ bool CIccTagGamutBoundaryDesc::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */	
-void CIccTagGamutBoundaryDesc::Describe(std::string &sDescription)
+void CIccTagGamutBoundaryDesc::Describe(std::string &sDescription, int verboseness)
 {
 	icChar buf[256];
 	
-  sprintf(buf,"Number Of Vertices = %d, Number of Triangles = %d\r\n",m_NumberOfVertices,m_NumberOfTriangles);
+    sprintf(buf,"Number Of Vertices = %d, Number of Triangles = %d\n",m_NumberOfVertices,m_NumberOfTriangles);
 	sDescription += buf;
 	
-	sprintf(buf,"Number Of Inputs = %d, Number of Outputs = %d\r\n",m_nPCSChannels,m_nDeviceChannels);
+	sprintf(buf,"Number Of Inputs = %d, Number of Outputs = %d\n",m_nPCSChannels,m_nDeviceChannels);
 	sDescription += buf;	
 	
-	int c = 0;
-	int d = 0;
-	for (int i=0; i<m_NumberOfVertices; i++)
-	{
-    sprintf(buf,"V = %d:\t",i);
-		sDescription += buf;
-		for (int j=0; j<m_nPCSChannels; j++)
-		{
-			sprintf(buf,"%.4lf\t",m_PCSValues[c++]);
-			sDescription += buf;
-		}
-		if (m_nDeviceChannels > 0)
-		{
-			sprintf(buf,":\t");
-			sDescription += buf;
+    if (verboseness > 75) {
+	    int c = 0;
+	    int d = 0;
+	    for (int i=0; i<m_NumberOfVertices; i++)
+	    {
+            sprintf(buf,"V = %d:\t",i);
+		    sDescription += buf;
+		    for (int j=0; j<m_nPCSChannels; j++)
+		    {
+			    sprintf(buf,"%.4lf\t",m_PCSValues[c++]);
+			    sDescription += buf;
+		    }
+		    if (m_nDeviceChannels > 0)
+		    {
+			    sprintf(buf,":\t");
+			    sDescription += buf;
 			
-			for (int j=0; j<m_nDeviceChannels; j++)
-			{
-				sprintf(buf,"%.4lf\t",m_DeviceValues[d++]);
-				sDescription += buf;
-			}
-		}
-		sprintf(buf,"\r\n");
-		sDescription += buf;	
-	}
+			    for (int j=0; j<m_nDeviceChannels; j++)
+			    {
+				    sprintf(buf,"%.4lf\t",m_DeviceValues[d++]);
+				    sDescription += buf;
+			    }
+		    }
+		    sprintf(buf,"\n");
+		    sDescription += buf;	
+	    }
 	
-	for (int i=0; i<m_NumberOfTriangles; i++)
-	{
-    sprintf(buf,"V1 = %u\tV2 = %u\tV3 = %u\r\n",m_Triangles[i].m_VertexNumbers[0],m_Triangles[i].m_VertexNumbers[1],m_Triangles[i].m_VertexNumbers[2]);
-		sDescription += buf;
-	}
-	
+	    for (int i=0; i<m_NumberOfTriangles; i++)
+	    {
+            sprintf(buf,"V1 = %u\tV2 = %u\tV3 = %u\n",m_Triangles[i].m_VertexNumbers[0],m_Triangles[i].m_VertexNumbers[1],m_Triangles[i].m_VertexNumbers[2]);
+		        sDescription += buf;
+	    }
+    }
 }
 
 /**
@@ -5708,7 +5712,7 @@ icValidateStatus CIccTagGamutBoundaryDesc::Validate(std::string sigPath, std::st
 	if ((m_NumberOfVertices == 0) || (m_NumberOfTriangles == 0) || (m_nPCSChannels < 3)) {
 		sReport += icMsgValidateWarning;
 		sReport += sSigPathName;
-		sReport += " - Invalid tag.\r\n";
+		sReport += " - Invalid tag.\n";
 		
 		rv = icMaxStatus(rv, icValidateWarning);
 		return rv;

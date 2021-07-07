@@ -124,22 +124,22 @@ CIccMpeAcs::~CIccMpeAcs()
 * 
 * Return: 
 ******************************************************************************/
-void CIccMpeAcs::Describe(std::string &sDescription)
+void CIccMpeAcs::Describe(std::string &sDescription, int verboseness)
 {
   icChar sigBuf[30];
 
   if (GetBAcsSig())
-    sDescription += "ELEM_bACS\r\n";
+    sDescription += "ELEM_bACS\n";
   else
-    sDescription += "ELEM_eACS\r\n";
+    sDescription += "ELEM_eACS\n";
 
   icGetSig(sigBuf, m_signature);
   sDescription += "  Signature = ";
   sDescription += sigBuf;
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  if (m_pData) {
-    sDescription += "\r\nData Follows:\r\n";
+  if ((m_pData) && (verboseness > 50)) {
+    sDescription += "\nData Follows:\n";
 
     icMemDump(sDescription, m_pData, m_nDataSize);
   }

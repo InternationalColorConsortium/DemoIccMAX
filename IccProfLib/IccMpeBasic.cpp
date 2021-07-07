@@ -198,7 +198,7 @@ CIccFormulaCurveSegment::~CIccFormulaCurveSegment()
  * 
  * Return: 
  ******************************************************************************/
-void CIccFormulaCurveSegment::Describe(std::string &sDescription)
+void CIccFormulaCurveSegment::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[128];
 
@@ -215,60 +215,60 @@ void CIccFormulaCurveSegment::Describe(std::string &sDescription)
   sprintf(buf, "%.8f", m_endPoint);
   sDescription += buf;
   }
-  sprintf(buf, "]\r\nFunctionType: %04Xh\r\n", m_nFunctionType);
+  sprintf(buf, "]\nFunctionType: %04Xh\n", m_nFunctionType);
   sDescription += buf;
 
   switch(m_nFunctionType) {
   case 0x0000:
     if (m_params[1]==0.0 && m_params[2]==0.0)
-      sprintf(buf, "Y = %.8f\r\n\r\n", m_params[3]);
+      sprintf(buf, "Y = %.8f\n\n", m_params[3]);
     else if (m_params[0]==1.0 && m_params[1]==1.0 && m_params[2]==0.0 && m_params[3]==0.0)
-      sprintf(buf, "Y = X\r\n\r\n");
+      sprintf(buf, "Y = X\n\n");
     else if (m_params[0]==1.0 && m_params[2]==0.0)
-      sprintf(buf, "Y = %.8f * X + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = %.8f * X + %.8f\n\n", 
               m_params[1], m_params[3]);
     else
-      sprintf(buf, "Y = (%.8f * X + %.8f)^%.4f + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = (%.8f * X + %.8f)^%.4f + %.8f\n\n", 
               m_params[1], m_params[2], m_params[0], m_params[3]);
     sDescription += buf;
     return;
 
   case 0x0001:
-    sprintf(buf, "Y = %.8f * log (%.8f * (X ^ %.8f)  + %.8f) + %.8f\r\n\r\n",
+    sprintf(buf, "Y = %.8f * log (%.8f * (X ^ %.8f)  + %.8f) + %.8f\n\n",
             m_params[1], m_params[2], m_params[0], m_params[3], m_params[4]);
     sDescription += buf;
     return;
 
   case 0x0002:
-    sprintf(buf, "Y = %.8f * (%.8f ^ (%.8f * X + %.8f)) + %.8f\r\n\r\n",
+    sprintf(buf, "Y = %.8f * (%.8f ^ (%.8f * X + %.8f)) + %.8f\n\n",
             m_params[0], m_params[1], m_params[2], m_params[3], m_params[4]);
     sDescription += buf;
     return;
 
   case 0x0003:
     if (m_params[1]==0.0 && m_params[2]==0.0)
-      sprintf(buf, "Y = %.8f\r\n\r\n", m_params[3]);
+      sprintf(buf, "Y = %.8f\n\n", m_params[3]);
     else if (m_params[0]==1.0 && m_params[1]==1.0 && m_params[2]==1.0 && m_params[3]==0.0 && m_params[4]==0.0)
-      sprintf(buf, "Y = X\r\n\r\n");
+      sprintf(buf, "Y = X\n\n");
     else if (m_params[0]==1.0 && m_params[1]==1.0 && m_params[3]==0.0)
-      sprintf(buf, "Y = %.8f * X + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = %.8f * X + %.8f\n\n", 
               m_params[2], m_params[3]);
     else if (m_params[0]==1.0 && m_params[2]==1.0 && m_params[3]==0.0)
-      sprintf(buf, "Y = %.8f * X + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = %.8f * X + %.8f\n\n", 
       m_params[1], m_params[3]);
     else
-      sprintf(buf, "Y = %8f * (%.8f * X + %.8f)^%.4f + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = %8f * (%.8f * X + %.8f)^%.4f + %.8f\n\n", 
               m_params[1], m_params[2], m_params[3], m_params[0], m_params[4]);
     sDescription += buf;
     return;
 
   default:
     int i;
-    sprintf(buf, "Unknown Function with %d parameters:\r\n\r\n", m_nParameters);
+    sprintf(buf, "Unknown Function with %d parameters:\n\n", m_nParameters);
     sDescription += buf;
 
     for (i=0; i<m_nParameters; i++) {
-      sprintf(buf, "Param[%d] = %.8lf\r\n\r\n", i, m_params[i]);
+      sprintf(buf, "Param[%d] = %.8lf\n\n", i, m_params[i]);
       sDescription += buf;
     }
   }
@@ -543,7 +543,7 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
   if (m_nReserved || m_nReserved2) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " formula curve has non zero reserved data.\r\n";
+    sReport += " formula curve has non zero reserved data.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -552,13 +552,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<4) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 4) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -567,13 +567,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<5) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -582,13 +582,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<5) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -597,13 +597,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<5) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -613,7 +613,7 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
       icChar buf[128];
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sprintf(buf, " formula curve uses unknown formulaCurveSegment function type %d\r\n", m_nFunctionType);
+      sprintf(buf, " formula curve uses unknown formulaCurveSegment function type %d\n", m_nFunctionType);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -774,7 +774,7 @@ bool CIccSampledCurveSegment::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=t
  * 
  * Return: 
  ******************************************************************************/
-void CIccSampledCurveSegment::Describe(std::string &sDescription)
+void CIccSampledCurveSegment::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[128];
 
@@ -793,7 +793,7 @@ void CIccSampledCurveSegment::Describe(std::string &sDescription)
     sDescription += buf;
     }
 
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
   }
   else {
@@ -810,9 +810,9 @@ void CIccSampledCurveSegment::Describe(std::string &sDescription)
     sprintf(buf, "%.8f", m_endPoint);
     sDescription += buf;
     }
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
-    sDescription += "IN  OUT\r\n";
+    sDescription += "IN  OUT\n";
 
     icUInt32Number i;
 
@@ -820,11 +820,11 @@ void CIccSampledCurveSegment::Describe(std::string &sDescription)
     icFloatNumber last = (icFloatNumber)(m_nCount-1);
 
     for (i=1; i<m_nCount; i++) {
-      sprintf(buf, "%.8f %.8f\r\n", m_startPoint + (icFloatNumber)i*range/last, m_pSamples[i]);
+      sprintf(buf, "%.8f %.8f\n", m_startPoint + (icFloatNumber)i*range/last, m_pSamples[i]);
       sDescription += buf;
     }
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -999,20 +999,20 @@ icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::str
   if (m_nReserved) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " sampled curve has non zero reserved data.\r\n";
+    sReport += " sampled curve has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (m_nCount<1) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " sampled curve has too few sample points.\r\n";
+    sReport += " sampled curve has too few sample points.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   else if (m_endPoint-m_startPoint == 0.0) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " sampled curve has a range of zero.\r\n";
+    sReport += " sampled curve has a range of zero.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1279,7 +1279,7 @@ bool CIccSingleSampledCurve::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=tr
 * 
 * Return: 
 ******************************************************************************/
-void CIccSingleSampledCurve::Describe(std::string &sDescription)
+void CIccSingleSampledCurve::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[128];
 
@@ -1291,7 +1291,7 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
     sprintf(buf, "%.8f", m_lastEntry);
     sDescription += buf;
 
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
   }
   else {
@@ -1303,7 +1303,7 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
     sprintf(buf, "%.8f", m_lastEntry);
     sDescription += buf;
 
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
 
     switch(m_storageType) {
@@ -1335,7 +1335,7 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
         sDescription += "Unknown extension handling\n";
         break;
     }
-    sDescription += "IN  OUT\r\n";
+    sDescription += "IN  OUT\n";
 
     icUInt32Number i;
 
@@ -1343,11 +1343,11 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
     icFloatNumber last = (icFloatNumber)(m_nCount-1);
 
     for (i=0; i<m_nCount; i++) {
-      sprintf(buf, "%.8f %.8f\r\n", m_firstEntry + (icFloatNumber)i*range/last, m_pSamples[i]);
+      sprintf(buf, "%.8f %.8f\n", m_firstEntry + (icFloatNumber)i*range/last, m_pSamples[i]);
       sDescription += buf;
     }
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -1603,35 +1603,35 @@ icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::stri
   if (m_nReserved) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " single sampled curve has non zero reserved data.\r\n";
+    sReport += " single sampled curve has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (m_extensionType > icMaxSingleSampledCurveType) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " single sampled curve has unknown extension type\r\n";
+    sReport += " single sampled curve has unknown extension type\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   if (m_storageType > icMaxValueType) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " single sampled curve uses unknown value type\r\n";
+    sReport += " single sampled curve uses unknown value type\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   if (m_nCount<2) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " single sampled curve has too few sample points.\r\n";
+    sReport += " single sampled curve has too few sample points.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   else if (m_lastEntry-m_firstEntry <= 0.0) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " single sampled curve has an invalid sample range.\r\n";
+    sReport += " single sampled curve has an invalid sample range.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1757,13 +1757,13 @@ CIccSegmentedCurve::~CIccSegmentedCurve()
  * 
  * Return: 
  ******************************************************************************/
-void CIccSegmentedCurve::Describe(std::string &sDescription)
+void CIccSegmentedCurve::Describe(std::string &sDescription, int verboseness)
 {
   CIccCurveSegmentList::iterator i;
 
-  sDescription += "BEGIN_CURVE\r\n";
+  sDescription += "BEGIN_CURVE\n";
   for (i=m_list->begin(); i!=m_list->end(); i++) {
-    (*i)->Describe(sDescription);
+    (*i)->Describe(sDescription, verboseness);
   }
 }
 
@@ -2060,14 +2060,14 @@ icValidateStatus CIccSegmentedCurve::Validate(std::string sigPath, std::string &
   if (m_nReserved1 || m_nReserved2) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " Segmented curve has non zero reserved data.\r\n";
+    sReport += " Segmented curve has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (m_list->size()==0) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " Has Empty CurveSegment!\r\n";
+    sReport += " Has Empty CurveSegment!\n";
     return icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -2329,23 +2329,23 @@ bool CIccMpeCurveSet::SetCurve(int nIndex, icCurveSetCurvePtr newCurve)
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeCurveSet::Describe(std::string &sDescription)
+void CIccMpeCurveSet::Describe(std::string &sDescription, int verboseness)
 {
   if (m_curve) {
     icChar buf[81];
     int i;
 
-    sprintf(buf, "BEGIN_CURVE_SET %d\r\n", m_nInputChannels);
+    sprintf(buf, "BEGIN_CURVE_SET %d\n", m_nInputChannels);
     sDescription += buf;
 
     for (i=0; i<m_nInputChannels; i++) {
-      sprintf(buf, "Curve %d of %d\r\n", i+1, m_nInputChannels);
+      sprintf(buf, "Curve %d of %d\n", i+1, m_nInputChannels);
       sDescription += buf;
       if (m_curve[i]) {
-        m_curve[i]->Describe(sDescription);
+        m_curve[i]->Describe(sDescription, verboseness);
       }
     }
-    sDescription += "END_CURVE_SET\r\n";
+    sDescription += "END_CURVE_SET\n";
   }
 }
 
@@ -2616,7 +2616,7 @@ icValidateStatus CIccMpeCurveSet::Validate(std::string sigPath, std::string &sRe
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Has Empty Curve Element(s)!\r\n";
+    sReport += " -  Has Empty Curve Element(s)!\n";
     return icValidateCriticalError;
   }
 
@@ -2752,17 +2752,17 @@ void CIccMpeTintArray::SetArray(CIccTagNumArray *pArray)
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeTintArray::Describe(std::string &sDescription)
+void CIccMpeTintArray::Describe(std::string &sDescription, int verboseness)
 {
   if (m_Array) {
     icChar buf[81];
 
-    sprintf(buf, "BEGIN_TINT_ARRAY %d\r\n", m_nOutputChannels);
+    sprintf(buf, "BEGIN_TINT_ARRAY %d\n", m_nOutputChannels);
     sDescription += buf;
 
-    m_Array->Describe(sDescription);
+    m_Array->Describe(sDescription, verboseness);
 
-    sDescription += "END_TINT_ARRAY\r\n";
+    sDescription += "END_TINT_ARRAY\n";
   }
 }
 
@@ -2944,7 +2944,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Bad number of input channels!\r\n";
+    sReport += " -  Bad number of input channels!\n";
     return icValidateCriticalError;
   }
 
@@ -2954,7 +2954,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Bad number of output channels!\r\n";
+    sReport += " -  Bad number of output channels!\n";
     return icValidateCriticalError;
   }
 
@@ -2964,7 +2964,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Has no tint values(s)!\r\n";
+    sReport += " -  Has no tint values(s)!\n";
     return icValidateCriticalError;
   }
   else {
@@ -2982,7 +2982,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " -  Needs two or more tint steps!\r\n";
+      sReport += " -  Needs two or more tint steps!\n";
       bBad = true;
     }
     */
@@ -2992,7 +2992,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " -  Array size must be multiple of output channels!\r\n";
+      sReport += " -  Array size must be multiple of output channels!\n";
       bBad = true;
     }
 
@@ -3177,13 +3177,13 @@ bool CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutpu
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeMatrix::Describe(std::string &sDescription)
+void CIccMpeMatrix::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[81];
   int i, j;
   icFloatNumber *data = m_pMatrix;
 
-  sprintf(buf, "BEGIN_ELEM_MATRIX %d %d\r\n", m_nInputChannels, m_nOutputChannels);
+  sprintf(buf, "BEGIN_ELEM_MATRIX %d %d\n", m_nInputChannels, m_nOutputChannels);
   sDescription += buf;
 
   for (j=0; j<m_nOutputChannels; j++) {
@@ -3195,17 +3195,17 @@ void CIccMpeMatrix::Describe(std::string &sDescription)
         sDescription += buf;
       }
       if (m_pConstants) {
-        sprintf(buf, "  +  %12.8lf\r\n", m_pConstants[j]);
+        sprintf(buf, "  +  %12.8lf\n", m_pConstants[j]);
         sDescription += buf;
       }
       data += i;
     }
     else {
-      sprintf(buf, "ZeroRow  +  %12.8lf\r\n", m_pConstants[j]);
+      sprintf(buf, "ZeroRow  +  %12.8lf\n", m_pConstants[j]);
       sDescription += buf;
     }
   }
-  sDescription += "END_ELEM_MATRIX\r\n";
+  sDescription += "END_ELEM_MATRIX\n";
 }
 
 /**
@@ -3530,7 +3530,7 @@ icValidateStatus CIccMpeMatrix::Validate(std::string sigPath, std::string &sRepo
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty Matrix Constant data!\r\n";
+    sReport += " - Has Empty Matrix Constant data!\n";
     return icValidateCriticalError;
   }
 
@@ -3660,10 +3660,10 @@ void CIccMpeCLUT::SetCLUT(CIccCLUT *pCLUT)
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeCLUT::Describe(std::string &sDescription)
+void CIccMpeCLUT::Describe(std::string &sDescription, int verboseness)
 {
   if (m_pCLUT) {
-    m_pCLUT->DumpLut(sDescription, "ELEM_CLUT", icSigUnknownData, icSigUnknownData);
+    m_pCLUT->DumpLut(sDescription, "ELEM_CLUT", icSigUnknownData, icSigUnknownData, verboseness);
   }
 }
 
@@ -3899,7 +3899,7 @@ icValidateStatus CIccMpeCLUT::Validate(std::string sigPath, std::string &sReport
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has No CLUT!\r\n";
+    sReport += " - Has No CLUT!\n";
     return icValidateCriticalError;
   }
 
@@ -3974,13 +3974,13 @@ CIccMpeExtCLUT &CIccMpeExtCLUT::operator=(const CIccMpeExtCLUT &clut)
 * 
 * Return: 
 ******************************************************************************/
-void CIccMpeExtCLUT::Describe(std::string &sDescription)
+void CIccMpeExtCLUT::Describe(std::string &sDescription, int verboseness)
 {
   if (m_pCLUT) {
     char desc[256];
     sprintf(desc, "EXT_ELEM_CLUT(%d)", m_storageType);
 
-    m_pCLUT->DumpLut(sDescription, desc, icSigUnknownData, icSigUnknownData);
+    m_pCLUT->DumpLut(sDescription, desc, icSigUnknownData, icSigUnknownData, verboseness);
   }
 }
 
@@ -4224,7 +4224,7 @@ icValidateStatus CIccMpeExtCLUT::Validate(std::string sigPath, std::string &sRep
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Invalid value type!\r\n";
+    sReport += " - Invalid value type!\n";
     return icValidateCriticalError;
   }
 
@@ -4350,7 +4350,7 @@ void CIccMpeCAM::SetCAM(CIccCamConverter *pCAM)
   m_pCAM = pCAM;
 }
 
-void CIccMpeCAM::Describe(std::string &sDescription)
+void CIccMpeCAM::Describe(std::string &sDescription, int verboseness)
 {
   sDescription += "Begin ";
   sDescription += GetXformName();

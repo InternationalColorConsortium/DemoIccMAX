@@ -76,7 +76,7 @@
 #include "IccUtil.h"
 #include "IccProfLibVer.h"
 
-void DumpTag(CIccProfile *pIcc, icTagSignature sig)
+void DumpTag(CIccProfile *pIcc, icTagSignature sig, int verboseness)
 {
   CIccTag *pTag = pIcc->FindTag(sig);
   char buf[64];
@@ -91,7 +91,7 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig)
       printf("Array of ");
     }
     printf("%s\n", Fmt.GetTagTypeSigName(pTag->GetType()));
-    pTag->Describe(contents);
+    pTag->Describe(contents, verboseness);
     fwrite(contents.c_str(), contents.length(), 1, stdout);
   }
   else {
@@ -101,13 +101,15 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig)
 
 int main(int argc, char* argv[])
 {
-  int nArg = 1;
+  int nArg = 1;        
+  int verbosity = 100; // default is maximum verbosity (old behaviour)
 
-  if (argc<=1) {
+  if (argc <= 1) {
 print_usage:
-    printf("Usage: iccDumpProfile {-v} profile {tagId to dump/\"ALL\"}\n");
+    printf("Usage: iccDumpProfile {-v} {int} profile {tagId to dump/\"ALL\"}\n");
     printf("Built with IccProfLib version " ICCPROFLIBVER "\n");
-    printf("\nThe -v option causes profile validation to be performed.\n");
+    printf("\nThe -v option causes profile validation to be performed."
+           "\nThe optional integer parameter specifies verboseness of output (1-100, default=100).\n");
     return -1;
   }
 
@@ -117,25 +119,51 @@ print_usage:
   bool bDumpValidation = false;
 
   if (!strncmp(argv[1], "-V", 2) || !strncmp(argv[1], "-v", 2)) {
-    if (argc<=2)
+    nArg++;
+    if (argc <= nArg)
       goto print_usage;
 
-    nArg = 2;
+    verbosity = atoi(argv[nArg]);
+    if (verbosity != 0) {
+      // clamp verbosity to 1-100 inclusive
+      if (verbosity < 0)
+        verbosity = 1;
+      else if (verbosity > 100)
+        verbosity = 100;
+      nArg++;
+      if (argc <= nArg)
+          goto print_usage;
+    }
 
     pIcc = ValidateIccProfile(argv[nArg], sReport, nStatus);
     bDumpValidation = true;
   }
-  else
+  else {
+    verbosity = atoi(argv[nArg]);
+    if (verbosity != 0) {
+      // clamp verbosity to 1-100 inclusive
+      if (verbosity < 0)
+        verbosity = 1;
+      else if (verbosity > 100)
+        verbosity = 100;
+      nArg++;
+      if (argc <= nArg)
+        goto print_usage;
+    }
+      
     pIcc = OpenIccProfile(argv[nArg]);
+  }
 
+  // Precondition: nArg is argument of ICC profile filename
   if (!pIcc) {
-    printf("Unable to open '%s'\n", argv[nArg]);
+    printf("Unable to parse '%s' as ICC profile!\n", argv[nArg]);
   }
   else {
     icHeader *pHdr = &pIcc->m_Header;
     CIccInfo Fmt;
     char buf[64];
 
+    printf("Built with IccProfLib version " ICCPROFLIBVER "\n\n");
     printf("Profile:            '%s'\n", argv[nArg]);
     if(Fmt.IsProfileIDCalculated(&pHdr->profileID))
       printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
@@ -245,7 +273,7 @@ print_usage:
       //  following pad bytes to reach a 4 - byte boundary"
       if (pHdr->size % 4 != 0) {
           sReport += icMsgValidateNonCompliant;
-          sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\r\n";
+          sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\n";
           nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
       }
 
@@ -256,7 +284,7 @@ print_usage:
         // Is the Tag offset + Tag Size beyond EOF?
         if (i->TagInfo.offset + i->TagInfo.size > pHdr->size) {
             sReport += icMsgValidateNonCompliant;
-            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\r\n", 
+            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\n", 
                     Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size);
             sReport += str;
             nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
@@ -278,7 +306,7 @@ print_usage:
         // Check if closest tag after this tag is less than offset+size - in which case it overlaps! Ignore last tag.
         if ((closest < (int)i->TagInfo.offset + (int)i->TagInfo.size) && (closest < (int)pHdr->size)) {
             sReport += icMsgValidateWarning;
-            sprintf(str, "Tag %s (offset %d, size %d) overlaps with following tag data starting at offset %d.\r\n",
+            sprintf(str, "Tag %s (offset %d, size %d) overlaps with following tag data starting at offset %d.\n",
                 Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size, closest);
             sReport += str;
             nStatus = icMaxStatus(nStatus, icValidateWarning);
@@ -287,7 +315,7 @@ print_usage:
         // Check for gaps between tag data (accounting for 4-byte alignment)
         if (closest > (int)i->TagInfo.offset + rndup) {
           sReport += icMsgValidateWarning;
-          sprintf(str, "Tag %s (size %d) is followed by %d unnecessary additional bytes (from offset %d).\r\n",
+          sprintf(str, "Tag %s (size %d) is followed by %d unnecessary additional bytes (from offset %d).\n",
                 Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.size, closest-(i->TagInfo.offset+rndup), (i->TagInfo.offset+rndup));
           sReport += str;
           nStatus = icMaxStatus(nStatus, icValidateWarning);
@@ -298,7 +326,7 @@ print_usage:
       // 1st tag offset should be = Header (128) + Tag Count (4) + Tag Table (n*12)
       if ((n > 0) && (smallest_offset > 128 + 4 + (n * 12))) {
         sReport += icMsgValidateNonCompliant;
-        sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\r\n",
+        sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\n",
             smallest_offset, 128 + 4 + (n * 12));
         sReport += str;
         nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
@@ -308,11 +336,11 @@ print_usage:
     if (argc>nArg+1) {
       if (!stricmp(argv[nArg+1], "ALL")) {
         for (i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++) {
-          DumpTag(pIcc, i->TagInfo.sig);
+          DumpTag(pIcc, i->TagInfo.sig, verbosity);
         }
       }
       else {
-        DumpTag(pIcc, (icTagSignature)icGetSigVal(argv[nArg+1]));
+        DumpTag(pIcc, (icTagSignature)icGetSigVal(argv[nArg+1]), verbosity);
       }
     }
   }

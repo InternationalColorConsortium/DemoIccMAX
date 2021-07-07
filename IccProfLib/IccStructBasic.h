@@ -99,7 +99,7 @@ public:
   virtual ~CIccStructUnknown();
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const;
 
-  virtual void Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription, int verboseness) const;
 
   virtual const icChar *GetClassName() const { return "CIccStructUnknown"; }
   virtual const icChar *GetDisplayName() const { return "privateStruct"; }

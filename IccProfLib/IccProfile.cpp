@@ -778,7 +778,7 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
 
   if (!ReadBasic(pIO)) {
     sReport += icMsgValidateCriticalError;
-    sReport += " - Unable to read profile!**\r\n\tProfile has invalid structure!\r\n";
+    sReport += " - Unable to read profile!**\n\tProfile has invalid structure!\n";
     Cleanup();
 
     return icValidateCriticalError;
@@ -787,7 +787,7 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
   // Check profile header
   if (!CheckFileSize(pIO)) {
     sReport += icMsgValidateNonCompliant;
-    sReport += "Bad Header File Size\r\n";
+    sReport += "Bad Header File Size\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -799,7 +799,7 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
     CalcProfileID(pIO, &profileID);
     if (memcmp((char*)profileID.ID8, (char*)m_Header.profileID.ID8, 16) != 0) {
       sReport += icMsgValidateNonCompliant;
-      sReport += "Bad Profile ID\r\n";
+      sReport += "Bad Profile ID\n";
 
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -811,7 +811,7 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
     if ((i->TagInfo.offset % 4) != 0) {
         sReport += icMsgValidateNonCompliant;
         sReport += Info.GetTagSigName(i->TagInfo.sig);
-        sReport += " - Offset is not aligned on 4-byte boundary!\r\n";
+        sReport += " - Offset is not aligned on 4-byte boundary!\n";
 
         rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -819,7 +819,7 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
       sReport += icMsgValidateCriticalError;
       sReport += " - ";
       sReport += Info.GetTagSigName(i->TagInfo.sig);
-      sReport += " - Tag has invalid structure!\r\n";
+      sReport += " - Tag has invalid structure!\n";
 
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -1323,7 +1323,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     if (m_Header.version<icVersionNumberV5) {
       CIccInfo classInfo;
       sReport += icMsgValidateCriticalError;
-      sprintf(buf, " - %s not supported in Version %s profiles!\r\n", classInfo.GetProfileClassSigName(m_Header.deviceClass),
+      sprintf(buf, " - %s not supported in Version %s profiles!\n", classInfo.GetProfileClassSigName(m_Header.deviceClass),
                                                                       Info.GetVersionName(m_Header.version));
       sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
@@ -1332,7 +1332,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
   default:
     sReport += icMsgValidateCriticalError;
-    sprintf(buf, " - %s: Unknown profile class!\r\n", Info.GetProfileClassSigName(m_Header.deviceClass));
+    sprintf(buf, " - %s: Unknown profile class!\n", Info.GetProfileClassSigName(m_Header.deviceClass));
     sReport += buf;
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
@@ -1343,13 +1343,13 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       m_Header.deviceClass==icSigMaterialVisualizationClass) {
     if (icGetColorSpaceType(m_Header.mcs)!=icSigSrcMCSChannelData) {
       sReport += icMsgValidateCriticalError;
-      sReport += " - Invalid MCS designator\r\n";
+      sReport += " - Invalid MCS designator\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
   }
   else if (m_Header.mcs != icSigNoMCSData && m_Header.deviceClass != icSigInputClass) {
     sReport += icMsgValidateNonCompliant;
-    sReport += " - Invalid MCS designator for device class\r\n";
+    sReport += " - Invalid MCS designator for device class\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
  
@@ -1361,7 +1361,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     if (!Info.IsValidSpace(m_Header.colorSpace)) {
       if (!(m_Header.version>=icVersionNumberV5 && m_Header.deviceClass==icSigAbstractClass && Info.IsValidSpectralSpace(m_Header.colorSpace) && IsTagPresent(icSigDToB0Tag))) {
         sReport += icMsgValidateCriticalError;
-        sprintf(buf, " - %s: Unknown color space!\r\n", Info.GetColorSpaceSigName(m_Header.colorSpace));
+        sprintf(buf, " - %s: Unknown color space!\n", Info.GetColorSpaceSigName(m_Header.colorSpace));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
@@ -1372,7 +1372,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       m_Header.deviceClass==icSigMaterialLinkClass) {
     if (m_Header.pcs!=icSigNoColorData) {
       sReport += icMsgValidateNonCompliant;
-      sprintf(buf, "Invalid PCS designator for %s\r\n", Info.GetProfileClassSigName(m_Header.deviceClass));
+      sprintf(buf, "Invalid PCS designator for %s\n", Info.GetProfileClassSigName(m_Header.deviceClass));
       sReport += buf; 
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -1397,7 +1397,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       m_Header.biSpectralRange.start || m_Header.biSpectralRange.end || m_Header.biSpectralRange.steps
       ) {
       sReport += icMsgValidateNonCompliant;
-      sprintf(buf, " - Encoding Class has non-zero Header data were zeros are required!\r\n");
+      sprintf(buf, " - Encoding Class has non-zero Header data were zeros are required!\n");
       sReport += buf;
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -1406,7 +1406,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     if (m_Header.deviceClass==icSigLinkClass) {
       if (!Info.IsValidSpace(m_Header.pcs)) {
         sReport += icMsgValidateCriticalError;
-        sprintf(buf, " - %s: Unknown pcs color space!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
+        sprintf(buf, " - %s: Unknown pcs color space!\n", Info.GetColorSpaceSigName(m_Header.pcs));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
@@ -1422,7 +1422,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
         default:
           sReport += icMsgValidateCriticalError;
-          sprintf(buf, " - %s: Invalid pcs color space!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
+          sprintf(buf, " - %s: Invalid pcs color space!\n", Info.GetColorSpaceSigName(m_Header.pcs));
           sReport += buf;
           rv = icMaxStatus(rv, icValidateCriticalError);
           break;
@@ -1430,7 +1430,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
       if (m_Header.spectralPCS && m_Header.version<icVersionNumberV5) {
         sReport += icMsgValidateNonCompliant;
-        sprintf(buf, " - Spectral PCS usage in version %s ICC profile!\r\n", Info.GetVersionName(m_Header.version));
+        sprintf(buf, " - Spectral PCS usage in version %s ICC profile!\n", Info.GetVersionName(m_Header.version));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
@@ -1444,7 +1444,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
               m_Header.biSpectralRange.end ||
               m_Header.biSpectralRange.steps) {
                 sReport += icMsgValidateWarning;
-                sprintf(buf, "%s - Spectral PCS wavelengths defined with no spectral PCS!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
+                sprintf(buf, "%s - Spectral PCS wavelengths defined with no spectral PCS!\n", Info.GetColorSpaceSigName(m_Header.pcs));
                 sReport += buf;
                 rv = icMaxStatus(rv, icValidateWarning);
           }
@@ -1455,33 +1455,33 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
           if (icGetColorSpaceType(m_Header.spectralPCS)==icSigBiSpectralReflectanceData) {
             if (icNumColorSpaceChannels(m_Header.spectralPCS)!=m_Header.biSpectralRange.steps * m_Header.spectralRange.steps) {
               sReport += icMsgValidateCriticalError;
-              sReport += "Number of channels defined for spectral PCS do not match spectral range definitions.\r\n";
+              sReport += "Number of channels defined for spectral PCS do not match spectral range definitions.\n";
               rv = icMaxStatus(rv, icValidateCriticalError);
             }
           }
 
           if (icF16toF(m_Header.biSpectralRange.end)<=icF16toF(m_Header.biSpectralRange.start)) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "end BiDir Spectral PCS wavelength must be larger than start BiDir Spectral PCS wavelength!\r\n");
+            sprintf(buf, "end BiDir Spectral PCS wavelength must be larger than start BiDir Spectral PCS wavelength!\n");
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
 
           if (m_Header.biSpectralRange.steps<2) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "%d: Must have more 2 or more BiDir spectral wavelength steps!\r\n", m_Header.biSpectralRange.steps);
+            sprintf(buf, "%d: Must have more 2 or more BiDir spectral wavelength steps!\n", m_Header.biSpectralRange.steps);
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
           if (icF16toF(m_Header.spectralRange.end)<=icF16toF(m_Header.spectralRange.start)) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "end Spectral PCS wavelength must be larger than start Spectral PCS wavelength!\r\n");
+            sprintf(buf, "end Spectral PCS wavelength must be larger than start Spectral PCS wavelength!\n");
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
           if (m_Header.spectralRange.steps<2) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "%d: Must have more 2 or more spectral wavelength steps!\r\n", m_Header.spectralRange.steps);
+            sprintf(buf, "%d: Must have more 2 or more spectral wavelength steps!\n", m_Header.spectralRange.steps);
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
@@ -1492,19 +1492,19 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         case icSigRadiantSpectralData:
           if (icNumColorSpaceChannels(m_Header.spectralPCS)!=m_Header.spectralRange.steps) {
             sReport += icMsgValidateCriticalError;
-            sReport += "Number of channels defined for spectral PCS do not match spectral range definition.\r\n";
+            sReport += "Number of channels defined for spectral PCS do not match spectral range definition.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
           if (icF16toF(m_Header.spectralRange.end)<=icF16toF(m_Header.spectralRange.start)) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "end Spectral PCS wavelength must be larger than start Spectral PCS wavelength!\r\n");
+            sprintf(buf, "end Spectral PCS wavelength must be larger than start Spectral PCS wavelength!\n");
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
 
           if (m_Header.spectralRange.steps<2) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "%d: Must have more 2 or more spectral wavelength steps!\r\n", m_Header.spectralRange.steps);
+            sprintf(buf, "%d: Must have more 2 or more spectral wavelength steps!\n", m_Header.spectralRange.steps);
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
@@ -1512,7 +1512,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
               m_Header.biSpectralRange.end ||
               m_Header.biSpectralRange.steps) {
             sReport += icMsgValidateCriticalError;
-            sprintf(buf, "%s - Spectral PCS wavelengths defined with no spectral PCS!\r\n", Info.GetColorSpaceSigName(m_Header.pcs));
+            sprintf(buf, "%s - Spectral PCS wavelengths defined with no spectral PCS!\n", Info.GetColorSpaceSigName(m_Header.pcs));
             sReport += buf;
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
@@ -1520,7 +1520,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
         default:
           sReport += icMsgValidateCriticalError;
-          sprintf(buf, "%s: Invalid spectral PCS color space!\r\n", Info.GetColorSpaceSigName((icColorSpaceSignature)m_Header.spectralPCS));
+          sprintf(buf, "%s: Invalid spectral PCS color space!\n", Info.GetColorSpaceSigName((icColorSpaceSignature)m_Header.spectralPCS));
           sReport += buf;
           rv = icMaxStatus(rv, icValidateCriticalError);
           break;
@@ -1528,7 +1528,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
       if (m_Header.pcs==icSigNoColorData && m_Header.spectralPCS==icSigNoSpectralData) {
         sReport += icMsgValidateCriticalError;
-        sprintf(buf, "Both Colorimetric PCS or Spectral PCS are not defined!\r\n");
+        sprintf(buf, "Both Colorimetric PCS or Spectral PCS are not defined!\n");
         sReport += buf;
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
@@ -1548,7 +1548,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     
     default:
       sReport += icMsgValidateWarning;
-      sprintf(buf, "%s: Unknown platform signature.\r\n", Info.GetPlatformSigName(m_Header.platform));
+      sprintf(buf, "%s: Unknown platform signature.\n", Info.GetPlatformSigName(m_Header.platform));
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -1556,24 +1556,24 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     // Report on various bits of profile flags as per Table 21 in v4.3.0
     if(m_Header.flags & 0x0000FFFC) {
         sReport += icMsgValidateNonCompliant;
-        sReport += "Reserved profile flags (bits 2-15) are non-zero.\r\n";
+        sReport += "Reserved profile flags (bits 2-15) are non-zero.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
     }
     if(m_Header.flags & 0xFFFF0000) {
         sReport += icMsgValidateWarning;
-        sReport += "Vendor-specific profile flags (bits 16-32) are non-zero.\r\n";
+        sReport += "Vendor-specific profile flags (bits 16-32) are non-zero.\n";
         rv = icMaxStatus(rv, icValidateWarning);
     }
 
     // Report on various bits of device attributes as per Table 22 in v4.3.0 
     if(m_Header.attributes & 0x0000FFF0) {
         sReport += icMsgValidateNonCompliant;
-        sReport += "Reserved device attributes (bits 4-31) are non-zero.\r\n";
+        sReport += "Reserved device attributes (bits 4-31) are non-zero.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
     }
     if(m_Header.attributes & 0xFFFF0000) {
         sReport += icMsgValidateWarning;
-        sReport += "Vendor-specific device attributes (bits 32-63) are non-zero.\r\n";
+        sReport += "Vendor-specific device attributes (bits 32-63) are non-zero.\n";
         rv = icMaxStatus(rv, icValidateWarning);
     }
 
@@ -1581,7 +1581,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     // Report on unusual version (stored as BCD)
     if (bcdpair<0x05 && (m_Header.version & 0x0000FFFF)) {
         sReport += icMsgValidateWarning;
-        sReport += "Version number bytes 10 and 11 are reserved but non-zero.\r\n";
+        sReport += "Version number bytes 10 and 11 are reserved but non-zero.\n";
         rv = icMaxStatus(rv, icValidateWarning);
     }
     switch (bcdpair) {
@@ -1589,7 +1589,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         bcdpair = (uint8_t)((m_Header.version & 0x00FF0000) >> 16);
         if ((bcdpair > 0x40) || (bcdpair & 0x0F)) {
             sReport += icMsgValidateWarning;
-            sReport += "Version 2 minor number is unexpected.\r\n";
+            sReport += "Version 2 minor number is unexpected.\n";
             rv = icMaxStatus(rv, icValidateWarning);
         }
         break;
@@ -1597,7 +1597,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         bcdpair = (uint8_t)((m_Header.version & 0x00FF0000) >> 16);
         if ((bcdpair > 0x30) || (bcdpair & 0x0F)) {
             sReport += icMsgValidateWarning;
-            sReport += "Version 4 minor number is unexpected.\r\n";
+            sReport += "Version 4 minor number is unexpected.\n";
             rv = icMaxStatus(rv, icValidateWarning);
         }
         break;
@@ -1605,13 +1605,13 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         bcdpair = (uint8_t)((m_Header.version & 0x00FF0000) >> 16);
         if (bcdpair) {
             sReport += icMsgValidateWarning;
-            sReport += "Version 5 minor number is unexpected.\r\n";
+            sReport += "Version 5 minor number is unexpected.\n";
             rv = icMaxStatus(rv, icValidateWarning);
         }
         break;
     default:
         sReport += icMsgValidateWarning;
-        sprintf(buf, "Major version number (%d) is unexpected.\r\n", ((bcdpair >> 4) * 10 + (bcdpair & 0x0F)));
+        sprintf(buf, "Major version number (%d) is unexpected.\n", ((bcdpair >> 4) * 10 + (bcdpair & 0x0F)));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -1650,7 +1650,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
     default:
       sReport += icMsgValidateWarning;
-      sprintf(buf, "%s: Unregistered CMM signature.\r\n", Info.GetCmmSigName((icCmmSignature)m_Header.cmmId));
+      sprintf(buf, "%s: Unregistered CMM signature.\n", Info.GetCmmSigName((icCmmSignature)m_Header.cmmId));
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -1664,7 +1664,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 
     default:
       sReport += icMsgValidateCriticalError;
-      sprintf(buf, "%s: Unknown rendering intent!\r\n", Info.GetRenderingIntentName((icRenderingIntent)m_Header.renderingIntent));
+      sprintf(buf, "%s: Unknown rendering intent!\n", Info.GetRenderingIntentName((icRenderingIntent)m_Header.renderingIntent));
       sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -1675,7 +1675,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     icFloatNumber Z = icFtoD(m_Header.illuminant.Z);
     if (m_Header.version<icVersionNumberV5 && (X<0.9640 || X>0.9644 || Y!=1.0 || Z<0.8247 || Z>0.8251)) {
       sReport += icMsgValidateNonCompliant;
-      sReport += "Non D50 Illuminant XYZ values.\r\n";
+      sReport += "Non D50 Illuminant XYZ values.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -1686,7 +1686,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
   }
   if (sum) {
     sReport += icMsgValidateNonCompliant;
-    sReport += "Reserved value must be zero.\r\n";
+    sReport += "Reserved value must be zero.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -1720,7 +1720,7 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
     {
       sReport += icMsgValidateWarning;
       sReport += buf;
-      sReport += "Tag exclusion test failed.\r\n";
+      sReport += "Tag exclusion test failed.\n";
       rv = false;
     }
   }
@@ -1734,7 +1734,7 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
       {
         sReport += icMsgValidateWarning;
         sReport += buf;
-        sReport += "Tag exclusion test failed.\r\n";
+        sReport += "Tag exclusion test failed.\n";
         rv = false;
       }
       break;
@@ -1750,7 +1750,7 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
       {
         sReport += icMsgValidateWarning;
         sReport += buf;
-        sReport += "Tag exclusion test failed.\r\n";
+        sReport += "Tag exclusion test failed.\n";
         rv = false;
       }
       break;
@@ -1763,7 +1763,7 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
       {
         sReport += icMsgValidateWarning;
         sReport += buf;
-        sReport += "Tag exclusion test failed.\r\n";
+        sReport += "Tag exclusion test failed.\n";
         rv = false;
       }
       break;
@@ -1777,7 +1777,7 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
       {
         sReport += icMsgValidateWarning;
         sReport += buf;
-        sReport += "Tag exclusion test failed.\r\n";
+        sReport += "Tag exclusion test failed.\n";
         rv = false;
       }
       break;
@@ -1823,7 +1823,7 @@ icValidateStatus CIccProfile::CheckTagTypes(std::string &sReport) const
     if (!IsTypeValid(tagsig, typesig, structSig, arraySig)) {
       sReport += icMsgValidateNonCompliant;
       sReport += buf;
-      sprintf(buf," %s: Invalid tag type (Might be critical!).\r\n", Info.GetTagTypeSigName(typesig));
+      sprintf(buf," %s: Invalid tag type (Might be critical!).\n", Info.GetTagTypeSigName(typesig));
       sReport += buf;
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -2312,7 +2312,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
 {
   if (m_Tags->size() <= 0) {
     sReport += icMsgValidateCriticalError;
-    sReport += "No tags present.\r\n";
+    sReport += "No tags present.\n";
     return icValidateCriticalError;
   }
 
@@ -2323,7 +2323,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
   if (m_Header.deviceClass==icSigColorEncodingClass) {
     if (!GetTag(icSigReferenceNameTag)) {
       sReport += icMsgValidateNonCompliant;
-      sReport += "Required tags missing.\r\n";
+      sReport += "Required tags missing.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
     return rv;
@@ -2332,14 +2332,14 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
     if (!GetTag(icSigProfileDescriptionTag) ||
        !GetTag(icSigCopyrightTag)) {
          sReport += icMsgValidateNonCompliant;
-         sReport += "Required tags missing.\r\n";
+         sReport += "Required tags missing.\n";
          rv = icMaxStatus(rv, icValidateNonCompliant);
     }
 
     if (sig != icSigLinkClass && sig != icSigMaterialIdentificationClass && sig != icSigMaterialLinkClass) {
       if ((m_Header.version<icVersionNumberV5 || m_Header.pcs != 0) && !GetTag(icSigMediaWhitePointTag)) {
         sReport += icMsgValidateCriticalError;
-        sReport += "Media white point tag missing.\r\n";
+        sReport += "Media white point tag missing.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
     }
@@ -2351,7 +2351,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
         if (m_Header.colorSpace == icSigGrayData) {
           if (!GetTag(icSigGrayTRCTag)) {
             sReport += icMsgValidateCriticalError;
-            sReport += "Gray TRC tag missing.\r\n";
+            sReport += "Gray TRC tag missing.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -2361,7 +2361,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                !GetTag(icSigBlueMatrixColumnTag) || !GetTag(icSigRedTRCTag) ||
                !GetTag(icSigGreenTRCTag) || !GetTag(icSigBlueTRCTag)) {
                  sReport += icMsgValidateCriticalError;
-                 sReport += "Critical tag(s) missing.\r\n";
+                 sReport += "Critical tag(s) missing.\n";
                  rv = icMaxStatus(rv, icValidateCriticalError);
                }
           }
@@ -2372,7 +2372,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
         if (m_Header.colorSpace == icSigGrayData) {
           if (!GetTag(icSigGrayTRCTag)) {
             sReport += icMsgValidateCriticalError;
-            sReport += "Gray TRC tag missing.\r\n";
+            sReport += "Gray TRC tag missing.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -2382,7 +2382,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                !GetTag(icSigBlueMatrixColumnTag) || !GetTag(icSigRedTRCTag) ||
                !GetTag(icSigGreenTRCTag) || !GetTag(icSigBlueTRCTag)) {
                  sReport += icMsgValidateCriticalError;
-                 sReport += "Critical tag(s) missing.\r\n";
+                 sReport += "Critical tag(s) missing.\n";
                  rv = icMaxStatus(rv, icValidateCriticalError);
                }
           }
@@ -2393,7 +2393,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
         if (m_Header.colorSpace == icSigGrayData) {
           if (!GetTag(icSigGrayTRCTag)) {
             sReport += icMsgValidateCriticalError;
-            sReport += "Gray TRC tag missing.\r\n";
+            sReport += "Gray TRC tag missing.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -2402,13 +2402,13 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
              !GetTag(icSigAToB1Tag) || !GetTag(icSigBToA1Tag) ||
              !GetTag(icSigAToB2Tag) || !GetTag(icSigBToA2Tag)) {
                sReport += icMsgValidateCriticalError;
-               sReport += "Critical tag(s) missing.\r\n";
+               sReport += "Critical tag(s) missing.\n";
                rv = icMaxStatus(rv, icValidateCriticalError);
              }
 
           if (!GetTag(icSigGamutTag) && m_Header.version < icVersionNumberV5) {
             sReport += icMsgValidateNonCompliant;
-            sReport += "Gamut tag missing.\r\n";
+            sReport += "Gamut tag missing.\n";
             rv = icMaxStatus(rv, icValidateNonCompliant);
           }
 
@@ -2430,7 +2430,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
               case icSig15colorData:
                 if (!GetTag(icSigColorantTableTag)) {
                   sReport += icMsgValidateNonCompliant;
-                  sReport += "xCLR output profile is missing colorantTableTag\r\n";
+                  sReport += "xCLR output profile is missing colorantTableTag\n";
                   rv = icMaxStatus(rv, icValidateNonCompliant);
                 }
 
@@ -2444,14 +2444,14 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigLinkClass:
         if (!GetTag(icSigAToB0Tag) || !GetTag(icSigProfileSequenceDescTag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
         if (icIsSpaceCLR(m_Header.colorSpace)) {
           if (!GetTag(icSigColorantTableTag)) {
             sReport += icMsgValidateNonCompliant;
-            sReport += "Required tag(s) missing.\r\n";
+            sReport += "Required tag(s) missing.\n";
             rv = icMaxStatus(rv, icValidateNonCompliant);
           }
         }
@@ -2459,7 +2459,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
         if (icIsSpaceCLR(m_Header.pcs)) {
           if (!GetTag(icSigColorantTableOutTag)) {
             sReport += icMsgValidateNonCompliant;
-            sReport += "Required tag(s) missing.\r\n";
+            sReport += "Required tag(s) missing.\n";
             rv = icMaxStatus(rv, icValidateNonCompliant);
           }
         }
@@ -2468,7 +2468,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigColorSpaceClass:
         if (!GetTag(icSigAToB0Tag) || !GetTag(icSigBToA0Tag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
         break;
@@ -2476,7 +2476,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigAbstractClass:
         if (!GetTag(icSigAToB0Tag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
         break;
@@ -2484,7 +2484,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigNamedColorClass:
         if (!GetTag(icSigNamedColor2Tag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -2492,7 +2492,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
 
       default:
         sReport += icMsgValidateCriticalError;
-        sReport += "Unknown Profile Class.\r\n";
+        sReport += "Unknown Profile Class.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
         break;
     }
@@ -2507,7 +2507,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
           if (m_Header.colorSpace == icSigGrayData) {
             if (!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag) && !GetTag(icSigGrayTRCTag)) {
               sReport += icMsgValidateCriticalError;
-              sReport += "Critical tag(s) missing.\r\n";
+              sReport += "Critical tag(s) missing.\n";
               rv = icMaxStatus(rv, icValidateCriticalError);
             }
           }
@@ -2517,7 +2517,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                 !GetTag(icSigBlueMatrixColumnTag) || !GetTag(icSigRedTRCTag) ||
                 !GetTag(icSigGreenTRCTag) || !GetTag(icSigBlueTRCTag)) {
                   sReport += icMsgValidateCriticalError;
-                  sReport += "Critical tag(s) missing.\r\n";
+                  sReport += "Critical tag(s) missing.\n";
                   rv = icMaxStatus(rv, icValidateCriticalError);
               }
             }
@@ -2533,7 +2533,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
           if (m_Header.colorSpace == icSigGrayData) {
             if (!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag) && !GetTag(icSigGrayTRCTag)) {
               sReport += icMsgValidateCriticalError;
-              sReport += "Critical tag(s) missing.\r\n";
+              sReport += "Critical tag(s) missing.\n";
               rv = icMaxStatus(rv, icValidateCriticalError);
             }
           }
@@ -2544,7 +2544,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                 !GetTag(icSigBlueMatrixColumnTag) || !GetTag(icSigRedTRCTag) ||
                 !GetTag(icSigGreenTRCTag) || !GetTag(icSigBlueTRCTag)) {
                   sReport += icMsgValidateCriticalError;
-                  sReport += "Critical tag(s) missing.\r\n";
+                  sReport += "Critical tag(s) missing.\n";
                   rv = icMaxStatus(rv, icValidateCriticalError);
               }
             }
@@ -2562,7 +2562,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                 !GetTag(icSigAToB1Tag) && !GetTag(icSigBToA1Tag) &&
                 !GetTag(icSigAToB3Tag) && !GetTag(icSigBToA3Tag) && !GetTag(icSigGrayTRCTag)) {
               sReport += icMsgValidateCriticalError;
-              sReport += "Critical tag(s) missing.\r\n";
+              sReport += "Critical tag(s) missing.\n";
               rv = icMaxStatus(rv, icValidateCriticalError);
             }
           }
@@ -2571,13 +2571,13 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
                 !GetTag(icSigAToB1Tag) && !GetTag(icSigBToA1Tag) &&
                 !GetTag(icSigAToB3Tag) && !GetTag(icSigBToA3Tag)) {
                 sReport += icMsgValidateCriticalError;
-                sReport += "Critical tag(s) missing.\r\n";
+                sReport += "Critical tag(s) missing.\n";
                 rv = icMaxStatus(rv, icValidateCriticalError);
             }
 
             if (!GetTag(icSigGamutTag) && m_Header.version < icVersionNumberV5) {
               sReport += icMsgValidateNonCompliant;
-              sReport += "Gamut tag missing.\r\n";
+              sReport += "Gamut tag missing.\n";
               rv = icMaxStatus(rv, icValidateNonCompliant);
             }
 
@@ -2599,7 +2599,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
               case icSig15colorData:
                 if (!GetTag(icSigColorantTableTag)) {
                   sReport += icMsgValidateNonCompliant;
-                  sReport += "xCLR output profile is missing colorantTableTag\r\n";
+                  sReport += "xCLR output profile is missing colorantTableTag\n";
                   rv = icMaxStatus(rv, icValidateNonCompliant);
                 }
 
@@ -2614,14 +2614,14 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigLinkClass:
         if (!GetTag(icSigAToB0Tag)){
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
         if (icIsSpaceCLR(m_Header.colorSpace)) {
           if (!GetTag(icSigColorantTableTag)) {
             sReport += icMsgValidateNonCompliant;
-            sReport += "Required tag(s) missing.\r\n";
+            sReport += "Required tag(s) missing.\n";
             rv = icMaxStatus(rv, icValidateNonCompliant);
           }
         }
@@ -2629,7 +2629,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
         if (icIsSpaceCLR(m_Header.pcs)) {
           if (!GetTag(icSigColorantTableOutTag)) {
             sReport += icMsgValidateNonCompliant;
-            sReport += "Required tag(s) missing.\r\n";
+            sReport += "Required tag(s) missing.\n";
             rv = icMaxStatus(rv, icValidateNonCompliant);
           }
         }
@@ -2643,7 +2643,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
           if ((!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag)) || 
               (!GetTag(icSigBToA0Tag) && !GetTag(icSigBToA1Tag) && !GetTag(icSigBToA3Tag))) {
             sReport += icMsgValidateCriticalError;
-            sReport += "Critical tag(s) missing.\r\n";
+            sReport += "Critical tag(s) missing.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -2656,7 +2656,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
         if (m_Header.pcs) {
           if (!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB3Tag)) {
             sReport += icMsgValidateCriticalError;
-            sReport += "Critical tag(s) missing.\r\n";
+            sReport += "Critical tag(s) missing.\n";
             rv = icMaxStatus(rv, icValidateCriticalError);
           }
         }
@@ -2665,7 +2665,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigNamedColorClass:
         if (!GetTag(icSigNamedColor2Tag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
         break;
@@ -2673,7 +2673,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigMaterialIdentificationClass:
         if (!GetTag(icSigAToM0Tag) && !GetTag(icSigMaterialTypeArrayTag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag missing.\r\n";
+          sReport += "Critical tag missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
         break;
@@ -2681,7 +2681,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigMaterialVisualizationClass:
         if (!GetTag(icSigMToB0Tag) && !GetTag(icSigMToS0Tag)&& !GetTag(icSigMaterialTypeArrayTag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
         break;
@@ -2689,14 +2689,14 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
       case icSigMaterialLinkClass:
         if (!GetTag(icSigMToA0Tag)&& !GetTag(icSigMaterialTypeArrayTag)) {
           sReport += icMsgValidateCriticalError;
-          sReport += "Critical tag(s) missing.\r\n";
+          sReport += "Critical tag(s) missing.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
         break;
 
       default:
         sReport += icMsgValidateCriticalError;
-        sReport += "Unknown Profile Class.\r\n";
+        sReport += "Unknown Profile Class.\n";
         rv = icMaxStatus(rv, icValidateCriticalError);
         break;
     }
@@ -2775,7 +2775,7 @@ icValidateStatus CIccProfile::Validate(std::string &sReport, std::string sSigPat
   // Check for duplicate tags
   if (!AreTagsUnique()) {
     sReport += icMsgValidateWarning;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There are duplicate tags.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
@@ -3422,7 +3422,7 @@ CIccProfile* ValidateIccProfile(CIccIO *pIO, std::string &sReport, icValidateSta
   if (!pIO) {
     sReport = icMsgValidateCriticalError;
     sReport += " - ";
-    sReport += "- Invalid I/O Handle\r\n";
+    sReport += "- Invalid I/O Handle\n";
     delete pIO;
     return NULL;
   }
@@ -3506,7 +3506,7 @@ CIccProfile* ValidateIccProfile(const icChar *szFilename, std::string &sReport, 
     sReport = icMsgValidateCriticalError;
     sReport += " - ";
     sReport += szFilename;
-    sReport += "- Invalid Filename\r\n";
+    sReport += "- Invalid Filename\n";
     delete pFileIO;
     return NULL;
   }

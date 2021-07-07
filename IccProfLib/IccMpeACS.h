@@ -92,7 +92,7 @@ class CIccMpeAcs : public CIccMultiProcessElement
 {
 public:
   virtual ~CIccMpeAcs();
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

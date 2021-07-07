@@ -107,7 +107,7 @@ public:
     if (op->sig == icSigIfOp || op->sig == icSigSelectOp) {
       printf("Start:");
         std::string opDesc;
-      op->Describe(opDesc);
+      op->Describe(opDesc, 100); // TODO - propogate verboseness
       printf("%9s\t", opDesc.c_str());
       for (int j = 0; j < (int)os.pStack->size(); j++)
         printf(" %.4f", (*os.pStack)[j]);
@@ -126,7 +126,7 @@ public:
         printf("End:");
       }
       std::string opDesc;
-      op->Describe(opDesc);
+      op->Describe(opDesc, 100); // TODO - propogate verboseness
       printf("%9s\t", opDesc.c_str());
     }
 
@@ -216,7 +216,7 @@ public:
     if (g_pDebugger)
     {
       std::string opDesc;
-      op->Describe(opDesc);
+      op->Describe(opDesc, 100); // TODO - propogate verboseness
       std::string line = "Unknown operator: ";
       line += opDesc;
       g_pDebugger->Error(line.c_str());
@@ -1757,7 +1757,7 @@ public:
 * 
 * Return: 
 ******************************************************************************/
-void SIccCalcOp::Describe(std::string &desc)
+void SIccCalcOp::Describe(std::string &desc, int verboseness)
 { 
   char buf[300];
   if (sig==icSigDataOp) {
@@ -2828,7 +2828,7 @@ void CIccCalculatorFunc::DescribeSequence(std::string &sDescription,
       pos = nBlanks + 2;
     }
 
-    op->Describe(opName);
+    op->Describe(opName, 100); // TODO - propogate verboseness
     funcDesc += opName;
     funcDesc += " ";
     pos += (int)opName.size() + 1;
@@ -2921,7 +2921,7 @@ void CIccCalculatorFunc::DescribeSequence(std::string &sDescription,
  * 
  * Return: 
  ******************************************************************************/
-void CIccCalculatorFunc::Describe(std::string &sDescription, int nBlanks)
+void CIccCalculatorFunc::Describe(std::string &sDescription, int verboseness, int nBlanks)
 {
   if (m_nOps) {
     DescribeSequence(sDescription, m_nOps, m_Op, nBlanks);
@@ -3201,10 +3201,10 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
         if (!SIccCalcOp::IsValidOp(op.sig)) {
           std::string opDesc;
 
-          op.Describe(opDesc);
+          op.Describe(opDesc, 100); // TODO - propogate verboseness
           sReport += "Invalid Operator \"";
           sReport += opDesc;
-          sReport += "\"\r\n";
+          sReport += "\"\n";
 
           if (scanList.rbegin()!=scanList.rend()) {
             sReport += "Last Few operators in reverse:\n";
@@ -3212,11 +3212,11 @@ const char *CIccCalculatorFunc::ParseFuncDef(const char *szFuncDef, CIccCalcOpLi
             CIccCalcOpList::reverse_iterator opi;
             int i;
             for (i=0, opi=scanList.rbegin(); i<10 && opi!=scanList.rend(); i++, opi++) {
-              opi->Describe(opDesc);
+              opi->Describe(opDesc, 100); // TODO - propogate verboseness
               sReport += " ";
               sReport += opDesc;
             }
-            sReport += "\r\n";
+            sReport += "\n";
           }
           return NULL;
         }
@@ -3685,35 +3685,35 @@ icValidateStatus CIccCalculatorFunc::Validate(std::string sigPath, std::string &
   if (m_nReserved) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " function has non zero reserved data.\r\n";
+    sReport += " function has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (GetMaxTemp()>65535) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " accesses illegal temporary channels.\r\n";
+    sReport += " accesses illegal temporary channels.\n";
     return icValidateCriticalError;
   }
 
   if (!HasValidOperations(sReport)) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " function has invalid operations.\r\n";
+    sReport += " function has invalid operations.\n";
     return icValidateCriticalError;
   }
 
   if (DoesOverflowInput(pChannelCalc->NumInputChannels())) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " accesses illegal input channels.\r\n";
+    sReport += " accesses illegal input channels.\n";
     return icValidateCriticalError;
   }
 
   if (DoesOverflowOutput(pChannelCalc->NumOutputChannels())) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " accesses illegal output channels.\r\n";
+    sReport += " accesses illegal output channels.\n";
     return icValidateCriticalError;
   }
 
@@ -3722,9 +3722,9 @@ icValidateStatus CIccCalculatorFunc::Validate(std::string sigPath, std::string &
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
     if (parseStat==icFuncParseStackUnderflow)
-      sReport += " causes an evaluation stack underflow.\r\n";
+      sReport += " causes an evaluation stack underflow.\n";
     else
-      sReport += " causes an evaluation stack overflow.\r\n";
+      sReport += " causes an evaluation stack overflow.\n";
     return icValidateCriticalError;
   }
 
@@ -3882,7 +3882,7 @@ int CIccCalculatorFunc::CheckUnderflowOverflow(SIccCalcOp *op, icUInt32Number nO
       icUInt32Number j, l;
       icInt32Number f;
 
-      op[i].Describe(opDesc);
+      op[i].Describe(opDesc, 100); // TODO - propogate verboseness
       sReport += "Stack underflow at operation \"" + opDesc + "\" in \"";
       f=i-2;
       if (f<0) f=0;
@@ -3890,12 +3890,12 @@ int CIccCalculatorFunc::CheckUnderflowOverflow(SIccCalcOp *op, icUInt32Number nO
       if (l>nOps-1)
         l=nOps-1;
       for (j=(icUInt32Number)f; j<=l; j++) {
-        op[j].Describe(opDesc);
+        op[j].Describe(opDesc, 100); // TODO - propogate verboseness
         if (j!=f)
           sReport += " ";
         sReport += opDesc;
       }
-      sReport += "\"\r\n";
+      sReport += "\"\n";
       return -1;
     }
 
@@ -4025,30 +4025,30 @@ bool CIccCalculatorFunc::HasValidOperations(std::string &sReport) const
   for (i=0; i<m_nOps; i++) {
     if (!m_Op[i].IsValidOp(m_pCalc)) {
       std::string opDesc;
-      m_Op[i].Describe(opDesc);
-      sReport += "Invalid Operation (" + opDesc + ")\r\n";
+      m_Op[i].Describe(opDesc, 100); // TODO - propogate verboseness 
+      sReport += "Invalid Operation (" + opDesc + ")\n";
       return false;
     }
     if (m_Op[i].sig==icSigSelectOp && i+1<m_nOps && m_Op[i+1].sig!=icSigCaseOp) {
-      sReport += "A case operator does not follow a sel operator\r\n";
+      sReport += "A case operator does not follow a sel operator\n";
       return false;
     }
     if (i) {
       if (m_Op[i].sig==icSigElseOp) {
         if (m_Op[i-1].sig!=icSigIfOp) {
-          sReport += "An else operator has no proceeding if operator\r\n";
+          sReport += "An else operator has no proceeding if operator\n";
           return false;
         }
       }
       else if (m_Op[i].sig==icSigCaseOp) {
         if (m_Op[i-1].sig!=icSigSelectOp && m_Op[i-1].sig!=icSigCaseOp) {
-          sReport += "A case operator has no proceeding sel or case operator\r\n";
+          sReport += "A case operator has no proceeding sel or case operator\n";
           return false;
         }
       }
       else if (m_Op[i].sig==icSigDefaultOp) {
         if (m_Op[i-1].sig!=icSigCaseOp) {
-          sReport += "An dflt operator has no proceeding case operator\r\n";
+          sReport += "An dflt operator has no proceeding case operator\n";
           return false;
         }
       }
@@ -4342,32 +4342,32 @@ icFuncParseStatus CIccMpeCalculator::SetCalcFunc(const char *szFuncDef, std::str
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeCalculator::Describe(std::string &sDescription)
+void CIccMpeCalculator::Describe(std::string &sDescription, int verboseness)
 {
   if (m_calcFunc) {
     icChar buf[81];
 
-    sprintf(buf, "BEGIN_CALC_ELEMENT %u %u\r\n", m_nInputChannels, m_nOutputChannels); 
+    sprintf(buf, "BEGIN_CALC_ELEMENT %u %u\n", m_nInputChannels, m_nOutputChannels); 
     sDescription += buf;
 
     if (m_nSubElem && m_SubElem) {
       icUInt32Number i;
       for (i=0; i<m_nSubElem; i++) {
-        sprintf(buf, "BEGIN_SUBCALCELEM %u\r\n", i);
+        sprintf(buf, "BEGIN_SUBCALCELEM %u\n", i);
         sDescription += buf;
-        m_SubElem[i]->Describe(sDescription);
-        sprintf(buf, "END_SUBCALCELEM %u\r\n\r\n", i);
+        m_SubElem[i]->Describe(sDescription, verboseness);
+        sprintf(buf, "END_SUBCALCELEM %u\n\n", i);
         sDescription += buf;
       }
     }
 
     if (m_calcFunc) {
-      sDescription += "BEGIN_CALC_FUNCTION\r\n";
-      m_calcFunc->Describe(sDescription);
-      sDescription += "END_CALC_FUNCTION\r\n";
+      sDescription += "BEGIN_CALC_FUNCTION\n";
+      m_calcFunc->Describe(sDescription, verboseness);
+      sDescription += "END_CALC_FUNCTION\n";
     }
 
-    sprintf(buf, "END_CALC_ELEMENT\r\n");
+    sprintf(buf, "END_CALC_ELEMENT\n");
     sDescription += buf;
 
   }
@@ -4758,7 +4758,7 @@ icValidateStatus CIccMpeCalculator::Validate(std::string sigPath, std::string &s
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has an Empty Calculator Functions!\r\n";
+    sReport += " - Has an Empty Calculator Functions!\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 

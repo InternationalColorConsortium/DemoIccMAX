@@ -208,32 +208,32 @@ CIccDictEntry::~CIccDictEntry()
 * 
 * Return: 
 ******************************************************************************/
-void CIccDictEntry::Describe(std::string &sDescription)
+void CIccDictEntry::Describe(std::string &sDescription, int verboseness)
 {
   std::wstring ws;
 
   //setup converter
   std::wstring_convert<convert_type, wchar_t> converter;
 
-  sDescription += "BEGIN DICT_ENTRY\r\nName=";
+  sDescription += "BEGIN DICT_ENTRY\nName=";
   ws.assign(m_sName->begin(), m_sName->end());
   sDescription += converter.to_bytes(ws);
-  sDescription += "\r\nValue=";
+  sDescription += "\nValue=";
   ws.assign(m_sValue->begin(), m_sValue->end());
   sDescription += converter.to_bytes(ws);
-  sDescription += "\r\n";
+  sDescription += "\n";
 
   if (m_pNameLocalized) {
-    sDescription += "BEGIN NAME_LOCALIZATION\r\n";
-    m_pNameLocalized->Describe(sDescription);
-    sDescription += "END NAME_LOCALIZATION\r\n";
+    sDescription += "BEGIN NAME_LOCALIZATION\n";
+    m_pNameLocalized->Describe(sDescription, verboseness);
+    sDescription += "END NAME_LOCALIZATION\n";
   }
   if (m_pValueLocalized) {
-    sDescription += "BEGIN VALUE_LOCALIZATION\r\n";
-    m_pValueLocalized->Describe(sDescription);
-    sDescription += "END VALUE_LOCALIZATION\r\n";
+    sDescription += "BEGIN VALUE_LOCALIZATION\n";
+    m_pValueLocalized->Describe(sDescription, verboseness);
+    sDescription += "END VALUE_LOCALIZATION\n";
   }
-  sDescription += "END DICT_ENTRY\r\n";
+  sDescription += "END DICT_ENTRY\n";
 }
 
 
@@ -448,21 +448,21 @@ icUInt32Number CIccTagDict::MaxPosRecSize()
  * 
  * Return: 
  ******************************************************************************/
-void CIccTagDict::Describe(std::string &sDescription)
+void CIccTagDict::Describe(std::string &sDescription, int verboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN DICT_TAG\r\n");
+  sprintf(buf, "BEGIN DICT_TAG\n");
   sDescription += buf;
 
   CIccNameValueDict::iterator i;
   for (i=m_Dict->begin(); i!=m_Dict->end(); i++) {
-    sDescription += "\r\n";
+    sDescription += "\n";
 
-    i->ptr->Describe(sDescription);
+    i->ptr->Describe(sDescription, verboseness);
   }
 
-  sprintf(buf, "\r\nEND DICT_TAG\r\n");
+  sprintf(buf, "\nEND DICT_TAG\n");
   sDescription += buf;
 }
 
@@ -920,14 +920,14 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
   if (!AreNamesUnique()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There are duplicate tags.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
   if (!AreNamesNonzero()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There are duplicate tags.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
@@ -935,7 +935,7 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
   if (m_bBadAlignment) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Some Data elements are not aligned correctly\r\n";
+    sReport += " - Some Data elements are not aligned correctly\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 

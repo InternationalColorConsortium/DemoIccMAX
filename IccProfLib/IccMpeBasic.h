@@ -102,7 +102,7 @@ public:
   virtual icCurveSegSignature GetType() const = 0;
   virtual const icChar *GetClassName() const = 0;
 
-  virtual void Describe(std::string &sDescription)=0;
+  virtual void Describe(std::string &sDescription, int verboseness)=0;
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO)=0;
   virtual bool Write(CIccIO *pIO)=0;
@@ -141,7 +141,7 @@ public:
   virtual icCurveSegSignature GetType() const { return icSigFormulaCurveSeg; }
   virtual const icChar *GetClassName() const { return "CIccFormulaCurveSegment"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   void SetFunction(icUInt16Number functionType, icUInt8Number num_parameters, icFloatNumber *parameters);
 
@@ -185,7 +185,7 @@ public:
 
   virtual icFloatNumber *GetSamples() { return m_pSamples; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -222,7 +222,7 @@ public:
   virtual icCurveElemSignature GetType() const = 0;
   virtual const icChar *GetClassName() const = 0;
 
-  virtual void Describe(std::string &sDescription) = 0;
+  virtual void Describe(std::string &sDescription, int verboseness) = 0;
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO) = 0;
   virtual bool Write(CIccIO *pIO) = 0;
@@ -257,7 +257,7 @@ public:
   virtual icCurveElemSignature GetType() const { return icSigSegmentedCurve; }
   virtual const icChar *GetClassName() const { return "CIccSegmentedCurve"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -308,7 +308,7 @@ public:
 
   virtual icFloatNumber *GetSamples() { return m_pSamples; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -362,7 +362,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigCurveSetElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCurveSet"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -405,7 +405,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigTintArrayElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeTintArray"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness =0);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -448,7 +448,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigMatrixElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeMatrix"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -504,7 +504,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigCLutElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCLUT"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -540,7 +540,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigExtCLutElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeExtCLUT"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -574,7 +574,7 @@ public:
 
   virtual const icChar *GetXformName() const = 0;
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

@@ -926,11 +926,11 @@ void icMatrixDump(std::string &sDump, icS15Fixed16Number *pMatrix)
 {
   icChar buf[128];
 
-  sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n", icFtoD(pMatrix[0]), icFtoD(pMatrix[1]), icFtoD(pMatrix[2]));
+  sprintf(buf, "%8.4lf %8.4lf %8.4lf\n", icFtoD(pMatrix[0]), icFtoD(pMatrix[1]), icFtoD(pMatrix[2]));
   sDump += buf;
-  sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n", icFtoD(pMatrix[3]), icFtoD(pMatrix[4]), icFtoD(pMatrix[5]));
+  sprintf(buf, "%8.4lf %8.4lf %8.4lf\n", icFtoD(pMatrix[3]), icFtoD(pMatrix[4]), icFtoD(pMatrix[5]));
   sDump += buf;
-  sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n", icFtoD(pMatrix[6]), icFtoD(pMatrix[7]), icFtoD(pMatrix[8]));
+  sprintf(buf, "%8.4lf %8.4lf %8.4lf\n", icFtoD(pMatrix[6]), icFtoD(pMatrix[7]), icFtoD(pMatrix[8]));
   sDump += buf;
 }
 
@@ -955,7 +955,7 @@ const icChar *icGetSig(icChar *pBuf, icUInt32Number nSig, bool bGetHexVal)
   }
 
   if (bGetHexVal)
-  sprintf(pBuf+5, "' = %08X", nSig);
+    sprintf(pBuf+5, "' = %08X", nSig);
   else
     sprintf(pBuf+5, "'");
 
@@ -2249,21 +2249,21 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icXYZNumber &XY
   if (XYZ.X < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative X value!\r\n";
+    sReport += " - XYZNumber: Negative X value!\n";
     rv = icValidateNonCompliant;
   }
 
   if (XYZ.Y < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative Y value!\r\n";
+    sReport += " - XYZNumber: Negative Y value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (XYZ.Z < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative Z value!\r\n";
+    sReport += " - XYZNumber: Negative Z value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -2277,21 +2277,21 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icFloatXYZNumbe
   if (XYZ.X < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - FloatXYZNumber: Negative X value!\r\n";
+    sReport += " - FloatXYZNumber: Negative X value!\n";
     rv = icValidateNonCompliant;
   }
 
   if (XYZ.Y < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - FloatXYZNumber: Negative Y value!\r\n";
+    sReport += " - FloatXYZNumber: Negative Y value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (XYZ.Z < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - FloatXYZNumber: Negative Z value!\r\n";
+    sReport += " - FloatXYZNumber: Negative Z value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -2305,14 +2305,14 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icSpectralRange
   if (icF16toF(range.end)<=icF16toF(range.start)) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - spectralRange: end wavelength must be greater than start wavelength!\r\n";
+    sReport += " - spectralRange: end wavelength must be greater than start wavelength!\n";
     rv = icValidateNonCompliant;
   }
 
   if (range.steps<2) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - spectralRange: wavelength range must have at least two steps!\r\n";
+    sReport += " - spectralRange: wavelength range must have at least two steps!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -2333,7 +2333,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.year<1992) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid year!\r\n",dateTime.year);
+    sprintf(buf," - %u: Invalid year!\n",dateTime.year);
     sReport += buf;
     rv = icValidateWarning;
   }
@@ -2343,7 +2343,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
     if (dateTime.year>(year+1)) {
       sReport += icMsgValidateWarning;
       sReport += sDesc;
-      sprintf(buf," - %u: Invalid year!\r\n",dateTime.year);
+      sprintf(buf," - %u: Invalid year!\n",dateTime.year);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -2352,7 +2352,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
     if (dateTime.year>year) {
       sReport += icMsgValidateWarning;
       sReport += sDesc;
-      sprintf(buf," - %u: Invalid year!\r\n",dateTime.year);
+      sprintf(buf," - %u: Invalid year!\n",dateTime.year);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -2361,7 +2361,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.month<1 || dateTime.month>12) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid month!\r\n",dateTime.month);
+    sprintf(buf," - %u: Invalid month!\n",dateTime.month);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2369,7 +2369,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.day<1 || dateTime.day>31) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid day!\r\n",dateTime.day);
+    sprintf(buf," - %u: Invalid day!\n",dateTime.day);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2378,7 +2378,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
     if (dateTime.day>29) {
       sReport += icMsgValidateWarning;
       sReport += sDesc;
-      sprintf(buf," - %u: Invalid day for February!\r\n",dateTime.day);
+      sprintf(buf," - %u: Invalid day for February!\n",dateTime.day);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -2387,7 +2387,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
       if ((dateTime.year%4)!=0) {
         sReport += icMsgValidateWarning;
         sReport += sDesc;
-        sprintf(buf," - %u: Invalid day for February, year is not a leap year(%u)!\r\n",dateTime.day, dateTime.year);
+        sprintf(buf," - %u: Invalid day for February, year is not a leap year(%u)!\n",dateTime.day, dateTime.year);
         sReport += buf;
         rv = icMaxStatus(rv, icValidateWarning);
       }
@@ -2397,7 +2397,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.hours>23) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid hour!\r\n",dateTime.hours);
+    sprintf(buf," - %u: Invalid hour!\n",dateTime.hours);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2405,7 +2405,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.minutes>59) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid minutes!\r\n",dateTime.minutes);
+    sprintf(buf," - %u: Invalid minutes!\n",dateTime.minutes);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2413,7 +2413,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.seconds>59) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid seconds!\r\n",dateTime.hours);
+    sprintf(buf," - %u: Invalid seconds!\n",dateTime.hours);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2428,7 +2428,7 @@ icValidateStatus CIccInfo::CheckLuminance(std::string &sReport, const icFloatXYZ
   if (fabs(XYZ.Y -1.0f) < 0.01 ) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sReport += " - XYZNumber appears to be normalized! Y value should reflect absolute luminance.\r\n";
+    sReport += " - XYZNumber appears to be normalized! Y value should reflect absolute luminance.\n";
     rv = icValidateWarning;
   }
 

@@ -246,7 +246,7 @@ public:
   unsigned long extra;
   IIccOpDef *def;
 
-  void Describe(std::string &desc);
+  void Describe(std::string &desc, int verboseness);
   
   static bool IsValidOp(icSigCalcOp sig);
 
@@ -296,7 +296,7 @@ public:
   virtual int ArgsPushed(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return op.ArgsPushed(pCalc);}
   virtual int ArgsUsed(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return op.ArgsUsed(pCalc);}
 
-  virtual void Describe(SIccCalcOp &op, std::string &desc) {op.Describe(desc);}
+  virtual void Describe(SIccCalcOp &op, std::string &desc, int verboseness) {op.Describe(desc, verboseness);}
 
   virtual bool IsValid(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return op.IsValidOp(pCalc); }
 
@@ -371,7 +371,7 @@ public:
   virtual icChannelFuncSignature GetType() const { return icSigChannelFunction; }
   virtual const icChar *GetClassName() const { return "CIccChannelFunction"; }
 
-  virtual void Describe(std::string &sDescription, int nBlanks=0);
+  virtual void Describe(std::string &sDescription, int verboseness=0, int nBlanks=0);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -461,7 +461,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigCalculatorElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCalculator"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

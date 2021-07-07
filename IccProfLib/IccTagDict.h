@@ -101,7 +101,7 @@ public: //member functions
   CIccDictEntry &operator=(const CIccDictEntry &IDE);
   virtual ~CIccDictEntry();
 
-  void Describe(std::string &sDescription);
+  void Describe(std::string &sDescription, int verboseness);
 
   icUInt32Number PosRecSize();
 
@@ -169,7 +169,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigDictType; }
   virtual const icChar *GetClassName() const { return "CIccTagDict"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

@@ -99,7 +99,7 @@ public:
   virtual ~IIccStruct() {}
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const = 0;
 
-  virtual void Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription, int verboseness) const;
 
   virtual const icChar *GetClassName() const = 0;
   virtual const icChar *GetDisplayName() const = 0;
@@ -132,7 +132,7 @@ public:
   virtual ~IIccArray() {}
   virtual IIccArray* NewCopy(CIccTagArray *pNewTagArray) const = 0;
 
-  virtual void Describe(std::string &sDescription) const { }
+  virtual void Describe(std::string &sDescription, int verboseness) const { }
 
   virtual const icChar *GetClassName() const = 0;
 
@@ -169,7 +169,7 @@ public:
 
   virtual const icChar *GetClassName() const { return "CIccTagStruct"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -239,7 +239,7 @@ public:
 
   virtual const icChar *GetClassName() const { return "CIccTagArray"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int verboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
