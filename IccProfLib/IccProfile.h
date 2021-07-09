@@ -240,7 +240,7 @@ bool ICCPROFLIB_API SaveIccProfile(const icChar *szFilename, CIccProfile *pIcc, 
 void ICCPROFLIB_API CalcProfileID(CIccIO *pIO, icProfileID *profileID);
 bool ICCPROFLIB_API CalcProfileID(const icChar *szFilename, icProfileID *profileID);
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__linux__)
 CIccProfile ICCPROFLIB_API *ReadIccProfile(const icWChar *szFilename);
 CIccProfile ICCPROFLIB_API *OpenIccProfile(const icWChar *szFilename);
 CIccProfile ICCPROFLIB_API *ValidateIccProfile(const icWChar *szFilename, std::string &sReport, icValidateStatus &nStatus);

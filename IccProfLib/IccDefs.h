@@ -111,7 +111,7 @@ typedef char                icChar;
 typedef unsigned char       icUChar; /*For Utf8 encoding*/
 typedef unsigned short      icUChar16; /*For Utf16 encoding*/
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__linux__)
 typedef wchar_t             icWChar;
 #endif
 
