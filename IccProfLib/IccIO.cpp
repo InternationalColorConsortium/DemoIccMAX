@@ -74,6 +74,10 @@
 #include <memory.h>
 #include <string.h>
 
+#if defined (__linux__)
+#   include <iconv.h>
+#endif
+
 #ifndef __max
 #define __max(a,b)  (((a) > (b)) ? (a) : (b))
 #endif
@@ -400,8 +404,27 @@ bool CIccFileIO::Open(const icChar *szFilename, const icChar *szAttr)
   return m_fFile != NULL;
 }
 
+#if defined(__linux)
+bool CIccFileIO::convertWCharToChar( wchar_t* inBuf, char* outBuf, size_t outBufSize )
+{
+    iconv_t cd = iconv_open("UTF-8", "WCHAR_T");
+    if ((iconv_t) -1 == cd) {
+       return false;
+    }
 
-#ifdef WIN32
+    size_t inBufSize = wcslen( inBuf );
+    size_t ret = iconv( cd, (char**)&inBuf, &inBufSize, &outBuf, &outBufSize );
+    if ((size_t) -1 == ret) {
+        return false;
+    }
+
+    iconv_close( cd );
+
+    return true;
+}
+#endif
+
+#if defined(WIN32) || defined(__linux__)
 bool CIccFileIO::Open(const icWChar *szFilename, const icWChar *szAttr)
 {
   icWChar myAttr[20];
@@ -416,12 +439,28 @@ bool CIccFileIO::Open(const icWChar *szFilename, const icWChar *szAttr)
   if (m_fFile)
     fclose(m_fFile);
 
+#if defined(WIN32)
   m_fFile = _wfopen(szFilename, szAttr);
+#else
+  size_t outFilenameSize = 500;
+  char filename[500];
+  if ( !convertWCharToChar( (wchar_t*)szFilename, filename, outFilenameSize ) )
+      return false;
+
+  size_t outAttrSize = 20;
+  char attr[20];
+  if ( !convertWCharToChar( (wchar_t*)szAttr, attr, outAttrSize ) )
+      return false;
+
+  m_fFile = fopen(filename, attr);
+#endif
 
   return m_fFile != NULL;
 }
 #endif
 
+// cd = iconv_open("UTF-8", "WCHAR_T");
+// ret = iconv( cd, &iconv_in, &iconv_in_bytes, &iconv_out, &iconv_out_bytes );
 
 void CIccFileIO::Close()
 {

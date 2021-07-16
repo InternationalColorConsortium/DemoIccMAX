@@ -3006,7 +3006,7 @@ CIccProfile* ReadIccProfile(const icChar *szFilename)
 }
 
 
-#ifdef WIN32
+#if defined (WIN32) || defined (__linux__)
 /**
 *****************************************************************************
 * Name: ReadIccProfile
@@ -3114,7 +3114,7 @@ CIccProfile* OpenIccProfile(const icChar *szFilename)
   return pIcc;
 }
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__linux__)
 /**
 ******************************************************************************
 * Name: OpenIccProfile
@@ -3353,7 +3353,7 @@ bool SaveIccProfile(const icChar *szFilename, CIccProfile *pIcc, icProfileIDSave
   return true;
 }
 
-#ifdef WIN32
+#if defined (WIN32) || defined (__linux__)
 /**
 ******************************************************************************
 * Name: SaveIccProfile

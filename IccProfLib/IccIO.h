@@ -153,7 +153,7 @@ public:
   virtual ~CIccFileIO();
 
   bool Open(const icChar *szFilename, const icChar *szAttr);
-#ifdef WIN32
+#if defined(WIN32) || defined(__linux__)
   bool Open(const icWChar *szFilename, const icWChar *szAttr);
 #endif
   virtual void Close();
@@ -168,6 +168,11 @@ public:
 
 protected:
   FILE *m_fFile;
+
+#if defined (__linux__)
+private:
+    bool convertWCharToChar( wchar_t* inBuf, char* outBuf, size_t outBufSize );
+#endif
 };
 
 /**
