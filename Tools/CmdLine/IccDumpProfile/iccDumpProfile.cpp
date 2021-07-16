@@ -65,6 +65,7 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
+// -Validation improvements by Peter Wyatt 2021
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -102,7 +103,7 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig, int verboseness)
 int main(int argc, char* argv[])
 {
   int nArg = 1;        
-  int verbosity = 100; // default is maximum verbosity (old behaviour)
+  long int verbosity = 100; // default is maximum verbosity (old behaviour)
 
   if (argc <= 1) {
 print_usage:
@@ -123,8 +124,10 @@ print_usage:
     if (argc <= nArg)
       goto print_usage;
 
-    verbosity = atoi(argv[nArg]);
-    if (verbosity != 0) {
+    // support case where ICC filename starts with an integer: e.g. "123.icc"
+    char *endptr = nullptr;
+    verbosity = strtol(argv[nArg], &endptr, 10);
+    if ((verbosity != 0L) && (errno != ERANGE) && ((endptr == nullptr) || (*endptr == '\0'))) {
       // clamp verbosity to 1-100 inclusive
       if (verbosity < 0)
         verbosity = 1;
@@ -132,15 +135,17 @@ print_usage:
         verbosity = 100;
       nArg++;
       if (argc <= nArg)
-          goto print_usage;
+        goto print_usage;
     }
 
     pIcc = ValidateIccProfile(argv[nArg], sReport, nStatus);
     bDumpValidation = true;
   }
   else {
-    verbosity = atoi(argv[nArg]);
-    if (verbosity != 0) {
+    // support case where ICC filename starts with an integer: e.g. "123.icc"
+    char* endptr = nullptr;
+    verbosity = strtol(argv[nArg], &endptr, 10);
+    if ((verbosity != 0L) && (errno != ERANGE) && ((endptr == nullptr) || (*endptr == '\0'))) {
       // clamp verbosity to 1-100 inclusive
       if (verbosity < 0)
         verbosity = 1;
@@ -157,6 +162,7 @@ print_usage:
   // Precondition: nArg is argument of ICC profile filename
   if (!pIcc) {
     printf("Unable to parse '%s' as ICC profile!\n", argv[nArg]);
+    nStatus = icValidateCriticalError;
   }
   else {
     icHeader *pHdr = &pIcc->m_Header;
@@ -369,8 +375,9 @@ print_usage:
       nValid = -2;
       break;
     }
-    fwrite(sReport.c_str(), sReport.length(), 1, stdout);
   }
+
+  fwrite(sReport.c_str(), sReport.length(), 1, stdout);
 
   delete pIcc;
 
