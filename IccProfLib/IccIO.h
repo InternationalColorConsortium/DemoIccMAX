@@ -171,7 +171,7 @@ protected:
 
 #if defined (__linux__)
 private:
-    bool convertWCharToChar( wchar_t* inBuf, char* outBuf, size_t outBufSize );
+    bool convertWCharToUTF8( wchar_t* inBuf, char* outBuf, size_t outBufSize );
 #endif
 };
 

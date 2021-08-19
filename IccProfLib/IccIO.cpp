@@ -405,14 +405,14 @@ bool CIccFileIO::Open(const icChar *szFilename, const icChar *szAttr)
 }
 
 #if defined(__linux)
-bool CIccFileIO::convertWCharToChar( wchar_t* inBuf, char* outBuf, size_t outBufSize )
+bool CIccFileIO::convertWCharToUTF8( wchar_t* inBuf, char* outBuf, size_t outBufSize )
 {
     iconv_t cd = iconv_open("UTF-8", "WCHAR_T");
     if ((iconv_t) -1 == cd) {
        return false;
     }
 
-    size_t inBufSize = wcslen( inBuf );
+    size_t inBufSize = (wcslen(inBuf) + 1 /* L'\0' */) * sizeof(wchar_t);
     size_t ret = iconv( cd, (char**)&inBuf, &inBufSize, &outBuf, &outBufSize );
     if ((size_t) -1 == ret) {
         return false;
@@ -443,24 +443,22 @@ bool CIccFileIO::Open(const icWChar *szFilename, const icWChar *szAttr)
   m_fFile = _wfopen(szFilename, szAttr);
 #else
   size_t outFilenameSize = 500;
-  char filename[500];
-  if ( !convertWCharToChar( (wchar_t*)szFilename, filename, outFilenameSize ) )
+  char outFilename[500];
+  if ( !convertWCharToUTF8( (wchar_t*)szFilename, outFilename, outFilenameSize ) )
       return false;
 
   size_t outAttrSize = 20;
-  char attr[20];
-  if ( !convertWCharToChar( (wchar_t*)szAttr, attr, outAttrSize ) )
+  char outAttr[20];
+  if ( !convertWCharToUTF8( (wchar_t*)szAttr, outAttr, outAttrSize ) )
       return false;
 
-  m_fFile = fopen(filename, attr);
+  m_fFile = fopen(outFilename, outAttr);
 #endif
 
   return m_fFile != NULL;
 }
 #endif
 
-// cd = iconv_open("UTF-8", "WCHAR_T");
-// ret = iconv( cd, &iconv_in, &iconv_in_bytes, &iconv_out, &iconv_out_bytes );
 
 void CIccFileIO::Close()
 {
