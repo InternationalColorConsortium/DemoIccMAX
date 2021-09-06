@@ -920,14 +920,14 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
   if (!AreNamesUnique()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\n";
+    sReport += " - There are duplicate names.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
   if (!AreNamesNonzero()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\n";
+    sReport += " - There zero-length names.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 

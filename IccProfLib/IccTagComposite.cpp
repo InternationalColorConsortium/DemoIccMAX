@@ -503,7 +503,7 @@ icValidateStatus CIccTagStruct::Validate(std::string sigPath, std::string &sRepo
   if (!AreElemsUnique()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\n";
+    sReport += " - There are duplicate elements.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
