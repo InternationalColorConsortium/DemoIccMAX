@@ -258,6 +258,17 @@ print_usage:
 
     printf("\n");
 
+    // Report all duplicated tags in the tag index
+    // Both ICC.1 and ICC.2 are silent on what should happen for this but report as a warning!!!
+    int m;
+    for (n=0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++) 
+        for (m=0, j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++, m++)
+            if ((i != j) && (i->TagInfo.sig == j->TagInfo.sig)) {
+                printf("%28s is duplicated at positions %d and %d!\n", Fmt.GetTagSigName(i->TagInfo.sig), n,  m);
+                nStatus = icMaxStatus(nStatus, icValidateWarning);
+            }
+    
+
     // Check additional details if doing detailed validation:
     // - First tag data offset is immediately after the Tag Table
     // - Tag data offsets are all 4-byte aligned
