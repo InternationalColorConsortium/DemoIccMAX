@@ -1960,7 +1960,7 @@ const icChar *CIccInfo::GetPathEntrySigName(icUInt32Number sig)
 
 const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 {
-  switch (val) {
+  switch ((int)val) {
   case icFlare0:
     return "Flare 0";
 
@@ -1978,7 +1978,7 @@ const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 
 const icChar *CIccInfo::GetMeasurementGeometryName(icMeasurementGeometry val)
 {
-  switch (val) {
+  switch ((int)val) {
   case icGeometryUnknown:
     return "Geometry Unknown";
 
