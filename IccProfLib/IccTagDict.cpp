@@ -77,6 +77,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <codecvt>
+#include <locale>
 #include "IccTagDict.h"
 #include "IccUtil.h"
 #include "IccIO.h"
@@ -335,7 +336,8 @@ bool CIccDictEntry::SetValueLocalized(CIccTagMultiLocalizedUnicode *pValueLocali
  ******************************************************************************/
 CIccTagDict::CIccTagDict()
 {
-  m_bBadAlignment = false;
+    m_tagSize = m_tagStart = 0;
+    m_bBadAlignment = false;
 
   m_Dict = new CIccNameValueDict;
 }
@@ -352,11 +354,12 @@ CIccTagDict::CIccTagDict()
  ******************************************************************************/
 CIccTagDict::CIccTagDict(const CIccTagDict &dict)
 {
+  m_tagSize = m_tagStart = 0;
   m_bBadAlignment = false;
   m_Dict = new CIccNameValueDict;
 
   CIccNameValueDict::iterator i;
-  CIccDictEntryPtr ptr;
+  CIccDictEntryPtr ptr = {};
 
   for (i=dict.m_Dict->begin(); i!=dict.m_Dict->end(); i++) {
     ptr.ptr = new CIccDictEntry(*i->ptr);
@@ -383,7 +386,7 @@ CIccTagDict &CIccTagDict::operator=(const CIccTagDict &dict)
   Cleanup();
 
   CIccNameValueDict::iterator i;
-  CIccDictEntryPtr ptr;
+  CIccDictEntryPtr ptr = {};
 
   for (i=dict.m_Dict->begin(); i!=dict.m_Dict->end(); i++) {
     ptr.ptr = new CIccDictEntry(*i->ptr);
@@ -565,7 +568,7 @@ bool CIccTagDict::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number bufsize = 128, num;
   icUnicodeChar *buf = (icUnicodeChar*)malloc(bufsize);
-  CIccDictEntryPtr ptr;
+  CIccDictEntryPtr ptr = {};
   std::wstring str;
 
   for (i=0; i<count; i++) {
@@ -1392,7 +1395,7 @@ bool CIccTagDict::Set(std::wstring sName, std::wstring sValue, bool bUnSet)
     de = new CIccDictEntry;
     de->GetName() = sName;
 
-    CIccDictEntryPtr ptr;
+    CIccDictEntryPtr ptr = {};
     ptr.ptr = de;
     m_Dict->push_back(ptr);
   }
@@ -1445,7 +1448,7 @@ bool CIccTagDict::SetNameLocalized(std::wstring sName, CIccTagMultiLocalizedUnic
     de = new CIccDictEntry;
     de->GetName() = sName;
 
-    CIccDictEntryPtr ptr;
+    CIccDictEntryPtr ptr = {};
     ptr.ptr = de;
     m_Dict->push_back(ptr);
   }
@@ -1479,7 +1482,7 @@ bool CIccTagDict::SetValueLocalized(std::wstring sName, CIccTagMultiLocalizedUni
     de = new CIccDictEntry;
     de->GetName() = sName;
 
-    CIccDictEntryPtr ptr;
+    CIccDictEntryPtr ptr = {};
     ptr.ptr = de;
     m_Dict->push_back(ptr);
   }

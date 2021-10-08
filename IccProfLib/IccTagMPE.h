@@ -147,9 +147,9 @@ public:
 class ICCPROFLIB_API CIccMultiProcessElement
 {
 public:
-  CIccMultiProcessElement() {}
+  CIccMultiProcessElement() { m_nReserved = 0; m_nInputChannels = 0; m_nOutputChannels = 0; }
 
-  virtual ~CIccMultiProcessElement() {}
+  virtual ~CIccMultiProcessElement() { }
   
   static CIccMultiProcessElement* Create(icElemTypeSignature sig);
 

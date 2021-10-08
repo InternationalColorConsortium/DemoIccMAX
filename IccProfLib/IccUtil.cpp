@@ -199,7 +199,7 @@ static icInt32Number icHexDigit(icChar digit)
 
 bool icIsSpaceCLR(icColorSpaceSignature sig) 
 {
-  icChar szSig[5];
+  icChar szSig[5] = {0};
   szSig[0] = (icChar)(sig>>24);
   szSig[1] = (icChar)(sig>>16);
   szSig[2] = (icChar)(sig>>8);
@@ -233,7 +233,7 @@ bool icIsSpaceCLR(icColorSpaceSignature sig)
 void icColorIndexName(icChar *szName, icColorSpaceSignature csSig,
                       int nIndex, int nColors, const icChar *szUnknown)
 {
-  icChar szSig[5];
+  icChar szSig[5] = {0};
   int i;
 
   if (csSig!=icSigUnknownData) {
@@ -344,7 +344,7 @@ bool icMatrixInvert3x3(icFloatNumber *M)
   if (det>-epsilon && det<epsilon)
     return false;
 
-  icFloatNumber Co[9];
+  icFloatNumber Co[9] = {0};
 
   Co[0] = +(m48 - m75);
   Co[1] = -(m38 - m65);
@@ -889,7 +889,8 @@ void icXyzToPcs(icFloatNumber *XYZ)
 void icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum)
 {
   icUInt8Number *pData = (icUInt8Number *)pBuf;
-  icChar buf[80], num[10];
+  icChar buf[80] = {0};
+  icChar num[10] = {0};
 
   icInt32Number i, j;
   icUInt8Number c;
@@ -1250,7 +1251,7 @@ icUInt32Number icGetSpaceSamples(icColorSpaceSignature sig)
 
       default:
       {
-        icChar szSig[5];
+        icChar szSig[5] = {0};
         szSig[0] = (icChar)(sig>>24);
         szSig[1] = (icChar)(sig>>16);
         szSig[2] = (icChar)(sig>>8);
@@ -2184,7 +2185,7 @@ const icChar *CIccInfo::GetMeasurementUnit(icSignature sig)
 
     default:
     {
-      char buf[10];
+      char buf[10] = {0};
       buf[0] = (char)(sig>>24);
       buf[1] = (char)(sig>>16);
       buf[2] = (char)(sig>>8);
