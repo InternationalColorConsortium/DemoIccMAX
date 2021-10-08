@@ -130,7 +130,7 @@ CIccProfile::CIccProfile(const CIccProfile &Profile)
 
   if (!Profile.m_TagVals->empty()) {
     TagPtrList::const_iterator i;
-    IccTagPtr tagptr;
+    IccTagPtr tagptr = {0};
     for (i=Profile.m_TagVals->begin(); i!=Profile.m_TagVals->end(); i++) {
       tagptr.ptr = i->ptr->NewCopy();
       m_TagVals->push_back(tagptr);
@@ -139,7 +139,7 @@ CIccProfile::CIccProfile(const CIccProfile &Profile)
 
   if (!Profile.m_Tags->empty()) {
     TagEntryList::const_iterator i;
-    IccTagEntry entry;
+    IccTagEntry entry = {};
     for (i=Profile.m_Tags->begin(); i!=Profile.m_Tags->end(); i++) {
       TagPtrList::const_iterator j, k;
 
@@ -189,7 +189,7 @@ CIccProfile &CIccProfile::operator=(const CIccProfile &Profile)
 
   if (!Profile.m_TagVals->empty()) {
     TagPtrList::const_iterator i;
-    IccTagPtr tagptr;
+    IccTagPtr tagptr = {0};
     for (i=Profile.m_TagVals->begin(); i!=Profile.m_TagVals->end(); i++) {
       tagptr.ptr = i->ptr->NewCopy();
       m_TagVals->push_back(tagptr);
@@ -198,7 +198,7 @@ CIccProfile &CIccProfile::operator=(const CIccProfile &Profile)
 
   if (!Profile.m_Tags->empty()) {
     TagEntryList::const_iterator i;
-    IccTagEntry entry;
+    IccTagEntry entry = {};
     for (i=Profile.m_Tags->begin(); i!=Profile.m_Tags->end(); i++) {
       TagPtrList::const_iterator j, k;
 
@@ -476,7 +476,7 @@ bool CIccProfile::AttachTag(icSignature sig, CIccTag *pTag)
     return false;
   }
 
-  IccTagEntry Entry;
+  IccTagEntry Entry = {};
   Entry.TagInfo.sig = (icTagSignature)sig;
   Entry.TagInfo.offset = 0;
   Entry.TagInfo.size = 0;
@@ -491,7 +491,7 @@ bool CIccProfile::AttachTag(icSignature sig, CIccTag *pTag)
       break;
 
   if (i==m_TagVals->end()) {
-    IccTagPtr TagPtr;
+    IccTagPtr TagPtr = {};
     TagPtr.ptr = pTag;
     m_TagVals->push_back(TagPtr);
   }
@@ -1099,7 +1099,7 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
     return false;
 
   icUInt32Number count, i;
-  IccTagEntry TagEntry;
+  IccTagEntry TagEntry = {};
 
   TagEntry.pTag = NULL;
 
@@ -1224,7 +1224,7 @@ bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll/*=f
 
   pTagEntry->pTag = pTag;
 
-  IccTagPtr TagPtr;
+  IccTagPtr TagPtr = {};
 
   TagPtr.ptr = pTag;
 
@@ -1388,7 +1388,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       m_Header.model ||
       m_Header.attributes ||
       m_Header.renderingIntent ||
-      m_Header.illuminant.X || m_Header.illuminant.Y || m_Header.illuminant.Y ||
+      m_Header.illuminant.X || m_Header.illuminant.Y || m_Header.illuminant.Z ||
       m_Header.creator ||
       m_Header.profileID.ID32[0] || m_Header.profileID.ID32[1] || 
       m_Header.profileID.ID32[2] || m_Header.profileID.ID32[3] ||
@@ -3648,7 +3648,7 @@ void CalcProfileID(CIccIO *pIO, icProfileID *pProfileID)
 {
   icUInt32Number len, num, nBlock, pos;
   MD5_CTX context;
-  icUInt8Number buffer[1024];
+  icUInt8Number buffer[1024] = {0};
 
   //remember where we are
   pos = pIO->Tell();
