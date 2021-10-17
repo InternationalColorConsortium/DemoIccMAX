@@ -120,8 +120,6 @@ public:
 typedef std::list<CIccMultiProcessElementPtr> CIccMultiProcessElementList;
 typedef CIccMultiProcessElementList::iterator CIccMultiProcessElementIter;
 
-#define icSigMpeLevel0 ((icSignature)0x6D706530)  /* 'mpe0' */
-
 class CIccApplyMpePtr
 {
 public:
