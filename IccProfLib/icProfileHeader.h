@@ -676,7 +676,7 @@ typedef enum {
   icSigBrdfTypeCookTorranceColor2Lobe = 0x43543231  /* 'CT21' */,
   icSigBrdfTypeCookTorranceColor3Lobe = 0x43543331  /* 'CT31' */,
   icSigBrdfTypeWardMono               = 0x57617230  /* 'War0' */,
-  icSigBrdfTypeWardColor              = 0x57617230  /* 'War1' */,
+  icSigBrdfTypeWardColor              = 0x57617231  /* 'War1' */,
   icSigBrdfTypeLafortuneMono1Lobe     = 0x4c613130  /* 'La10' */,
   icSigBrdfTypeLafortuneMono2Lobe     = 0x4c613230  /* 'La20' */,
   icSigBrdfTypeLafortuneMono3Lobe     = 0x4c613330  /* 'La30' */,
@@ -761,7 +761,7 @@ typedef enum {
 */
 typedef enum {
   icSigNmclBrdfColorimetricMbr       = 0x62636f6c,  /* 'bcol' */
-  icSigNmclBrdfColorimetricParamsMbr = 0x62636f6c,  /* 'bcpr' */
+  icSigNmclBrdfColorimetricParamsMbr = 0x62637072,  /* 'bcpr' */
   icSigNmclBrdfSpectralMbr           = 0x62737063,  /* 'bspc' */
   icSigNmclBrdfSpectralParamsMbr     = 0x62737072,  /* 'bspr' */
   icSigNmclDeviceDataMbr             = 0x64657620,  /* 'dev ' */
