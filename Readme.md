@@ -188,11 +188,12 @@ abridged spectral encoding is provided.
 
 ### Windows
 
-The project solution BuildAll.sln file for the Visual Studio development IDE can
-be found in the ./Build/MSVC folder. This references additional .vcproj files
+The project solution files `BuildAll.sln` for various versions
+of the Microsoft Visual Studio development IDE can
+be found in the [./Build/MSVC](Build/Build/MSVC) folder. This references additional `.vcproj` files
 for the various libraries and applications provided by DemoIccMAX. Projects
 without any further dependencies should build and link correctly. Both 32 and
-64bit compile options are supported. Some of the projects have further
+64 bit compile options are supported. Some of the projects have further
 dependencies on third party libraries requiring that the SDK libraries are
 installed, and some system environment variables need to be set to correctly
 reference the include files and libraries. (Note: Projects with additional
@@ -200,8 +201,11 @@ dependencies may not correctly build if these libraries and environment variable
 are not set up before running Visual Studio).
 
 The dependency on libxml2 and iconv by the IccLibXML library as well as the
-IccToXML and IccFromXML applications requires these SDKs are accessible, and are
-referenced using the system environment variables `LIBXML` and `ICONV`.
+IccToXML and IccFromXML applications requires that these SDKs are accessible, and are
+referenced using the system environment variable `VendorTreeDir` with various
+sub-directories beneath. 
+Macros for the location of each of these third party libraries is defined in
+`[BuildDefs.props](Build/MSVC/BuildDefs.props)`.
 64-bit versions of these SDKs can be found on the
 [gnome website](http://ftp.gnome.org/pub/GNOME/binaries/win64/dependencies/).
 
