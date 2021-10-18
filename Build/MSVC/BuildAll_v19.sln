@@ -70,6 +70,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iccSpecSepToTiff", "..\..\T
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IccProfLib_DLL", "..\..\IccProfLib\IccProfLib_DLL_v19.vcxproj", "{3CDD3DA6-70EA-4463-B4B6-46E7AC0243B8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C76EC051-E5E3-4AE1-BF51-0F4CE927C004}"
+	ProjectSection(SolutionItems) = preProject
+		BuildDefs.props = BuildDefs.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug with Eigen|Win32 = Debug with Eigen|Win32
@@ -723,5 +728,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A53B9B9-1422-4051-9DBC-B349A0B47FCA}
 	EndGlobalSection
 EndGlobal
