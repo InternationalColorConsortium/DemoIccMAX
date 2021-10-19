@@ -387,7 +387,9 @@ typedef enum {
     icSigCxFTag                            = 0x43784620,  /* 'CxF ' */
     icSigDataTag                           = 0x64617461,  /* 'data' Removed in V4 */
     icSigDateTimeTag                       = 0x6474696D,  /* 'dtim' Removed in V4 */
+#if 0 // not documented!
     icSigDeviceMediaWhitePointTag          = 0x646d7770,  /* 'dmwp' */
+#endif
     icSigDeviceMfgDescTag                  = 0x646D6E64,  /* 'dmnd' */
     icSigDeviceModelDescTag                = 0x646D6464,  /* 'dmdd' */
     icSigDeviceSettingsTag                 = 0x64657673,  /* 'devs' Removed in V4 */
