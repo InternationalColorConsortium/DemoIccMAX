@@ -2167,7 +2167,10 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
       else {
         if (typeSig != icSigUtf8TextType &&
             typeSig != icSigZipUtf8TextType &&
-            typeSig != icSigZipXmlType) 
+#if defined(XRITE_ADDITIONS)
+            typeSig != icSigZipXmlType_XRITE &&
+#endif
+            typeSig != icSigZipXmlType)
           return false;
         return true;
       }
