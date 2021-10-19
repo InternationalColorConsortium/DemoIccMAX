@@ -694,7 +694,7 @@ typedef enum {
  * BRDF function signatures
  */
 typedef enum {
-  icSigBRDFFunctionMonochrome                = 0x6d6f6e63,   /* 'monc' */
+  icSigBRDFFunctionMonochrome                = 0x6d6f6e6f,   /* 'mono' */
   icSigBRDFFunctionColor                     = 0x636f6c72    /* 'colr' */
 } icSigBRDFFunction;
 
