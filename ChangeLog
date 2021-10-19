@@ -1,4 +1,4 @@
-2021-10 Peter Wyatt
+2021-09 to 2021-10 Peter Wyatt
 * Fixed MSVC Solution files for MSVC v19 due to name change to DemoIccMAX
 * Fixed various compiler errors for newer versions of LLVM and CLANG
 * Validation will now explicitly report duplicate tags, names and elements with correct error text
@@ -12,7 +12,9 @@
 * Added IccProfLib version to output from iccDumpProfile
 * Fix various compiler warnings
 * Fix comments and README.md
-
+* Replace 'ZXML' (X-Rite) with 'zxml' as per ICC.2 spec
+* Removed 'dwmp' as not documented
+* Corrected 'monc' to 'mono'
 
 2021-02-23 Max Derhak
 * Changed name of project from RefIccMAX to DemoIccMAX
