@@ -1,8 +1,11 @@
-#!/bin/sh
+#!/bin/sh -v
 ##
 ## Assumes "iccFromXml" is on $PATH
-## Use "sudo make install" to install to default location of "/usr/local/bin"
+## Use "sudo make install" to install all CLI tools to default location of "/usr/local/bin"
 ##
+
+# purge any ICCs from previous runs
+find . -iname "*.icc" -delete
 
 cd Calc
 iccFromXml CameraModel.xml CameraModel.icc
@@ -32,7 +35,7 @@ iccFromXml sRGB_D65_colorimetric.xml sRGB_D65_colorimetric.icc
 
 cd ../Encoding
 iccFromXml ISO22028-Encoded-sRGB.xml ISO22028-Encoded-sRGB.icc
-iccFromXml ISO22028EncodedsRGB.xml ISO22028EncodedsRGB.icc
+iccFromXml ISO22028-Encoded-bg-sRGB.xml ISO22028-Encoded-bg-sRGB.icc
 iccFromXml sRgbEncoding.xml sRgbEncoding.icc
 iccFromXml sRgbEncodingOverrides.xml sRgbEncodingOverrides.icc
 
@@ -47,47 +50,75 @@ iccFromXml 18ChanWithSpots-MVIS.xml 18ChanWithSpots-MVIS.icc
 iccFromXml 6ChanSelect-MID.xml 6ChanSelect-MID.icc
 
 cd ../PCC
-iccFromXml Lab-D50_2deg.xml Lab-D50_2deg.icc
-iccFromXml Lab-D93_2deg.xml Lab-D93_2deg.icc
-iccFromXml Spec400_10_700-B-Abs_2deg.xml Spec400_10_700-B-Abs_2deg.icc
-iccFromXml Spec400_10_700-B-CAT02_2deg.xml Spec400_10_700-B-CAT02_2deg.icc
-iccFromXml Spec400_10_700-B-MAT_2deg.xml Spec400_10_700-B-MAT_2deg.icc
-iccFromXml Spec400_10_700-D50-Abs_2deg.xml Spec400_10_700-D50-Abs_2deg.icc
-iccFromXml Spec400_10_700-D50_10deg.xml Spec400_10_700-D50_10deg.icc
-iccFromXml Spec400_10_700-D50_2deg.xml Spec400_10_700-D50_2deg.icc
-iccFromXml Spec400_10_700-D65-Abs_2deg.xml Spec400_10_700-D65-Abs_2deg.icc
-iccFromXml Spec400_10_700-D65-MAT_10deg.xml Spec400_10_700-D65-MAT_10deg.icc
-iccFromXml Spec400_10_700-D65-MAT_2deg.xml Spec400_10_700-D65-MAT_2deg.icc
-iccFromXml Spec400_10_700-D93-Abs_2deg.xml Spec400_10_700-D93-Abs_2deg.icc
-iccFromXml Spec400_10_700-D93-MAT_10deg.xml Spec400_10_700-D93-MAT_10deg.icc
-iccFromXml Spec400_10_700-D93-MAT_2deg.xml Spec400_10_700-D93-MAT_2deg.icc
-iccFromXml Spec400_10_700-DB-Abs_2deg.xml Spec400_10_700-DB-Abs_2deg.icc
-iccFromXml Spec400_10_700-DB-CAT02_2deg.xml Spec400_10_700-DB-CAT02_2deg.icc
-iccFromXml Spec400_10_700-DB-MAT_2deg.xml Spec400_10_700-DB-MAT_2deg.icc
-iccFromXml Spec400_10_700-DG-Abs_2deg.xml Spec400_10_700-DG-Abs_2deg.icc
-iccFromXml Spec400_10_700-DG-CAT02_2deg.xml Spec400_10_700-DG-CAT02_2deg.icc
-iccFromXml Spec400_10_700-DG-MAT_2deg.xml Spec400_10_700-DG-MAT_2deg.icc
-iccFromXml Spec400_10_700-DR-Abs_2deg.xml Spec400_10_700-DR-Abs_2deg.icc
-iccFromXml Spec400_10_700-DR-CAT02_2deg.xml Spec400_10_700-DR-CAT02_2deg.icc
-iccFromXml Spec400_10_700-DR-MAT_2deg.xml Spec400_10_700-DR-MAT_2deg.icc
-iccFromXml Spec400_10_700-G-Abs_2deg.xml Spec400_10_700-G-Abs_2deg.icc
-iccFromXml Spec400_10_700-G-CAT02_2deg.xml Spec400_10_700-G-CAT02_2deg.icc
-iccFromXml Spec400_10_700-G-MAT_2deg.xml Spec400_10_700-G-MAT_2deg.icc
-iccFromXml Spec400_10_700-IllumA-Abs_2deg.xml Spec400_10_700-IllumA-Abs_2deg.icc
-iccFromXml Spec400_10_700-IllumA-MAT_10deg.xml Spec400_10_700-IllumA-MAT_10deg.icc
-iccFromXml Spec400_10_700-IllumA-MAT_2deg.xml Spec400_10_700-IllumA-MAT_2deg.icc
-iccFromXml Spec400_10_700-N-Abs_2deg.xml Spec400_10_700-N-Abs_2deg.icc
-iccFromXml Spec400_10_700-N-CAT02_2deg.xml Spec400_10_700-N-CAT02_2deg.icc
-iccFromXml Spec400_10_700-N-MAT_2deg.xml Spec400_10_700-N-MAT_2deg.icc
-iccFromXml Spec400_10_700-R1-Abs_2deg.xml Spec400_10_700-R1-Abs_2deg.icc
-iccFromXml Spec400_10_700-R1-CAT02_2deg.xml Spec400_10_700-R1-CAT02_2deg.icc
-iccFromXml Spec400_10_700-R1-MAT_2deg.xml Spec400_10_700-R1-MAT_2deg.icc
-iccFromXml Spec400_10_700-R2-Abs_2deg.xml Spec400_10_700-R2-Abs_2deg.icc
-iccFromXml Spec400_10_700-R2-CAT02_2deg.xml Spec400_10_700-R2-CAT02_2deg.icc
-iccFromXml Spec400_10_700-R2-MAT_2deg.xml Spec400_10_700-R2-MAT_2deg.icc
-iccFromXml Spec400_10_700-Y-Abs_2deg.xml Spec400_10_700-Y-Abs_2deg.icc
-iccFromXml Spec400_10_700-Y-CAT02_2deg.xml Spec400_10_700-Y-CAT02_2deg.icc
-iccFromXml Spec400_10_700-Y-MAT_2deg.xml Spec400_10_700-Y-MAT_2deg.icc
+iccFromXml  Lab_float-D50_2deg.xml Lab_float-D50_2deg.icc
+iccFromXml  Lab_float-D93_2deg-MAT.xml Lab_float-D93_2deg-MAT.icc
+iccFromXml  Lab_int-D50_2deg.xml Lab_int-D50_2deg.icc
+iccFromXml  Lab_int-D65_2deg-MAT.xml Lab_int-D65_2deg-MAT.icc
+iccFromXml  Lab_int-IllumA_2deg-MAT.xml Lab_int-IllumA_2deg-MAT.icc
+iccFromXml  Spec380_10_730-D50_2deg.xml Spec380_10_730-D50_2deg.icc
+iccFromXml  Spec380_10_730-D65_2deg-MAT.xml Spec380_10_730-D65_2deg-MAT.icc
+iccFromXml  Spec380_1_780-D50_2deg.xml Spec380_1_780-D50_2deg.icc
+iccFromXml  Spec380_5_780-D50_2deg.xml Spec380_5_780-D50_2deg.icc
+iccFromXml  Spec400_10_700-B_2deg-Abs.xml Spec400_10_700-B_2deg-Abs.icc
+iccFromXml  Spec400_10_700-B_2deg-CAM.xml Spec400_10_700-B_2deg-CAM.icc
+iccFromXml  Spec400_10_700-B_2deg-CAT02.xml Spec400_10_700-B_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-B_2deg-MAT.xml Spec400_10_700-B_2deg-MAT.icc
+iccFromXml  Spec400_10_700-D50_10deg-Abs.xml Spec400_10_700-D50_10deg-Abs.icc
+iccFromXml  Spec400_10_700-D50_10deg-MAT.xml Spec400_10_700-D50_10deg-MAT.icc
+iccFromXml  Spec400_10_700-D50_20yo2deg-MAT.xml Spec400_10_700-D50_20yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D50_2deg-Abs.xml Spec400_10_700-D50_2deg-Abs.icc
+iccFromXml  Spec400_10_700-D50_2deg.xml Spec400_10_700-D50_2deg.icc
+iccFromXml  Spec400_10_700-D50_40yo2deg-MAT.xml Spec400_10_700-D50_40yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D50_60yo2deg-MAT.xml Spec400_10_700-D50_60yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D50_80yo2deg-MAT.xml Spec400_10_700-D50_80yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D65_10deg-Abs.xml Spec400_10_700-D65_10deg-Abs.icc
+iccFromXml  Spec400_10_700-D65_10deg-MAT.xml Spec400_10_700-D65_10deg-MAT.icc
+iccFromXml  Spec400_10_700-D65_20yo2deg-MAT.xml Spec400_10_700-D65_20yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D65_2deg-Abs.xml Spec400_10_700-D65_2deg-Abs.icc
+iccFromXml  Spec400_10_700-D65_2deg-MAT.xml Spec400_10_700-D65_2deg-MAT.icc
+iccFromXml  Spec400_10_700-D65_40yo2deg-MAT.xml Spec400_10_700-D65_40yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D65_60yo2deg-MAT.xml Spec400_10_700-D65_60yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D65_80yo2deg-MAT.xml Spec400_10_700-D65_80yo2deg-MAT.icc
+iccFromXml  Spec400_10_700-D93_10deg-Abs.xml Spec400_10_700-D93_10deg-Abs.icc
+iccFromXml  Spec400_10_700-D93_10deg-MAT.xml Spec400_10_700-D93_10deg-MAT.icc
+iccFromXml  Spec400_10_700-D93_2deg-Abs.xml Spec400_10_700-D93_2deg-Abs.icc
+iccFromXml  Spec400_10_700-D93_2deg-MAT.xml Spec400_10_700-D93_2deg-MAT.icc
+iccFromXml  Spec400_10_700-DB_2deg-Abs.xml Spec400_10_700-DB_2deg-Abs.icc
+iccFromXml  Spec400_10_700-DB_2deg-CAT02.xml Spec400_10_700-DB_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-DB_2deg-MAT.xml Spec400_10_700-DB_2deg-MAT.icc
+iccFromXml  Spec400_10_700-DG_2deg-Abs.xml Spec400_10_700-DG_2deg-Abs.icc
+iccFromXml  Spec400_10_700-DG_2deg-CAT02.xml Spec400_10_700-DG_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-DG_2deg-MAT.xml Spec400_10_700-DG_2deg-MAT.icc
+iccFromXml  Spec400_10_700-DR_2deg-Abs.xml Spec400_10_700-DR_2deg-Abs.icc
+iccFromXml  Spec400_10_700-DR_2deg-CAT02.xml Spec400_10_700-DR_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-DR_2deg-MAT.xml Spec400_10_700-DR_2deg-MAT.icc
+iccFromXml  Spec400_10_700-F11_2deg-CAT.xml Spec400_10_700-F11_2deg-CAT.icc
+iccFromXml  Spec400_10_700-F11_2deg-MAT.xml Spec400_10_700-F11_2deg-MAT.icc
+iccFromXml  Spec400_10_700-G_2deg-Abs.xml Spec400_10_700-G_2deg-Abs.icc
+iccFromXml  Spec400_10_700-G_2deg-CAT02.xml Spec400_10_700-G_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-G_2deg-MAT.xml Spec400_10_700-G_2deg-MAT.icc
+iccFromXml  Spec400_10_700-IllumA_10deg-Abs.xml Spec400_10_700-IllumA_10deg-Abs.icc
+iccFromXml  Spec400_10_700-IllumA_10deg-MAT.xml Spec400_10_700-IllumA_10deg-MAT.icc
+iccFromXml  Spec400_10_700-IllumA_2deg-Abs.xml Spec400_10_700-IllumA_2deg-Abs.icc
+iccFromXml  Spec400_10_700-IllumA_2deg-CAT.xml Spec400_10_700-IllumA_2deg-CAT.icc
+iccFromXml  Spec400_10_700-IllumA_2deg-MAT.xml Spec400_10_700-IllumA_2deg-MAT.icc
+iccFromXml  Spec400_10_700-N_2deg-Abs.xml Spec400_10_700-N_2deg-Abs.icc
+iccFromXml  Spec400_10_700-N_2deg-CAT02.xml Spec400_10_700-N_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-N_2deg-MAT.xml Spec400_10_700-N_2deg-MAT.icc
+iccFromXml  Spec400_10_700-R1_2deg-Abs.xml Spec400_10_700-R1_2deg-Abs.icc
+iccFromXml  Spec400_10_700-R1_2deg-CAT02.xml Spec400_10_700-R1_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-R1_2deg-MAT.xml Spec400_10_700-R1_2deg-MAT.icc
+iccFromXml  Spec400_10_700-R2_2deg-Abs.xml Spec400_10_700-R2_2deg-Abs.icc
+iccFromXml  Spec400_10_700-R2_2deg-CAT02.xml Spec400_10_700-R2_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-R2_2deg-MAT.xml Spec400_10_700-R2_2deg-MAT.icc
+iccFromXml  Spec400_10_700-Y_2deg-Abs.xml Spec400_10_700-Y_2deg-Abs.icc
+iccFromXml  Spec400_10_700-Y_2deg-CAT02.xml Spec400_10_700-Y_2deg-CAT02.icc
+iccFromXml  Spec400_10_700-Y_2deg-MAT.xml Spec400_10_700-Y_2deg-MAT.icc
+iccFromXml  XYZ_float-D50_2deg.xml XYZ_float-D50_2deg.icc
+iccFromXml  XYZ_float-D65_2deg-MAT.xml XYZ_float-D65_2deg-MAT.icc
+iccFromXml  XYZ_int-D50_2deg.xml XYZ_int-D50_2deg.icc
+iccFromXml  XYZ_int-D65_2deg-MAT-Lvl2.xml XYZ_int-D65_2deg-MAT-Lvl2.icc
+iccFromXml  XYZ_int-D65_2deg-MAT.xml XYZ_int-D65_2deg-MAT.icc
 
 cd ../SpecRef
 iccFromXml argbRef.xml argbRef.icc
