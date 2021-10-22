@@ -79,7 +79,7 @@
 
 typedef struct {
   unsigned long nId;
-  char *szName;
+  char const * const szName;
 } IdList;
 #define UNKNOWNID 0xffffffff
 
