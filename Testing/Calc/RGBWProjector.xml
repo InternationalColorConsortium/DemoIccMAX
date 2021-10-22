@@ -504,7 +504,7 @@ and Mitch Rosen.  Data represents measurements of ouptut from OptomoEzPro755 fou
 							  2.421201051065448 div % scale theoretical G to find estimated white
 							  curv(1)
 						  } else {
-							  2.433741401272582 % scale theoretical B to find estimated white
+							  2.433741401272582 div % scale theoretical B to find estimated white
 							  curv(2)
 						  }
 						}
