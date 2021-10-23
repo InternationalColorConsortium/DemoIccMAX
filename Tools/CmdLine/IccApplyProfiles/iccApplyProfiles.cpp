@@ -163,7 +163,8 @@ int main(int argc, icChar* argv[])
 
   nNumProfiles = temp/2;
 
-  unsigned long i, j, k, sn, sphoto, photo, bps, dbps;
+  int i, j, k;
+  unsigned int sn, sphoto, photo, bps, dbps;
   CTiffImg SrcImg, DstImg;
   unsigned char *sptr, *dptr;
   bool bSuccess = true;
@@ -360,12 +361,12 @@ int main(int argc, icChar* argv[])
   }
   pccList.clear();
 
-  //Get and validate the source color space from theCmm.
+  //Get and validate the source color space from the Cmm.
   icColorSpaceSignature SrcspaceSig = theCmm.GetSourceSpace();
   int nSrcSamples = icGetSpaceSamples(SrcspaceSig);
 
-  if (nSrcSamples != sn) {
-    printf("Number of samples in image[%s] doesn't match device samples in first profile\n", argv[1]);
+  if (nSrcSamples != (int)sn) {
+    printf("Number of samples %d in image[%s] doesn't match device samples %d in first profile\n", sn, argv[1], nSrcSamples);
     return -1;
   }
 
@@ -449,12 +450,12 @@ int main(int argc, icChar* argv[])
   int curper;
 
   //Read each line
-  for (i=0; i<SrcImg.GetHeight(); i++) {
+  for (i=0; i<(int)SrcImg.GetHeight(); i++) {
     if (!SrcImg.ReadLine(pSBuf)) {
       bSuccess = false;
       break;
     }
-    for (sptr=pSBuf, dptr=pDBuf, j=0; j<SrcImg.GetWidth(); j++, sptr+=sbpp, dptr+=dbpp) {
+    for (sptr=pSBuf, dptr=pDBuf, j=0; j<(int)SrcImg.GetWidth(); j++, sptr+=sbpp, dptr+=dbpp) {
 
       //Special conversions need to be made to convert CIELAB and CIEXYZ to internal PCS encoding
       switch(bps) {
