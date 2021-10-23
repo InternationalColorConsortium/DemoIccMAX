@@ -182,7 +182,7 @@ abridged spectral encoding is provided.
 ## Project Build Considerations
 
 ### Dependencies
-* [libxml2](http://xmlsoft.org/) - for IccXML library and tools
+* [libxml2](http://xmlsoft.org/) - for IccXML2 library and tools
 * [libtiff](http://www.libtiff.org/) - for Tiff image tools
 * [wxWidgets](https://www.wxwidgets.org/) - for basic profile viewer GUI
 
@@ -190,7 +190,8 @@ abridged spectral encoding is provided.
 
 The project solution files `BuildAll.sln` for various versions
 of the Microsoft Visual Studio development IDE can
-be found in the [./Build/MSVC](Build/Build/MSVC) folder. This references additional `.vcproj` files
+be found in the [./Build/MSVC](Build/Build/MSVC) folder.
+This references additional `.vcproj` files
 for the various libraries and applications provided by DemoIccMAX. Projects
 without any further dependencies should build and link correctly. Both 32 and
 64 bit compile options are supported. Some of the projects have further
@@ -281,13 +282,16 @@ archive contains a CMake build configuration, which can be used to build on the
 command line with make or ninja, or generate a project for a KDevelop or Eclipse
 or for the platform specific XCode and VC++ IDEs.
 
+Note: for historic reasons, the CMake system still uses the name "RefIccMAX"
+
 #### Compilation
 
 Typical create a out of source build directory and specify an install path:
 
-```sh
+```bash
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
+make help
 make
 make install
 ```
@@ -295,7 +299,13 @@ make install
 ##### Build Flags
 
 ... are typical cmake flags like `CMAKE_CXX_FLAGS` to tune compilation. For
-development `*-DCMAKE_CXX_FLAGS="-Wall -Wextra -g"` is recommended.
+development `... -DCMAKE_CXX_FLAGS="-Wextra -Wimplicit-fallthrough=0 -g"` is
+recommended, but this will **not be warning free!**.
+
+Note: `-Wimplicit-fallthrough=0` disables case fall-through warnings on switch
+statements as this is actively used (e.g. in IccConvertUTF.cpp). There will also
+be many `-Wsign-compare` warnings and a few `-Wenum-compare` and
+`-Wdeprecated-copy` warnings.
 
 * `ENABLE_TESTS` - default is ON
 * `ENABLE_TOOLS` - default is ON
@@ -330,8 +340,9 @@ sudo apt-get install -y mesa-utils libgl1-mesa-glx
 /usr/local/lib/libgnutls.so.30: version `GNUTLS_3_6_3' not found (required by /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so)
 Failed to load module: /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
 ```
-This appears to be harmless but running `apt-cache policy libgnutls30` or
-`gntls-cli -v` will likely indicate a different (later) version of gnutls.
+The above error messages appear to be harmless, but running
+`apt-cache policy libgnutls30` or `gntls-cli -v` will likely indicate a
+different (later) version of gnutls.
 
 ## License
 
