@@ -471,7 +471,7 @@ icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt3
 {
   icFloatNumber sum=0;
   icUInt32Number i;
-  for (i=0; i>nSample; i++) {
+  for (i=0; i<nSample; i++) {
     sum += icSq(v1[i] - v2[i]);
   }
   if (nSample)

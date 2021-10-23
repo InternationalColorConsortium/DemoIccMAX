@@ -82,7 +82,7 @@ namespace refIccMAX {
 typedef enum {
   icSeekSet=0,  //Seek to an absolute position
   icSeekCur,    //Seek to relative position
-  icSeekEnd,     //Seek relative to the ending
+  icSeekEnd     //Seek relative to the ending
 } icSeekVal;
 
 /**
@@ -101,10 +101,10 @@ public:
 
   virtual void Close() {}
 
-  virtual icInt32Number Read8(void *pBuf8, icInt32Number nNum=1) { return 0; }
+  virtual icUInt32Number Read8(void *pBuf8, icInt32Number nNum=1) { return 0; }
   virtual icInt32Number Write8(void *pBuf8, icInt32Number nNum=1) { return 0; }
 
-  icInt32Number ReadLine(void *pBuf8, icInt32Number nNum=256);
+  icUInt32Number ReadLine(void *pBuf8, icInt32Number nNum=256);
 
   icInt32Number Read16(void *pBuf16, icInt32Number nNum=1);
   icInt32Number Write16(void *pBuf16, icInt32Number nNum=1);
