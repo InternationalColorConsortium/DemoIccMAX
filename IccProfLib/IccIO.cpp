@@ -90,7 +90,7 @@ namespace refIccMAX {
 //////////////////////////////////////////////////////////////////////
 
 
-icUInt32Number CIccIO::ReadLine(void *pBuf8, icInt32Number nNum/*=256*/)
+icInt32Number CIccIO::ReadLine(void *pBuf8, icInt32Number nNum/*=256*/)
 {
   icInt32Number n=0;
   icInt8Number c, *ptr=(icInt8Number*)pBuf8;
@@ -382,7 +382,7 @@ CIccFileIO::~CIccFileIO()
 bool CIccFileIO::Open(const icChar *szFilename, const icChar *szAttr)
 {
 #ifdef WIN32
-  char myAttr[20] = {0};
+  char myAttr[20];
 
   if (!strchr(szAttr, 'b')) {
     myAttr[0] = szAttr[0];
@@ -404,7 +404,7 @@ bool CIccFileIO::Open(const icChar *szFilename, const icChar *szAttr)
 #ifdef WIN32
 bool CIccFileIO::Open(const icWChar *szFilename, const icWChar *szAttr)
 {
-  icWChar myAttr[20] = {0};
+  icWChar myAttr[20];
 
   if (!wcschr(szAttr, 'b')) {
     myAttr[0] = szAttr[0];

@@ -1310,7 +1310,7 @@ bool CIccTagXmlNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parseStr)
 
   pNode = pDataNode->children;  
 
-  A a{};
+  A a;
 
   if (!a.ParseArray(pNode) || !a.GetSize()) {   
     return false;
@@ -1353,7 +1353,7 @@ const icChar *CIccTagXmlFloatNum<T, A, Tsig>::GetClassName() const
 template <class T, class A, icTagTypeSignature Tsig>
 bool CIccTagXmlFloatNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
-  char buf[512] = {0};
+  char buf[512];
 
   if (this->m_nSize==1) {
 #ifdef _WIN32
@@ -1415,7 +1415,7 @@ bool CIccTagXmlFloatNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parse
     filename = icXmlAttrValue(pNode, "File", "");
   }
 
-  A a{};
+  A a;
 
   if (filename[0]) {
     CIccIO *file = IccOpenFileIO(filename, "rb");
@@ -1761,7 +1761,7 @@ bool CIccTagXmlColorantTable::ToXml(std::string &xml, std::string blanks/* = ""*
 
   xml += blanks + "<ColorantTable>\n";
   for (i=0; i<(int)m_nCount; i++) {
-    icFloatNumber lab[3] = {0};
+    icFloatNumber lab[3];
     lab[0] = icU16toF(m_pData[i].data[0]);
     lab[1] = icU16toF(m_pData[i].data[1]);
     lab[2] = icU16toF(m_pData[i].data[2]);
@@ -1804,7 +1804,7 @@ bool CIccTagXmlColorantTable::ParseXml(xmlNode *pNode, std::string &parseStr)
               strncpy(m_pData[i].name, icUtf8ToAnsi(str, name), sizeof(m_pData[i].name));
               m_pData[i].name[sizeof(m_pData[i].name)-1]=0;
 
-              icFloatNumber lab[3] = {0};
+              icFloatNumber lab[3];
 
               lab[0] = (icFloatNumber)atof(icXmlAttrValue(L));
               lab[1] = (icFloatNumber)atof(icXmlAttrValue(a));
@@ -2398,7 +2398,7 @@ bool CIccTagXmlResponseCurveSet16::ParseXml(xmlNode *pNode, std::string &parseSt
         if (pChild->type == XML_ELEMENT_NODE && !icXmlStrCmp(pChild->name, "ChannelResponses")) {
           CIccResponse16List *pResponseList = curves.GetResponseList(i);
           icXYZNumber *pXYZ = curves.GetXYZ(i);
-          icResponse16Number response = {0};
+          icResponse16Number response;
 
           const icChar *szX = icXmlAttrValue(pChild, "X");
           const icChar *szY = icXmlAttrValue(pChild, "Y");
@@ -2691,7 +2691,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
         }        
         else if (nType == icConvert16Bit || nType == icConvertVariable){
           icUInt32Number num = file->GetLength() / sizeof(icUInt16Number);
-          icUInt16Number value = 0;
+          icUInt16Number value;
           icUInt8Number *ptr = (icUInt8Number*)&value;
 
           SetSize(num);
@@ -2722,7 +2722,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
         }
         else if (nType == icConvertFloat) {
           icUInt32Number num = file->GetLength()/sizeof(icFloat32Number);
-          icFloat32Number value = 0.0;
+          icFloat32Number value;
           icUInt8Number *ptr = (icUInt8Number*)&value;
 
           SetSize(num);
@@ -3547,7 +3547,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         }
         else if (nType == icConvert16Bit){
           icUInt32Number num = file->GetLength() / sizeof(icUInt16Number);
-          icUInt16Number value = 0;
+          icUInt16Number value;
           icUInt8Number *ptr = (icUInt8Number*)&value;
 
           if (num<pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
@@ -3587,7 +3587,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         }
         else if (nType == icConvertFloat){
           icUInt32Number num = file->GetLength()/sizeof(icFloat32Number);
-          icFloat32Number value = 0.0;
+          icFloat32Number value;
           icUInt8Number *ptr = (icUInt8Number*)&value;
 
           if (num<pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
@@ -3979,7 +3979,7 @@ bool CIccTagXmlMultiProcessElement::ParseElement(xmlNode *pNode, std::string &pa
     return false;
   }
 
-  CIccMultiProcessElementPtr ptr{};
+  CIccMultiProcessElementPtr ptr;
 
   IIccExtensionMpe *pExt = pMpe->GetExtension();
 
@@ -4071,7 +4071,7 @@ bool CIccTagXmlProfileSequenceId::ToXml(std::string &xml, std::string blanks/* =
   CIccProfileIdDescList::iterator pid;
 
   for (pid=m_list->begin(); pid!=m_list->end(); pid++) {
-    char buf[256] = { 0 };
+    char buf[256];
     char data[256];
     char fix[256];
     std::string bufstr;
@@ -4212,7 +4212,7 @@ bool CIccTagXmlDict::ParseXml(xmlNode *pNode, std::string &parseStr)
   m_Dict->clear();
 
   for (pNode = icXmlFindNode(pNode, "DictEntry"); pNode; pNode = icXmlFindNode(pNode->next, "DictEntry")) {
-    CIccDictEntryPtr ptr{};
+    CIccDictEntryPtr ptr;
     CIccDictEntry *pDesc = new CIccDictEntry();
     xmlAttr *pAttr;
     CIccUTF16String str;
