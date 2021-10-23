@@ -203,7 +203,7 @@ are not set up before running Visual Studio).
 The dependency on libxml2 and iconv by the IccLibXML library as well as the
 IccToXML and IccFromXML applications requires that these SDKs are accessible, and are
 referenced using the system environment variable `VendorTreeDir` with various
-sub-directories beneath. 
+sub-directories beneath.
 Macros for the location of each of these third party libraries is defined in
 `[BuildDefs.props](Build/MSVC/BuildDefs.props)`.
 64-bit versions of these SDKs can be found on the
@@ -308,6 +308,30 @@ development `*-DCMAKE_CXX_FLAGS="-Wall -Wextra -g"` is recommended.
 ### Linux Packages
 
 * Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libDemoIccMAX-devel)
+
+### Linux Issues and Solutions
+
+When running `iccDumpProfileGui` under X-Windows the following error messages
+may be seen on the console:
+
+`libGL error: No matching fbConfigs or visuals` This can be fixed with:
+
+```bash
+export LIBGL_ALWAYS_INDIRECT=1
+```
+
+`libGL error: failed to load driver: swrast` This can be fixed with:
+
+```bash
+sudo apt-get install -y mesa-utils libgl1-mesa-glx
+```
+
+```
+/usr/local/lib/libgnutls.so.30: version `GNUTLS_3_6_3' not found (required by /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so)
+Failed to load module: /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
+```
+This appears to be harmless but running `apt-cache policy libgnutls30` or
+`gntls-cli -v` will likely indicate a different (later) version of gnutls.
 
 ## License
 
