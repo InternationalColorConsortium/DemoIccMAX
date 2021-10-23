@@ -752,7 +752,7 @@ CIccXmlArrayType<T, Tsig>::~CIccXmlArrayType()
 template <class T, icTagTypeSignature Tsig>
 bool CIccXmlArrayType<T, Tsig>::ParseArray(xmlNode *pNode)
 {
-  char scanType[2];
+  char scanType[2] = {0};
   scanType[0] = (Tsig == icSigFloatArrayType ? 'f' : 'n');
   scanType[1] = 0;
 
@@ -988,7 +988,7 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSiz
 {	
   icUInt32Number n = 0, b = 0;
   bool bInNum = false;
-  char num[256];
+  char num[256] = {0};
 
   while (*szText && n<nSize) {	  
 	  if (icIsNumChar(*szText)) {
@@ -1310,7 +1310,7 @@ const icChar* icGetStandardObserverName(icStandardObserver str)
 icDateTimeNumber icGetDateTimeValue(const icChar* str)
 {
 	unsigned int day=0, month=0, year=0, hours=0, minutes=0, seconds=0;
-	icDateTimeNumber dateTime;	
+	icDateTimeNumber dateTime = {0};	
 
   if (!stricmp(str, "now")) {
     time_t rawtime;
@@ -1365,11 +1365,7 @@ icUInt64Number icGetDeviceAttrValue(xmlNode *pNode)
   attr = icXmlFindAttr(pNode, "VendorSpecific");
   if (attr) {
     icUInt64Number vendor;
-#if defined(__APPLE__)
     sscanf(icXmlAttrValue(attr), "%llx", &vendor);
-#else
-    sscanf(icXmlAttrValue(attr), "%I64x", &vendor);
-#endif
     devAttr |= vendor;
   }
 
@@ -1459,11 +1455,7 @@ const std::string icGetDeviceAttrName(icUInt64Number devAttr)
   icUInt64Number otherAttr = ~((icUInt64Number)icTransparency|icMatte|icMediaNegative|icMediaBlackAndWhite);
 
   if (devAttr & otherAttr) {
-#if defined(__APPLE__)
     sprintf(line, " VendorSpecific=\"%016llx\"", devAttr & otherAttr);
-#else
-    sprintf(line, " VendorSpecific=\"%016I64x\"", devAttr & otherAttr);
-#endif
     xml += line;
   }
 
