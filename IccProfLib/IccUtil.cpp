@@ -935,6 +935,34 @@ void icMatrixDump(std::string &sDump, icS15Fixed16Number *pMatrix)
   sDump += buf;
 }
 
+const icChar* icGet16bitSig(icChar* pBuf, icUInt16Number nSig, bool bGetHexVal)
+{
+    icUInt16Number sig = nSig;
+    icUInt8Number c;
+
+    if (!nSig) {
+        strcpy(pBuf, "NULL");
+        return pBuf;
+    }
+
+    pBuf[0] = '\'';
+    c = (icUInt8Number)(sig >> 8);
+    if (!isprint(c))
+        c = '?';
+    pBuf[1] = c;
+    c = (icUInt8Number)(sig & 0x00FF);
+    if (!isprint(c))
+        c = '?';
+    pBuf[2] = c;
+
+    if (bGetHexVal)
+        sprintf(pBuf + 3, "' = %04X", nSig);
+    else
+        sprintf(pBuf + 3, "'");
+
+    return pBuf;
+}
+
 const icChar *icGetSig(icChar *pBuf, icUInt32Number nSig, bool bGetHexVal)
 {
   int i;

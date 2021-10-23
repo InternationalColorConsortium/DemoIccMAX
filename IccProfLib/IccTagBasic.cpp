@@ -3014,7 +3014,7 @@ void CIccTagNamedColor2::Describe(std::string &sDescription, int verboseness)
     sprintf(buf, "Color[%u]: %s :", i, pNamedColor->rootName);
     sDescription += buf;
     
-    icFloatNumber pcsCoord[3];
+    icFloatNumber pcsCoord[3] ={0};
     for (j=0; j<3; j++)
       pcsCoord[j] = pNamedColor->pcsCoords[j];
 
@@ -4271,7 +4271,7 @@ bool CIccTagSparseMatrixArray::Read(icUInt32Number size, CIccIO *pIO)
         if (nSizeLeft < n)
           return false;
 
-        char zbuf[3];
+        char zbuf[3] = { 0 };
         if (pIO->Read8(&zbuf[0], n)!=n)
           return false;
         for (j=0; j<(int)n; j++) {
@@ -4336,7 +4336,7 @@ bool CIccTagSparseMatrixArray::Read(icUInt32Number size, CIccIO *pIO)
         if (nSizeLeft < n)
           return false;
 
-        icUInt8Number zbuf[3];
+        icUInt8Number zbuf[3] = { 0 };
         if (pIO->Read8(&zbuf[0], n)!=n)
           return false;
         for (j=0; j<(int)n; j++) {
@@ -4987,7 +4987,7 @@ bool CIccTagFixedNum<T, Tsig>::Write(CIccIO *pIO)
 template <class T, icTagTypeSignature Tsig>
 void CIccTagFixedNum<T, Tsig>::Describe(std::string &sDescription, int verboseness)
 {
-  icChar buf[128];
+  icChar buf[128] = { 0 };
 
   if (m_nSize == 1 ) {
     if (Tsig==icSigS15Fixed16ArrayType) 
@@ -5193,7 +5193,8 @@ bool CIccTagFixedNum<T, Tsig>::ValuePos(icFloatNumber &DstPos, icFloatNumber val
   if(val<0.0)
     return false;
 
-  icFloatNumber nv, lv;
+  icFloatNumber nv = 0.0;
+  icFloatNumber lv = 0.0;
   switch (Tsig) {
     case icSigS15Fixed16ArrayType:
       lv = icFtoD(m_Num[0]);
@@ -5468,7 +5469,7 @@ bool CIccTagNum<T, Tsig>::Write(CIccIO *pIO)
 template <class T, icTagTypeSignature Tsig>
 void CIccTagNum<T, Tsig>::Describe(std::string &sDescription, int verboseness)
 {
-  icChar buf[128];
+  icChar buf[128] = {0};
 
   if (m_nSize == 1 ) {
     switch (sizeof(T)) {
@@ -5755,7 +5756,8 @@ bool CIccTagNum<T, Tsig>::ValuePos(icFloatNumber &DstPos, icFloatNumber val, boo
   if(val<0.0)
     return false;
 
-  icFloatNumber nv, lv;
+  icFloatNumber nv = 0.0;
+  icFloatNumber lv = 0.0;
   switch (Tsig) {
     case icSigUInt8ArrayType:
       lv = icU8toF((icUInt8Number)m_Num[0]);
@@ -6068,7 +6070,7 @@ bool CIccTagFloatNum<T, Tsig>::Write(CIccIO *pIO)
 template <class T, icTagTypeSignature Tsig>
 void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription, int verboseness)
 {
-  icChar buf[128];
+  icChar buf[128] = {0};
 
   if (m_nSize == 1 ) {
     switch (sizeof(T)) {
@@ -6304,7 +6306,8 @@ bool CIccTagFloatNum<T, Tsig>::ValuePos(icFloatNumber &DstPos, icFloatNumber val
   if(val<0.0)
     return false;
 
-  icFloatNumber nv, lv;
+  icFloatNumber nv = 0.0;
+  icFloatNumber lv = 0.0;
   
   lv = (icFloatNumber)m_Num[0];
 
@@ -7184,12 +7187,12 @@ icValidateStatus CIccTagMultiLocalizedUnicode::Validate(std::string sigPath, std
     // TODO: Check ISO-639 and ISO-3166 for valid Language and Country codes
 
     char buf[20], str[20];
-    sReport += "Language Code: ";
-    sprintf(buf, "%s (0x%04X)\n", icGetSig(str, i->m_nLanguageCode, false), i->m_nLanguageCode);
+    sReport += "ISO 639 Language Code: ";
+    sprintf(buf, "%s (0x%02X)\n", icGet16bitSig(str, i->m_nLanguageCode, false), i->m_nLanguageCode);
     sReport += buf;
 
-    sReport += "Country Code: ";
-    sprintf(buf, "%s (0x%04X)\n", icGetSig(str, i->m_nCountryCode, false), i->m_nCountryCode);
+    sReport += "ISO 3166 Country Code: ";
+    sprintf(buf, "%s (0x%02X)\n", icGet16bitSig(str, i->m_nCountryCode, false), i->m_nCountryCode);
     sReport += buf;
   }
 
@@ -8325,7 +8328,7 @@ void CIccTagColorantTable::Describe(std::string &sDescription, int verboseness)
   icChar buf[128];
 
   icUInt32Number i, nLen, nMaxLen=0;
-  icFloatNumber Lab[3];
+  icFloatNumber Lab[3] = {0};
 
   sprintf(buf, "BEGIN_COLORANTS %u\n", m_nCount);
   sDescription += buf;
@@ -9457,7 +9460,7 @@ bool CIccResponseCurveStruct::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
-  icResponse16Number nResponse16;
+  icResponse16Number nResponse16 = {0};
   CIccResponse16List nResponseList;
 
   for (int i = 0; i<m_nChannels; i++) {
@@ -10864,7 +10867,7 @@ bool CIccTagSpectralViewingConditions::setIlluminant(icFloatNumber *pWhiteXYZ)
 {
   icSpectralRange zeroRange;
   memset(&zeroRange, 0, sizeof(zeroRange));
-  icFloatNumber white[3];
+  icFloatNumber white[3] = {0};
   white[0] = pWhiteXYZ[0] / pWhiteXYZ[1];
   white[1] = 1.0;
   white[2] = pWhiteXYZ[2] / pWhiteXYZ[1];
