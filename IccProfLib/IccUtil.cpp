@@ -1168,7 +1168,7 @@ icSignature icGetLastSigPathSig(std::string sigPath)
       break;
     }
   }
-  if (n >= 0 && sig[n] == ':')
+  if (/* n >= 0 && */ sig[n] == ':')
     n++;
   return icGetSigVal(sig+n);
 }

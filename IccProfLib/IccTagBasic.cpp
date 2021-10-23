@@ -9460,7 +9460,7 @@ bool CIccResponseCurveStruct::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
-  icResponse16Number nResponse16 = {0};
+  icResponse16Number nResponse16 = {};
   CIccResponse16List nResponseList;
 
   for (int i = 0; i<m_nChannels; i++) {

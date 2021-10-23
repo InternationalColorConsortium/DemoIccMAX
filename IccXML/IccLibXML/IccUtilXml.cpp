@@ -1122,7 +1122,7 @@ template class CIccXmlArrayType<icFloat32Number, icSigFloat32ArrayType>;
 template class CIccXmlArrayType<icFloat64Number, icSigFloat64ArrayType>;
 
 
-const icRenderingIntent icGetRenderingIntentValue (icChar *szRenderingIntent)
+icRenderingIntent icGetRenderingIntentValue (const icChar *szRenderingIntent)
 {
   if (!strcmp(szRenderingIntent, "Perceptual"))
 	  return icPerceptual;
@@ -1310,7 +1310,7 @@ const icChar* icGetStandardObserverName(icStandardObserver str)
 icDateTimeNumber icGetDateTimeValue(const icChar* str)
 {
 	unsigned int day=0, month=0, year=0, hours=0, minutes=0, seconds=0;
-	icDateTimeNumber dateTime = {0};	
+	icDateTimeNumber dateTime = {};	
 
   if (!stricmp(str, "now")) {
     time_t rawtime;
