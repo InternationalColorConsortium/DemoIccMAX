@@ -87,11 +87,11 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig, int verboseness)
 
   if (pTag) {
     printf("\nContents of %s tag (%s)\n", Fmt.GetTagSigName(sig), icGetSig(buf, sig)); 
-    printf("Type:   ");
+    printf("Type: ");
     if (pTag->IsArrayType()) {
       printf("Array of ");
     }
-    printf("%s\n", Fmt.GetTagTypeSigName(pTag->GetType()));
+    printf("%s (%s)\n", Fmt.GetTagTypeSigName(pTag->GetType()), icGetSig(buf, pTag->GetType()));
     pTag->Describe(contents, verboseness);
     fwrite(contents.c_str(), contents.length(), 1, stdout);
   }
