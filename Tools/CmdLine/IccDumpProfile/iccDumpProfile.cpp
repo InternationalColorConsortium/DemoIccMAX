@@ -292,7 +292,7 @@ print_usage:
       // File size is required to be a multiple of 4 bytes according to clause 7.2.1 bullet (c):
       // "all tagged element data, including the last, shall be padded by no more than three 
       //  following pad bytes to reach a 4 - byte boundary"
-      if (pHdr->size % 4 != 0) {
+      if ((pHdr->version >= icVersionNumberV4_2) && (pHdr->size % 4 != 0)) {
           sReport += icMsgValidateNonCompliant;
           sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\n";
           nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
