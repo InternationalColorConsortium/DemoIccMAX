@@ -163,6 +163,7 @@ print_usage:
   }
 
   // Precondition: nArg is argument of ICC profile filename
+  printf("Built with IccProfLib version " ICCPROFLIBVER "\n\n");
   if (!pIcc) {
     printf("Unable to parse '%s' as ICC profile!\n", argv[nArg]);
     nStatus = icValidateCriticalError;
@@ -172,19 +173,18 @@ print_usage:
     CIccInfo Fmt;
     char buf[64];
 
-    printf("Built with IccProfLib version " ICCPROFLIBVER "\n\n");
     printf("Profile:            '%s'\n", argv[nArg]);
     if(Fmt.IsProfileIDCalculated(&pHdr->profileID))
       printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
     else
       printf("Profile ID:         Profile ID not calculated.\n");
-    printf("Size:               %d(0x%x) bytes\n", pHdr->size, pHdr->size);
+    printf("Size:               %d (0x%x) bytes\n", pHdr->size, pHdr->size);
 
     printf("\nHeader\n");
     printf(  "------\n");
     printf("Attributes:         %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
     printf("Cmm:                %s\n", Fmt.GetCmmSigName((icCmmSignature)(pHdr->cmmId)));
-    printf("Creation Date:      %d/%d/%d  %02u:%02u:%02u\n",
+    printf("Creation Date:      %d/%d/%d (M/D/Y)  %02u:%02u:%02u\n",
                                pHdr->date.month, pHdr->date.day, pHdr->date.year,
                                pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
     printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
@@ -226,6 +226,7 @@ print_usage:
     else {
       printf("BiSpectral Range:   Not Defined\n");
     }
+
     if (pHdr->mcs) {
       printf("MCS Color Space:    %s\n", Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
     }
