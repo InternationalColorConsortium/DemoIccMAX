@@ -7131,7 +7131,7 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int verbo
         sprintf(szBuf, "'%c%c'", i->m_nLanguageCode >> 8, i->m_nLanguageCode & 0x00FF);
     }
     else {
-      sprintf(szBuf, "'??' (0x%04X)", i->m_nLanguageCode);
+      sprintf(szBuf, "'\?\?' (0x%04X)", i->m_nLanguageCode);
     }
     sDescription += szBuf;
 
@@ -7142,7 +7142,7 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int verbo
           sprintf(szBuf, "'%c%c'", i->m_nCountryCode>>8, i->m_nCountryCode & 0x00FF);
         }
         else {
-            sprintf(szBuf, "'??' (0x%04X)", i->m_nCountryCode);
+            sprintf(szBuf, "'\?\?' (0x%04X)", i->m_nCountryCode);
         }
         sDescription += szBuf;
     }
