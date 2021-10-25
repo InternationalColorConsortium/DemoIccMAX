@@ -75,7 +75,7 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     iccMAX based profiles.
 
     * This tool is dependent upon the IccLibXML project (above) as well as
-      libXML and iconv.
+      libXML2 and iconv.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
     sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
@@ -92,7 +92,19 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
 
   * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console.
+    from a legacy ICC and or iccMAX profile to be output to the console. Data
+    with non-printable values are replaced with '?'. Output from this tool is
+    not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
+    given platform.
+
+    Detailed validation messages start with either "Warning!", "Error!" or "NonCompliant!".
+    The overall status of validation is reported 2 lines below the line starting
+    "Validation Report" and can be located using the following simple `grep`:
+
+    ```bash
+    grep --text -A 3 "^Validation Report" out.txt
+    ```
+
 
   * IccRoundTrip is a cross platform command line tool that allows round trip
     colorimetric processing characteristics of rendering intent of a profile to be
