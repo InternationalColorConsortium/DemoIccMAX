@@ -4810,7 +4810,7 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
         else {
           parseStr += "Unable to Parse xml node named  \"";
           parseStr += (icChar*)tagNode->name;
-          parseStr += "\"\n\r";
+          parseStr += "\"\n";
           return false;
         }
       }
