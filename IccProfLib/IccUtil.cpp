@@ -905,7 +905,7 @@ void icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum)
         sDump += (const icChar*)buf;
       }
       memset(buf, ' ', 76);
-      buf[76] = '\r';
+      buf[76] = ' ';
       buf[77] = '\n';
       buf[78] = '\0';
       sprintf(num, "%08X:", i);
