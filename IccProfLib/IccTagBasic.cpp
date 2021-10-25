@@ -7125,11 +7125,28 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int verbo
     if (i!=m_Strings->begin())
       sDescription += "\n";
 
-    sprintf(szBuf, "Language = '%c%c', Region = '%c%c'\n",
-      i->m_nLanguageCode>>8, i->m_nLanguageCode,
-      i->m_nCountryCode>>8, i->m_nCountryCode);
-    
+    // Bad ICCs can have unprintables...
+    sDescription += "Language = ";
+    if (isprint(i->m_nLanguageCode >> 8) && isprint(i->m_nLanguageCode & 0x00FF)) {
+        sprintf(szBuf, "'%c%c'", i->m_nLanguageCode >> 8, i->m_nLanguageCode & 0x00FF);
+    }
+    else {
+      sprintf(szBuf, "'??' (0x%04X)", i->m_nLanguageCode);
+    }
     sDescription += szBuf;
+
+    if (i->m_nCountryCode) {
+        // Region Codes are optional according to ISO 
+        sDescription += ", Region = ";
+        if (isprint(i->m_nCountryCode >> 8) && isprint(i->m_nCountryCode & 0x00FF)) {
+          sprintf(szBuf, "'%c%c'", i->m_nCountryCode>>8, i->m_nCountryCode & 0x00FF);
+        }
+        else {
+            sprintf(szBuf, "'??' (0x%04X)", i->m_nCountryCode);
+        }
+        sDescription += szBuf;
+    }
+    sDescription += "\n";
 
     nAnsiSize = i->GetAnsiSize();
 
@@ -7184,16 +7201,8 @@ icValidateStatus CIccTagMultiLocalizedUnicode::Validate(std::string sigPath, std
 
   CIccMultiLocalizedUnicode::iterator i;
   for (i=m_Strings->begin(); i!=m_Strings->end(); i++) {
-    // TODO: Check ISO-639 and ISO-3166 for valid Language and Country codes
-
-    char buf[20], str[20];
-    sReport += "ISO 639 Language Code: ";
-    sprintf(buf, "%s (0x%02X)\n", icGet16bitSig(str, i->m_nLanguageCode, false), i->m_nLanguageCode);
-    sReport += buf;
-
-    sReport += "ISO 3166 Country Code: ";
-    sprintf(buf, "%s (0x%02X)\n", icGet16bitSig(str, i->m_nCountryCode, false), i->m_nCountryCode);
-    sReport += buf;
+    // TODO: Validate ISO-639 Language Codes and and ISO-3166 Country codes.
+    // Needs to be done against a full set of codes or many false warnings.
   }
 
   return rv;
