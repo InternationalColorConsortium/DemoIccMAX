@@ -1194,7 +1194,12 @@ typedef enum {
 
 
 
-/** A not so exhaustive list of language codes */
+/** 
+ * A not so exhaustive list of ISO 369 Language Codes 
+ * Convenience definition - Not defined in ICC specification 
+ * ICC.1 constrains to 16 bit (2 characters)
+ * See https://www.iso.org/iso-639-language-codes.html
+ */
 typedef enum {
   icLanguageCodeEnglish                = 0x656E, /* 'en' */
   icLanguageCodeGerman                 = 0x6465, /* 'de' */
@@ -1213,14 +1218,12 @@ typedef enum {
 } icEnumLanguageCode;
 typedef icUInt16Number icLanguageCode;
 
-/** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumLanguageCode ((icEnumLanguageCode) 0xFFFF)
-
-
-
 /**
-* A not so exhaustive list of country codes.
- * Helpful website: http://dev.krook.org  ld.html */
+ * A not so exhaustive list of ISO 3166 country codes.
+ * Convenience definition - Not defined in ICC specification 
+ * ICC.1 constrains to 16 bit (2 characters)
+ * See https://www.iso.org/iso-3166-country-codes.html 
+ */
 typedef enum {
   icCountryCodeUSA                      = 0x5553, /* 'US' */
   icCountryCodeUnitedKingdom            = 0x554B, /* 'UK' */
@@ -1239,10 +1242,6 @@ typedef enum {
   icCountryCodeFrance                   = 0x4652, /* 'FR' */
 } icEnumCountryCode;
 typedef icUInt16Number icCountryCode;
-
-/** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumCountryCode ((icEnumCountryCode) 0xFFFF)
-
 
 
 /** Measurement Unit Signatures used in ResponseCurveSet16Type */
