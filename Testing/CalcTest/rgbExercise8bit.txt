@@ -1,0 +1,4 @@
+'RGB ' ; Data Format
+icEncode8bit ; Encoding
+255 255 255
+
