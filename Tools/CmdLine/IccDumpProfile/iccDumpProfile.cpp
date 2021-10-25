@@ -137,6 +137,9 @@ print_usage:
       if (argc <= nArg)
         goto print_usage;
     }
+    else if (argv[nArg] == endptr) {
+        verbosity = 100;
+    }
 
     pIcc = ValidateIccProfile(argv[nArg], sReport, nStatus);
     bDumpValidation = true;
