@@ -6677,7 +6677,7 @@ icUInt32Number CIccLocalizedUnicode::GetAnsiSize()
  ****************************************************************************
  * Name: CIccLocalizedUnicode::GetAnsi
  * 
- * Purpose: Extracts the ANSI data buffer
+ * Purpose: Extracts the ANSI data buffer (from UTF-16BE)
  *
  * Args:
  *  szBuf = pointer where the returned string buffer is to be stored
@@ -6697,13 +6697,13 @@ const icChar *CIccLocalizedUnicode::GetAnsi(icChar *szBuf, icUInt32Number nBufSi
   }
   else {
 #ifdef USE_WINDOWS_MB_SUPPORT
-    int len = WideCharToMultiByte(CP_ACP, 0x00000400, (LPCWSTR)m_pBuf, m_nLength,  szBuf, nBufSize, NULL, NULL);
+    int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)m_pBuf, m_nLength, szBuf, nBufSize, NULL, NULL);
     szBuf[len]='\0';
 #else
-  icUInt32Number i;
+    icUInt32Number i;
   
     for (i=0; i<m_nLength; i++) {
-      if (m_pBuf[i]<256) {
+      if (isprint(m_pBuf[i])) {
         szBuf[i] = (icChar)m_pBuf[i];
       }
       else {
