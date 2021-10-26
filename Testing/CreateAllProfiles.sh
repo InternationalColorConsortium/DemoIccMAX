@@ -42,9 +42,9 @@ iccFromXml Rec2020rgbSpectral.xml Rec2020rgbSpectral.icc
 iccFromXml Rec2100HlgFull.xml Rec2100HlgFull.icc
 iccFromXml Rec2100HlgNarrow.xml Rec2100HlgNarrow.icc
 iccFromXml RgbGSDF.xml RgbGSDF.icc
-iccFromXml sRGB_D65_MAT-300lx.xml sRGB_D65_MAT.icc
-iccFromXml sRGB_D65_MAT-500lx.xml sRGB_D65_MAT.icc
-iccFromXml sRGB_D65_MAT.xml sRGB_D65_MAT.icc
+iccFromXml sRGB_D65_MAT-300lx.xml sRGB_D65_MAT-300lx.icc
+iccFromXml sRGB_D65_MAT-500lx.xml sRGB_D65_MAT-500lx.icc
+iccFromXml sRGB_D65_MAT.xml       sRGB_D65_MAT.icc
 iccFromXml sRGB_D65_colorimetric.xml sRGB_D65_colorimetric.icc
 
 cd ../Encoding
@@ -176,4 +176,5 @@ set -
 cd ..
 
 # Count number of ICCs that got created - should be 129
+echo Should be 129 ICC files
 find . -iname "*.icc" | wc -l
