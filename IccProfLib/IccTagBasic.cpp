@@ -437,10 +437,11 @@ bool CIccTagText::Read(icUInt32Number size, CIccIO *pIO)
 {
   icTagTypeSignature sig;
 
-  if (size<sizeof(icTagTypeSignature) || !pIO) {
-    m_szText[0] = '\0';
+  // Defensive: initialize so error paths all have valid m_szText
+  m_szText[0] = '\0';
+
+  if (size < (sizeof(icTagTypeSignature) + sizeof(icUInt32Number)) || !pIO)
     return false;
-  }
 
   if (!pIO->Read32(&sig))
     return false;
