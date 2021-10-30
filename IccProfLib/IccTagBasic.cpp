@@ -7168,6 +7168,8 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int verbo
       sDescription += "***Allocation Error***\n";
     }
   }
+  if (szBuf)
+    free(szBuf);
 }
 
 
