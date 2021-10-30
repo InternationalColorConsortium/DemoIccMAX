@@ -162,6 +162,9 @@ print_usage:
     pIcc = OpenIccProfile(argv[nArg]);
   }
 
+  CIccInfo Fmt;
+  icHeader* pHdr = NULL;
+
   // Precondition: nArg is argument of ICC profile filename
   printf("Built with IccProfLib version " ICCPROFLIBVER "\n\n");
   if (!pIcc) {
@@ -169,8 +172,7 @@ print_usage:
     nStatus = icValidateCriticalError;
   }
   else {
-    icHeader *pHdr = &pIcc->m_Header;
-    CIccInfo Fmt;
+    pHdr = &pIcc->m_Header;
     char buf[64];
 
     printf("Profile:            '%s'\n", argv[nArg]);
@@ -189,7 +191,7 @@ print_usage:
                                pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
     printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
     printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
-    printf("Flags               %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
+    printf("Flags:              %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
     printf("PCS Color Space:    %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
     printf("Platform:           %s\n", Fmt.GetPlatformSigName(pHdr->platform));
     printf("Rendering Intent:   %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
@@ -373,25 +375,35 @@ print_usage:
     printf(  "-----------------\n");
     switch (nStatus) {
     case icValidateOK:
-      printf("Profile is valid\n\n");
+      printf("Profile is valid");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       break;
     case icValidateWarning:
-      printf("Profile has warning(s)\n\n");
+      printf("Profile has warning(s)");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       break;
     case icValidateNonCompliant:
-      printf("Profile violates ICC specification\n\n");
+      printf("Profile violates ICC specification");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       break;
     case icValidateCriticalError:
-      printf("Profile has Critical Error(s) that violate ICC specification.\n\n");
+      printf("Profile has Critical Error(s) that violate ICC specification");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       nValid = -1;
       break;
     default:
-      printf("Profile has unknown status.\n\n");
+      printf("Profile has unknown status!");
       nValid = -2;
       break;
     }
   }
+  printf("\n\n");
 
+  sReport += "\n";
   fwrite(sReport.c_str(), sReport.length(), 1, stdout);
 
   delete pIcc;
