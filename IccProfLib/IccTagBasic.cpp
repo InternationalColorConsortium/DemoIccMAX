@@ -2041,12 +2041,11 @@ bool CIccTagTextDescription::Read(icUInt32Number size, CIccIO *pIO)
   icTagTypeSignature sig;
   icUInt32Number nEnd;
 
+  m_szText[0] = '\0';
   nEnd = pIO->Tell() + size;
 
-  if (size<3*sizeof(icUInt32Number) || !pIO) {
-    m_szText[0] = '\0';
+  if (size<3*sizeof(icUInt32Number) || !pIO)
     return false;
-  }
 
   icUInt32Number nSize;
 
@@ -2075,6 +2074,10 @@ bool CIccTagTextDescription::Read(icUInt32Number size, CIccIO *pIO)
 
   if (!pIO->Read32(&m_nUnicodeLanguageCode) ||
       !pIO->Read32(&nSize))
+    return false;
+
+  // Calculations in GetUnicodeBuffer() can cause wrap-around error
+  if (nSize == 0xFFFFFFFF) 
     return false;
 
   icUInt16Number *pBuf16 = GetUnicodeBuffer(nSize);
