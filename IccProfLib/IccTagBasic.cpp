@@ -3853,9 +3853,13 @@ bool CIccTagChromaticity::Read(icUInt32Number size, CIccIO *pIO)
     return false;
 
   icUInt32Number nNum = (size-3*sizeof(icUInt32Number)) / sizeof(icChromaticityNumber);
-  icUInt32Number nNum32 = nNum*sizeof(icChromaticityNumber)/sizeof(icU16Fixed16Number);
+  icUInt32Number nNum32 = (nNum*sizeof(icChromaticityNumber)) / sizeof(icU16Fixed16Number);
 
   if (nNum < nChannels)
+    return false;
+
+  // SetSize casts from icUInt32Number down to icUInt16Number. Check for overflow
+  if (nNum > (icUInt16Number)nNum)
     return false;
 
   if (!SetSize((icUInt16Number)nNum))
