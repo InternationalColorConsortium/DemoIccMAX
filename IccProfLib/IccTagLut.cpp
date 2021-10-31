@@ -1760,6 +1760,9 @@ CIccCLUT::~CIccCLUT()
 bool CIccCLUT::Init(icUInt8Number nGridPoints, icUInt32Number nMaxSize, icUInt8Number nBytesPerPoint)
 {
   memset(&m_GridPoints, 0, sizeof(m_GridPoints));
+  // m_GridPoints[] is a fixed length of 16
+  if (m_nInput > 16)
+    return false;
   memset(m_GridPoints, nGridPoints, m_nInput);
   return Init(&m_GridPoints[0], nMaxSize, nBytesPerPoint);
 }
@@ -1782,6 +1785,9 @@ bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, i
   icUInt64Number nNumPoints;
   memset(m_nReserved2, 0, sizeof(m_nReserved2));
   if (pGridPoints!=&m_GridPoints[0]) {
+    // m_GridPoints[] is fixed size of 16
+    if (m_nInput > 16)
+      return false;
     memcpy(m_GridPoints, pGridPoints, m_nInput);
     if (m_nInput<16)
       memset(m_GridPoints+m_nInput, 0, 16-m_nInput);
@@ -1789,9 +1795,14 @@ bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, i
 
   if (m_pData) {
     delete [] m_pData;
+    m_pData = NULL;
   }
 
   int i=m_nInput-1;
+
+  // m_DimSize[] is a fixed size of 16
+  if (i >= 16)
+    return false;
 
   m_DimSize[i] = m_nOutput;
   nNumPoints = m_GridPoints[i];
