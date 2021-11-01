@@ -77,12 +77,13 @@
 #include "IccUtil.h"
 #include "IccProfLibVer.h"
 
+// #define MEMORY_LEAK_CHECK to enable C RTL memory leak checking (slow!)
+#define MEMORY_LEAK_CHECK
+
 #if defined(_WIN32) || defined(WIN32)
-
 #include <crtdbg.h>
-// #define CRT_MEMORY_LEAK_CHECK to enable C RTL memory leak checking (slow!)
-#undef CRT_MEMORY_LEAK_CHECK
-
+#elif __GLIBC__
+#include <mcheck.h>
 #endif 
 
 
@@ -111,7 +112,8 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig, int verboseness)
 
 int main(int argc, char* argv[])
 {
-#if defined(_DEBUG) && defined(CRT_MEMORY_LEAK_CHECK)
+#if defined(MEMORY_LEAK_CHECK) && defined(_DEBUG)
+#if defined(WIN32) || defined(_WIN32)
 #if 0
   // Suppress windows dialogs for assertions and errors - send to stderr instead during batch CLI processing
   _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
@@ -123,7 +125,10 @@ int main(int argc, char* argv[])
   tmp = tmp | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF; // | _CRTDBG_CHECK_ALWAYS_DF;
   _CrtSetDbgFlag(tmp);
   //_CrtSetBreakAlloc(1163);
-#endif // _DEBUG
+#elif __GLIBC__
+  mcheck(NULL);
+#endif // WIN32 
+#endif // MEMORY_LEAK_CHECK && _DEBUG
   
   int nArg = 1;
   long int verbosity = 100; // default is maximum verbosity (old behaviour)
@@ -431,6 +436,9 @@ print_usage:
 
   delete pIcc;
 
+#if defined(_DEBUG) || defined(DEBUG)
+  printf("EXIT %d\n", nValid);
+#endif
   return nValid;
 }
 
