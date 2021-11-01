@@ -302,7 +302,7 @@ Typical create a out of source build directory and specify an install path:
 
 ```bash
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
 make help
 make
 make install
@@ -310,7 +310,10 @@ make install
 
 ##### Build Flags
 
-... are typical cmake flags like `CMAKE_CXX_FLAGS` to tune compilation. For
+Use `-DCMAKE_BUILD_TYPE=Debug`, `-DCMAKE_BUILD_TYPE=Release` or one of the other
+CMake build types.
+
+Typical cmake flags like `CMAKE_CXX_FLAGS` can be used to tune compilation. For
 development `... -DCMAKE_CXX_FLAGS="-Wextra -Wimplicit-fallthrough=0 -g"` is
 recommended, but this will **not be warning free!**.
 
