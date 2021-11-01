@@ -1848,6 +1848,9 @@ bool CIccCLUT::ReadData(icUInt32Number size, CIccIO *pIO, icUInt8Number nPrecisi
   if (nNum * nPrecision > size)
     return false;
 
+  if (m_pData == NULL)
+    return false;
+
   if (nPrecision==1) {
     if (pIO->ReadUInt8Float(m_pData, nNum)!=(icInt32Number)nNum)
       return false;
@@ -4475,6 +4478,8 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
 
   //CLUT
   m_CLUT = new CIccCLUT(m_nInput, m_nOutput);
+  if (m_CLUT == NULL)
+    return false;
 
   m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 1);
 
@@ -4483,6 +4488,8 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
 
   //A Curves
   pCurves = NewCurvesA();
+  if (pCurves == NULL)
+    return false;
 
   for (i=0; i<m_nOutput; i++) {
     if (256 > nEnd - pIO->Tell())
