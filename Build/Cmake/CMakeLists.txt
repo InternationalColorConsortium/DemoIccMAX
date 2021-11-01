@@ -43,6 +43,7 @@ ENDIF()
 IF( CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]" )
   MESSAGE( "-- Info build \"${CMAKE_BUILD_TYPE}\"" )
   SET( DEBUG 1 )
+  add_definitions( -D_DEBUG )
 ENDIF()
 
 #
