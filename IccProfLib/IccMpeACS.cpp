@@ -97,7 +97,7 @@ CIccMpeAcs::CIccMpeAcs()
 {
   m_pData = NULL;
   m_nDataSize = 0;
-
+  m_signature = icSigAcsZero;
   m_nReserved = 0;
 }
 

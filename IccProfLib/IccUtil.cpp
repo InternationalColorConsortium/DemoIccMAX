@@ -1341,7 +1341,7 @@ bool icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng
           rng1.steps == rng2.steps);
 }
 
-CIccInfo::CIccInfo()
+CIccInfo::CIccInfo() : m_szStr{}, m_szSigStr{}
 {
   m_str = new std::string;
 }

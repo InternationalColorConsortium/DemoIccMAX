@@ -132,7 +132,8 @@ CIccFormulaCurveSegment::CIccFormulaCurveSegment(const CIccFormulaCurveSegment &
 
   if (seg.m_params) {
     m_params = (icFloatNumber*)malloc(m_nParameters*sizeof(icFloatNumber));
-    memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
   }
   else
     m_params = NULL;
@@ -163,7 +164,8 @@ CIccFormulaCurveSegment &CIccFormulaCurveSegment::operator=(const CIccFormulaCur
   m_nParameters = seg.m_nParameters;
   if (seg.m_params) {
     m_params = (icFloatNumber*)malloc(m_nParameters*sizeof(icFloatNumber));
-    memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
   }
   else
     m_params = NULL;
@@ -292,7 +294,8 @@ void CIccFormulaCurveSegment::SetFunction(icUInt16Number functionType, icUInt8Nu
 
   if (num_parameters) {
     m_params = (icFloatNumber*)malloc(num_parameters * sizeof(icFloatNumber));
-    memcpy(m_params, parameters, num_parameters * sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, parameters, num_parameters * sizeof(icFloatNumber));
   }
   else
     m_params = NULL;
@@ -637,8 +640,10 @@ CIccSampledCurveSegment::CIccSampledCurveSegment(icFloatNumber start, icFloatNum
   m_nReserved = 0;
   m_startPoint = start;
   m_endPoint = end;
+  m_range = end - start;
   m_nCount = 0;
   m_pSamples = 0;
+  m_last = 0;
 }
 
 /**
@@ -656,7 +661,9 @@ CIccSampledCurveSegment::CIccSampledCurveSegment(const CIccSampledCurveSegment &
   m_nReserved = curve.m_nReserved;
   m_startPoint = curve.m_startPoint;
   m_endPoint = curve.m_endPoint;
+  m_range = m_endPoint - m_startPoint;
   m_nCount = curve.m_nCount;
+  m_last = curve.m_last;
 
   if (m_nCount) {
     m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
@@ -1036,6 +1043,7 @@ CIccSingleSampledCurve::CIccSingleSampledCurve(icFloatNumber first, icFloatNumbe
   m_nReserved = 0;
   m_nCount = 0;
   m_pSamples = 0;
+  m_last = 0;
 
   m_storageType = icValueTypeFloat32;
   m_extensionType = icClipSingleSampledCurve;
@@ -1049,6 +1057,7 @@ CIccSingleSampledCurve::CIccSingleSampledCurve(icFloatNumber first, icFloatNumbe
     m_lastEntry = first;
   }
 
+  m_range = m_lastEntry - m_firstEntry;
   m_loIntercept = 0;
   m_loSlope = 0;
   m_hiIntercept = 1.0;
@@ -1086,6 +1095,7 @@ CIccSingleSampledCurve::CIccSingleSampledCurve(const CIccSingleSampledCurve &cur
 
   m_firstEntry = curve.m_firstEntry;
   m_lastEntry = curve.m_lastEntry;
+  m_range = m_lastEntry - m_firstEntry;
 
   m_loIntercept = curve.m_loIntercept;
   m_loSlope = curve.m_loSlope;
@@ -3558,7 +3568,7 @@ CIccMpeCLUT::CIccMpeCLUT()
   m_pCLUT = NULL;
   m_nInputChannels = 0;
   m_nOutputChannels = 0;
-
+  m_interpType  = ic1dInterp;
   m_nReserved = 0;
 }
 
@@ -3582,6 +3592,7 @@ CIccMpeCLUT::CIccMpeCLUT(const CIccMpeCLUT &clut)
   m_nReserved = clut.m_nReserved;
   m_nInputChannels = clut.m_nInputChannels;
   m_nOutputChannels = clut.m_nOutputChannels;
+  m_interpType = ic1dInterp;
 }
 
 /**

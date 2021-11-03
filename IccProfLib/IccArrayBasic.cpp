@@ -224,6 +224,9 @@ CIccArrayNamedColor::CIccArrayNamedColor(CIccTagArray *pTagArray)
   m_nPcsSamples = 0;
   m_nSpectralSamples = 0;
   m_spectralRange = m_biSpectralRange = {};
+  m_csDevice = icSigUnknownData;
+  m_pZeroTint = NULL;
+  m_csSpectralPcs = icSigNoSpectralData;
 }
 
 
