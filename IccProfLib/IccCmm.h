@@ -593,7 +593,7 @@ public:
 protected:
   icPcsStepType m_stepType;
 
-  CIccApplyPcsStep(CIccPcsStep *pStep) { m_pStep = pStep; }
+  CIccApplyPcsStep(CIccPcsStep *pStep) { m_pStep = pStep; m_stepType = icPcsStepUnknown; }
 
   const CIccPcsStep *m_pStep;
 };

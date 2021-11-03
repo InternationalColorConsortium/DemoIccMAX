@@ -471,7 +471,7 @@ icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt3
 {
   icFloatNumber sum=0;
   icUInt32Number i;
-  for (i=0; i>nSample; i++) {
+  for (i=0; i<nSample; i++) {
     sum += icSq(v1[i] - v2[i]);
   }
   if (nSample)
@@ -2454,7 +2454,7 @@ icValidateStatus CIccInfo::CheckLuminance(std::string &sReport, const icFloatXYZ
 {
   icValidateStatus rv = icValidateOK;
 
-  if (fabs(XYZ.Y -1.0f) < 0.01 ) {
+  if (fabs(XYZ.Y - 1.0) < 0.01) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
     sReport += " - XYZNumber appears to be normalized! Y value should reflect absolute luminance.\n";
@@ -2530,7 +2530,7 @@ bool CIccInfo::IsValidSpectralSpace(icColorSpaceSignature sig)
   return rv;
 }
 
-CIccPixelBuf::CIccPixelBuf(int nChan/* =icDefaultPixelBufSize */)
+CIccPixelBuf::CIccPixelBuf(int nChan/* =icDefaultPixelBufSize */) : m_buf{}
 {
   if (nChan>icDefaultPixelBufSize) {
     m_pixel = new icFloatNumber[nChan];

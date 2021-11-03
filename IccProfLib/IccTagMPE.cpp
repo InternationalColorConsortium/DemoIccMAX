@@ -99,6 +99,7 @@ namespace refIccMAX {
 CIccApplyMpe::CIccApplyMpe(CIccMultiProcessElement *pElem)
 {
   m_pElem = pElem;
+  m_pApplyTag = NULL;
 }
 
 
@@ -187,7 +188,8 @@ CIccMpeUnknown::CIccMpeUnknown(const CIccMpeUnknown &elem)
    m_nSize = elem.m_nSize;
    if (m_nSize) {
      m_pData = (icUInt8Number*)malloc(m_nSize);
-     memcpy(m_pData, elem.m_pData, m_nSize);
+     if (m_pData)
+       memcpy(m_pData, elem.m_pData, m_nSize);
    }
    else
      m_pData = NULL;
@@ -215,7 +217,8 @@ CIccMpeUnknown &CIccMpeUnknown::operator=(const CIccMpeUnknown &elem)
    m_nSize = elem.m_nSize;
    if (m_nSize) {
      m_pData = (icUInt8Number*)malloc(m_nSize);
-     memcpy(m_pData, elem.m_pData, m_nSize);
+     if (m_pData)
+       memcpy(m_pData, elem.m_pData, m_nSize);
    }
    else
      m_pData = NULL;
@@ -497,6 +500,7 @@ CIccDblPixelBuffer::CIccDblPixelBuffer()
  ******************************************************************************/
 CIccDblPixelBuffer::CIccDblPixelBuffer(const CIccDblPixelBuffer &buf)
 {
+  m_nLastNumChannels = 0;
   m_nMaxChannels = buf.m_nMaxChannels;
   if (m_nMaxChannels) {
     m_pixelBuf1 = (icFloatNumber*)malloc(m_nMaxChannels*sizeof(icFloatNumber));
@@ -694,6 +698,7 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(icUInt16Number nInputChan
   m_list = NULL;
   m_nProcElements = 0;
   m_position = NULL;
+  m_nBufChannels = 0;
 
   m_nInputChannels = nInputChannels;
   m_nOutputChannels = nOutputChannels;
@@ -716,10 +721,11 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(icUInt16Number nInputChan
  ******************************************************************************/
 CIccTagMultiProcessElement::CIccTagMultiProcessElement(const CIccTagMultiProcessElement &lut)
 {
-    m_position = NULL;
-    m_list = NULL;
+  m_position = NULL;
+  m_list = NULL;
+  m_nProcElements = 0;
     
-    m_nReserved = lut.m_nReserved;
+  m_nReserved = lut.m_nReserved;
 
   if (lut.m_list) {
     m_list = new CIccMultiProcessElementList();
@@ -1310,11 +1316,13 @@ bool CIccTagMultiProcessElement::Begin(icElemInterp nInterp /*=icElemInterpLinea
     }
     last = i->ptr;
 
-    if (m_nBufChannels<last->NumOutputChannels())
-      m_nBufChannels = last->NumOutputChannels();
+    if (last) {
+      if (m_nBufChannels < last->NumOutputChannels())
+        m_nBufChannels = last->NumOutputChannels();
 
-    if (!last->Begin(nInterp, this))
-      return false;
+      if (!last->Begin(nInterp, this))
+        return false;
+    }
   }
 
   //The output channels must match
@@ -1801,7 +1809,8 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
     }
     last = i->ptr;
 
-    rv = icMaxStatus(rv, last->Validate(sigPath+icGetSigPath(GetType()), sReport, this));
+    if (last)
+        rv = icMaxStatus(rv, last->Validate(sigPath+icGetSigPath(GetType()), sReport, this));
   }
 
   if (bMatchChannels && last && last->NumOutputChannels() != m_nOutputChannels) {

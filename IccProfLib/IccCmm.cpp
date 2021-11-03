@@ -131,7 +131,7 @@ static __inline bool IsSpaceSpectralPCS(icUInt32Number sig)
  * 
  **************************************************************************
  */
-CIccPCS::CIccPCS()
+CIccPCS::CIccPCS() : m_Convert{}
 {
   m_bIsV2Lab = false;
   m_Space = icSigUnknownData;
@@ -569,8 +569,8 @@ CIccXform::CIccXform()
   m_pProfile = NULL;
   m_bInput = true;
   m_nIntent = icUnknownIntent;
-	m_pAdjustPCS = NULL;
-	m_bAdjustPCS = false;
+  m_pAdjustPCS = NULL;
+  m_bAdjustPCS = false;
   m_bAbsToRel = false;
   m_nMCS = icNoMCS;
   m_bUseSpectralPCS = false;
@@ -578,6 +578,7 @@ CIccXform::CIccXform()
   m_bDstPcsConversion = true;
   m_pConnectionConditions = NULL;
   m_pCmmEnvVarLookup = NULL;
+  m_nTagIntent = icPerceptual;
 }
 
 
@@ -1316,6 +1317,8 @@ CIccXform *CIccXform::Create(CIccProfile *pProfile,
     nTagIntent = icPerceptual;
 
   //Unsupported elements cause fall back behavior
+  if (pTag == NULL)
+    return NULL;
   if (pTag && !pTag->IsSupported())
     return NULL;
 
@@ -1879,7 +1882,7 @@ icUInt16Number CIccXform::GetNumDstSamples() const
 *  Constructor
 **************************************************************************
 */
-CIccApplyXform::CIccApplyXform(CIccXform *pXform)
+CIccApplyXform::CIccApplyXform(CIccXform *pXform) : m_AbsLab{}
 {
   m_pXform = pXform;
 }

@@ -223,6 +223,7 @@ CIccArrayNamedColor::CIccArrayNamedColor(CIccTagArray *pTagArray)
   m_nDeviceSamples = 0;
   m_nPcsSamples = 0;
   m_nSpectralSamples = 0;
+  m_spectralRange = m_biSpectralRange = {};
 }
 
 

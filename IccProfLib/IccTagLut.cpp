@@ -666,6 +666,7 @@ CIccTagParametricCurve::CIccTagParametricCurve(const CIccTagParametricCurve &ITP
 {
   m_nFunctionType = ITPC.m_nFunctionType;
   m_nNumParam = ITPC.m_nNumParam;
+  m_nReserved2 = 0;
 
   m_dParam = new icFloatNumber[m_nNumParam];
   memcpy(m_dParam, ITPC.m_dParam, m_nNumParam*sizeof(icFloatNumber));  
