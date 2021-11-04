@@ -146,7 +146,7 @@ iccFromXml CGYK-SelectMID.xml  CGYK-SelectMID.icc
 iccFromXml CMPK-SelectMID.xml  CMPK-SelectMID.icc
 iccFromXml CMYK-SelectMID.xml  CMYK-SelectMID.icc
 iccFromXml CMYKOGP-MVIS-Smooth.xml CMYKOGP-MVIS-Smooth.icc
-iccFromXml OMYK-SelectMID.xml  OMYK-SelectMID.ic
+iccFromXml OMYK-SelectMID.xml  OMYK-SelectMID.icc
 @echo off
 :end_Flexo-CMYKOGP
 
