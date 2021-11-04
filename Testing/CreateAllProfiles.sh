@@ -249,9 +249,9 @@ cd ..
 # Count number of ICCs that exist to confirm
 if [ "$1" != "clean" ]
 then
-	echo -n "Should be 206 ICC files: "
+	echo -n "Should be 207 ICC files: "
 	find . -iname "*.icc" | wc -l
 else
-	echo -n "Should be 79 ICC files after a clean: "
+	echo -n "Should be 80 ICC files after a clean: "
 	find . -iname "*.icc" | wc -l
 fi
