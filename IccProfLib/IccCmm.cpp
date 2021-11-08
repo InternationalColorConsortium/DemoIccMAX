@@ -564,7 +564,7 @@ IIccCreateXformHint* CIccCreateXformHintManager::GetHint(const char* hintName)
  *  Constructor
  **************************************************************************
  */
-CIccXform::CIccXform() : m_PCSOffset{}
+CIccXform::CIccXform() 
 {
   m_pProfile = NULL;
   m_bInput = true;
@@ -583,6 +583,7 @@ CIccXform::CIccXform() : m_PCSOffset{}
   m_nInterp = icInterpLinear;
   m_bUseD2BTags = false;
   m_bLuminanceMatching = false;
+  m_PCSOffset[0] = m_PCSOffset[1] = m_PCSOffset[2] = 0;
 }
 
 
@@ -7016,7 +7017,7 @@ CIccXform *CIccXformMpe::Create(CIccProfile *pProfile, bool bInput/* =true */, i
             return NULL;
         }
 
-        if (pTag->GetType()==icSigMultiProcessElementType) {
+        if (pTag && pTag->GetType()==icSigMultiProcessElementType) {
           rv = new CIccXformMpe(pTag);
         }
         else {
@@ -10537,7 +10538,7 @@ bool CIccMruCache<T>::Init(icUInt16Number nSrcSamples, icUInt16Number nDstSample
   if (!m_cache)
     return false;
 
-  m_pixelData = (T*)malloc(nCacheSize * m_nTotalSamples * sizeof(T));
+  m_pixelData = (T*)malloc((int)nCacheSize * m_nTotalSamples * sizeof(T));
 
   if (!m_pixelData)
     return false;
