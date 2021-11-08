@@ -12,7 +12,7 @@
  * The ICC Software License, Version 0.2
  *
  *
- * Copyright (c) 2003-2012 The International Color Consortium. All rights 
+ * Copyright (c) 2003-2012 The International Color Consortium. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,7 +20,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -48,20 +48,20 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Color Consortium. 
+ * individuals on behalf of the The International Color Consortium.
  *
  *
  * Membership in the ICC is encouraged when this software is used for
- * commercial purposes. 
+ * commercial purposes.
  *
- *  
+ *
  * For more information on The International Color Consortium, please
  * see <http://www.color.org/>.
- *  
- * 
+ *
+ *
  */
 
-////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
@@ -84,7 +84,7 @@
 #include <crtdbg.h>
 #elif __GLIBC__
 #include <mcheck.h>
-#endif 
+#endif
 
 
 void DumpTag(CIccProfile *pIcc, icTagSignature sig, int verboseness)
@@ -96,7 +96,7 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig, int verboseness)
   std::string contents;
 
   if (pTag) {
-    printf("\nContents of %s tag (%s)\n", Fmt.GetTagSigName(sig), icGetSig(buf, sig)); 
+    printf("\nContents of %s tag (%s)\n", Fmt.GetTagSigName(sig), icGetSig(buf, sig));
     printf("Type: ");
     if (pTag->IsArrayType()) {
       printf("Array of ");
@@ -127,9 +127,9 @@ int main(int argc, char* argv[])
   //_CrtSetBreakAlloc(1163);
 #elif __GLIBC__
   mcheck(NULL);
-#endif // WIN32 
+#endif // WIN32
 #endif // MEMORY_LEAK_CHECK && _DEBUG
-  
+
   int nArg = 1;
   long int verbosity = 100; // default is maximum verbosity (old behaviour)
 
@@ -186,7 +186,7 @@ print_usage:
       if (argc <= nArg)
         goto print_usage;
     }
-      
+
     pIcc = OpenIccProfile(argv[nArg]);
   }
 
@@ -218,6 +218,7 @@ print_usage:
                                pHdr->date.month, pHdr->date.day, pHdr->date.year,
                                pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
     printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
+    printf("Device Manufacturer:%s\n", icGetSig(buf, pHdr->manufacturer));
     printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
     printf("Flags:              %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
     printf("PCS Color Space:    %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
@@ -275,7 +276,7 @@ print_usage:
 
     // n is number of Tags in Tag Table
     for (n=0, i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++, n++) {
-        // Find closest tag after this tag, by scanning all offsets of other tags 
+        // Find closest tag after this tag, by scanning all offsets of other tags
         closest = pHdr->size;
         for (j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++) {
             if ((i != j) && (j->TagInfo.offset >= i->TagInfo.offset + i->TagInfo.size) && ((int)j->TagInfo.offset <= closest)) {
@@ -295,13 +296,13 @@ print_usage:
     // Report all duplicated tags in the tag index
     // Both ICC.1 and ICC.2 are silent on what should happen for this but report as a warning!!!
     int m;
-    for (n=0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++) 
+    for (n=0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++)
         for (m=0, j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++, m++)
             if ((i != j) && (i->TagInfo.sig == j->TagInfo.sig)) {
                 printf("%28s is duplicated at positions %d and %d!\n", Fmt.GetTagSigName(i->TagInfo.sig), n,  m);
                 nStatus = icMaxStatus(nStatus, icValidateWarning);
             }
-    
+
 
     // Check additional details if doing detailed validation:
     // - First tag data offset is immediately after the Tag Table
@@ -310,8 +311,8 @@ print_usage:
     //   (note that tag data can be reused by multiple tags and tags do NOT have to be order)
     // - Last tag also has to be padded and thus file size is always a multiple of 4. See clause
     //   7.2.1, bullet (c) of ICC.1:2010 and ICC.2:2019 specs.
-    // - Tag offset + Tag Size should never go beyond EOF 
-    // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and 
+    // - Tag offset + Tag Size should never go beyond EOF
+    // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and
     //   occurs in real-world ICC profiles
     // - Tags with overlapping tag data are considered highly suspect (but officially valid)
     // - 1-3 padding bytes after each tag's data need to be all zero *** NOT DONE - TODO ***
@@ -320,7 +321,7 @@ print_usage:
       int  rndup, smallest_offset = pHdr->size;
 
       // File size is required to be a multiple of 4 bytes according to clause 7.2.1 bullet (c):
-      // "all tagged element data, including the last, shall be padded by no more than three 
+      // "all tagged element data, including the last, shall be padded by no more than three
       //  following pad bytes to reach a 4 - byte boundary"
       if ((pHdr->version >= icVersionNumberV4_2) && (pHdr->size % 4 != 0)) {
           sReport += icMsgValidateNonCompliant;
@@ -335,7 +336,7 @@ print_usage:
         // Is the Tag offset + Tag Size beyond EOF?
         if (i->TagInfo.offset + i->TagInfo.size > pHdr->size) {
             sReport += icMsgValidateNonCompliant;
-            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\n", 
+            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\n",
                     Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size);
             sReport += str;
             nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
@@ -383,7 +384,7 @@ print_usage:
         nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
       }
     }
-    
+
     if (argc>nArg+1) {
       if (!stricmp(argv[nArg+1], "ALL")) {
         for (i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++) {
