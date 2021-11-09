@@ -451,7 +451,7 @@ static bool IsRoundTripable(CIccProfile *pIcc)
 // ---------------------------------------------------------------------------
 
 MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *pIcc, const wxString &profilePath)
-       : wxMDIChildFrame(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
+       : wxMDIChildFrame(parent, wxID_ANY, title, wxDefaultPosition, wxSize(750,900),
                          wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE)
 {
 	m_pIcc = pIcc;
@@ -460,13 +460,13 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 
     my_children.Append(this);
 	// this should work for MDI frames as well as for normal ones
-	SetSizeHints(250, 300);
+	SetSizeHints(750, 900);
 
 	// create controls
 	m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
 
 	wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
-	wxSizer *sizerBox = new wxStaticBoxSizer(new wxStaticBox(m_panel, wxID_ANY, _T("&ProfileHeader")), wxVERTICAL);
+	wxSizer *sizerBox = new wxStaticBoxSizer(new wxStaticBox(m_panel, wxID_ANY, _T("&Profile Header")), wxVERTICAL);
 
     // Keep things consistent and in the same order as CLI "iccDumpProfile"
     sizerBox->Add(CreateSizerWithText(_("Profile ID:"), &m_textProfileID), wxSizerFlags().Expand().Border(wxALL, 0));
@@ -514,11 +514,12 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 	sizerTags->SetItemMinSize((size_t)0, 455, 175);
 	sizerTop->Add(sizerTags, wxSizerFlags(1).Expand().Border(wxALL, 5));
 
-	m_tagsCtrl->InsertColumn(0, _("Tag ID"), wxLIST_FORMAT_LEFT, wxLIST_AUTOSIZE);
-	m_tagsCtrl->InsertColumn(1, _("Tag Type"), wxLIST_FORMAT_LEFT, wxLIST_AUTOSIZE);
-	m_tagsCtrl->InsertColumn(2, _("Offset"), wxLIST_FORMAT_RIGHT, wxLIST_AUTOSIZE);
-	m_tagsCtrl->InsertColumn(3, _("Size"), wxLIST_FORMAT_RIGHT, wxLIST_AUTOSIZE);
-    m_tagsCtrl->InsertColumn(4, _("Padding"), wxLIST_FORMAT_RIGHT, wxLIST_AUTOSIZE);
+    m_tagsCtrl->InsertColumn(0, _("#"), wxLIST_FORMAT_RIGHT, 30);
+    m_tagsCtrl->InsertColumn(1, _("Tag ID"), wxLIST_FORMAT_LEFT, 210);
+	m_tagsCtrl->InsertColumn(2, _("Tag Type"), wxLIST_FORMAT_LEFT, 210);
+	m_tagsCtrl->InsertColumn(3, _("Offset"), wxLIST_FORMAT_RIGHT, 100);
+	m_tagsCtrl->InsertColumn(4, _("Size"), wxLIST_FORMAT_RIGHT, 100);
+    m_tagsCtrl->InsertColumn(5, _("Padding"), wxLIST_FORMAT_RIGHT, 100);
 
 	// don't allow frame to get smaller than what the sizers tell it and also set
 	// the initial size as calculated by the sizers
@@ -601,7 +602,7 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
         TagEntryList::iterator i, j;
 
         for (n = 0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++) {
-            item = m_tagsCtrl->InsertItem(n, Fmt.GetTagSigName(i->TagInfo.sig));
+            item = m_tagsCtrl->InsertItem(n, wxString::Format("%d", n));
 
             // Find closest tag after this tag, by scanning all offsets of other tags
             closest = pHdr->size;
@@ -614,15 +615,16 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
             // Should be 0-3 if compliant. Negative number if tags overlap!
             pad = closest - i->TagInfo.offset - i->TagInfo.size;
 
+            m_tagsCtrl->SetItem(item, 1, Fmt.GetTagSigName(i->TagInfo.sig));
             CIccTag* pTag = pIcc->FindTag(i->TagInfo.sig);
             if (!pTag)
-                m_tagsCtrl->SetItem(item, 1, _T("***Invalid Tag!***"));
+                m_tagsCtrl->SetItem(item, 2, _T("***Invalid Tag!***"));
             else
-                m_tagsCtrl->SetItem(item, 1, Fmt.GetTagTypeSigName(pTag->GetType()));
+                m_tagsCtrl->SetItem(item, 2, Fmt.GetTagTypeSigName(pTag->GetType()));
 
-            m_tagsCtrl->SetItem(item, 2, wxString::Format("%d", i->TagInfo.offset));
-            m_tagsCtrl->SetItem(item, 3, wxString::Format("%d", i->TagInfo.size));
-            m_tagsCtrl->SetItem(item, 4, wxString::Format("%d", pad));
+            m_tagsCtrl->SetItem(item, 3, wxString::Format("%d", i->TagInfo.offset));
+            m_tagsCtrl->SetItem(item, 4, wxString::Format("%d", i->TagInfo.size));
+            m_tagsCtrl->SetItem(item, 5, wxString::Format("%d", pad));
 
             m_tagsCtrl->SetItemData(item, (long)i->TagInfo.sig);
         }
@@ -643,16 +645,16 @@ wxSizer *MyChild::CreateSizerWithText(const wxString &labelText, wxStaticText **
 
 	wxSize winSize = wxDefaultSize;
 
-	winSize.SetWidth(100);
+	winSize.SetWidth(210);
 	wxStaticText *label = new wxStaticText(m_panel, wxID_ANY, labelText, wxDefaultPosition, winSize, wxALIGN_RIGHT);
 
 	winSize.SetWidth(250);
 	wxStaticText *text = new wxStaticText(m_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize, wxSTATIC_BORDER|wxTE_RIGHT);
 
 	sizerRow->Add(label, 0, wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
-	sizerRow->Add(text, 1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+	sizerRow->Add(text,  1, wxLEFT  | wxALIGN_CENTRE_VERTICAL, 5);
 
-	if ( ppText )
+	if (ppText)
 		*ppText = text;
 
 	return sizerRow;
@@ -850,11 +852,12 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
     wxColour status_color = *wxBLACK;
 	switch(nStat) {
 		case icValidateOK:
+            status_color = wxColour("DARK GREEN");
             ver_str = "Valid Profile" + ver_str;
             break;
 
 		case icValidateWarning:
-            status_color = *wxYELLOW;
+            status_color = wxColour("ORANGE RED");
             ver_str = "Validation Warning(s)" + ver_str;
 			break;
 
