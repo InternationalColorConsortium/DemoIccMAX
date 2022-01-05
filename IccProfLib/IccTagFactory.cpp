@@ -496,7 +496,7 @@ icTagTypeSignature CIccSpecTagFactory::GetTagTypeNameSig(const icChar *szName)
   return icSigUnknownType;
 }
 
-std::auto_ptr<CIccTagCreator> CIccTagCreator::theTagCreator;
+std::unique_ptr<CIccTagCreator> CIccTagCreator::theTagCreator;
 
 CIccTagCreator::~CIccTagCreator()
 {

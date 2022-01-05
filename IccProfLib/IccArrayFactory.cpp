@@ -109,7 +109,7 @@ bool CIccBasicArrayFactory::GetArraySigName(std::string &ArrayName, icArraySigna
   return true;
 }
 
-std::auto_ptr<CIccArrayCreator> CIccArrayCreator::theArrayCreator;
+std::unique_ptr<CIccArrayCreator> CIccArrayCreator::theArrayCreator;
 
 CIccArrayCreator::~CIccArrayCreator()
 {

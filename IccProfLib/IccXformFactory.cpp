@@ -115,7 +115,7 @@ CIccXform* CIccBaseXformFactory::CreateXform(icXformType xformSig, CIccTag *pTag
   }
 }
 
-std::auto_ptr<CIccXformCreator> CIccXformCreator::theXformCreator;
+std::unique_ptr<CIccXformCreator> CIccXformCreator::theXformCreator;
 
 CIccXformCreator::~CIccXformCreator()
 {

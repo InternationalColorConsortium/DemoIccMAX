@@ -153,7 +153,7 @@ public:
 
 class CIccXformCreator;
 
-typedef std::auto_ptr<CIccXformCreator> CIccXformCreatorPtr;
+typedef std::unique_ptr<CIccXformCreator> CIccXformCreatorPtr;
 
 /**
  ***********************************************************************

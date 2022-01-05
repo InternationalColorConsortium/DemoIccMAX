@@ -151,7 +151,7 @@ bool CIccBasicStructFactory::GetStructSigName(std::string &structName, icStructS
   return true;
 }
 
-std::auto_ptr<CIccStructCreator> CIccStructCreator::theStructCreator;
+std::unique_ptr<CIccStructCreator> CIccStructCreator::theStructCreator;
 
 CIccStructCreator::~CIccStructCreator()
 {

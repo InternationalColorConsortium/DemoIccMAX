@@ -249,7 +249,7 @@ public:
 
 class CIccTagCreator;
 
-typedef std::auto_ptr<CIccTagCreator> CIccTagCreatorPtr;
+typedef std::unique_ptr<CIccTagCreator> CIccTagCreatorPtr;
 
 /**
  ***********************************************************************

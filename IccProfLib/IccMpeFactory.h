@@ -181,7 +181,7 @@ public:
 
 class CIccMpeCreator;
 
-typedef std::auto_ptr<CIccMpeCreator> CIccMpeCreatorPtr;
+typedef std::unique_ptr<CIccMpeCreator> CIccMpeCreatorPtr;
 
 /**
  ***********************************************************************

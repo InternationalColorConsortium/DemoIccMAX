@@ -213,7 +213,7 @@ bool CIccBasicMpeFactory::GetElementSigName(std::string &elemName, icElemTypeSig
   return true;
 }
 
-std::auto_ptr<CIccMpeCreator> CIccMpeCreator::theElementCreator;
+std::unique_ptr<CIccMpeCreator> CIccMpeCreator::theElementCreator;
 
 CIccMpeCreator::~CIccMpeCreator()
 {

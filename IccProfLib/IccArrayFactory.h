@@ -178,7 +178,7 @@ public:
 
 class CIccArrayCreator;
 
-typedef std::auto_ptr<CIccArrayCreator> CIccArrayCreatorPtr;
+typedef std::unique_ptr<CIccArrayCreator> CIccArrayCreatorPtr;
 
 /**
  ***********************************************************************
