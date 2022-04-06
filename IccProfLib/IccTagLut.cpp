@@ -2952,47 +2952,100 @@ void CIccCLUT::Interp6d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const
 {
   icUInt32Number i,j, index = 0;
+    
+    if (m_nInput < 17)
+    {
+        icFloatNumber s_g[16];
+        icFloatNumber s_s[16];
+        icFloatNumber s_df[65536];
+        icUInt32Number s_ig[16];
 
-  for (i=0; i<m_nInput; i++) {
-    m_g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
-    m_ig[i] = (icUInt32Number)m_g[i];
-    m_s[m_nInput-1-i] = m_g[i] - m_ig[i];
-    if (m_ig[i]==m_MaxGridPoint[i]) {
-      m_ig[i]--;
-      m_s[m_nInput-1-i] = 1.0;      
+        
+        for (i=0; i<m_nInput; i++) {
+            s_g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
+            s_ig[i] = (icUInt32Number)s_g[i];
+            s_s[m_nInput-1-i] = s_g[i] - s_ig[i];
+            if (s_ig[i]==m_MaxGridPoint[i]) {
+                s_ig[i]--;
+                s_s[m_nInput-1-i] = 1.0;
+            }
+            index += s_ig[i]*m_DimSize[i];
+        }
+        
+        icFloatNumber *p = &m_pData[index];
+        icFloatNumber temp[2];
+        icFloatNumber pv;
+        int nFlag = 0;
+        
+        for (i=0; i<m_nNodes; i++) {
+            s_df[i] = 1.0;
+        }
+        
+        
+        for (i=0; i<m_nInput; i++) {
+            temp[0] = (icFloatNumber)(1.0 - s_s[i]);
+            temp[1] = (icFloatNumber)(s_s[i]);
+            index = m_nPower[i];
+            for (j=0; j<m_nNodes; j++) {
+                s_df[j] *= temp[nFlag];
+                if ((j+1)%index == 0)
+                    nFlag = !nFlag;
+            }
+            nFlag = 0;
+        }
+        
+        for (i=0; i<m_nOutput; i++, p++) {
+            for (pv=0, j=0; j<m_nNodes; j++)
+                pv += p[m_nOffset[j]] * s_df[j];
+            
+            destPixel[i] = pv;
+        }
+        
     }
-    index += m_ig[i]*m_DimSize[i];
-  }
-
-  icFloatNumber *p = &m_pData[index];
-  icFloatNumber temp[2];
-  icFloatNumber pv;
-  int nFlag = 0;
-
-  for (i=0; i<m_nNodes; i++) {
-    m_df[i] = 1.0;
-  }
-
-
-  for (i=0; i<m_nInput; i++) {
-    temp[0] = (icFloatNumber)(1.0 - m_s[i]);
-    temp[1] = (icFloatNumber)(m_s[i]);
-    index = m_nPower[i];
-    for (j=0; j<m_nNodes; j++) {
-      m_df[j] *= temp[nFlag];
-      if ((j+1)%index == 0)
-        nFlag = !nFlag;
+    else
+    {
+        // NOT THREAD SAFE !!!!!!!!!!!!!!!!!!!!!
+        
+        for (i=0; i<m_nInput; i++) {
+            m_g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
+            m_ig[i] = (icUInt32Number)m_g[i];
+            m_s[m_nInput-1-i] = m_g[i] - m_ig[i];
+            if (m_ig[i]==m_MaxGridPoint[i]) {
+                m_ig[i]--;
+                m_s[m_nInput-1-i] = 1.0;
+            }
+            index += m_ig[i]*m_DimSize[i];
+        }
+        
+        icFloatNumber *p = &m_pData[index];
+        icFloatNumber temp[2];
+        icFloatNumber pv;
+        int nFlag = 0;
+        
+        for (i=0; i<m_nNodes; i++) {
+            m_df[i] = 1.0;
+        }
+        
+        
+        for (i=0; i<m_nInput; i++) {
+            temp[0] = (icFloatNumber)(1.0 - m_s[i]);
+            temp[1] = (icFloatNumber)(m_s[i]);
+            index = m_nPower[i];
+            for (j=0; j<m_nNodes; j++) {
+                m_df[j] *= temp[nFlag];
+                if ((j+1)%index == 0)
+                    nFlag = !nFlag;
+            }
+            nFlag = 0;
+        }
+        
+        for (i=0; i<m_nOutput; i++, p++) {
+            for (pv=0, j=0; j<m_nNodes; j++)
+                pv += p[m_nOffset[j]] * m_df[j];
+            
+            destPixel[i] = pv;
+        }
     }
-    nFlag = 0;
-  }
-
-  for (i=0; i<m_nOutput; i++, p++) {
-    for (pv=0, j=0; j<m_nNodes; j++)
-      pv += p[m_nOffset[j]] * m_df[j];
-
-    destPixel[i] = pv;
-  }
-
 }
 
 
