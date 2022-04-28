@@ -2941,16 +2941,21 @@ void CIccCLUT::Interp6d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const
 {
   icUInt32Number i,j, index = 0;
+    
+    icFloatNumber lm_g[16];
+    icUInt32Number lm_ig[16];
+    icFloatNumber  lm_s[16];
+    icFloatNumber  lm_df[65536];
 
   for (i=0; i<m_nInput; i++) {
-    m_g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
-    m_ig[i] = (icUInt32Number)m_g[i];
-    m_s[m_nInput-1-i] = m_g[i] - m_ig[i];
-    if (m_ig[i]==m_MaxGridPoint[i]) {
-      m_ig[i]--;
-      m_s[m_nInput-1-i] = 1.0;      
+    lm_g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
+    lm_ig[i] = (icUInt32Number)lm_g[i];
+    lm_s[m_nInput-1-i] = lm_g[i] - lm_ig[i];
+    if (lm_ig[i]==m_MaxGridPoint[i]) {
+      lm_ig[i]--;
+      lm_s[m_nInput-1-i] = 1.0;
     }
-    index += m_ig[i]*m_DimSize[i];
+    index += lm_ig[i]*m_DimSize[i];
   }
 
   icFloatNumber *p = &m_pData[index];
@@ -2959,16 +2964,16 @@ void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   int nFlag = 0;
 
   for (i=0; i<m_nNodes; i++) {
-    m_df[i] = 1.0;
+    lm_df[i] = 1.0;
   }
 
 
   for (i=0; i<m_nInput; i++) {
-    temp[0] = (icFloatNumber)(1.0 - m_s[i]);
-    temp[1] = (icFloatNumber)(m_s[i]);
+    temp[0] = (icFloatNumber)(1.0 - lm_s[i]);
+    temp[1] = (icFloatNumber)(lm_s[i]);
     index = m_nPower[i];
     for (j=0; j<m_nNodes; j++) {
-      m_df[j] *= temp[nFlag];
+      lm_df[j] *= temp[nFlag];
       if ((j+1)%index == 0)
         nFlag = !nFlag;
     }
@@ -2977,7 +2982,7 @@ void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   for (i=0; i<m_nOutput; i++, p++) {
     for (pv=0, j=0; j<m_nNodes; j++)
-      pv += p[m_nOffset[j]] * m_df[j];
+      pv += p[m_nOffset[j]] * lm_df[j];
 
     destPixel[i] = pv;
   }
