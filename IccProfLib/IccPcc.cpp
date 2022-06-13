@@ -314,33 +314,33 @@ CIccCombinedConnectionConditions::CIccCombinedConnectionConditions(CIccProfile *
                                                                    IIccProfileConnectionConditions *pAppliedPCC, 
                                                                    bool bReflectance/*=false*/)
 {
-  const CIccTagSpectralViewingConditions *pView = pAppliedPCC ? pAppliedPCC->getPccViewingConditions() : NULL;
+  if (pAppliedPCC) {
+      const CIccTagSpectralViewingConditions *pView = pAppliedPCC->getPccViewingConditions();
+      if (bReflectance) {
+          m_pPCC = pAppliedPCC;
+          m_pViewingConditions = NULL;
 
-  if (bReflectance) {
-    m_pPCC = pAppliedPCC;
-    m_pViewingConditions = NULL;
+          m_illuminantXYZ[0] = pView->m_illuminantXYZ.X / pView->m_illuminantXYZ.Y;
+          m_illuminantXYZ[1] = pView->m_illuminantXYZ.Y / pView->m_illuminantXYZ.Y;
+          m_illuminantXYZ[2] = pView->m_illuminantXYZ.Z / pView->m_illuminantXYZ.Y;
+          m_illuminantXYZLum[0] = pView->m_illuminantXYZ.X;
+          m_illuminantXYZLum[1] = pView->m_illuminantXYZ.Y;
+          m_illuminantXYZLum[2] = pView->m_illuminantXYZ.Z;
+          m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, pAppliedPCC);
+      }
+      else {
+          m_pPCC = NULL;
+          m_pViewingConditions = (CIccTagSpectralViewingConditions *) pView->NewCopy();
 
-    m_illuminantXYZ[0] = pView->m_illuminantXYZ.X / pView->m_illuminantXYZ.Y;
-    m_illuminantXYZ[1] = pView->m_illuminantXYZ.Y / pView->m_illuminantXYZ.Y;
-    m_illuminantXYZ[2] = pView->m_illuminantXYZ.Z / pView->m_illuminantXYZ.Y;
-    m_illuminantXYZLum[0] = pView->m_illuminantXYZ.X;
-    m_illuminantXYZLum[1] = pView->m_illuminantXYZ.Y;
-    m_illuminantXYZLum[2] = pView->m_illuminantXYZ.Z;
-    m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, pAppliedPCC);
-  }
-  else if (pView) {
-    m_pPCC = NULL;
-    m_pViewingConditions = (CIccTagSpectralViewingConditions*)pView->NewCopy();
+          icSpectralRange illumRange;
+          const icFloatNumber *illum = pView->getIlluminant(illumRange);
 
-    icSpectralRange illumRange;
-    const icFloatNumber *illum = pView->getIlluminant(illumRange);
+          m_pViewingConditions->setIlluminant(pView->getStdIllumiant(), illumRange, illum, pView->getIlluminantCCT());
 
-    m_pViewingConditions->setIlluminant(pView->getStdIllumiant(), illumRange, illum, pView->getIlluminantCCT());
-
-    pProfile->calcNormIlluminantXYZ(m_illuminantXYZ, this);
-    pProfile->calcLumIlluminantXYZ(m_illuminantXYZLum, this);
-    m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, this);
-    
+          pProfile->calcNormIlluminantXYZ(m_illuminantXYZ, this);
+          pProfile->calcLumIlluminantXYZ(m_illuminantXYZLum, this);
+          m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, this);
+      }
   }
   else {
     m_pPCC = NULL;
