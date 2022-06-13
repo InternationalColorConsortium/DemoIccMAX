@@ -794,8 +794,8 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
   CIccInfo Info;
   icProfileID profileID;
 
-  // Check profile ID
-  if (Info.IsProfileIDCalculated(&m_Header.profileID)) {
+  // Check profile ID only on v4.x.y profiles
+  if (m_Header.version >= icVersionNumberV4 && Info.IsProfileIDCalculated(&m_Header.profileID)) {
     CalcProfileID(pIO, &profileID);
     if (memcmp((char*)profileID.ID8, (char*)m_Header.profileID.ID8, 16) != 0) {
       sReport += icMsgValidateNonCompliant;
