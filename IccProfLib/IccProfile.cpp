@@ -71,8 +71,9 @@
 #ifdef WIN32
   #pragma warning( disable: 4786) //disable warning in <list.h>
 #endif
-#include <time.h>
-#include <string.h>
+#include <ctime>
+#include <cstring>
+#include <cmath>
 #include "IccProfile.h"
 #include "IccTag.h"
 #include "IccArrayBasic.h"
@@ -258,7 +259,7 @@ void CIccProfile::Cleanup()
   TagPtrList::iterator i;
 
   for (i=m_TagVals->begin(); i!=m_TagVals->end(); i++) {
-    if (i->ptr)
+    if (NULL == i->ptr)
       delete i->ptr;
   }
   m_Tags->clear();
@@ -554,7 +555,7 @@ bool CIccProfile::DeleteTag(icSignature sig)
 *  NULL if there is no embedded profile.
 *******************************************************************************
 */
-CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO)
+CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO) const
 {
   TagEntryList::iterator i;
 
@@ -1288,6 +1289,14 @@ bool CIccProfile::DetachTag(CIccTag *pTag)
   return true;
 }
 
+static inline bool compare_float(float x, float y, float eps=0.01f) {
+    return (fabsf(x-y)<eps);
+}
+
+static inline bool compare_float(double x, double y, double eps=0.0000001f) {
+    return (fabs(x-y)<eps);
+}
+
 
 /**
 ****************************************************************************
@@ -1414,8 +1423,6 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     else {
       switch(m_Header.pcs) {
         case icSigNoColorData:
-          break;
-
         case icSigXYZData:
         case icSigLabData:
           break;
@@ -1673,9 +1680,16 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     icFloatNumber X = icFtoD(m_Header.illuminant.X);
     icFloatNumber Y = icFtoD(m_Header.illuminant.Y);
     icFloatNumber Z = icFtoD(m_Header.illuminant.Z);
-    if (m_Header.version<icVersionNumberV5 && (X<0.9640 || X>0.9644 || Y!=1.0 || Z<0.8247 || Z>0.8251)) {
+    if (m_Header.version<icVersionNumberV5
+        && (
+               (!compare_float(X, 0.9642f, 0.0004f))
+            || (!compare_float(Y, 1.0f, 0.0004f))
+            || (!compare_float(Z, 0.8249f, 0.0004f))
+            )
+        ){
       sReport += icMsgValidateNonCompliant;
-      sReport += "Non D50 Illuminant XYZ values.\r\n";
+      sReport += "Non D50 Illuminant XYZ values";
+      sReport +="\r\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -2120,9 +2134,10 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
   case icSigColorantInfoTag:
   case icSigColorantInfoOutTag:
   {
-    if (arraySig == icSigColorantInfoArray)
-      return true;
-    else return true;
+    //if (arraySig == icSigColorantInfoArray)
+    //  return true;
+    //else return true;
+    return true;
   }
 
   case icSigColorantOrderTag:
