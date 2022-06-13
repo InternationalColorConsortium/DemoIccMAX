@@ -249,17 +249,14 @@ icFloatNumber *IIccProfileConnectionConditions::getEmissiveObserver(const icSpec
 
     //Copy observer while adjusting to range
     if (mapRange) {
-
-      if (obs) {
         fptr = &observer[0];
         tptr = obs;
-        for (i=0; i<3; i++) {
-          mapRange->VectorMult(tptr, fptr);
-          fptr += observerRange.steps;
-          tptr += range.steps;
+        for (i = 0; i < 3; i++) {
+            mapRange->VectorMult(tptr, fptr);
+            fptr += observerRange.steps;
+            tptr += range.steps;
         }
-      }
-      delete mapRange;
+        delete mapRange;
     }
     else {
       memcpy(obs, observer, size*sizeof(icFloatNumber));
