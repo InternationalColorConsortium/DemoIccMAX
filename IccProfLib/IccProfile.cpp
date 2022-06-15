@@ -259,7 +259,7 @@ void CIccProfile::Cleanup()
   TagPtrList::iterator i;
 
   for (i=m_TagVals->begin(); i!=m_TagVals->end(); i++) {
-    if (NULL == i->ptr)
+    if (NULL != i->ptr)
       delete i->ptr;
   }
   m_Tags->clear();
