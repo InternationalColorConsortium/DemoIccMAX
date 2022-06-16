@@ -723,13 +723,12 @@ icInt32Number CIccMemIO::Read8(void *pBuf, icInt32Number nNum)
 {
   if (!m_pData)
     return 0;
-
-  nNum = __min((icInt32Number)(m_nSize-m_nPos), nNum);
-
-  memcpy(pBuf, m_pData+m_nPos, nNum);
-  m_nPos += nNum;
-
-  return nNum;
+  if (nNum > 0) {
+      nNum = __min((icInt32Number) (m_nSize - m_nPos), nNum);
+      memcpy(pBuf, m_pData + m_nPos, nNum);
+      m_nPos += nNum;
+  }
+    return nNum;
 }
 
 
