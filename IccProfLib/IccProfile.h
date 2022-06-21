@@ -220,7 +220,7 @@ protected:
   bool LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll=false);
   bool DetachTag(CIccTag *pTag);
 
-  CIccIO* ConnectSubProfile(CIccIO *pIO, bool bOwnIO);
+  CIccIO* ConnectSubProfile(CIccIO *pIO, bool bOwnIO) const;
 
   // Profile Validation functions
   icValidateStatus CheckRequiredTags(std::string &sReport) const;
