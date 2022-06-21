@@ -794,16 +794,27 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
 
   CIccInfo Info;
   icProfileID profileID;
-
-  // Check profile ID only on v4.x.y profiles
-  if (m_Header.version >= icVersionNumberV4 && Info.IsProfileIDCalculated(&m_Header.profileID)) {
-    CalcProfileID(pIO, &profileID);
-    if (memcmp((char*)profileID.ID8, (char*)m_Header.profileID.ID8, 16) != 0) {
-      sReport += icMsgValidateNonCompliant;
-      sReport += "Bad Profile ID\r\n";
-
-      rv = icMaxStatus(rv, icValidateNonCompliant);
-    }
+  // check if bytes 84..89 are zero, if not we assume a profile id
+  if (Info.IsProfileIDCalculated(&m_Header.profileID)) {
+      CalcProfileID(pIO, &profileID);
+      // if the provided and the calculated profileid missmatch
+      if (memcmp((char *) profileID.ID8, (char *) m_Header.profileID.ID8, 16) != 0) {
+          if (m_Header.version >= icVersionNumberV4) { // error with bad profile ID on v4.x.y profiles (or higher)
+              sReport += icMsgValidateNonCompliant;
+              sReport += "Bad Profile ID\r\n";
+              rv = icMaxStatus(rv, icValidateNonCompliant);
+          } else { // on older profiles the reserved bytes are (mis-)interpreted as profile id
+              sReport += icMsgValidateWarning;
+              sReport += "Version 2 profile has non-zero reserved data that doesn't match calculated Profile ID\r\n";
+              rv = icMaxStatus(rv, icValidateWarning);
+          }
+      } else { // the provided and the calculated profileid match
+          if (m_Header.version < icVersionNumberV4) { // the profileid should only be used in v4.x.y profiles (or higher)
+              sReport += icMsgValidateWarning;
+              sReport += "Version 2 profile has non-zero reserved data that matches calculated Profile ID\r\n";
+              rv = icMaxStatus(rv, icValidateWarning);
+          }
+      }
   }
 
   TagEntryList::iterator i;
