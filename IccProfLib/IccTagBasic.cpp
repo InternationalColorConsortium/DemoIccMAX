@@ -281,13 +281,15 @@ bool CIccTagUnknown::Read(icUInt32Number size, CIccIO *pIO)
 
   m_nSize = size - sizeof(icTagTypeSignature);
 
-  if (m_nSize) {
+  if (m_nSize > 0) { // size could be stored as smaller than expected value, therefore the size check
 
     m_pData = new icUInt8Number[m_nSize];
 
     if (pIO->Read8(m_pData, m_nSize) != (icInt32Number)m_nSize) {
       return false;
     }
+  } else {
+      return false;
   }
 
   return true;

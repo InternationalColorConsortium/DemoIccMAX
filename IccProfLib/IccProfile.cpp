@@ -71,8 +71,9 @@
 #ifdef WIN32
   #pragma warning( disable: 4786) //disable warning in <list.h>
 #endif
-#include <time.h>
-#include <string.h>
+#include <ctime>
+#include <cstring>
+#include <cmath>
 #include "IccProfile.h"
 #include "IccTag.h"
 #include "IccArrayBasic.h"
@@ -258,7 +259,7 @@ void CIccProfile::Cleanup()
   TagPtrList::iterator i;
 
   for (i=m_TagVals->begin(); i!=m_TagVals->end(); i++) {
-    if (i->ptr)
+    if (NULL != i->ptr)
       delete i->ptr;
   }
   m_Tags->clear();
@@ -554,7 +555,7 @@ bool CIccProfile::DeleteTag(icSignature sig)
 *  NULL if there is no embedded profile.
 *******************************************************************************
 */
-CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO)
+CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO) const
 {
   TagEntryList::iterator i;
 
@@ -793,27 +794,27 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
 
   CIccInfo Info;
   icProfileID profileID;
-
-  // Check profile ID
+  // check if bytes 84..89 are zero, if not we assume a profile id
   if (Info.IsProfileIDCalculated(&m_Header.profileID)) {
-       // if the provided and the calculated profileid missmatch
-       if (memcmp((char *) profileID.ID8, (char *) m_Header.profileID.ID8, 16) != 0) {
-           if (m_Header.version >= icVersionNumberV4) { // error with bad profile ID on v4.x.y profiles (or higher)
-               sReport += icMsgValidateNonCompliant;
-               sReport += "Bad Profile ID\r\n";
-               rv = icMaxStatus(rv, icValidateNonCompliant);
-           } else { // on older profiles the reserved bytes are (mis-)interpreted as profile id
-               sReport += icMsgValidateWarning;
-               sReport += "Version 2 profile has non-zero reserved data that doesn't match calculated Profile ID\r\n";
-               rv = icMaxStatus(rv, icValidateWarning);
-           }
-       } else { // the provided and the calculated profileid match
-           if (m_Header.version < icVersionNumberV4) { // the profileid should only be used in v4.x.y profiles (or higher)
-               sReport += icMsgValidateWarning;
-               sReport += "Version 2 profile has non-zero reserved data that matches calculated Profile ID\r\n";
-               rv = icMaxStatus(rv, icValidateWarning);
-           }
-       }
+      CalcProfileID(pIO, &profileID);
+      // if the provided and the calculated profileid missmatch
+      if (memcmp((char *) profileID.ID8, (char *) m_Header.profileID.ID8, 16) != 0) {
+          if (m_Header.version >= icVersionNumberV4) { // error with bad profile ID on v4.x.y profiles (or higher)
+              sReport += icMsgValidateNonCompliant;
+              sReport += "Bad Profile ID\r\n";
+              rv = icMaxStatus(rv, icValidateNonCompliant);
+          } else { // on older profiles the reserved bytes are (mis-)interpreted as profile id
+              sReport += icMsgValidateWarning;
+              sReport += "Version 2 profile has non-zero reserved data that doesn't match calculated Profile ID\r\n";
+              rv = icMaxStatus(rv, icValidateWarning);
+          }
+      } else { // the provided and the calculated profileid match
+          if (m_Header.version < icVersionNumberV4) { // the profileid should only be used in v4.x.y profiles (or higher)
+              sReport += icMsgValidateWarning;
+              sReport += "Version 2 profile has non-zero reserved data that matches calculated Profile ID\r\n";
+              rv = icMaxStatus(rv, icValidateWarning);
+          }
+      }
   }
 
   TagEntryList::iterator i;
@@ -1299,6 +1300,14 @@ bool CIccProfile::DetachTag(CIccTag *pTag)
   return true;
 }
 
+static inline bool compare_float(float x, float y, float eps=0.01f) {
+    return (fabsf(x-y)<eps);
+}
+
+static inline bool compare_float(double x, double y, double eps=0.0000001f) {
+    return (fabs(x-y)<eps);
+}
+
 
 /**
 ****************************************************************************
@@ -1425,8 +1434,6 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     else {
       switch(m_Header.pcs) {
         case icSigNoColorData:
-          break;
-
         case icSigXYZData:
         case icSigLabData:
           break;
@@ -1684,9 +1691,16 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     icFloatNumber X = icFtoD(m_Header.illuminant.X);
     icFloatNumber Y = icFtoD(m_Header.illuminant.Y);
     icFloatNumber Z = icFtoD(m_Header.illuminant.Z);
-    if (m_Header.version<icVersionNumberV5 && (X<0.9640 || X>0.9644 || Y!=1.0 || Z<0.8247 || Z>0.8251)) {
+    if (m_Header.version<icVersionNumberV5
+        && (
+               (!compare_float(X, 0.9642f, 0.0004f))
+            || (!compare_float(Y, 1.0f, 0.0004f))
+            || (!compare_float(Z, 0.8249f, 0.0004f))
+            )
+        ){
       sReport += icMsgValidateNonCompliant;
-      sReport += "Non D50 Illuminant XYZ values.\n";
+      sReport += "Non D50 Illuminant XYZ values";
+      sReport +="\r\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -2131,9 +2145,10 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
   case icSigColorantInfoTag:
   case icSigColorantInfoOutTag:
   {
-    if (arraySig == icSigColorantInfoArray)
-      return true;
-    else return true;
+    //if (arraySig == icSigColorantInfoArray)
+    //  return true;
+    //else return true;
+    return true;
   }
 
   case icSigColorantOrderTag:
