@@ -12,7 +12,7 @@
  * The ICC Software License, Version 0.2
  *
  *
- * Copyright (c) 2003-2012 The International Color Consortium. All rights 
+ * Copyright (c) 2003-2012 The International Color Consortium. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,7 +20,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -48,20 +48,20 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Color Consortium. 
+ * individuals on behalf of the The International Color Consortium.
  *
  *
  * Membership in the ICC is encouraged when this software is used for
- * commercial purposes. 
+ * commercial purposes.
  *
- *  
+ *
  * For more information on The International Color Consortium, please
  * see <http://www.color.org/>.
- *  
- * 
+ *
+ *
  */
 
-////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
@@ -93,8 +93,8 @@ namespace refIccMAX {
 /**
  **************************************************************************
  * Name: CIccProfile::CIccProfile
- * 
- * Purpose: 
+ *
+ * Purpose:
  *  Constructor
  **************************************************************************
  */
@@ -109,13 +109,13 @@ CIccProfile::CIccProfile()
 /**
  **************************************************************************
  * Name: CIccProfile::CIccProfile
- * 
- * Purpose: 
- *  Copy Constructor. The copy constructor makes the copy of the 
- *  CIccProfile object in it's present state. It DOES NOT make a 
+ *
+ * Purpose:
+ *  Copy Constructor. The copy constructor makes the copy of the
+ *  CIccProfile object in it's present state. It DOES NOT make a
  *  copy of the m_pAttachIO member variable. Any operation with the
  *  IO object should be done before making a copy.
- * 
+ *
  * Args:
  *  Profile = CIccProfile object which is to be copied.
  **************************************************************************
@@ -161,19 +161,19 @@ CIccProfile::CIccProfile(const CIccProfile &Profile)
     }
   }
 
-  m_pAttachIO = NULL;  
+  m_pAttachIO = NULL;
 }
 
 /**
  **************************************************************************
  * Name: CIccProfile::operator=
- * 
- * Purpose: 
- *  Copy Operator. The copy operator makes the copy of the 
- *  CIccProfile object in it's present state. It DOES NOT make a 
+ *
+ * Purpose:
+ *  Copy Operator. The copy operator makes the copy of the
+ *  CIccProfile object in it's present state. It DOES NOT make a
  *  copy of the m_pAttachIO member variable. Any operation with the
  *  IO object should be done before making a copy.
- * 
+ *
  * Args:
  *  Profile = CIccProfile object which is to be copied.
  **************************************************************************
@@ -222,14 +222,14 @@ CIccProfile &CIccProfile::operator=(const CIccProfile &Profile)
 
   m_pAttachIO = NULL;
 
-  return *this;  
+  return *this;
 }
 
 /**
  **************************************************************************
  * Name: CIccProfile::CIccProfile
- * 
- * Purpose: 
+ *
+ * Purpose:
  *  Destructor
  **************************************************************************
  */
@@ -244,7 +244,7 @@ CIccProfile::~CIccProfile()
 /**
  ***************************************************************************
  * Name: CIccProfile::Cleanup
- * 
+ *
  * Purpose: Detach from a pending IO object
  ***************************************************************************
  */
@@ -269,13 +269,13 @@ void CIccProfile::Cleanup()
 /**
  ****************************************************************************
  * Name: CIccProfile::GetTag
- * 
+ *
  * Purpose: Get a tag entry with a given signature
- * 
- * Args: 
+ *
+ * Args:
  *  sig - signature id to find in tag directory
- * 
- * Return: 
+ *
+ * Return:
  *  Pointer to desired tag directory entry, or NULL if not found.
  *****************************************************************************
  */
@@ -295,12 +295,12 @@ IccTagEntry* CIccProfile::GetTag(icSignature sig) const
 /**
  ******************************************************************************
  * Name: CIccProfile::AreTagsUnique
- * 
+ *
  * Purpose: For each tag it checks to see if any other tags have the same
  *  signature.
- * 
- * 
- * Return: 
+ *
+ *
+ * Return:
  *  true if all tags have unique signatures, or false if there are duplicate
  *  tag signatures.
  *******************************************************************************
@@ -324,13 +324,13 @@ bool CIccProfile::AreTagsUnique() const
 /**
 ******************************************************************************
 * Name: CIccProfile::GetTag
-* 
+*
 * Purpose: Finds the first tag entry that points to the indicated tag object
-* 
-* Args: 
+*
+* Args:
 *  pTag - pointer to tag object desired to be found
-* 
-* Return: 
+*
+* Return:
 *  pointer to first tag directory entry that points to the desired tag object,
 *  or NULL if tag object is not pointed to by any tag directory entries.
 *******************************************************************************
@@ -351,15 +351,15 @@ IccTagEntry* CIccProfile::GetTag(CIccTag *pTag) const
 /**
  ******************************************************************************
  * Name: CIccProfile::FindTag
- * 
+ *
  * Purpose: Finds the tag object associated with the directory entry with the
  *  given signature.  If the profile object is attached to an IO object then
  *  the tag may need to be loaded first.
- * 
- * Args: 
+ *
+ * Args:
  *  sig - tag signature to find in profile
- * 
- * Return: 
+ *
+ * Return:
  *  The desired tag object, or NULL if unable to find in the directory or load
  *  tag object.
  *******************************************************************************
@@ -381,18 +381,18 @@ CIccTag* CIccProfile::FindTag(icSignature sig)
 /**
  ******************************************************************************
  * Name: CIccProfile::FindTagOfType
- * 
+ *
  * Purpose: Finds the tag object associated with the directory entry with the
- *  given signature that has a given tag type signature..  
+ *  given signature that has a given tag type signature..
  *  If the profile object is attached to an IO object then the tag may need to
  *  be loaded first.
- * 
- * Args: 
+ *
+ * Args:
  *  tagSig - tag signature to find in profile
  *  typeSig - tag signature to find in profile
- * 
- * Return: 
- *  The desired tag object that has the desired tag type signature, or NULL if 
+ *
+ * Return:
+ *  The desired tag object that has the desired tag type signature, or NULL if
  *  unable to find in the directory, load tag object, or the tag has the
  *  wrong tag type signature.
  *******************************************************************************
@@ -412,15 +412,15 @@ CIccTag* CIccProfile::FindTagOfType(icSignature tagSig, icTagTypeSignature typeS
 /**
 ******************************************************************************
 * Name: CIccProfile::GetTagIO
-* 
+*
 * Purpose: Finds the tag directory entry with the given signature and returns
 *  a CIccIO object that can be used to read the tag data stored in the profile.
 *  This only works if the profile is still connected to the file IO object.
-* 
-* Args: 
+*
+* Args:
 *  sig - tag signature to find in profile
-* 
-* Return: 
+*
+* Return:
 *  A CIccIO object that can be used to read the tag data from the file.
 *  Note: the caller is responsible for deleting the returned CIccIO object.
 *******************************************************************************
@@ -434,7 +434,7 @@ CIccMemIO* CIccProfile::GetTagIO(icSignature sig)
 
     if (!pIO)
       return NULL;
-    
+
     if (!pIO->Alloc(pEntry->TagInfo.size)) {
       delete pIO;
       return NULL;
@@ -452,17 +452,17 @@ CIccMemIO* CIccProfile::GetTagIO(icSignature sig)
 /**
  ******************************************************************************
  * Name: CIccProfile::AttachTag
- * 
+ *
  * Purpose: Assign a tag object to a directory entry in the profile.  This
  *  will assume ownership of the tag object.
- * 
- * Args: 
+ *
+ * Args:
  *  sig - signature of tag 'name' to use to assign tag object with,
  *  pTag - pointer to tag object to attach to profile.
- * 
- * Return: 
+ *
+ * Return:
  *  true = tag assigned to profile,
- *  false - tag not assigned to profile (tag already exists).  
+ *  false - tag not assigned to profile (tag already exists).
  *******************************************************************************
  */
 bool CIccProfile::AttachTag(icSignature sig, CIccTag *pTag)
@@ -503,14 +503,14 @@ bool CIccProfile::AttachTag(icSignature sig, CIccTag *pTag)
 /**
  ******************************************************************************
  * Name: CIccProfile::DeleteTag
- * 
+ *
  * Purpose: Delete tag directory entry with given signature.  If no other tag
  *  directory entries use the tag object, the tag object will also be deleted.
- * 
- * Args: 
+ *
+ * Args:
  *  sig - signature of tag directory entry to remove
- * 
- * Return: 
+ *
+ * Return:
  *  true - desired tag directory entry was found and deleted,
  *  false - desired tag directory entry was not found
  *******************************************************************************
@@ -546,7 +546,7 @@ bool CIccProfile::DeleteTag(icSignature sig)
 * for purposes of reading embedded profile in tag
 *
 * Args:
-*  pIO - pointer to IO object to use to 
+*  pIO - pointer to IO object to use to
 *  bOwnIO - flag to indicate whether returned IO object should own pIO (pIO closed when returned object closed).
 *
 * Return:
@@ -565,7 +565,7 @@ CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO)
 
       if (pIO->Read32(&sig) && pIO->Read32(&extra) && sig == icSigEmbeddedProfileType) {
         CIccEmbedIO *pEmbedIO = new CIccEmbedIO();
-        
+
         if (pEmbedIO->Attach(pIO, i->TagInfo.size - 2 * sizeof(icUInt32Number), bOwnIO))
           return pEmbedIO;
       }
@@ -579,16 +579,16 @@ CIccIO* CIccProfile::ConnectSubProfile(CIccIO *pIO, bool bOwnIO)
 /**
  ******************************************************************************
  * Name: CIccProfile::Attach
- * 
+ *
  * Purpose: This allows for deferred IO with a profile.  The profile header and
  *  tag directory will be read, but tag data will not be read.  The IO object
  *  will remain attached to the profile for the purpose of reading data in as
  *  needed.
- * 
- * Args: 
+ *
+ * Args:
  *  pIO - pointer to IO object to begin reading profile file with.
- * 
- * Return: 
+ *
+ * Return:
  *  true - the IO object (file) is an ICC profile, and the CIccProfile object
  *    is now attached to the object,
  *  false - the IO object (file) is not an ICC profile.
@@ -625,12 +625,12 @@ bool CIccProfile::Attach(CIccIO *pIO, bool bUseSubProfile/*=false*/)
 /**
 ******************************************************************************
 * Name: CIccProfile::Detach
-* 
+*
 * Purpose: Discontinues the use of defferred IO with a profile.  This can be done
 *  once all the information needed for performing a transform has been extracted
 *  from the profile.
-* 
-* Args: 
+*
+* Args:
 *  true - If an IO object was attached to the profile
 *  false - if no IO object was attached to the profile
 *******************************************************************************
@@ -657,12 +657,12 @@ bool CIccProfile::Detach()
 /**
 ******************************************************************************
 * Name: CIccProfile::ReadTags
-* 
+*
 * Purpose: This will read the all the tags from the IO object into the
 *  CIccProfile object. The IO object must have been attached before
 *		calling this function.
-* 
-* Return: 
+*
+* Return:
 *  true - CIccProfile object now contains all tag data,
 *  false - No IO object attached or tags cannot be read.
 *******************************************************************************
@@ -670,7 +670,7 @@ bool CIccProfile::Detach()
 bool CIccProfile::ReadTags(CIccProfile* pProfile)
 {
 	CIccIO *pIO = m_pAttachIO;
-	
+
 	if (pProfile && pProfile->m_pAttachIO) {
 		pIO = pProfile->m_pAttachIO;
 	}
@@ -704,15 +704,15 @@ bool CIccProfile::ReadTags(CIccProfile* pProfile)
 /**
  ******************************************************************************
  * Name: CIccProfile::Read
- * 
+ *
  * Purpose: This will read the entire ICC profile from the IO object into the
  *  CIccProfile object
- * 
- * Args: 
+ *
+ * Args:
  *  pIO - pointer to IO object to read ICC profile from
  *  bUseSubProfile - will attempt to open a sub-profile if present
  *
- * Return: 
+ * Return:
  *  true - the IO object (file) is an ICC profile, and the CIccProfile object
  *   now contains all its data,
  *  false - the IO object (file) is not an ICC profile.
@@ -756,16 +756,16 @@ bool CIccProfile::Read(CIccIO *pIO, bool bUseSubProfile/*=false*/)
 /**
 ******************************************************************************
 * Name: CIccProfile::ReadValidate
-* 
+*
 * Purpose: This will read the entire ICC profile from the IO object into the
 *  CIccProfile object
-* 
-* Args: 
+*
+* Args:
 *  pIO - pointer to IO object to read ICC profile from
 *  sReport - string to put validation report info into. String should be initialized
 *  before calling
-* 
-* Return: 
+*
+* Return:
 *  icValidateOK if file can be read, bad status otherwise.
 *******************************************************************************
 */
@@ -796,13 +796,24 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
 
   // Check profile ID
   if (Info.IsProfileIDCalculated(&m_Header.profileID)) {
-    CalcProfileID(pIO, &profileID);
-    if (memcmp((char*)profileID.ID8, (char*)m_Header.profileID.ID8, 16) != 0) {
-      sReport += icMsgValidateNonCompliant;
-      sReport += "Bad Profile ID\n";
-
-      rv = icMaxStatus(rv, icValidateNonCompliant);
-    }
+       // if the provided and the calculated profileid missmatch
+       if (memcmp((char *) profileID.ID8, (char *) m_Header.profileID.ID8, 16) != 0) {
+           if (m_Header.version >= icVersionNumberV4) { // error with bad profile ID on v4.x.y profiles (or higher)
+               sReport += icMsgValidateNonCompliant;
+               sReport += "Bad Profile ID\r\n";
+               rv = icMaxStatus(rv, icValidateNonCompliant);
+           } else { // on older profiles the reserved bytes are (mis-)interpreted as profile id
+               sReport += icMsgValidateWarning;
+               sReport += "Version 2 profile has non-zero reserved data that doesn't match calculated Profile ID\r\n";
+               rv = icMaxStatus(rv, icValidateWarning);
+           }
+       } else { // the provided and the calculated profileid match
+           if (m_Header.version < icVersionNumberV4) { // the profileid should only be used in v4.x.y profiles (or higher)
+               sReport += icMsgValidateWarning;
+               sReport += "Version 2 profile has non-zero reserved data that matches calculated Profile ID\r\n";
+               rv = icMaxStatus(rv, icValidateWarning);
+           }
+       }
   }
 
   TagEntryList::iterator i;
@@ -835,14 +846,14 @@ icValidateStatus CIccProfile::ReadValidate(CIccIO *pIO, std::string &sReport)
 /**
  ******************************************************************************
  * Name: CIccProfile::Write
- * 
+ *
  * Purpose: Write the data associated with the CIccProfile object to an IO
  *  IO object.
- * 
- * Args: 
+ *
+ * Args:
  *  pIO - pointer to IO object to write data to
- * 
- * Return: 
+ *
+ * Return:
  *  true - success, false - failure
  *******************************************************************************
  */
@@ -990,9 +1001,9 @@ bool CIccProfile::ReadProfileID(icProfileID &profileID)
 /**
  ******************************************************************************
  * Name: CIccProfile::InitHeader
- * 
+ *
  * Purpose: Initializes the data to be written in the profile header.
- * 
+ *
  *******************************************************************************
  */
 void CIccProfile::InitHeader()
@@ -1003,12 +1014,12 @@ void CIccProfile::InitHeader()
   m_Header.deviceClass = (icProfileClassSignature)0;
   m_Header.colorSpace = (icColorSpaceSignature)0;
   m_Header.pcs = icSigLabData;
-  
+
   struct tm *newtime;
   time_t long_time;
 
   time( &long_time );                /* Get time as long integer. */
-  newtime = gmtime( &long_time ); 
+  newtime = gmtime( &long_time );
 
   m_Header.date.year = newtime->tm_year+1900;
   m_Header.date.month = newtime->tm_mon+1;
@@ -1044,13 +1055,13 @@ void CIccProfile::InitHeader()
 /**
  *****************************************************************************
  * Name: CIccProfile::ReadBasic
- * 
+ *
  * Purpose: Read in ICC header and tag directory entries.
- * 
- * Args: 
+ *
+ * Args:
  *  pIO - pointer to IO object to read data with
- * 
- * Return: 
+ *
+ * Return:
  *  true - valid ICC header and tag directory, false - failure
  ******************************************************************************
  */
@@ -1090,7 +1101,7 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
       !pIO->Read16(&m_Header.biSpectralRange.end) ||
       !pIO->Read16(&m_Header.biSpectralRange.steps) ||
       !pIO->Read32(&m_Header.mcs) ||
-      !pIO->Read32(&m_Header.deviceSubClass) || 
+      !pIO->Read32(&m_Header.deviceSubClass) ||
       pIO->Read8(&m_Header.reserved[0], sizeof(m_Header.reserved))!=sizeof(m_Header.reserved)) {
     return false;
   }
@@ -1124,16 +1135,16 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
 /**
  ******************************************************************************
  * Name: CIccProfile::LoadTag
- * 
+ *
  * Purpose: This will load from the indicated IO object and associate a tag
  *  object to a tag directory entry.  Nothing happens if tag directory entry
  *  is associated with a tag object.
- * 
- * Args: 
+ *
+ * Args:
  *  pTagEntry - pointer to tag directory entry,
  *  pIO - pointer to IO object to read tag object data from
- * 
- * Return: 
+ *
+ * Return:
  *  true - tag directory object associated with tag directory entry,
  *  false - failure
  *******************************************************************************
@@ -1199,7 +1210,7 @@ bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll/*=f
     if (pTag->IsMBBType())
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, m_Header.colorSpace);
     break;
-  
+
   case icSigGamutTag:
     if (pTag->IsMBBType())
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, icSigGamutData);
@@ -1235,9 +1246,9 @@ bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll/*=f
   for (i=m_Tags->begin(); i!= m_Tags->end(); i++) {
     if (i->TagInfo.offset == pTagEntry->TagInfo.offset &&
         i->pTag != pTag)
-      i->pTag = pTag; 
+      i->pTag = pTag;
   }
-  
+
   return true;
 }
 
@@ -1245,17 +1256,17 @@ bool CIccProfile::LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll/*=f
 /**
  ******************************************************************************
  * Name: CIccProfile::DetachTag
- * 
+ *
  * Purpose: Remove association of a tag object from all tag directory entries.
  *  Associated tag directory entries will be removed from the tag directory.
  *  The tag object is NOT deleted from memory, but is considered to be
  *  no longer associated with the CIccProfile object.  The caller assumes
  *  ownership of the tag object.
- * 
- * Args: 
+ *
+ * Args:
  *  pTag - pointer to tag object unassociate with the profile object
- * 
- * Return: 
+ *
+ * Return:
  *  true - tag object found and unassociated with profile object,
  *  false - tag object not found
  *******************************************************************************
@@ -1264,7 +1275,7 @@ bool CIccProfile::DetachTag(CIccTag *pTag)
 {
   if (!pTag)
     return false;
-  
+
   TagPtrList::iterator i;
 
   for (i=m_TagVals->begin(); i!=m_TagVals->end(); i++) {
@@ -1292,10 +1303,10 @@ bool CIccProfile::DetachTag(CIccTag *pTag)
 /**
 ****************************************************************************
 * Name: CIccProfile::CheckHeader
-* 
+*
 * Purpose: Validates profile header.
-* 
-* Return: 
+*
+* Return:
 *  icValidateOK if valid, or other error status.
 *****************************************************************************
 */
@@ -1352,9 +1363,9 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     sReport += " - Invalid MCS designator for device class\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
- 
+
   if (m_Header.colorSpace!=icSigNoColorData ||
-        m_Header.version<icVersionNumberV5 || 
+        m_Header.version<icVersionNumberV5 ||
         (m_Header.deviceClass!=icSigNamedColorClass &&
          m_Header.deviceClass!=icSigMaterialIdentificationClass &&
          m_Header.deviceClass!=icSigMaterialVisualizationClass)) {
@@ -1373,7 +1384,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     if (m_Header.pcs!=icSigNoColorData) {
       sReport += icMsgValidateNonCompliant;
       sprintf(buf, "Invalid PCS designator for %s\n", Info.GetProfileClassSigName(m_Header.deviceClass));
-      sReport += buf; 
+      sReport += buf;
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -1390,7 +1401,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
       m_Header.renderingIntent ||
       m_Header.illuminant.X || m_Header.illuminant.Y || m_Header.illuminant.Z ||
       m_Header.creator ||
-      m_Header.profileID.ID32[0] || m_Header.profileID.ID32[1] || 
+      m_Header.profileID.ID32[0] || m_Header.profileID.ID32[1] ||
       m_Header.profileID.ID32[2] || m_Header.profileID.ID32[3] ||
       m_Header.spectralPCS ||
       m_Header.spectralRange.start || m_Header.spectralRange.end || m_Header.spectralRange.steps ||
@@ -1545,7 +1556,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     case icSigTaligent:
     case icSigUnkownPlatform:
       break;
-    
+
     default:
       sReport += icMsgValidateWarning;
       sprintf(buf, "%s: Unknown platform signature.\n", Info.GetPlatformSigName(m_Header.platform));
@@ -1565,7 +1576,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
         rv = icMaxStatus(rv, icValidateWarning);
     }
 
-    // Report on various bits of device attributes as per Table 22 in v4.3.0 
+    // Report on various bits of device attributes as per Table 22 in v4.3.0
     if(m_Header.attributes & 0x0000FFF0) {
         sReport += icMsgValidateNonCompliant;
         sReport += "Reserved device attributes (bits 4-31) are non-zero.\n";
@@ -1697,11 +1708,11 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
 /**
 ****************************************************************************
 * Name: CIccProfile::CheckTagExclusion
-* 
-* Purpose: Some tags does not have a defined interpretation for a profile 
+*
+* Purpose: Some tags does not have a defined interpretation for a profile
 *           of a specific class. This function does these tests.
-* 
-* Return: 
+*
+* Return:
 *  true if test successful, else false.
 *****************************************************************************
 */
@@ -1795,10 +1806,10 @@ bool CIccProfile::CheckTagExclusion(std::string &sReport) const
 /**
 ****************************************************************************
 * Name: CIccProfile::CheckTagTypes
-* 
+*
 * Purpose: Check if tags have allowed tag types.
-* 
-* Return: 
+*
+* Return:
 *  icValidateOK if valid, or other error status.
 *****************************************************************************
 */
@@ -1829,21 +1840,21 @@ icValidateStatus CIccProfile::CheckTagTypes(std::string &sReport) const
     }
   }
 
-  return rv;  
+  return rv;
 }
 
 
 /**
 ****************************************************************************
 * Name: CIccProfile::IsTypeValid
-* 
+*
 * Purpose: Check if tags have allowed tag types.
-* 
-* Return: 
+*
+* Return:
 *  true if valid, else false.
 *****************************************************************************
 */
-bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig, 
+bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
                               icStructSignature structSig/*=icSigUnknownStruct*/,
                               icArraySignature arraySig/*=icSigUnknownStruct*/) const
 {
@@ -1923,7 +1934,7 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
   case icSigGamutTag:
   case icSigPreview0Tag:
   case icSigPreview1Tag:
-  case icSigPreview2Tag:  
+  case icSigPreview2Tag:
     {
       switch(typeSig) {
       case icSigLut8Type:
@@ -1996,7 +2007,7 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
   case icSigBToD2Tag:
     {
       if (m_Header.version < icVersionNumberV4_2)
-        return false; 
+        return false;
 
       if (typeSig!=icSigMultiProcessElementType)
         return false;
@@ -2025,7 +2036,7 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
   case icSigBRDFDToB3Tag:
     {
       if (m_Header.version < icVersionNumberV5)
-        return false; 
+        return false;
 
       if (typeSig!=icSigMultiProcessElementType)
         return false;
@@ -2180,14 +2191,14 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
     {
       if (typeSig!=icSigUtf8TextType)
         return false;
-      return true;	  
+      return true;
     }
 
   case icSigReferenceNameTag:
     {
       if (typeSig!=icSigUtf8TextType)
         return false;
-      return true;	  	  
+      return true;
     }
 
   case icSigColorEncodingParamsTag:
@@ -2266,7 +2277,7 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
 
   case icSigMaterialTypeArrayTag:
     {
-      if (typeSig!=icSigTagArrayType || 
+      if (typeSig!=icSigTagArrayType ||
           arraySig!=icSigUtf8TextTypeArray)
         return false;
       else
@@ -2303,11 +2314,11 @@ bool CIccProfile::IsTypeValid(icTagSignature tagSig, icTagTypeSignature typeSig,
 /**
  ****************************************************************************
  * Name: CIccProfile::CheckRequiredTags
- * 
- * Purpose: Check if the Profile has the required tags 
+ *
+ * Purpose: Check if the Profile has the required tags
  *  for the specified Profile/Device class.
- * 
- * Return: 
+ *
+ * Return:
  *  icValidateOK if valid, or other error status.
  *****************************************************************************
  */
@@ -2541,7 +2552,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
             }
           }
           else {
-            if ((!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag)) /*|| 
+            if ((!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag)) /*||
                 (!GetTag(icSigBToA0Tag) && !GetTag(icSigBToA1Tag) && !GetTag(icSigBToA3Tag))*/) {
               if (!GetTag(icSigRedMatrixColumnTag) || !GetTag(icSigGreenMatrixColumnTag) ||
                 !GetTag(icSigBlueMatrixColumnTag) || !GetTag(icSigRedTRCTag) ||
@@ -2643,7 +2654,7 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
           //????
         }
         if (m_Header.pcs) {
-          if ((!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag)) || 
+          if ((!GetTag(icSigAToB0Tag) && !GetTag(icSigAToB1Tag) && !GetTag(icSigAToB3Tag)) ||
               (!GetTag(icSigBToA0Tag) && !GetTag(icSigBToA1Tag) && !GetTag(icSigBToA3Tag))) {
             sReport += icMsgValidateCriticalError;
             sReport += "Critical tag(s) missing.\n";
@@ -2716,13 +2727,13 @@ icValidateStatus CIccProfile::CheckRequiredTags(std::string &sReport) const
 /**
  *****************************************************************************
  * Name: CIccProfile::CheckFileSize()
- * 
+ *
  * Purpose: Check if the Profile file size matches with the size mentioned
  *  in the header and is evenly divisible by four.
- * 
- * Args: 
- * 
- * Return: 
+ *
+ * Args:
+ *
+ * Return:
  *  true - size matches,
  *  false - size mismatches
  ******************************************************************************
@@ -2757,14 +2768,14 @@ bool CIccProfile::CheckFileSize(CIccIO *pIO) const
 /**
  ****************************************************************************
  * Name: CIccProfile::Validate
- * 
+ *
  * Purpose: Check the data integrity of the profile, and conformance to
  *  the ICC specification
- * 
+ *
  * Args:
  *  sReport = String to put report into
- * 
- * Return: 
+ *
+ * Return:
  *  icValidateOK if profile is valid, warning/error level otherwise
  *****************************************************************************
  */
@@ -2798,12 +2809,12 @@ icValidateStatus CIccProfile::Validate(std::string &sReport, std::string sSigPat
 /**
  ****************************************************************************
  * Name: CIccProfile::GetSpaceSamples
- * 
+ *
  * Purpose: Get the number of device channels from the color space
  *  of data.
- * 
+ *
  * Return: Number of device channels.
- *  
+ *
  *****************************************************************************
  */
 icUInt16Number CIccProfile::GetSpaceSamples() const
@@ -2815,11 +2826,11 @@ icUInt16Number CIccProfile::GetSpaceSamples() const
 /**
  ****************************************************************************
  * Name: CIccProfile::getPccIlluminant
- * 
+ *
  * Purpose: Get the Illuminant associated with profile connection.
- * 
+ *
  * Return: The illuminant type associated with profile connection.
- *  
+ *
  *****************************************************************************
  */
 icIlluminant CIccProfile::getPccIlluminant()
@@ -2844,11 +2855,11 @@ icIlluminant CIccProfile::getPccIlluminant()
 /**
  ****************************************************************************
  * Name: CIccProfile::getPccCCT
- * 
+ *
  * Purpose: Get the Correlated Color Temperature associated with profile connection.
- * 
+ *
  * Return: The Correlated Color Temperature associated with profile connection.
- *  
+ *
  *****************************************************************************
  */
 icFloatNumber CIccProfile::getPccCCT()
@@ -2872,11 +2883,11 @@ icFloatNumber CIccProfile::getPccCCT()
 /**
  ****************************************************************************
  * Name: CIccProfile::getPccObserver
- * 
+ *
  * Purpose: Get the observer type associated with profile connection.
- * 
+ *
  * Return: The observer type associated with profile connection.
- *  
+ *
  *****************************************************************************
  */
 icStandardObserver CIccProfile::getPccObserver()
@@ -2898,10 +2909,10 @@ icStandardObserver CIccProfile::getPccObserver()
 /**
  ****************************************************************************
  * Name: CIccProfile::getNormIlluminantXYZ
- * 
+ *
  * Purpose: Get the Normalized XYZ coordinates for the illuminant and observer
  *  associated with profile connection.
- * 
+ *
  *****************************************************************************
  */
 void CIccProfile::getNormIlluminantXYZ(icFloatNumber *pXYZ)
@@ -2931,7 +2942,7 @@ void CIccProfile::getNormIlluminantXYZ(icFloatNumber *pXYZ)
 void CIccProfile::getLumIlluminantXYZ(icFloatNumber *pXYZ)
 {
   const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();
-  if (!pCond) { 
+  if (!pCond) {
     const CIccTagXYZ *pXYZTag = (CIccTagXYZ*) FindTagOfType(icSigLuminanceTag, icSigXYZType);
     if (pXYZTag) {
       icFloatNumber Y = icFtoD((*pXYZTag)[0].Y);
@@ -2956,10 +2967,10 @@ void CIccProfile::getLumIlluminantXYZ(icFloatNumber *pXYZ)
 /**
  ****************************************************************************
  * Name: CIccProfile::getMediaWhiteXYZ
- * 
+ *
  * Purpose: Get the Media White point XYZ coordinates for the illuminant and observer
  *  associated with observing profile connection conditions.
- * 
+ *
  *****************************************************************************
  */
 bool CIccProfile::getMediaWhiteXYZ(icFloatNumber *pXYZ)
@@ -2986,13 +2997,13 @@ bool CIccProfile::getMediaWhiteXYZ(icFloatNumber *pXYZ)
 /**
  ****************************************************************************
  * Name: CIccProfile::calcNormIlluminantXYZ
- * 
+ *
  * Purpose: Get the  XYZ Luminance coordinates (in cd/m^2 units) for the
  * illuminant and observer associated with profile connection.
  *
  * This assumes that the illuminant is not normalized and values for each
  * wavelength are expressed in terms of (cd/m^2)
- * 
+ *
  *****************************************************************************
  */
 bool CIccProfile::calcLumIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC)
@@ -3082,10 +3093,10 @@ bool CIccProfile::calcNormIlluminantXYZ(icFloatNumber *pXYZ, IIccProfileConnecti
 /**
  ****************************************************************************
  * Name: CIccProfile::calcMediaWhiteXYZ
- * 
+ *
  * Purpose: Get the Media White point XYZ coordinates for the illuminant and observer
  *  associated with observing profile connection conditions.
- * 
+ *
  *****************************************************************************
  */
 bool CIccProfile::calcMediaWhiteXYZ(icFloatNumber *pXYZ, IIccProfileConnectionConditions *pObservingPCC)
@@ -3185,14 +3196,14 @@ getmediaXYZ:
 /**
  *****************************************************************************
  * Name: ReadIccProfile
- * 
+ *
  * Purpose: Read an ICC profile file.
- * 
- * Args: 
- *  szFilename - zero terminated string with filename of ICC profile to read 
+ *
+ * Args:
+ *  szFilename - zero terminated string with filename of ICC profile to read
  *  bUseSubProfile - will attempt to open a subprofile if present
  *
- * Return: 
+ * Return:
  *  Pointer to ICC profile object, or NULL on failure
  ******************************************************************************
  */
@@ -3222,14 +3233,14 @@ CIccProfile* ReadIccProfile(const icChar *szFilename, bool bUseSubProfile/*=fals
 /**
 *****************************************************************************
 * Name: ReadIccProfile
-* 
+*
 * Purpose: Read an ICC profile file.
-* 
-* Args: 
-*  szFilename - zero terminated string with filename of ICC profile to read 
+*
+* Args:
+*  szFilename - zero terminated string with filename of ICC profile to read
 *  bUseSubProfile - will attempt to open a subprofile if present
 *
-* Return: 
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 ******************************************************************************
 */
@@ -3259,15 +3270,15 @@ CIccProfile* ReadIccProfile(const icWChar *szFilename, bool bUseSubProfile/*=fal
 /**
 *****************************************************************************
 * Name: ReadIccProfile
-* 
+*
 * Purpose: Read an ICC profile file.
-* 
-* Args: 
+*
+* Args:
 *  pMem = pointer to memory containing profile data
 *  nSize = size of memory related to profile
 *  bUseSubProfile - will attempt to open a subprofile if present
 *
-* Return: 
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 ******************************************************************************
 */
@@ -3296,16 +3307,16 @@ CIccProfile* ReadIccProfile(const icUInt8Number *pMem, icUInt32Number nSize, boo
 /**
  ******************************************************************************
  * Name: OpenIccProfile
- * 
+ *
  * Purpose: Open an ICC profile file.  This will only read the profile header
  *  and tag directory.  Loading of actual tags will be deferred until the
  *  tags are actually referenced by FindTag().
- * 
- * Args: 
+ *
+ * Args:
  *  szFilename - zero terminated string with filename of ICC profile to read
  *  bUseSubProfile - will attempt to open a subprofile if present
- * 
- * Return: 
+ *
+ * Return:
  *  Pointer to icc profile object, or NULL on failure
  *******************************************************************************
  */
@@ -3333,16 +3344,16 @@ CIccProfile* OpenIccProfile(const icChar *szFilename, bool bUseSubProfile/*=fals
 /**
 ******************************************************************************
 * Name: OpenIccProfile
-* 
+*
 * Purpose: Open an ICC profile file.  This will only read the profile header
 *  and tag directory.  Loading of actual tags will be deferred until the
 *  tags are actually referenced by FindTag().
-* 
-* Args: 
-*  szFilename - zero terminated string with filename of ICC profile to read 
+*
+* Args:
+*  szFilename - zero terminated string with filename of ICC profile to read
 *  bUseSubProfile - will attempt to open a subprofile if present
 *
-* Return: 
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
@@ -3370,16 +3381,16 @@ CIccProfile* OpenIccProfile(const icWChar *szFilename, bool bUseSubProfile/*=fal
 /**
 ******************************************************************************
 * Name: OpenIccProfile
-* 
+*
 * Purpose: Open an ICC profile file.  This will only read the profile header
 *  and tag directory.  Loading of actual tags will be deferred until the
 *  tags are actually referenced by FindTag().
-* 
-* Args: 
+*
+* Args:
 *  pMem = pointer to memory containing profile data
 *  nSize = size of memory related to profile
-* 
-* Return: 
+*
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
@@ -3406,17 +3417,17 @@ CIccProfile* OpenIccProfile(const icUInt8Number *pMem, icUInt32Number nSize, boo
 /**
 ******************************************************************************
 * Name: ValidateIccProfile
-* 
+*
 * Purpose: Open an ICC profile file.  This will only read the profile header
 *  and tag directory.  Loading of actual tags will be deferred until the
 *  tags are actually referenced by FindTag().
-* 
-* Args: 
+*
+* Args:
 *  pIO - Handle to IO access object (Not ValidateIccProfile assumes ownership of this object)
 *  sReport - std::string to put report into
 *  nStatus - return status value
-* 
-* Return: 
+*
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
@@ -3456,17 +3467,17 @@ CIccProfile* ValidateIccProfile(CIccIO *pIO, std::string &sReport, icValidateSta
 /**
 ******************************************************************************
 * Name: ValidateIccProfile
-* 
+*
 * Purpose: Open an ICC profile file.  This will only read the profile header
 *  and tag directory.  Loading of actual tags will be deferred until the
 *  tags are actually referenced by FindTag().
-* 
-* Args: 
-*  szFilename - zero terminated string with filename of ICC profile to read 
+*
+* Args:
+*  szFilename - zero terminated string with filename of ICC profile to read
 *  sReport - std::string to put report into
 *  nStatus - return status value
-* 
-* Return: 
+*
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
@@ -3487,17 +3498,17 @@ CIccProfile* ValidateIccProfile(const icWChar *szFilename, std::string &sReport,
 /**
 ******************************************************************************
 * Name: ValidateIccProfile
-* 
+*
 * Purpose: Open an ICC profile file.  This will only read the profile header
 *  and tag directory.  Loading of actual tags will be deferred until the
 *  tags are actually referenced by FindTag().
-* 
-* Args: 
-*  szFilename - zero terminated string with filename of ICC profile to read 
+*
+* Args:
+*  szFilename - zero terminated string with filename of ICC profile to read
 *  sReport - std::string to put report into
 *  nStatus - return status value
-* 
-* Return: 
+*
+* Return:
 *  Pointer to icc profile object, or NULL on failure
 *******************************************************************************
 */
@@ -3541,13 +3552,13 @@ CIccProfile* ValidateIccProfile(const icChar *szFilename, std::string &sReport, 
 /**
  ******************************************************************************
  * Name: SaveIccProfile
- * 
- * Purpose: Save an ICC profile file.  
- * 
- * Args: 
+ *
+ * Purpose: Save an ICC profile file.
+ *
+ * Args:
  *  szFilename - zero terminated string with filename of ICC profile to create
- * 
- * Return: 
+ *
+ * Return:
  *  true = success, false = failure
  *******************************************************************************
  */
@@ -3606,13 +3617,13 @@ bool SaveIccProfile(FILE *f, CIccProfile *pIcc, icProfileIDSaveMethod nWriteId)
 /**
 ******************************************************************************
 * Name: SaveIccProfile
-* 
-* Purpose: Save an ICC profile file.  
-* 
-* Args: 
+*
+* Purpose: Save an ICC profile file.
+*
+* Args:
 *  szFilename - zero terminated string with filename of ICC profile to create
-* 
-* Return: 
+*
+* Return:
 *  true = success, false = failure
 *******************************************************************************
 */
@@ -3638,10 +3649,10 @@ bool SaveIccProfile(const icWChar *szFilename, CIccProfile *pIcc, icProfileIDSav
 /**
  ****************************************************************************
  * Name: CalcProfileID
- * 
- * Purpose: Calculate the Profile ID using MD5 Fingerprinting method. 
- * 
- * Args: 
+ *
+ * Purpose: Calculate the Profile ID using MD5 Fingerprinting method.
+ *
+ * Args:
  *  pIO = The CIccIO object,
  *  pProfileID = array where the profileID will be stored
  *
@@ -3683,10 +3694,10 @@ void CalcProfileID(CIccIO *pIO, icProfileID *pProfileID)
 /**
  ****************************************************************************
  * Name: CalcProfileID
- * 
- * Purpose: Calculate the Profile ID using MD5 Fingerprinting method. 
- * 
- * Args: 
+ *
+ * Purpose: Calculate the Profile ID using MD5 Fingerprinting method.
+ *
+ * Args:
  *  szFileName = name of the file whose profile ID has to be calculated,
  *  pProfileID = array where the profileID will be stored
  *****************************************************************************
@@ -3708,10 +3719,10 @@ bool CalcProfileID(const icChar *szFilename, icProfileID *pProfileID)
 /**
 ****************************************************************************
 * Name: CalcProfileID
-* 
-* Purpose: Calculate the Profile ID using MD5 Fingerprinting method. 
-* 
-* Args: 
+*
+* Purpose: Calculate the Profile ID using MD5 Fingerprinting method.
+*
+* Args:
 *  szFileName = name of the file whose profile ID has to be calculated,
 *  pProfileID = array where the profileID will be stored
 *****************************************************************************
