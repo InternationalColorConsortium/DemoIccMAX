@@ -64,16 +64,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug\</OutDir>
-    <IntDir>.\Debug\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <NMakeBuildCommandLine>echo "All Done!"</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>echo "All Done!" /a</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine />
     <NMakeOutput>All.exe</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release\</OutDir>
-    <IntDir>.\Release\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <NMakeBuildCommandLine>Echo "All Done"</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>Echo "All Done" /a</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine />

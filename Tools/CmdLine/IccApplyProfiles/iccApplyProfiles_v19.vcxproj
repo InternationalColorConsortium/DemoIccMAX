@@ -28,25 +28,25 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -123,7 +123,6 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>IccProfLib.lib;$(LIBTIFF_LIB);%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/iccApplyProfiles.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);$(LIBTIFF_LIBDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(Platform)\$(Configuration)/iccApplyProfiles.pdb</ProgramDatabaseFile>
@@ -163,7 +162,6 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>IccProfLib.lib;$(LIBTIFF_DLIB);%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/iccApplyProfiles.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);$(LIBTIFF_LIBDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -211,7 +209,6 @@ copy $(Platform)\$(Configuration)\iccApplyProfiles.pdb ..\..\..\Testing
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>IccProfLib.lib;$(LIBTIFF_LIB);%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/iccApplyProfiles.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);$(LIBTIFF_LIBDIRx64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(Platform)\$(Configuration)/iccApplyProfiles.pdb</ProgramDatabaseFile>
@@ -252,9 +249,8 @@ copy $(Platform)\$(Configuration)\iccApplyProfiles.pdb ..\..\..\Testing
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>IccProfLib.lib;$(LIBTIFF_DLIB);%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/iccApplyProfiles.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);$(LIBTIFF_LIBDIRx64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);$(LIBTIFF_LIBDIRx64)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(Platform)\$(Configuration)/iccApplyProfiles.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>

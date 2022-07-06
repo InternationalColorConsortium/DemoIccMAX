@@ -28,22 +28,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -75,7 +75,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
@@ -85,7 +85,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
@@ -105,9 +105,8 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)IccToXml.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;iconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform)\$(Configuration);$(ZLIB)\contrib\vstudio\vc14\$(Platform)\ZlibStat$(Configuration);$(ICONV)\win-iconv-0.0.8\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)IccToXml.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -135,9 +134,8 @@ copy $(Platform)\$(Configuration)\iccToXml.pdb ..\..\..\Testing
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)IccToXml.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;iconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform)\$(Configuration);$(ZLIB)\contrib\vstudio\vc14\$(Platform)\ZlibStat$(Configuration);$(ICONV)\win-iconv-0.0.8\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -166,9 +164,8 @@ copy $(Platform)\$(Configuration)\iccToXml.pdb ..\..\..\Testing
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)IccToXml.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;iconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform)\$(Configuration);$(ZLIB)\contrib\vstudio\vc14\$(Platform)\ZlibStat$(Configuration);$(ICONV)\win-iconv-0.0.8\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)IccToXml.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -196,9 +193,8 @@ copy $(Platform)\$(Configuration)\iccToXml.pdb ..\..\..\Testing
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)IccToXml.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IccProfLib.lib;IccLibXml.lib;libxml2.lib;iconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\IccProfLib\$(Platform)\$(Configuration);..\..\icclibxml\$(Platform)\$(Configuration);$(LIBXML2)\lib\$(Platform)\$(Configuration);$(ZLIB)\contrib\vstudio\vc14\$(Platform)\ZlibStat$(Configuration);$(ICONV)\win-iconv-0.0.8\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

@@ -5,18 +5,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <EIGEN>$(VendorTreeDir)\eigen\eigen-3.2.8</EIGEN>
-	<ICONV>$(VendorTreeDir)\iconv\iconv-1.9.2</ICONV>
-    <LIBTIFF_DLIB>libtiff.lib</LIBTIFF_DLIB>
-    <LIBTIFF_INCLUDE>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiff</LIBTIFF_INCLUDE>
-    <LIBTIFF_INCLUDEx64>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_INCLUDEx64>
-    <LIBTIFF_LIB>libtiff.lib</LIBTIFF_LIB>
-	<LIBTIFF_LIBDIR>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiff</LIBTIFF_LIBDIR>
-	<LIBTIFF_LIBDIRx64>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_LIBDIRx64>
-	<LIBXML2>$(VendorTreeDir)\libxml2\libxml2-2.8.0</LIBXML2>
+	<ICONV>$(VendorTreeDir)\win-iconv-0.0.8</ICONV>
+    <LIBTIFF_DLIB>tiffd.lib</LIBTIFF_DLIB>
+    <LIBTIFF_INCLUDE>$(VendorTreeDir)\tiff-4.3.0\libtiff</LIBTIFF_INCLUDE>
+    <LIBTIFF_INCLUDEx64>$(VendorTreeDir)\tiff-4.3.0\libtiff</LIBTIFF_INCLUDEx64>
+    <LIBTIFF_LIB>tiffd.lib</LIBTIFF_LIB>
+	<LIBTIFF_LIBDIR>$(VendorTreeDir)\tiff-4.3.0\libtiff</LIBTIFF_LIBDIR>
+	<LIBTIFF_LIBDIRx64>$(VendorTreeDir)\tiff-4.3.0\libtiff</LIBTIFF_LIBDIRx64>
+	<LIBXML2>$(VendorTreeDir)\libxml2-2.9.12</LIBXML2>
 	<WXVER>30</WXVER>
-	<WXWIN>$(VendorTreeDir)\WXWidgets\wxWidgets-3.0.2</WXWIN>
-    <ZLIB>$(VendorTreeDir)\ZLib\zlib-1.2.8</ZLIB>
-    <ZLIBLIB>$(VendorTreeDir)\ZLib\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatRelease</ZLIBLIB>
+	<WXWIN>$(VendorTreeDir)\wxWidgets-3.0.5</WXWIN>
+    <ZLIB>$(VendorTreeDir)\zlib-1.2.11</ZLIB>
+    <ZLIBLIB>$(VendorTreeDir)\zlib-1.2.11\contrib\vstudio\vc11\x64\ZlibStatRelease</ZLIBLIB>
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>

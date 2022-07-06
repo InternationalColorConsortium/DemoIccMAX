@@ -77,97 +77,97 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen+ZLIB|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen+ZLIB|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ZLIB|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with ZLIB|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen+ZLIB|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen+ZLIB|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ZLIB|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with ZLIB|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -289,36 +289,36 @@
     <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen|Win32'">
-    <OutDir>$(Platform)\Release_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Release_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen+ZLIB|Win32'">
-    <OutDir>$(Platform)\$(Platform)\Release_CRTDLL\\</OutDir>
-    <IntDir>$(Platform)\$(Platform)\Release_CRTDLL\\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen|x64'">
-    <OutDir>$(Platform)\Release_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Release_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Eigen+ZLIB|x64'">
-    <OutDir>$(Platform)\$(Platform)\Release_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\$(Platform)\Release_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|Win32'">
-    <OutDir>$(Platform)\Debug_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Debug_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen+ZLIB|Win32'">
-    <OutDir>$(Platform)\Debug_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Debug_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen|x64'">
-    <OutDir>$(Platform)\Debug_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Debug_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with Eigen+ZLIB|x64'">
-    <OutDir>$(Platform)\Debug_CRTDLL\</OutDir>
-    <IntDir>$(Platform)\Debug_CRTDLL\</IntDir>
+    <OutDir>$(Platform)\$(Configuration)_CRTDLL\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_CRTDLL\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -341,7 +341,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -366,7 +366,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -394,7 +394,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -422,7 +422,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Debug_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -448,7 +448,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -474,7 +474,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -503,7 +503,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -532,7 +532,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Release_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -558,7 +558,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Release_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -584,7 +584,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Release_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -613,7 +613,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Release_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -642,7 +642,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Release_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -667,7 +667,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Debug_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -692,7 +692,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Debug_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -720,7 +720,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Debug_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -748,7 +748,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\Debug_CRTDLL\IccProfLib_CRTDLL.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)_CRTDLL\$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
