@@ -156,7 +156,7 @@ public:
   virtual CIccProfile* NewProfile() const { return new CIccProfile(); }
   virtual ~CIccProfile();
 
-  virtual const char *GetClassName() { return "CIccProfile"; }
+  virtual const char *GetClassName() const { return "CIccProfile"; }
 
   icHeader m_Header;
 

@@ -99,7 +99,7 @@ public:
   virtual ~IIccStruct() {}
   virtual IIccStruct* NewCopy(CIccTagStruct *pNewTagStruct) const = 0;
 
-  virtual bool Describe(std::string &sDescription) const;
+  virtual void Describe(std::string &sDescription, int nVerboseness) const;
 
   virtual const icChar *GetClassName() const = 0;
   virtual const icChar *GetDisplayName() const = 0;
@@ -132,7 +132,7 @@ public:
   virtual ~IIccArray() {}
   virtual IIccArray* NewCopy(CIccTagArray *pNewTagArray) const = 0;
 
-  virtual bool Describe(std::string &sDescription) const { return false; }
+  virtual void Describe(std::string &sDescription, int nVerboseness) const { }
 
   virtual const icChar *GetClassName() const = 0;
 
@@ -167,9 +167,11 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigTagStructType; }
   virtual icStructSignature GetTagStructType() const { return m_sigStructType; }
 
+  virtual bool SetTagStructType(icStructSignature sig);
+
   virtual const icChar *GetClassName() const { return "CIccTagStruct"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -235,11 +237,13 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigTagArrayType; }
   virtual icArraySignature GetTagArrayType() const { return m_sigArrayType; }
 
+  virtual bool SetTagArrayType(icArraySignature sig);
+
   bool AreAllOfType(icTagTypeSignature sigTagType);
 
   virtual const icChar *GetClassName() const { return "CIccTagArray"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

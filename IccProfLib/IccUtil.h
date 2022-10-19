@@ -162,6 +162,9 @@ ICCPROFLIB_API icFloatNumber icDeltaE(const icFloatNumber *Lab1, const icFloatNu
 
 ICCPROFLIB_API icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt32Number nSample);
 
+ICCPROFLIB_API bool icValidTagPos(const icPositionNumber& pos, icUInt32Number nTagHeaderSize, icUInt32Number nTagSize, bool bAllowEmpty=false);
+ICCPROFLIB_API bool icValidOverlap(const icPositionNumber& pos1, const icPositionNumber& pos2, bool bAllowSame=true);
+
 /**Floating point encoding of Lab in PCS is in range 0.0 to 1.0 */
 ///Here are some conversion routines to convert to regular Lab encoding
 ICCPROFLIB_API void icLabFromPcs(icFloatNumber *Lab);
@@ -177,6 +180,7 @@ ICCPROFLIB_API void icXyzToPcs(icFloatNumber *XYZ);
 ICCPROFLIB_API void icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum);
 ICCPROFLIB_API void icMatrixDump(std::string &sDump, icS15Fixed16Number *pMatrix);
 ICCPROFLIB_API const icChar* icGetSig(icChar *pBuf, icUInt32Number sig, bool bGetHexVal=true);
+ICCPROFLIB_API const icChar* icGet16bitSig(icChar* pBuf, icUInt16Number sig, bool bGetHexVal=true);
 ICCPROFLIB_API const icChar* icGetSigStr(icChar *pBuf, icUInt32Number nSig);
 ICCPROFLIB_API const icChar* icGetColorSig(icChar *pBuf, icUInt32Number sig, bool bGetHexVal=true);
 ICCPROFLIB_API const icChar *icGetColorSigStr(icChar *pBuf, icUInt32Number nSig);
@@ -200,6 +204,7 @@ ICCPROFLIB_API icUInt8Number icGetStorageTypeBytes(icUInt16Number nStorageType);
 ICCPROFLIB_API extern const char *icMsgValidateWarning;
 ICCPROFLIB_API extern const char *icMsgValidateNonCompliant;
 ICCPROFLIB_API extern const char *icMsgValidateCriticalError;
+ICCPROFLIB_API extern const char* icMsgValidateInformation;
 
 #ifdef ICC_BYTE_ORDER_LITTLE_ENDIAN
 inline void icSwab16Ptr(void *pVoid)

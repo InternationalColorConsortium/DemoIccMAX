@@ -90,6 +90,7 @@ namespace refIccMAX {
 ICCPROFLIB_API const char *icMsgValidateWarning = "Warning! - ";
 ICCPROFLIB_API const char *icMsgValidateNonCompliant = "NonCompliant! - ";
 ICCPROFLIB_API const char *icMsgValidateCriticalError = "Error! - ";
+ICCPROFLIB_API const char* icMsgValidateInformation = "Information - ";
 
 
 /**
@@ -142,6 +143,67 @@ bool icIsNear(icFloatNumber v1, icFloatNumber v2, icFloatNumber nearRange /* = 1
 {
   return fabs(v1 - v2) <= nearRange;
 }
+
+
+/**
+******************************************************************************
+* Name: icValidTagPos
+*
+* Purpose: Checks if pos is valid for data within a tag
+*
+* Args:
+*  pos - first value
+*  nTagHeaderSize - size of tag header
+*  nTagSize - total size of tag data
+*
+* Return:
+*  true pos is valid
+******************************************************************************
+*/
+bool icValidTagPos(const icPositionNumber& pos, icUInt32Number nTagHeaderSize, icUInt32Number nTagSize, bool bAllowEmpty)
+{
+  if (bAllowEmpty && !pos.size || !pos.offset)
+    return true;
+
+  if (pos.offset < nTagHeaderSize)
+    return false;
+  if ((icUInt64Number)pos.offset + pos.size > (icUInt64Number)nTagSize)
+    return false;
+
+  if (!pos.size && !bAllowEmpty)
+    return false;
+
+  return true;
+}
+
+
+/**
+******************************************************************************
+* Name: icValidOverlap
+*
+* Purpose: Checks if pos overlap is acceptable
+*
+* Args:
+*  pos1 - first positionNumber
+*  pos2 - second positionNumber
+*  bAllowSame - allow to positions to cover the same area
+*
+* Return:
+*  true if v1 is near v2 within range
+******************************************************************************
+*/
+bool icValidOverlap(const icPositionNumber& pos1, const icPositionNumber &pos2, bool bAllowSame)
+{
+  if ((icUInt64Number)pos1.offset + pos1.size <= (icUInt64Number)pos2.offset ||
+      (icUInt64Number)pos1.offset >= (icUInt64Number)pos2.offset + pos2.size)
+    return true;
+
+  if (bAllowSame && pos1.offset == pos2.offset || pos1.size == pos2.size)
+    return true;
+
+  return false;
+}
+
 
 
 /**
@@ -199,7 +261,7 @@ static icInt32Number icHexDigit(icChar digit)
 
 bool icIsSpaceCLR(icColorSpaceSignature sig) 
 {
-  icChar szSig[5];
+  icChar szSig[5] = {0};
   szSig[0] = (icChar)(sig>>24);
   szSig[1] = (icChar)(sig>>16);
   szSig[2] = (icChar)(sig>>8);
@@ -233,7 +295,7 @@ bool icIsSpaceCLR(icColorSpaceSignature sig)
 void icColorIndexName(icChar *szName, icColorSpaceSignature csSig,
                       int nIndex, int nColors, const icChar *szUnknown)
 {
-  icChar szSig[5];
+  icChar szSig[5] = {0};
   int i;
 
   if (csSig!=icSigUnknownData) {
@@ -344,7 +406,7 @@ bool icMatrixInvert3x3(icFloatNumber *M)
   if (det>-epsilon && det<epsilon)
     return false;
 
-  icFloatNumber Co[9];
+  icFloatNumber Co[9] = {0};
 
   Co[0] = +(m48 - m75);
   Co[1] = -(m38 - m65);
@@ -471,7 +533,7 @@ icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt3
 {
   icFloatNumber sum=0;
   icUInt32Number i;
-  for (i=0; i>nSample; i++) {
+  for (i=0; i<nSample; i++) {
     sum += icSq(v1[i] - v2[i]);
   }
   if (nSample)
@@ -889,7 +951,8 @@ void icXyzToPcs(icFloatNumber *XYZ)
 void icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum)
 {
   icUInt8Number *pData = (icUInt8Number *)pBuf;
-  icChar buf[80], num[10];
+  icChar buf[80] = {0};
+  icChar num[10] = {0};
 
   icInt32Number i, j;
   icUInt8Number c;
@@ -904,7 +967,7 @@ void icMemDump(std::string &sDump, void *pBuf, icUInt32Number nNum)
         sDump += (const icChar*)buf;
       }
       memset(buf, ' ', 76);
-      buf[76] = '\r';
+      buf[76] = ' ';
       buf[77] = '\n';
       buf[78] = '\0';
       sprintf(num, "%08X:", i);
@@ -926,12 +989,40 @@ void icMatrixDump(std::string &sDump, icS15Fixed16Number *pMatrix)
 {
   icChar buf[128];
 
-  sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n", icFtoD(pMatrix[0]), icFtoD(pMatrix[1]), icFtoD(pMatrix[2]));
+  sprintf(buf, "%8.4lf %8.4lf %8.4lf\n", icFtoD(pMatrix[0]), icFtoD(pMatrix[1]), icFtoD(pMatrix[2]));
   sDump += buf;
-  sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n", icFtoD(pMatrix[3]), icFtoD(pMatrix[4]), icFtoD(pMatrix[5]));
+  sprintf(buf, "%8.4lf %8.4lf %8.4lf\n", icFtoD(pMatrix[3]), icFtoD(pMatrix[4]), icFtoD(pMatrix[5]));
   sDump += buf;
-  sprintf(buf, "%8.4lf %8.4lf %8.4lf\r\n", icFtoD(pMatrix[6]), icFtoD(pMatrix[7]), icFtoD(pMatrix[8]));
+  sprintf(buf, "%8.4lf %8.4lf %8.4lf\n", icFtoD(pMatrix[6]), icFtoD(pMatrix[7]), icFtoD(pMatrix[8]));
   sDump += buf;
+}
+
+const icChar* icGet16bitSig(icChar* pBuf, icUInt16Number nSig, bool bGetHexVal)
+{
+    icUInt16Number sig = nSig;
+    icUInt8Number c;
+
+    if (!nSig) {
+        strcpy(pBuf, "NULL");
+        return pBuf;
+    }
+
+    pBuf[0] = '\'';
+    c = (icUInt8Number)(sig >> 8);
+    if (!isprint(c))
+        c = '?';
+    pBuf[1] = c;
+    c = (icUInt8Number)(sig & 0x00FF);
+    if (!isprint(c))
+        c = '?';
+    pBuf[2] = c;
+
+    if (bGetHexVal)
+        sprintf(pBuf + 3, "' = %04X", nSig);
+    else
+        sprintf(pBuf + 3, "'");
+
+    return pBuf;
 }
 
 const icChar *icGetSig(icChar *pBuf, icUInt32Number nSig, bool bGetHexVal)
@@ -955,7 +1046,7 @@ const icChar *icGetSig(icChar *pBuf, icUInt32Number nSig, bool bGetHexVal)
   }
 
   if (bGetHexVal)
-  sprintf(pBuf+5, "' = %08X", nSig);
+    sprintf(pBuf+5, "' = %08X", nSig);
   else
     sprintf(pBuf+5, "'");
 
@@ -1128,7 +1219,7 @@ icSignature icGetFirstSigPathSig(std::string sigPath)
 
 icSignature icGetLastSigPathSig(std::string sigPath)
 {
-  int n = sigPath.length();
+  size_t n = sigPath.length();
   if (!n)
     return icGetSigVal(sigPath.c_str());
 
@@ -1139,7 +1230,7 @@ icSignature icGetLastSigPathSig(std::string sigPath)
       break;
     }
   }
-  if (n >= 0 && sig[n] == ':')
+  if (/* n >= 0 && */ sig[n] == ':')
     n++;
   return icGetSigVal(sig+n);
 }
@@ -1250,7 +1341,7 @@ icUInt32Number icGetSpaceSamples(icColorSpaceSignature sig)
 
       default:
       {
-        icChar szSig[5];
+        icChar szSig[5] = {0};
         szSig[0] = (icChar)(sig>>24);
         szSig[1] = (icChar)(sig>>16);
         szSig[2] = (icChar)(sig>>8);
@@ -1312,7 +1403,7 @@ bool icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng
           rng1.steps == rng2.steps);
 }
 
-CIccInfo::CIccInfo()
+CIccInfo::CIccInfo() : m_szStr{}, m_szSigStr{}
 {
   m_str = new std::string;
 }
@@ -1959,7 +2050,7 @@ const icChar *CIccInfo::GetPathEntrySigName(icUInt32Number sig)
 
 const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 {
-  switch (val) {
+  switch ((int)val) {
   case icFlare0:
     return "Flare 0";
 
@@ -1977,7 +2068,7 @@ const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 
 const icChar *CIccInfo::GetMeasurementGeometryName(icMeasurementGeometry val)
 {
-  switch (val) {
+  switch ((int)val) {
   case icGeometryUnknown:
     return "Geometry Unknown";
 
@@ -2184,7 +2275,7 @@ const icChar *CIccInfo::GetMeasurementUnit(icSignature sig)
 
     default:
     {
-      char buf[10];
+      char buf[10] = {0};
       buf[0] = (char)(sig>>24);
       buf[1] = (char)(sig>>16);
       buf[2] = (char)(sig>>8);
@@ -2249,21 +2340,21 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icXYZNumber &XY
   if (XYZ.X < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative X value!\r\n";
+    sReport += " - XYZNumber: Negative X value!\n";
     rv = icValidateNonCompliant;
   }
 
   if (XYZ.Y < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative Y value!\r\n";
+    sReport += " - XYZNumber: Negative Y value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (XYZ.Z < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - XYZNumber: Negative Z value!\r\n";
+    sReport += " - XYZNumber: Negative Z value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -2277,21 +2368,21 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icFloatXYZNumbe
   if (XYZ.X < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - FloatXYZNumber: Negative X value!\r\n";
+    sReport += " - FloatXYZNumber: Negative X value!\n";
     rv = icValidateNonCompliant;
   }
 
   if (XYZ.Y < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - FloatXYZNumber: Negative Y value!\r\n";
+    sReport += " - FloatXYZNumber: Negative Y value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (XYZ.Z < 0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - FloatXYZNumber: Negative Z value!\r\n";
+    sReport += " - FloatXYZNumber: Negative Z value!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -2305,14 +2396,14 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icSpectralRange
   if (icF16toF(range.end)<=icF16toF(range.start)) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - spectralRange: end wavelength must be greater than start wavelength!\r\n";
+    sReport += " - spectralRange: end wavelength must be greater than start wavelength!\n";
     rv = icValidateNonCompliant;
   }
 
   if (range.steps<2) {
     sReport += icMsgValidateNonCompliant;
     sReport += sDesc;
-    sReport += " - spectralRange: wavelength range must have at least two steps!\r\n";
+    sReport += " - spectralRange: wavelength range must have at least two steps!\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -2333,7 +2424,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.year<1992) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid year!\r\n",dateTime.year);
+    sprintf(buf," - %u: Invalid year!\n",dateTime.year);
     sReport += buf;
     rv = icValidateWarning;
   }
@@ -2343,7 +2434,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
     if (dateTime.year>(year+1)) {
       sReport += icMsgValidateWarning;
       sReport += sDesc;
-      sprintf(buf," - %u: Invalid year!\r\n",dateTime.year);
+      sprintf(buf," - %u: Invalid year!\n",dateTime.year);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -2352,7 +2443,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
     if (dateTime.year>year) {
       sReport += icMsgValidateWarning;
       sReport += sDesc;
-      sprintf(buf," - %u: Invalid year!\r\n",dateTime.year);
+      sprintf(buf," - %u: Invalid year!\n",dateTime.year);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -2361,7 +2452,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.month<1 || dateTime.month>12) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid month!\r\n",dateTime.month);
+    sprintf(buf," - %u: Invalid month!\n",dateTime.month);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2369,7 +2460,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.day<1 || dateTime.day>31) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid day!\r\n",dateTime.day);
+    sprintf(buf," - %u: Invalid day!\n",dateTime.day);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2378,7 +2469,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
     if (dateTime.day>29) {
       sReport += icMsgValidateWarning;
       sReport += sDesc;
-      sprintf(buf," - %u: Invalid day for February!\r\n",dateTime.day);
+      sprintf(buf," - %u: Invalid day for February!\n",dateTime.day);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateWarning);
     }
@@ -2387,7 +2478,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
       if ((dateTime.year%4)!=0) {
         sReport += icMsgValidateWarning;
         sReport += sDesc;
-        sprintf(buf," - %u: Invalid day for February, year is not a leap year(%u)!\r\n",dateTime.day, dateTime.year);
+        sprintf(buf," - %u: Invalid day for February, year is not a leap year(%u)!\n",dateTime.day, dateTime.year);
         sReport += buf;
         rv = icMaxStatus(rv, icValidateWarning);
       }
@@ -2397,7 +2488,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.hours>23) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid hour!\r\n",dateTime.hours);
+    sprintf(buf," - %u: Invalid hour!\n",dateTime.hours);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2405,7 +2496,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.minutes>59) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid minutes!\r\n",dateTime.minutes);
+    sprintf(buf," - %u: Invalid minutes!\n",dateTime.minutes);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2413,7 +2504,7 @@ icValidateStatus CIccInfo::CheckData(std::string &sReport, const icDateTimeNumbe
   if (dateTime.seconds>59) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sprintf(buf," - %u: Invalid seconds!\r\n",dateTime.hours);
+    sprintf(buf," - %u: Invalid seconds!\n",dateTime.hours);
     sReport += buf;
     rv = icMaxStatus(rv, icValidateWarning);
   }
@@ -2425,10 +2516,10 @@ icValidateStatus CIccInfo::CheckLuminance(std::string &sReport, const icFloatXYZ
 {
   icValidateStatus rv = icValidateOK;
 
-  if (fabs(XYZ.Y -1.0f) < 0.01 ) {
+  if (fabs(XYZ.Y - 1.0) < 0.01) {
     sReport += icMsgValidateWarning;
     sReport += sDesc;
-    sReport += " - XYZNumber appears to be normalized! Y value should reflect absolute luminance.\r\n";
+    sReport += " - XYZNumber appears to be normalized! Y value should reflect absolute luminance.\n";
     rv = icValidateWarning;
   }
 
@@ -2501,7 +2592,7 @@ bool CIccInfo::IsValidSpectralSpace(icColorSpaceSignature sig)
   return rv;
 }
 
-CIccPixelBuf::CIccPixelBuf(int nChan/* =icDefaultPixelBufSize */)
+CIccPixelBuf::CIccPixelBuf(int nChan/* =icDefaultPixelBufSize */) : m_buf{}
 {
   if (nChan>icDefaultPixelBufSize) {
     m_pixel = new icFloatNumber[nChan];

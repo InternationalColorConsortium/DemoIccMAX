@@ -216,8 +216,9 @@ public:
   *
   * Parameter(s):
   * sDescription - A string to put the tag's description into.
+* * verbosenss   - integer value. Default=0. The larger the value, the more verbose the output. 
   */
-  virtual void Describe(std::string &sDescription) { sDescription.clear(); }
+  virtual void Describe(std::string &sDescription, int nVerboseness) { sDescription.clear(); }
 
   /**
    ******************************************************************************
@@ -262,7 +263,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
 
 protected:
@@ -294,7 +295,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   const icChar *GetText() const { return m_szText; }
   void SetText(const icChar *szText);
@@ -332,7 +333,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   const icUChar *GetText() const { return m_szText; }
   
@@ -387,7 +388,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   /* Get access to raw zip compression buffer */
   icUChar *AllocBuffer(icUInt32Number nSize);
@@ -444,7 +445,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   const icChar *GetText(std::string &bufStr) const;
   const icUChar16 *GetText() const { return m_szText; }
@@ -491,7 +492,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   const icChar *GetText() const { return m_szText; }
   void SetText(const icChar *szText);
@@ -545,7 +546,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigSignatureType; }
   virtual const icChar *GetClassName() const { return "CIccTagSignature"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -591,7 +592,7 @@ public:
 
   virtual bool UseLegacyPCS() const { return true; } //Treat Lab Encoding differently?
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -677,7 +678,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigXYZType; }
   virtual const icChar *GetClassName() const { return "CIccTagXYZ"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -714,7 +715,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigChromaticityType; }
   virtual const icChar *GetClassName() const { return "CIccTagChromaticity"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -731,6 +732,50 @@ public:
 protected:
   icUInt16Number m_nChannels;
   icChromaticityNumber *m_xy;
+};
+
+
+/**
+****************************************************************************
+* Class: CIccTagCicp
+*
+* Purpose: the cicpType tag - metadata containing ITU-T H.273 fields
+****************************************************************************
+*/
+class ICCPROFLIB_API CIccTagCicp : public CIccTag
+{
+public:
+  CIccTagCicp();
+  CIccTagCicp(const CIccTagCicp& ITCICP);
+  CIccTagCicp& operator=(const CIccTagCicp& XYZTag);
+  virtual CIccTag* NewCopy() const { return new CIccTagCicp(*this); }
+  virtual ~CIccTagCicp();
+
+  virtual icTagTypeSignature GetType() const { return icSigCicpType; }
+  virtual const icChar* GetClassName() const { return "CIccTagCicp"; }
+
+  virtual void Describe(std::string& sDescription);
+
+  virtual bool Read(icUInt32Number size, CIccIO* pIO);
+  virtual bool Write(CIccIO* pIO);
+
+  void GetFields(icUInt8Number &colorPrimaries,
+                 icUInt8Number &transferCharacteristics,
+                 icUInt8Number &matrixCoefficients,
+                 icUInt8Number &videoFullRangeFlag);
+
+  void SetFields(icUInt8Number colorPrimaries,
+                 icUInt8Number transferCharacteristics,
+                 icUInt8Number matrixCoefficients,
+                 icUInt8Number videoFullRangeFlag);
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string& sReport, const CIccProfile* pProfile = NULL) const;
+
+protected:
+  icUInt8Number m_nColorPrimaries;
+  icUInt8Number m_nTransferCharacteristics;
+  icUInt8Number m_nMatrixCoefficients;
+  icUInt8Number m_nVideoFullRangeFlag;
 };
 
 
@@ -796,7 +841,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigSparseMatrixArrayType; }
   virtual const icChar *GetClassName() const { return "CIccTagChromaticity"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -862,7 +907,7 @@ public:
   virtual icTagTypeSignature GetType() const { return Tsig; }
   virtual const icChar *GetClassName() const;
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -931,7 +976,7 @@ public:
   virtual icTagTypeSignature GetType() const { return Tsig; }
   virtual const icChar *GetClassName() const;
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1023,7 +1068,7 @@ public:
   virtual icTagTypeSignature GetType() const { return Tsig; }
   virtual const icChar *GetClassName() const;
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1102,7 +1147,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigMeasurementType; }
   virtual const icChar *GetClassName() const { return "CIccTagMeasurement"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1192,7 +1237,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigMultiLocalizedUnicodeType; }
   virtual const icChar *GetClassName() const { return "CIcciSigMultiLocalizedUnicode"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1241,7 +1286,7 @@ public:
 
   virtual bool IsArrayType() { return m_nSize > 1; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1288,7 +1333,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   void SetDateTime(icDateTimeNumber nDateTime) { m_DateTime = nDateTime;}
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
@@ -1319,7 +1364,7 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
   icUInt8Number& operator[](int index) { return m_pData[index]; }
   icUInt8Number *GetData(int index) { return &m_pData[index]; }
   bool SetSize(icUInt16Number nsize, bool bZeronew=true);
@@ -1350,7 +1395,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigColorantTableType; }
   virtual const icChar *GetClassName() const { return "CIccTagColorantTable"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1389,7 +1434,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigViewingConditionsType; }
   virtual const icChar *GetClassName() const { return "CIccTagViewingConditions"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1422,7 +1467,7 @@ public:
 
   CIccTag* GetTag() const { return m_pTag; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1487,7 +1532,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigProfileSequenceDescType; }
   virtual const icChar *GetClassName() const { return "CIccTagProfileSeqDesc"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1526,7 +1571,7 @@ public: //member functions
 
   bool Read(icUInt32Number size, CIccIO *pIO);
   bool Write(CIccIO *pIO);
-  void Describe(std::string &sDescription);
+  void Describe(std::string &sDescription, int nVerboseness);
 
   icMeasurementUnitSig GetMeasurementType() const {return m_measurementUnitSig;}
   icUInt16Number GetNumChannels() const {return m_nChannels;}
@@ -1583,7 +1628,7 @@ public:
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   void SetNumChannels(icUInt16Number nChannels);
   icUInt16Number GetNumChannels() const {return m_nChannels;}
@@ -1624,7 +1669,7 @@ public:
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
@@ -1657,7 +1702,7 @@ public:
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL) const;
 
@@ -1715,7 +1760,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigEmbeddedHeightImageType; }
   virtual const icChar *GetClassName() const { return "CIccTagEmbeddedHeightImage"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -1757,7 +1802,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigEmbeddedNormalImageType; }
   virtual const icChar *GetClassName() const { return "CIccTagEmbeddedNormalImage"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

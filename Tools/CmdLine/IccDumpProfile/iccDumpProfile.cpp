@@ -12,7 +12,7 @@
  * The ICC Software License, Version 0.2
  *
  *
- * Copyright (c) 2003-2012 The International Color Consortium. All rights 
+ * Copyright (c) 2003-2012 The International Color Consortium. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,7 +20,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -48,23 +48,24 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Color Consortium. 
+ * individuals on behalf of the The International Color Consortium.
  *
  *
  * Membership in the ICC is encouraged when this software is used for
- * commercial purposes. 
+ * commercial purposes.
  *
- *  
+ *
  * For more information on The International Color Consortium, please
  * see <http://www.color.org/>.
- *  
- * 
+ *
+ *
  */
 
-////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
+// -Validation improvements by Peter Wyatt 2021
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -74,8 +75,19 @@
 #include "IccProfile.h"
 #include "IccTag.h"
 #include "IccUtil.h"
+#include "IccProfLibVer.h"
 
-void DumpTag(CIccProfile *pIcc, icTagSignature sig)
+// #define MEMORY_LEAK_CHECK to enable C RTL memory leak checking (slow!)
+#define MEMORY_LEAK_CHECK
+
+#if defined(_WIN32) || defined(WIN32)
+#include <crtdbg.h>
+#elif __GLIBC__
+#include <mcheck.h>
+#endif
+
+
+void DumpTag(CIccProfile *pIcc, icTagSignature sig, int nVerboseness)
 {
   CIccTag *pTag = pIcc->FindTag(sig);
   char buf[64];
@@ -84,13 +96,13 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig)
   std::string contents;
 
   if (pTag) {
-    printf("\nContents of %s tag (%s)\n", Fmt.GetTagSigName(sig), icGetSig(buf, sig)); 
-    printf("Type:   ");
+    printf("\nContents of %s tag (%s)\n", Fmt.GetTagSigName(sig), icGetSig(buf, sig));
+    printf("Type: ");
     if (pTag->IsArrayType()) {
       printf("Array of ");
     }
-    printf("%s\n", Fmt.GetTagTypeSigName(pTag->GetType()));
-    pTag->Describe(contents);
+    printf("%s (%s)\n", Fmt.GetTagTypeSigName(pTag->GetType()), icGetSig(buf, pTag->GetType()));
+    pTag->Describe(contents, nVerboseness);
     fwrite(contents.c_str(), contents.length(), 1, stdout);
   }
   else {
@@ -100,12 +112,35 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig)
 
 int main(int argc, char* argv[])
 {
-  int nArg = 1;
+#if defined(MEMORY_LEAK_CHECK) && defined(_DEBUG)
+#if defined(WIN32) || defined(_WIN32)
+#if 0
+  // Suppress windows dialogs for assertions and errors - send to stderr instead during batch CLI processing
+  _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+  _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+  _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+  _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif
+  int tmp = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+  tmp = tmp | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF; // | _CRTDBG_CHECK_ALWAYS_DF;
+  _CrtSetDbgFlag(tmp);
+  //_CrtSetBreakAlloc(1163);
+#elif __GLIBC__
+  mcheck(NULL);
+#endif // WIN32
+#endif // MEMORY_LEAK_CHECK && _DEBUG
 
-  if (argc<=1) {
+  int nArg = 1;
+  long int verbosity = 100; // default is maximum verbosity (old behaviour)
+
+  if (argc <= 1) {
 print_usage:
-    printf("Usage: iccDumpProfile {-v} profile {tagId to dump/\"ALL\"}\n");
-    printf("\nThe -v option causes profile validation to be performed.\n");
+    printf("Usage: iccDumpProfile {-v} {int} profile {tagId to dump/\"ALL\"}\n");
+    printf("Built with IccProfLib version " ICCPROFLIBVER "\n");
+    printf("\nThe -v option causes profile validation to be performed."
+           "\nThe optional integer parameter specifies verboseness of output (1-100, default=100).\n");
+    printf("iccDumpProfile built with IccProfLib version " ICCPROFLIBVER "\n\n");
+
     return -1;
   }
 
@@ -115,23 +150,59 @@ print_usage:
   bool bDumpValidation = false;
 
   if (!strncmp(argv[1], "-V", 2) || !strncmp(argv[1], "-v", 2)) {
-    if (argc<=2)
+    nArg++;
+    if (argc <= nArg)
       goto print_usage;
 
-    nArg = 2;
+    // support case where ICC filename starts with an integer: e.g. "123.icc"
+    char *endptr = nullptr;
+    verbosity = strtol(argv[nArg], &endptr, 10);
+    if ((verbosity != 0L) && (errno != ERANGE) && ((endptr == nullptr) || (*endptr == '\0'))) {
+      // clamp verbosity to 1-100 inclusive
+      if (verbosity < 0)
+        verbosity = 1;
+      else if (verbosity > 100)
+        verbosity = 100;
+      nArg++;
+      if (argc <= nArg)
+        goto print_usage;
+    }
+    else if (argv[nArg] == endptr) {
+        verbosity = 100;
+    }
 
     pIcc = ValidateIccProfile(argv[nArg], sReport, nStatus);
     bDumpValidation = true;
   }
-  else
-    pIcc = OpenIccProfile(argv[nArg]);
+  else {
+    // support case where ICC filename starts with an integer: e.g. "123.icc"
+    char* endptr = nullptr;
+    verbosity = strtol(argv[nArg], &endptr, 10);
+    if ((verbosity != 0L) && (errno != ERANGE) && ((endptr == nullptr) || (*endptr == '\0'))) {
+      // clamp verbosity to 1-100 inclusive
+      if (verbosity < 0)
+        verbosity = 1;
+      else if (verbosity > 100)
+        verbosity = 100;
+      nArg++;
+      if (argc <= nArg)
+        goto print_usage;
+    }
 
+    pIcc = OpenIccProfile(argv[nArg]);
+  }
+
+  CIccInfo Fmt;
+  icHeader* pHdr = NULL;
+
+  // Precondition: nArg is argument of ICC profile filename
+  printf("Built with IccProfLib version " ICCPROFLIBVER "\n\n");
   if (!pIcc) {
-    printf("Unable to open '%s'\n", argv[nArg]);
+    printf("Unable to parse '%s' as ICC profile!\n", argv[nArg]);
+    nStatus = icValidateCriticalError;
   }
   else {
-    icHeader *pHdr = &pIcc->m_Header;
-    CIccInfo Fmt;
+    pHdr = &pIcc->m_Header;
     char buf[64];
 
     printf("Profile:            '%s'\n", argv[nArg]);
@@ -139,18 +210,19 @@ print_usage:
       printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
     else
       printf("Profile ID:         Profile ID not calculated.\n");
-    printf("Size:               %d(0x%x) bytes\n", pHdr->size, pHdr->size);
+    printf("Size:               %d (0x%x) bytes\n", pHdr->size, pHdr->size);
 
     printf("\nHeader\n");
     printf(  "------\n");
     printf("Attributes:         %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
     printf("Cmm:                %s\n", Fmt.GetCmmSigName((icCmmSignature)(pHdr->cmmId)));
-    printf("Creation Date:      %d/%d/%d  %02u:%02u:%02u\n",
+    printf("Creation Date:      %d/%d/%d (M/D/Y)  %02u:%02u:%02u\n",
                                pHdr->date.month, pHdr->date.day, pHdr->date.year,
                                pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
     printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
+    printf("Device Manufacturer:%s\n", icGetSig(buf, pHdr->manufacturer));
     printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
-    printf("Flags               %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
+    printf("Flags:              %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
     printf("PCS Color Space:    %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
     printf("Platform:           %s\n", Fmt.GetPlatformSigName(pHdr->platform));
     printf("Rendering Intent:   %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
@@ -187,6 +259,7 @@ print_usage:
     else {
       printf("BiSpectral Range:   Not Defined\n");
     }
+
     if (pHdr->mcs) {
       printf("MCS Color Space:    %s\n", Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
     }
@@ -205,7 +278,7 @@ print_usage:
 
     // n is number of Tags in Tag Table
     for (n=0, i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++, n++) {
-        // Find closest tag after this tag, by scanning all offsets of other tags 
+        // Find closest tag after this tag, by scanning all offsets of other tags
         closest = pHdr->size;
         for (j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++) {
             if ((i != j) && (j->TagInfo.offset >= i->TagInfo.offset + i->TagInfo.size) && ((int)j->TagInfo.offset <= closest)) {
@@ -222,6 +295,17 @@ print_usage:
 
     printf("\n");
 
+    // Report all duplicated tags in the tag index
+    // Both ICC.1 and ICC.2 are silent on what should happen for this but report as a warning!!!
+    int m;
+    for (n=0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++)
+        for (m=0, j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++, m++)
+            if ((i != j) && (i->TagInfo.sig == j->TagInfo.sig)) {
+                printf("%28s is duplicated at positions %d and %d!\n", Fmt.GetTagSigName(i->TagInfo.sig), n,  m);
+                nStatus = icMaxStatus(nStatus, icValidateWarning);
+            }
+
+
     // Check additional details if doing detailed validation:
     // - First tag data offset is immediately after the Tag Table
     // - Tag data offsets are all 4-byte aligned
@@ -229,8 +313,8 @@ print_usage:
     //   (note that tag data can be reused by multiple tags and tags do NOT have to be order)
     // - Last tag also has to be padded and thus file size is always a multiple of 4. See clause
     //   7.2.1, bullet (c) of ICC.1:2010 and ICC.2:2019 specs.
-    // - Tag offset + Tag Size should never go beyond EOF 
-    // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and 
+    // - Tag offset + Tag Size should never go beyond EOF
+    // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and
     //   occurs in real-world ICC profiles
     // - Tags with overlapping tag data are considered highly suspect (but officially valid)
     // - 1-3 padding bytes after each tag's data need to be all zero *** NOT DONE - TODO ***
@@ -239,11 +323,11 @@ print_usage:
       int  rndup, smallest_offset = pHdr->size;
 
       // File size is required to be a multiple of 4 bytes according to clause 7.2.1 bullet (c):
-      // "all tagged element data, including the last, shall be padded by no more than three 
+      // "all tagged element data, including the last, shall be padded by no more than three
       //  following pad bytes to reach a 4 - byte boundary"
-      if (pHdr->size % 4 != 0) {
+      if ((pHdr->version >= icVersionNumberV4_2) && (pHdr->size % 4 != 0)) {
           sReport += icMsgValidateNonCompliant;
-          sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\r\n";
+          sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\n";
           nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
       }
 
@@ -254,7 +338,7 @@ print_usage:
         // Is the Tag offset + Tag Size beyond EOF?
         if (i->TagInfo.offset + i->TagInfo.size > pHdr->size) {
             sReport += icMsgValidateNonCompliant;
-            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\r\n", 
+            sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\n",
                     Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size);
             sReport += str;
             nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
@@ -276,7 +360,7 @@ print_usage:
         // Check if closest tag after this tag is less than offset+size - in which case it overlaps! Ignore last tag.
         if ((closest < (int)i->TagInfo.offset + (int)i->TagInfo.size) && (closest < (int)pHdr->size)) {
             sReport += icMsgValidateWarning;
-            sprintf(str, "Tag %s (offset %d, size %d) overlaps with following tag data starting at offset %d.\r\n",
+            sprintf(str, "Tag %s (offset %d, size %d) overlaps with following tag data starting at offset %d.\n",
                 Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size, closest);
             sReport += str;
             nStatus = icMaxStatus(nStatus, icValidateWarning);
@@ -285,7 +369,7 @@ print_usage:
         // Check for gaps between tag data (accounting for 4-byte alignment)
         if (closest > (int)i->TagInfo.offset + rndup) {
           sReport += icMsgValidateWarning;
-          sprintf(str, "Tag %s (size %d) is followed by %d unnecessary additional bytes (from offset %d).\r\n",
+          sprintf(str, "Tag %s (size %d) is followed by %d unnecessary additional bytes (from offset %d).\n",
                 Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.size, closest-(i->TagInfo.offset+rndup), (i->TagInfo.offset+rndup));
           sReport += str;
           nStatus = icMaxStatus(nStatus, icValidateWarning);
@@ -296,21 +380,21 @@ print_usage:
       // 1st tag offset should be = Header (128) + Tag Count (4) + Tag Table (n*12)
       if ((n > 0) && (smallest_offset > 128 + 4 + (n * 12))) {
         sReport += icMsgValidateNonCompliant;
-        sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\r\n",
+        sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\n",
             smallest_offset, 128 + 4 + (n * 12));
         sReport += str;
         nStatus = icMaxStatus(nStatus, icValidateNonCompliant);
       }
     }
-    
+
     if (argc>nArg+1) {
       if (!stricmp(argv[nArg+1], "ALL")) {
         for (i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++) {
-          DumpTag(pIcc, i->TagInfo.sig);
+          DumpTag(pIcc, i->TagInfo.sig, verbosity);
         }
       }
       else {
-        DumpTag(pIcc, (icTagSignature)icGetSigVal(argv[nArg+1]));
+        DumpTag(pIcc, (icTagSignature)icGetSigVal(argv[nArg+1]), verbosity);
       }
     }
   }
@@ -322,28 +406,42 @@ print_usage:
     printf(  "-----------------\n");
     switch (nStatus) {
     case icValidateOK:
-      printf("Profile is valid\n\n");
+      printf("Profile is valid");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       break;
     case icValidateWarning:
-      printf("Profile has warning(s)\n\n");
+      printf("Profile has warning(s)");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       break;
     case icValidateNonCompliant:
-      printf("Profile violates ICC specification\n\n");
+      printf("Profile violates ICC specification");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       break;
     case icValidateCriticalError:
-      printf("Profile has Critical Error(s) that violate ICC specification.\n\n");
+      printf("Profile has Critical Error(s) that violate ICC specification");
+      if (pHdr)
+        printf(" for version %s", Fmt.GetVersionName(pHdr->version));
       nValid = -1;
       break;
     default:
-      printf("Profile has unknown status.\n\n");
+      printf("Profile has unknown status!");
       nValid = -2;
       break;
     }
-    fwrite(sReport.c_str(), sReport.length(), 1, stdout);
   }
+  printf("\n\n");
+
+  sReport += "\n";
+  fwrite(sReport.c_str(), sReport.length(), 1, stdout);
 
   delete pIcc;
 
+#if defined(_DEBUG) || defined(DEBUG)
+  printf("EXIT %d\n", nValid);
+#endif
   return nValid;
 }
 

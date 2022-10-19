@@ -399,7 +399,7 @@ public:
   virtual LPIccCurve* ExtractInputCurves()=0;
   virtual LPIccCurve* ExtractOutputCurves()=0;
 
-  virtual bool NoClipPCS() const { return false; }
+  virtual bool NoClipPCS() const { return true; }
 
 	/// Returns the profile pointer. Profile is still owned by the Xform.
 	const CIccProfile* GetProfile() const { return m_pProfile; }
@@ -593,7 +593,7 @@ public:
 protected:
   icPcsStepType m_stepType;
 
-  CIccApplyPcsStep(CIccPcsStep *pStep) { m_pStep = pStep; }
+  CIccApplyPcsStep(CIccPcsStep *pStep) { m_pStep = pStep; m_stepType = icPcsStepUnknown; }
 
   const CIccPcsStep *m_pStep;
 };

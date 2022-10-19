@@ -72,6 +72,9 @@ tget{rgb.b} 0.5 le if { tget{rgb.b} copy mul 3 div } else { tget{rgb.b} #c sub #
 %apply OOTF
 copy(3,1) 0.2627 0.6780 0.0593 mul(3) sum(3) tget{gamma} gama tget{alpha} mul smul(3) tget{beta} sadd(3)
 
+%Scale so 75% is media white point
+4.804804804804805 smul(3)	
+
 %convert rgb to xyz with matrix
 mtx{RGB2XYZ}
 
@@ -126,6 +129,9 @@ tget{Lw} 1000 le if { 1.2 } else { 1.2 0.42 tget{Lw} 1000 div log mul add } tput
 %Convert XYZ to RGB
 in(0,3) mtx{XYZ2RGB}
 
+%Inversion of scaling so the 75% is media white point
+4.804804804804805 sdiv(3)
+
 %clip as needed and store RGB results
 tget{beta} copy(1,2) vmax(3) tsav{rgb}
 
@@ -173,7 +179,7 @@ out(0,3)
 	
 	<spectralViewingConditionsTag> <spectralViewingConditionsType>
 	  <StdObserver>CIE 1931 (two degree) standard observer</StdObserver>
-	  <IlluminantXYZ X="760.3437296879144" Y="800.00000000" Z="871.0404544405391"/>
+	  <IlluminantXYZ X="192.9372214083083" Y="203.00000000" Z="221.0265153142868"/>
 	  <ObserverFuncs start="380.00000000" end="780.00000000" steps="81">
 		 0.00136800 0.00223600 0.00424300 0.00765000 0.01431000 0.02319000 0.04351000 0.07763000
 		 0.13438000 0.21477000 0.28389999 0.32850000 0.34828001 0.34806001 0.33620000 0.31869999
@@ -228,7 +234,7 @@ out(0,3)
 	</spectralViewingConditionsType> </spectralViewingConditionsTag>
 
 	<mediaWhitePointTag> <XYZArrayType>
-	  <XYZNumber X="0.95050049" Y="1.00000000" Z="1.08909607"/>
+	  <XYZNumber X="0.197822914481250" Y="0.208125" Z="0.226668119568750"/>
 	</XYZArrayType> </mediaWhitePointTag>
 
 	<copyrightTag> <multiLocalizedUnicodeType>

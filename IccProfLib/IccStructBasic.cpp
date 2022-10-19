@@ -112,7 +112,7 @@ IIccStruct* CIccStructUnknown::NewCopy(CIccTagStruct *pTagStruct) const
 }
 
 
-bool CIccStructUnknown::Describe(std::string &sDescription) const
+void CIccStructUnknown::Describe(std::string &sDescription, int nVerboseness) const
 {
   char buf[256];
   CIccInfo info;
@@ -125,16 +125,15 @@ bool CIccStructUnknown::Describe(std::string &sDescription) const
     for (n=0, i=entries->begin(); i!=entries->end(); n++, i++) {
       if (i->pTag) {
         if (n)
-          sDescription += "\r\n";
-        sprintf(buf, "Begin SubTag(%s)\r\n", GetElemName(i->TagInfo.sig).c_str());
+          sDescription += "\n";
+        sprintf(buf, "Begin SubTag(%s)\n", GetElemName(i->TagInfo.sig).c_str());
         sDescription += buf;
-        i->pTag->Describe(sDescription);
-        sprintf(buf, "End SubTag(%s)\r\n", GetElemName(i->TagInfo.sig).c_str());
+        i->pTag->Describe(sDescription, nVerboseness);
+        sprintf(buf, "End SubTag(%s)\n", GetElemName(i->TagInfo.sig).c_str());
         sDescription += buf;
       }
     }
   }
-  return true;
 }
 
 
@@ -277,7 +276,7 @@ icValidateStatus CIccStructBRDF::Validate(std::string sigPath, std::string &sRep
       rv = icValidateCriticalError;
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Missing required struct member(s).\r\n";
+      sReport += " - Missing required struct member(s).\n";
     }
   }
 
@@ -374,7 +373,7 @@ icValidateStatus CIccStructColorantInfo::Validate(std::string sigPath, std::stri
       rv = icValidateCriticalError;
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Missing required struct member(s).\r\n";
+      sReport += " - Missing required struct member(s).\n";
     }
   }
 
@@ -566,7 +565,7 @@ icValidateStatus CIccStructNamedColor::Validate(std::string sigPath, std::string
       rv = icValidateCriticalError;
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Missing required struct member(s).\r\n";
+      sReport += " - Missing required struct member(s).\n";
     }
   }
 

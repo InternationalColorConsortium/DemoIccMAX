@@ -71,4 +71,8 @@ typedef enum {
   icConvertVariable
 } icConvertType;
 
+#define icXmlHalfFmt "%.8f"
+#define icXmlFloatFmt "%.12f"
+#define icXmlDoubleFmt "%.24lf"
+
 #endif

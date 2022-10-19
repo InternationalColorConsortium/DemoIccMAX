@@ -82,6 +82,9 @@ CIccTag* CIccTagXmlFactory::CreateTag(icTagTypeSignature tagSig)
   case icSigXYZArrayType:
     return new CIccTagXmlXYZ;
 
+  case icSigCicpType:
+    return new CIccTagXmlCicp;
+
   case icSigUInt8ArrayType:
     return new CIccTagXmlUInt8;
 

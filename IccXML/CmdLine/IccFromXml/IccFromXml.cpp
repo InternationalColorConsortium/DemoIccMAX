@@ -14,7 +14,7 @@
 int main(int argc, char* argv[])
 {
   if (argc<=2) {
-    printf("\nRefIccLabs Version " ICCPROFLIBVER ", ICCXML Version " ICCLIBXMLVER "\nUsage: IccFromXml xml_file saved_profile_file {-noid -v{=[relax_ng_schema_file - optional]}}\n");
+    printf("IccFromXml built with IccProfLib Version " ICCPROFLIBVER ", IccLibXML Version " ICCLIBXMLVER "\n\nUsage: IccFromXml xml_file saved_profile_file {-noid -v{=[relax_ng_schema_file - optional]}}\n");
     return -1;
   }
 

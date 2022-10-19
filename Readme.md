@@ -3,7 +3,7 @@
 ## Introduction
 
 The DemoIccMAX project (formally known as RefIccMAX) provides an open
-source set of libraries and tools that allow for the interaction, 
+source set of libraries and tools that allow for the interaction,
 manipulation, and application of iccMAX based color management profiles
 based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter)
 in addition to legacy ICC profiles defined by [earlier ICC profile
@@ -75,7 +75,7 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     iccMAX based profiles.
 
     * This tool is dependent upon the IccLibXML project (above) as well as
-      libXML and iconv.
+      libXML2 and iconv.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
     sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
@@ -92,14 +92,26 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
 
   * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console.
+    from a legacy ICC and or iccMAX profile to be output to the console. Data
+    with non-printable values are replaced with '?'. Output from this tool is
+    not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
+    given platform.
+
+    Detailed validation messages start with either "Warning!", "Error!" or "NonCompliant!".
+    The overall status of validation is reported 2 lines below the line starting
+    "Validation Report" and can be located using the following simple `grep`:
+
+    ```bash
+    grep --text -A 3 "^Validation Report" out.txt
+    ```
+
 
   * IccRoundTrip is a cross platform command line tool that allows round trip
     colorimetric processing characteristics of rendering intent of a profile to be
-    evaluated. (Evaluation goes from device values to PCS to establish intial PCS
-    values. These are then coverted to device values and then PCS values for the
+    evaluated. (Evaluation goes from device values to PCS to establish initial PCS
+    values. These are then converted to device values and then PCS values for the
     first round trip. Second round trip comparison then converts the second PCS
-    values to device values to PCS values for campison to the second PCS values.
+    values to device values to PCS values for comparison to the second PCS values.
 
   * IccSpecSepToTiff is a cross platform command line tool that combines separate
     individual TIFF images associated with different spectral wavelengths into a
@@ -117,10 +129,10 @@ Within the DemoIccMAX project are several libraries and tools as follows:
   * RefIccLabsCMM provides a MacOS-X based Color Management Module that can be used
     within the ColorSync environment.
 
-    * Many features of iccMAX based profiles are not accessable due to the
+    * Many features of iccMAX based profiles are not accessible due to the
       limitation in support for only legacy ICC concepts within ColorSync.
 
-  * wxProfileDump provies a [wxWidgets](https://www.wxwidgets.org/) GUI based
+  * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
     iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
     wxWidgets 2.x, and is therefore dependent on this version of wxWidgets. At
     present only Windows based testing has been performed on this (though wxWidgets
@@ -169,7 +181,7 @@ colorimetry as well as Material Adjusted colorimetry are present.
 
 ### [SpecRef](Testing/SpaceRef)
 
-This folder contains various profiles that convert data to/from/betweteen a
+This folder contains various profiles that convert data to/from/between a
 spectral reflectance PCS. The argbRef (AdobeRGB) and srgbRef (sRGB) convert RGB
 values to/from spectral reflectance. RefDecC, RefDecH, and RefIncW are abstract
 spectral reflectance profiles that modify "chroma", "hue", and "lightness" of
@@ -182,17 +194,19 @@ abridged spectral encoding is provided.
 ## Project Build Considerations
 
 ### Dependencies
-* [libxml2](http://xmlsoft.org/) - for IccXML library and tools
+* [libxml2](http://xmlsoft.org/) - for IccXML2 library and tools
 * [libtiff](http://www.libtiff.org/) - for Tiff image tools
 * [wxWidgets](https://www.wxwidgets.org/) - for basic profile viewer GUI
 
 ### Windows
 
-The project solution BuildAll.sln file for the Visual Studio development IDE can
-be found in the ./Build/MSVC folder. This references additional .vcproj files
+The project solution files `BuildAll.sln` for various versions
+of the Microsoft Visual Studio development IDE can
+be found in the [./Build/MSVC](Build/Build/MSVC) folder.
+This references additional `.vcproj` files
 for the various libraries and applications provided by DemoIccMAX. Projects
 without any further dependencies should build and link correctly. Both 32 and
-64bit compile options are supported. Some of the projects have further
+64 bit compile options are supported. Some of the projects have further
 dependencies on third party libraries requiring that the SDK libraries are
 installed, and some system environment variables need to be set to correctly
 reference the include files and libraries. (Note: Projects with additional
@@ -200,8 +214,11 @@ dependencies may not correctly build if these libraries and environment variable
 are not set up before running Visual Studio).
 
 The dependency on libxml2 and iconv by the IccLibXML library as well as the
-IccToXML and IccFromXML applications requires these SDKs are accessible, and are
-referenced using the system environment variables `LIBXML` and `ICONV`.
+IccToXML and IccFromXML applications requires that these SDKs are accessible, and are
+referenced using the system environment variable `VendorTreeDir` with various
+sub-directories beneath.
+Macros for the location of each of these third party libraries is defined in
+`[BuildDefs.props](Build/MSVC/BuildDefs.props)`.
 64-bit versions of these SDKs can be found on the
 [gnome website](http://ftp.gnome.org/pub/GNOME/binaries/win64/dependencies/).
 
@@ -239,9 +256,9 @@ WXVER=28
 
 When the `ICC_USE_EIGEN_SOLVER` is defined in
 [IccProfLibConf.h](IccProfLib/IccProfLibConf.h) then the Calc element solv
-operator will be implementd using the Eigen math C++ template library,
+operator will be implemented using the Eigen math C++ template library,
 http://eigen.tuxfamily.org/index.php?title=Main_Page. It must be referenced
-using the system environeent variable `EIGEN`.
+using the system environment variable `EIGEN`.
 
 For example:
 
@@ -277,21 +294,33 @@ archive contains a CMake build configuration, which can be used to build on the
 command line with make or ninja, or generate a project for a KDevelop or Eclipse
 or for the platform specific XCode and VC++ IDEs.
 
+Note: for historic reasons, the CMake system still uses the name "RefIccMAX"
+
 #### Compilation
 
 Typical create a out of source build directory and specify an install path:
 
-```sh
+```bash
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
+make help
 make
 make install
 ```
 
 ##### Build Flags
 
-... are typical cmake flags like `CMAKE_CXX_FLAGS` to tune compilation. For
-development `*-DCMAKE_CXX_FLAGS="-Wall -Wextra -g"` is recommended.
+Use `-DCMAKE_BUILD_TYPE=Debug`, `-DCMAKE_BUILD_TYPE=Release` or one of the other
+CMake build types.
+
+Typical cmake flags like `CMAKE_CXX_FLAGS` can be used to tune compilation. For
+development `... -DCMAKE_CXX_FLAGS="-Wextra -Wimplicit-fallthrough=0 -g"` is
+recommended, but this will **not be warning free!**.
+
+Note: `-Wimplicit-fallthrough=0` disables case fall-through warnings on switch
+statements as this is actively used (e.g. in IccConvertUTF.cpp). There will also
+be many `-Wsign-compare` warnings and a few `-Wenum-compare` and
+`-Wdeprecated-copy` warnings.
 
 * `ENABLE_TESTS` - default is ON
 * `ENABLE_TOOLS` - default is ON
@@ -304,6 +333,38 @@ development `*-DCMAKE_CXX_FLAGS="-Wall -Wextra -g"` is recommended.
 ### Linux Packages
 
 * Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libDemoIccMAX-devel)
+
+### Linux Issues and Solutions
+
+You may also need to set `LD_LIBRARY_PATH` to `CMAKE_INSTALLPREFIX`/lib so that
+`libIccProfLib2.so` and `libIccXML.so` shared libraries can be located at runtime.
+
+```bash
+export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
+```
+
+When running `iccDumpProfileGui` under X-Windows the following error messages
+may be seen on the console:
+
+`libGL error: No matching fbConfigs or visuals` This can be fixed with:
+
+```bash
+export LIBGL_ALWAYS_INDIRECT=1
+```
+
+`libGL error: failed to load driver: swrast` This can be fixed with:
+
+```bash
+sudo apt-get install -y mesa-utils libgl1-mesa-glx
+```
+
+```
+/usr/local/lib/libgnutls.so.30: version `GNUTLS_3_6_3' not found (required by /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so)
+Failed to load module: /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
+```
+The above error messages appear to be harmless, but running
+`apt-cache policy libgnutls30` or `gntls-cli -v` will likely indicate a
+different (later) version of gnutls.
 
 ## License
 

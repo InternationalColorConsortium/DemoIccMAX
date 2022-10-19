@@ -99,6 +99,8 @@ using std::min;
 namespace refIccMAX {
 #endif
 
+// For Describe() nVerboseness levels < 25, maximum length of strings
+#define BRIEF_STRING_SIZE (1024)
 
 /**
  ****************************************************************************
@@ -167,7 +169,7 @@ icValidateStatus CIccTag::Validate(std::string sigPath, std::string &sReport, co
     CIccInfo Info;
     sReport += icMsgValidateNonCompliant;
     sReport += Info.GetSigPathName(sigPath);
-    sReport += " - Reserved Value must be zero.\r\n";
+    sReport += " - Reserved Value must be zero.\n";
 
     rv = icValidateNonCompliant;
   }
@@ -334,7 +336,7 @@ bool CIccTagUnknown::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagUnknown::Describe(std::string &sDescription)
+void CIccTagUnknown::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
@@ -342,9 +344,11 @@ void CIccTagUnknown::Describe(std::string &sDescription)
   sprintf(buf, "%u Bytes.", m_nSize-4);
   sDescription += buf;
 
-  sDescription += "\r\n\r\nData Follows:\r\n";
+  if (nVerboseness > 50) {
+    sDescription += "\n\nData Follows:\n";
 
-  icMemDump(sDescription, m_pData+4, m_nSize-4);
+    icMemDump(sDescription, m_pData+4, m_nSize-4);
+  }
 }
 
 
@@ -435,10 +439,11 @@ bool CIccTagText::Read(icUInt32Number size, CIccIO *pIO)
 {
   icTagTypeSignature sig;
 
-  if (size<sizeof(icTagTypeSignature) || !pIO) {
-    m_szText[0] = '\0';
+  // Defensive: initialize so error paths all have valid m_szText
+  m_szText[0] = '\0';
+
+  if (size < (sizeof(icTagTypeSignature) + sizeof(icUInt32Number)) || !pIO)
     return false;
-  }
 
   if (!pIO->Read32(&sig))
     return false;
@@ -508,13 +513,34 @@ bool CIccTagText::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagText::Describe(std::string &sDescription)
+void CIccTagText::Describe(std::string &sDescription, int nVerboseness)
 {
-  sDescription += "\"";
-  if (m_szText && *m_szText)
-    sDescription += m_szText;
+  sDescription += "Text Length = ";
+  if (m_szText && *m_szText) {
+    char buf[40];
+    sprintf(buf, "%zu bytes\n", strlen(m_szText));
+    sDescription += buf;
+  } else
+    sDescription += "0 (NULL)";
 
-  sDescription += "\"\r\n";
+  if (nVerboseness > 25) {
+    sDescription += "\"";
+    if (m_szText && *m_szText) {
+      if ((nVerboseness > 50) || (strlen(m_szText) < BRIEF_STRING_SIZE)) {
+        // output entire string if short or doing verbose
+        sDescription += m_szText;  
+      }
+      else {
+        // copy just first part of string to keep nVerboseness under control
+        char buf[BRIEF_STRING_SIZE + 1];
+        strncpy(buf, m_szText, BRIEF_STRING_SIZE);
+        buf[BRIEF_STRING_SIZE] = '\0'; // ensure NULL termination
+        sDescription += buf;
+        sDescription += "\n... <!truncated!>";
+      }
+    }
+    sDescription += "\"\n";
+  }
 }
 
 
@@ -636,14 +662,14 @@ icValidateStatus CIccTagText::Validate(std::string sigPath, std::string &sReport
       if (m_nBufSize<7) {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sReport += " - Tag must have at least seven text characters.\r\n";
+        sReport += " - Tag must have at least seven text characters.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
       break;
     default:
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Unknown Tag.\r\n";
+      sReport += " - Unknown Tag.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     int i;
@@ -651,7 +677,7 @@ icValidateStatus CIccTagText::Validate(std::string sigPath, std::string &sReport
       if (m_szText[i]&0x80) {
         sReport += icMsgValidateWarning;
         sReport += sSigPathName;
-        sReport += " - Text does not contain just 7-bit data.\r\n";
+        sReport += " - Text does not contain just 7-bit data.\n";
         rv = icMaxStatus(rv, icValidateWarning);
       }
     }
@@ -659,7 +685,7 @@ icValidateStatus CIccTagText::Validate(std::string sigPath, std::string &sReport
   else {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty Tag.\r\n";
+    sReport += " - Empty Tag.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -832,13 +858,35 @@ bool CIccTagUtf8Text::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagUtf8Text::Describe(std::string &sDescription)
+void CIccTagUtf8Text::Describe(std::string &sDescription, int nVerboseness)
 {
-  sDescription += "\"";
-  if (m_szText && *m_szText)
-    sDescription += (icChar*)m_szText;
+  sDescription += "UTF8 Length = ";
+  if (m_szText && *m_szText) {
+    char buf[40];
+    sprintf(buf, "%d bytes\n", m_nBufSize);
+    sDescription += buf;
+  }
+  else
+    sDescription += "0 (NULL)";
 
-  sDescription += "\"\r\n";
+  if (nVerboseness > 25) {
+    sDescription += "\"";
+    if (m_szText && *m_szText) {
+      if ((nVerboseness > 50) || (m_nBufSize < BRIEF_STRING_SIZE)) {
+        // output entire string if short or doing verbose output
+        sDescription += (icChar*)m_szText;  
+      }
+      else {
+         // copy just first part of string to keep nVerboseness under control
+         char buf[BRIEF_STRING_SIZE + 1];
+         strncpy(buf, (icChar*)m_szText, BRIEF_STRING_SIZE);
+         buf[BRIEF_STRING_SIZE] = '\0'; // ensure NULL termination
+         sDescription += buf;
+         sDescription += "\n... <!truncated!>";
+      }
+    }
+    sDescription += "\"\n";
+  }
 }
 
 
@@ -980,7 +1028,7 @@ icValidateStatus CIccTagUtf8Text::Validate(std::string sigPath, std::string &sRe
   if (!m_nBufSize) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty Tag.\r\n";
+    sReport += " - Empty Tag.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1147,34 +1195,34 @@ bool CIccTagZipUtf8Text::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagZipUtf8Text::Describe(std::string &sDescription)
+void CIccTagZipUtf8Text::Describe(std::string &sDescription, int nVerboseness)
 {
   std::string str;
 #ifdef ICC_USE_ZLIB
   if (!GetText(str)) {
-    sDescription += "Error! - Unable to decompress text data.\r\n";
+    sDescription += "Error! - Unable to decompress text data.\n";
   }
   else if (m_nBufSize > 4 && !memcmp(m_pZipBuf, icFaultyXmlZipData, 4)) {
     sDescription += "Warning! - Correcting for improperly encoded ";
     sDescription += CIccTagCreator::GetTagTypeSigName(GetType());
-    sDescription += " tag.\r\n\r\n";
+    sDescription += " tag.\n\n";
   }
 
   sDescription += "ZLib Compressed String=\"";
   sDescription += str;
-  sDescription += "\"\r\n";
+  sDescription += "\"\n";
 #else
   char size[30];
   sprintf(size, "%d", m_nBufSize);
   sDescription += "BEGIN_COMPESSED_DATA[\"";
   sDescription += size;
-  sDescription += "]\r\n";
+  sDescription += "]\n";
   if (m_nBufSize) {
     icMemDump(str, m_pZipBuf, m_nBufSize);
     sDescription += str;
-    sDescription += "\r\n";
+    sDescription += "\n";
   }
-  sDescription += "END_COMPRESSED_DATA\r\n";
+  sDescription += "END_COMPRESSED_DATA\n";
 #endif
 }
 
@@ -1311,7 +1359,7 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
   icUChar *pBuf = AllocBuffer(compress.size());
 
   if (pBuf) {
-    for (i = 0; i < m_nBufSize; i++) {
+    for (i = 0; i < (int)m_nBufSize; i++) {
       pBuf[i] = compress[i];
 }
   }
@@ -1407,7 +1455,7 @@ icValidateStatus CIccTagZipUtf8Text::Validate(std::string sigPath, std::string &
   if (!m_nBufSize) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty Tag.\r\n";
+    sReport += " - Empty Tag.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
   else {
@@ -1416,7 +1464,7 @@ icValidateStatus CIccTagZipUtf8Text::Validate(std::string sigPath, std::string &
     if (!GetText(sText)) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Unable to get text for tag (possibly corrupt compressed data).\r\n";
+      sReport += " - Unable to get text for tag (possibly corrupt compressed data).\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
     else if (m_nBufSize > 4 && !memcmp(m_pZipBuf, icFaultyXmlZipData, 4)) {
@@ -1424,13 +1472,13 @@ icValidateStatus CIccTagZipUtf8Text::Validate(std::string sigPath, std::string &
       sReport += sSigPathName;
       sReport += " - Improperly encoded ";
       sReport += CIccTagCreator::GetTagTypeSigName(GetType());
-      sReport += " tag.\r\n";
+      sReport += " tag.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
 #else
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Zip compression not supported by CMM - unable to validate text compression.\r\n";
+    sReport += " - Zip compression not supported by CMM - unable to validate text compression.\n";
     rv = icMaxStatus(rv, icValidateWarning);
 #endif
   }
@@ -1621,25 +1669,48 @@ bool CIccTagUtf16Text::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagUtf16Text::Describe(std::string &sDescription)
+void CIccTagUtf16Text::Describe(std::string &sDescription, int nVerboseness)
 {
-  sDescription += "\"";
-  if (m_szText && *m_szText) {
-    std::string buf;
-    sDescription += GetText(buf);
-  }
+    sDescription += "UTF16 Length = ";
+    if (m_szText && *m_szText) {
+        char buf[40];
+        sprintf(buf, "%d bytes\n", m_nBufSize);
+        sDescription += buf;
+    }
+    else
+        sDescription += "0 (NULL)";
 
-  sDescription += "\"\r\n";
+    if (nVerboseness > 25) {
+        sDescription += "\"";
+        if (m_szText && *m_szText) {
+            std::string   s;
+            if ((nVerboseness > 50) || (m_nBufSize < BRIEF_STRING_SIZE)) {
+                // output entire string if short or doing verbose
+                sDescription += GetText(s);
+            }
+            else {
+                // copy just first part of string to keep nVerboseness under control
+                char buf[BRIEF_STRING_SIZE + 1];
+                strncpy(buf, GetText(s), BRIEF_STRING_SIZE);
+                buf[BRIEF_STRING_SIZE] = '\0'; // ensure NULL termination
+                sDescription += buf;
+                sDescription += "\n... <!truncated!>";
+            }
+        }
+        sDescription += "\"\n";
+    }
+
 }
 
 /**
  ****************************************************************************
  * Name: CIccTagUtf16Text::GetText
  * 
- * Purpose: Allows text data associated with the tag to be set.
+ * Purpose: Allows text data associated with the tag to be fetched.
  * 
  * Args: 
- *  szText - zero terminated string to put in tag
+ *  buf - buffer to put tag data into. 
+ * Returns: buf.c_str() 
  *****************************************************************************
  */
 const icChar *CIccTagUtf16Text::GetText(std::string &buf) const
@@ -1808,7 +1879,7 @@ icValidateStatus CIccTagUtf16Text::Validate(std::string sigPath, std::string &sR
   if (!m_nBufSize) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty Tag.\r\n";
+    sReport += " - Empty Tag.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1972,12 +2043,11 @@ bool CIccTagTextDescription::Read(icUInt32Number size, CIccIO *pIO)
   icTagTypeSignature sig;
   icUInt32Number nEnd;
 
+  m_szText[0] = '\0';
   nEnd = pIO->Tell() + size;
 
-  if (size<3*sizeof(icUInt32Number) || !pIO) {
-    m_szText[0] = '\0';
+  if (size<3*sizeof(icUInt32Number) || !pIO)
     return false;
-  }
 
   icUInt32Number nSize;
 
@@ -2006,6 +2076,10 @@ bool CIccTagTextDescription::Read(icUInt32Number size, CIccIO *pIO)
 
   if (!pIO->Read32(&m_nUnicodeLanguageCode) ||
       !pIO->Read32(&nSize))
+    return false;
+
+  // Calculations in GetUnicodeBuffer() can cause wrap-around error
+  if (nSize == 0xFFFFFFFF) 
     return false;
 
   icUInt16Number *pBuf16 = GetUnicodeBuffer(nSize);
@@ -2108,13 +2182,35 @@ bool CIccTagTextDescription::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagTextDescription::Describe(std::string &sDescription)
+void CIccTagTextDescription::Describe(std::string &sDescription, int nVerboseness)
 {
-  sDescription += "\"";
-  if (m_szText && *m_szText)
-    sDescription += m_szText;
+  sDescription += "TextDescription Length = ";
+  if (m_szText && *m_szText) {
+    char buf[40];
+    sprintf(buf, "%zu bytes\n", strlen(m_szText));
+    sDescription += buf;
+  }
+  else
+    sDescription += "0 (NULL)";
 
-  sDescription += "\"\r\n";
+  if (nVerboseness > 25) {
+    sDescription += "\"";
+    if (m_szText && *m_szText) {
+      if ((nVerboseness > 50) || (strlen(m_szText) < BRIEF_STRING_SIZE)) {
+        // output entire string if short or doing verbose
+         sDescription += m_szText;  
+      }
+      else {
+        // copy just first part of string to keep nVerboseness under control
+        char buf[BRIEF_STRING_SIZE+1];
+        strncpy(buf, m_szText, BRIEF_STRING_SIZE);
+        buf[BRIEF_STRING_SIZE] = '\0'; // ensure NULL termination
+        sDescription += buf;
+        sDescription += "\n... <!truncated!>";
+      } 
+    }
+    sDescription += "\"\n";
+  }
 }
 
 
@@ -2276,7 +2372,7 @@ icValidateStatus CIccTagTextDescription::Validate(std::string sigPath, std::stri
   if (m_nScriptSize>67) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - ScriptCode count must not be greater than 67.\r\n";
+    sReport += " - ScriptCode count must not be greater than 67.\n";
 
     rv =icMaxStatus(rv, icValidateNonCompliant);
   }
@@ -2284,7 +2380,7 @@ icValidateStatus CIccTagTextDescription::Validate(std::string sigPath, std::stri
   if (m_bInvalidScript) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - ScriptCode must contain 67 bytes.\r\n";
+    sReport += " - ScriptCode must contain 67 bytes.\n";
 
     rv =icMaxStatus(rv, icValidateNonCompliant);
   }
@@ -2438,12 +2534,12 @@ bool CIccTagSignature::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagSignature::Describe(std::string &sDescription)
+void CIccTagSignature::Describe(std::string &sDescription, int nVerboseness)
 {
   CIccInfo Fmt;
 
   sDescription += Fmt.GetSigName(m_nSig);
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 
@@ -2504,7 +2600,7 @@ icValidateStatus CIccTagSignature::Validate(std::string sigPath, std::string &sR
       {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sprintf(buf, " - %s: Unknown Technology.\r\n", Info.GetSigName(m_nSig));
+        sprintf(buf, " - %s: Unknown Technology.\n", Info.GetSigName(m_nSig));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
@@ -2520,7 +2616,7 @@ icValidateStatus CIccTagSignature::Validate(std::string sigPath, std::string &sR
       {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sprintf(buf, " - %s: Unknown Reference Medium Gamut.\r\n", Info.GetSigName(m_nSig));
+        sprintf(buf, " - %s: Unknown Reference Medium Gamut.\n", Info.GetSigName(m_nSig));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
@@ -2539,7 +2635,7 @@ icValidateStatus CIccTagSignature::Validate(std::string sigPath, std::string &sR
       {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sprintf(buf, " - %s: Unknown Colorimetric Intent Image State.\r\n", Info.GetSigName(m_nSig));
+        sprintf(buf, " - %s: Unknown Colorimetric Intent Image State.\n", Info.GetSigName(m_nSig));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
@@ -2902,7 +2998,7 @@ bool CIccTagNamedColor2::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagNamedColor2::Describe(std::string &sDescription)
+void CIccTagNamedColor2::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128], szColorVal[40], szColor[40];
 
@@ -2911,20 +3007,20 @@ void CIccTagNamedColor2::Describe(std::string &sDescription)
 
   sDescription.reserve(sDescription.size() + m_nSize*79);
 
-  sprintf(buf, "BEGIN_NAMED_COLORS flags=%08x %u %u\r\n", m_nVendorFlags, m_nSize, m_nDeviceCoords);
+  sprintf(buf, "BEGIN_NAMED_COLORS flags=%08x %u %u\n", m_nVendorFlags, m_nSize, m_nDeviceCoords);
   sDescription += buf;
 
-  sprintf(buf, "Prefix=\"%s\"\r\n", m_szPrefix);
+  sprintf(buf, "Prefix=\"%s\"\n", m_szPrefix);
   sDescription += buf;
 
-  sprintf(buf, "Sufix= \"%s\"\r\n", m_szSufix);
+  sprintf(buf, "Sufix= \"%s\"\n", m_szSufix);
   sDescription += buf;
 
   for (i=0; i<m_nSize; i++) {
     sprintf(buf, "Color[%u]: %s :", i, pNamedColor->rootName);
     sDescription += buf;
     
-    icFloatNumber pcsCoord[3];
+    icFloatNumber pcsCoord[3] ={0};
     for (j=0; j<3; j++)
       pcsCoord[j] = pNamedColor->pcsCoords[j];
 
@@ -2948,7 +3044,7 @@ void CIccTagNamedColor2::Describe(std::string &sDescription)
         sDescription += buf;
       }
     }
-    sDescription += "\r\n";
+    sDescription += "\n";
 
     pNamedColor = (SIccNamedColorEntry*)((icChar*)pNamedColor + m_nColorEntrySize);
   }
@@ -3354,7 +3450,7 @@ icValidateStatus CIccTagNamedColor2::Validate(std::string sigPath, std::string &
   if (!m_nSize) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty tag!\r\n";
+    sReport += " - Empty tag!\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -3364,14 +3460,14 @@ icValidateStatus CIccTagNamedColor2::Validate(std::string sigPath, std::string &
       if (m_nDeviceCoords != nCoords) {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sReport += " - Incorrect number of device co-ordinates.\r\n";
+        sReport += " - Incorrect number of device co-ordinates.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
     }
     else {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+      sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
   }
@@ -3554,12 +3650,12 @@ bool CIccTagXYZ::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagXYZ::Describe(std::string &sDescription)
+void CIccTagXYZ::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
   if (m_nSize == 1 ) {
-    sprintf(buf, "X=%.4lf, Y=%.4lf, Z=%.4lf\r\n", icFtoD(m_XYZ[0].X), icFtoD(m_XYZ[0].Y), icFtoD(m_XYZ[0].Z));
+    sprintf(buf, "X=%.4lf, Y=%.4lf, Z=%.4lf\n", icFtoD(m_XYZ[0].X), icFtoD(m_XYZ[0].Y), icFtoD(m_XYZ[0].Z));
     sDescription += buf;
   }
   else {
@@ -3567,7 +3663,7 @@ void CIccTagXYZ::Describe(std::string &sDescription)
     sDescription.reserve(sDescription.size() + m_nSize*79);
 
     for (i=0; i<m_nSize; i++) {
-      sprintf(buf, "value[%u]: X=%.4lf, Y=%.4lf, Z=%.4lf\r\n", i, icFtoD(m_XYZ[i].X), icFtoD(m_XYZ[i].Y), icFtoD(m_XYZ[i].Z));
+      sprintf(buf, "value[%u]: X=%.4lf, Y=%.4lf, Z=%.4lf\n", i, icFtoD(m_XYZ[i].X), icFtoD(m_XYZ[i].Y), icFtoD(m_XYZ[i].Z));
       sDescription += buf;
     }
   }
@@ -3629,7 +3725,7 @@ icValidateStatus CIccTagXYZ::Validate(std::string sigPath, std::string &sReport,
   if (!m_nSize) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty tag.\r\n";
+    sReport += " - Empty tag.\n";
 
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
@@ -3763,9 +3859,13 @@ bool CIccTagChromaticity::Read(icUInt32Number size, CIccIO *pIO)
     return false;
 
   icUInt32Number nNum = (size-3*sizeof(icUInt32Number)) / sizeof(icChromaticityNumber);
-  icUInt32Number nNum32 = nNum*sizeof(icChromaticityNumber)/sizeof(icU16Fixed16Number);
+  icUInt32Number nNum32 = (nNum*sizeof(icChromaticityNumber)) / sizeof(icU16Fixed16Number);
 
   if (nNum < nChannels)
+    return false;
+
+  // SetSize casts from icUInt32Number down to icUInt16Number. Check for overflow
+  if (nNum > (icUInt16Number)nNum)
     return false;
 
   if (!SetSize((icUInt16Number)nNum))
@@ -3829,21 +3929,21 @@ bool CIccTagChromaticity::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagChromaticity::Describe(std::string &sDescription)
+void CIccTagChromaticity::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
   CIccInfo Fmt;
 
   icUInt32Number i;
   //sDescription.reserve(sDescription.size() + m_nChannels*79);
-  sprintf(buf, "Number of Channels : %u\r\n", m_nChannels);
+  sprintf(buf, "Number of Channels : %u\n", m_nChannels);
   sDescription += buf;
 
-  sprintf(buf, "Colorant Encoding : %s\r\n", Fmt.GetColorantEncoding((icColorantEncoding)m_nColorantType));
+  sprintf(buf, "Colorant Encoding : %s\n", Fmt.GetColorantEncoding((icColorantEncoding)m_nColorantType));
   sDescription += buf;
 
   for (i=0; i<m_nChannels; i++) {
-    sprintf(buf, "value[%u]: x=%.3lf, y=%.3lf\r\n", i, icUFtoD(m_xy[i].x), icUFtoD(m_xy[i].y));
+    sprintf(buf, "value[%u]: x=%.3lf, y=%.3lf\n", i, icUFtoD(m_xy[i].x), icUFtoD(m_xy[i].y));
     sDescription += buf;
   }
 
@@ -3907,7 +4007,7 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
     if (m_nChannels!=3) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - Number of device channels must be three.\r\n";
+      sReport += " - Number of device channels must be three.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
 
@@ -3919,7 +4019,7 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
                (m_xy[2].x != icDtoUF((icFloatNumber)0.150)) || (m_xy[2].y != icDtoUF((icFloatNumber)0.060)) ) {
                 sReport += icMsgValidateNonCompliant;
                 sReport += sSigPathName;
-                sReport += " - Chromaticity data does not match specification.\r\n";
+                sReport += " - Chromaticity data does not match specification.\n";
                 rv = icMaxStatus(rv, icValidateNonCompliant);
               }
           break;
@@ -3932,7 +4032,7 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
                (m_xy[2].x != icDtoUF((icFloatNumber)0.155)) || (m_xy[2].y != icDtoUF((icFloatNumber)0.070)) ) {
               sReport += icMsgValidateNonCompliant;
               sReport += sSigPathName;
-              sReport += " - Chromaticity data does not match specification.\r\n";
+              sReport += " - Chromaticity data does not match specification.\n";
               rv = icMaxStatus(rv, icValidateNonCompliant);
             }
             break;
@@ -3945,7 +4045,7 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
                (m_xy[2].x != icDtoUF((icFloatNumber)0.15)) || (m_xy[2].y != icDtoUF((icFloatNumber)0.06)) ) {
               sReport += icMsgValidateNonCompliant;
               sReport += sSigPathName;
-              sReport += " - Chromaticity data does not match specification.\r\n";
+              sReport += " - Chromaticity data does not match specification.\n";
               rv = icMaxStatus(rv, icValidateNonCompliant);
             }
             break;
@@ -3958,7 +4058,7 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
                (m_xy[2].x != icDtoUF((icFloatNumber)0.155)) || (m_xy[2].y != icDtoUF((icFloatNumber)0.070)) ) {
               sReport += icMsgValidateNonCompliant;
               sReport += sSigPathName;
-              sReport += " - Chromaticity data does not match specification.\r\n";
+              sReport += " - Chromaticity data does not match specification.\n";
               rv = icMaxStatus(rv, icValidateNonCompliant);
             }
             break;
@@ -3968,7 +4068,7 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
         {
           sReport += icMsgValidateNonCompliant;
           sReport += sSigPathName;
-          sReport += " - Invalid colorant type encoding.\r\n";
+          sReport += " - Invalid colorant type encoding.\n";
           rv = icMaxStatus(rv, icValidateNonCompliant);
         }
     }
@@ -3976,6 +4076,312 @@ icValidateStatus CIccTagChromaticity::Validate(std::string sigPath, std::string 
 
   return rv;
 }
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::CIccTagCicp
+ *
+ * Purpose: Constructor
+ *
+ * Args:
+ *  nSize = number of XYZ entries
+ *
+ *****************************************************************************
+ */
+CIccTagCicp::CIccTagCicp()
+{
+  m_nColorPrimaries = 0;
+  m_nTransferCharacteristics = 0;
+  m_nMatrixCoefficients = 0;
+  m_nVideoFullRangeFlag = 0;
+}
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::CIccTagCicp
+ *
+ * Purpose: Copy Constructor
+ *
+ * Args:
+ *  ITCICP = The CIccTagCicp object to be copied
+ *****************************************************************************
+ */
+CIccTagCicp::CIccTagCicp(const CIccTagCicp& ITXYZ)
+{
+}
+
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::operator=
+ *
+ * Purpose: Copy Operator
+ *
+ * Args:
+ *  cicpTag = The CIccTagCicp object to be copied
+ *****************************************************************************
+ */
+CIccTagCicp& CIccTagCicp::operator=(const CIccTagCicp& cicpTag)
+{
+  if (&cicpTag == this)
+    return *this;
+
+  m_nColorPrimaries = cicpTag.m_nColorPrimaries;
+  m_nTransferCharacteristics = cicpTag.m_nTransferCharacteristics;
+  m_nMatrixCoefficients = cicpTag.m_nMatrixCoefficients;
+  m_nVideoFullRangeFlag = cicpTag.m_nVideoFullRangeFlag;
+
+  return *this;
+}
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::~CIccTagCicp
+ *
+ * Purpose: Destructor
+ *
+ *****************************************************************************
+ */
+CIccTagCicp::~CIccTagCicp()
+{
+}
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::Read
+ *
+ * Purpose: Read in the tag contents into a data block
+ *
+ * Args:
+ *  size - # of bytes in tag,
+ *  pIO - IO object to read tag from
+ *
+ * Return:
+ *  true = successful, false = failure
+ *****************************************************************************
+ */
+bool CIccTagCicp::Read(icUInt32Number size, CIccIO* pIO)
+{
+  icTagTypeSignature sig;
+
+  if (sizeof(icTagTypeSignature) +
+    sizeof(icUInt32Number) +
+    sizeof(icUInt8Number)*4 > size)
+    return false;
+
+  if (!pIO) {
+    return false;
+  }
+
+  if (!pIO->Read32(&sig))
+    return false;
+
+  if (!pIO->Read32(&m_nReserved))
+    return false;
+
+  if (!pIO->Read8(&m_nColorPrimaries) ||
+      !pIO->Read8(&m_nTransferCharacteristics) ||
+      !pIO->Read8(&m_nMatrixCoefficients) ||
+      !pIO->Read8(&m_nVideoFullRangeFlag))
+    return false;
+
+  return true;
+}
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::Write
+ *
+ * Purpose: Write the tag to a file
+ *
+ * Args:
+ *  pIO - The IO object to write tag to.
+ *
+ * Return:
+ *  true = succesful, false = failure
+ *****************************************************************************
+ */
+bool CIccTagCicp::Write(CIccIO* pIO)
+{
+  icTagTypeSignature sig = GetType();
+
+  if (!pIO)
+    return false;
+
+  if (!pIO->Write32(&sig))
+    return false;
+
+  if (!pIO->Write32(&m_nReserved))
+    return false;
+
+  if (!pIO->Write8(&m_nColorPrimaries) ||
+      !pIO->Write8(&m_nTransferCharacteristics) ||
+      !pIO->Write8(&m_nMatrixCoefficients) ||
+      !pIO->Write8(&m_nVideoFullRangeFlag))
+    return false;
+
+  return true;
+}
+
+
+static struct {
+  const char* code;
+  const char* interp;
+} icExampleCicpCodes[] = {
+  { "1-1-0-0",    "RGB narrow range representation specified in Recommendation ITU-R BT.709-6, Item 3.4"},
+  { "1-13-0-1",   "RGB full range representation specified in IEC 61966-2-1 sRGB"},
+  { "9-14-0-0",   "R’G’B’ narrow range representation specified in Recommendation ITU-R BT.2020-2, Table 5"},
+  { "9-16-0-0",   "PQ R’G’B’ narrow range representation specified in Recommendation ITU-R BT.2100-2, Table 9"},
+  { "9-16-0-1",   "PQ R’G’B’ full range representation specified in Recommendation ITU-R BT.2100-2, Table 9"},
+  { "9-18-0-0 ",  "HLG R’G’B’ narrow range representation specified in Recommendation ITU-R BT.2100-2 "},
+  { "9-18-0-1",   "HLG R’G’B’ full range representation specified in Recommendation ITU-R BT.2100-2"},
+  { "1-1-1-0 ",   "YCbCr representation specified in Recommendation ITU-R BT.709-6, Item 3.4"},
+  { "9-14-9-0",   "Y’Cb’Cr’ narrow range representation specified in Recommendation ITU-R BT.2020-2, Table 5"},
+  { "9-16-9-0",   "PQ Y’Cb’Cr’ narrow range representation specified in Recommendation ITU-R BT.2100-2, Table 9"},
+  { "9-16-14-0",  "PQ ICtCp narrow range representation specified in Recommendation ITU-R BT.2100-2, Table 9"},
+  { "9-18-9-0",   "HLG Y’Cb’Cr’ narrow range representation specified in Recommendation ITU-R BT.2100-2"},
+  { "9-18-14-0 ", "HLG ICtCp narrow range representation specified in Recommendation ITU-R BT.2100-2"},
+  { NULL, NULL},
+};
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::Describe
+ *
+ * Purpose: Dump data associated with the tag to a string
+ *
+ * Args:
+ *  sDescription - string to concatenate tag dump to
+ *****************************************************************************
+ */
+void CIccTagCicp::Describe(std::string& sDescription)
+{
+  icChar buf[256], code[128];
+  sprintf(code, "%u-%u-%u-%u", m_nColorPrimaries, m_nTransferCharacteristics, m_nMatrixCoefficients, m_nVideoFullRangeFlag);
+
+  sprintf(buf, "ColorPrimaries=%u\r\n", m_nColorPrimaries);
+  sDescription += buf;
+
+  sprintf(buf, "TransferCharacteristics=%u\r\n", m_nTransferCharacteristics);
+  sDescription += buf;
+
+  sprintf(buf, "MatrixCoefficients=%u\r\n", m_nMatrixCoefficients);
+  sDescription += buf;
+
+  sprintf(buf, "VideoFullRangeFlag=%u\r\n\r\n", m_nVideoFullRangeFlag);
+  sDescription += buf;
+
+  sprintf(buf, "Combined Code: %s\r\n", code);
+  sDescription += buf;
+
+  int i;
+  for (i = 0; icExampleCicpCodes[i].code; i++)
+    if (!strcmp(code, icExampleCicpCodes[i].code))
+      break;
+
+  sDescription += "Interpretation: ";
+  if (icExampleCicpCodes[i].code) {
+    sDescription += icExampleCicpCodes[i].interp;
+  }
+  else {
+    sDescription += "unknown";
+  }
+  sDescription += "\r\n";
+}
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::GetFields
+ *
+ * Purpose: gets the ITU-T H.273 field values
+ *
+ * Args:
+ *  meaning of args as named
+ *****************************************************************************
+ */
+void CIccTagCicp::GetFields(icUInt8Number &colorPrimaries,
+                            icUInt8Number &transferCharacteristics,
+                            icUInt8Number &matrixCoefficients,
+                            icUInt8Number &videoFullRangeFlag)
+{
+  colorPrimaries = m_nColorPrimaries;
+  transferCharacteristics = m_nTransferCharacteristics;
+  matrixCoefficients = m_nMatrixCoefficients;
+  videoFullRangeFlag = m_nVideoFullRangeFlag;
+}
+
+
+/**
+ ****************************************************************************
+ * Name: CIccTagCicp::SetFields
+ *
+ * Purpose: Sets the ITU-T H.273 field values
+ *
+ * Args:
+ *  meaning of args as named
+ *****************************************************************************
+ */
+void CIccTagCicp::SetFields(icUInt8Number colorPrimaries, 
+                            icUInt8Number transferCharacteristics,
+                            icUInt8Number matrixCoefficients,
+                            icUInt8Number videoFullRangeFlag)
+{
+  m_nColorPrimaries = colorPrimaries;
+  m_nTransferCharacteristics = transferCharacteristics;
+  m_nMatrixCoefficients =matrixCoefficients;
+  m_nVideoFullRangeFlag = videoFullRangeFlag;
+}
+
+
+/**
+******************************************************************************
+* Name: CIccTagCicp::Validate
+*
+* Purpose: Check tag data validity.
+*
+* Args:
+*  sig = signature of tag being validated,
+*  sReport = String to add report information to
+*  pProfile = profile containing tag
+*
+* Return:
+*  icValidateStatusOK if valid, or other error status.
+******************************************************************************
+*/
+icValidateStatus CIccTagCicp::Validate(std::string sigPath, std::string& sReport, const CIccProfile* pProfile/*=NULL*/) const
+{
+  icValidateStatus rv = CIccTag::Validate(sigPath, sReport, pProfile);
+
+  CIccInfo Info;
+  std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+  if (!pProfile)
+    return rv;
+
+  if ((pProfile->m_Header.colorSpace == icSigRgbData || pProfile->m_Header.colorSpace == icSigXYZData) && m_nMatrixCoefficients) {
+    sReport += icMsgValidateNonCompliant;
+    sReport += sSigPathName;
+    sReport += " - CICP MatrixCoefficients not zero for RGB or XYZ colour space data.\r\n";
+    rv = icMaxStatus(rv, icValidateNonCompliant);
+  }
+
+  if (pProfile->m_Header.colorSpace == icSigYCbCrData && !m_nMatrixCoefficients) {
+    sReport += icMsgValidateNonCompliant;
+    sReport += sSigPathName;
+    sReport += " - CICP MatrixCoefficients zero for YCbCr colour space data.\r\n";
+    rv = icMaxStatus(rv, icValidateNonCompliant);
+  }
+
+  return rv;
+}
+
 
 
 /**
@@ -4181,7 +4587,7 @@ bool CIccTagSparseMatrixArray::Read(icUInt32Number size, CIccIO *pIO)
         if (nSizeLeft < n)
           return false;
 
-        char zbuf[3];
+        char zbuf[3] = { 0 };
         if (pIO->Read8(&zbuf[0], n)!=n)
           return false;
         for (j=0; j<(int)n; j++) {
@@ -4246,7 +4652,7 @@ bool CIccTagSparseMatrixArray::Read(icUInt32Number size, CIccIO *pIO)
         if (nSizeLeft < n)
           return false;
 
-        icUInt8Number zbuf[3];
+        icUInt8Number zbuf[3] = { 0 };
         if (pIO->Read8(&zbuf[0], n)!=n)
           return false;
         for (j=0; j<(int)n; j++) {
@@ -4364,14 +4770,14 @@ bool CIccTagSparseMatrixArray::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagSparseMatrixArray::Describe(std::string &sDescription)
+void CIccTagSparseMatrixArray::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sDescription += "Begin_SparseMatrix_Array\r\n";
-  sprintf(buf, "OutputChannels = %d\r\n", m_nChannelsPerMatrix);
+  sDescription += "Begin_SparseMatrix_Array\n";
+  sprintf(buf, "OutputChannels = %d\n", m_nChannelsPerMatrix);
   sDescription += buf;
-  sprintf(buf, "MatrixType = %d\r\n", m_nMatrixType);
+  sprintf(buf, "MatrixType = %d\n", m_nMatrixType);
   sDescription += buf;
 
   int i, r, c;
@@ -4379,7 +4785,7 @@ void CIccTagSparseMatrixArray::Describe(std::string &sDescription)
   for (i=0; i<(int)m_nSize; i++) {
     CIccSparseMatrix mtx(&m_RawData[i*nBytesPerMatrix], nBytesPerMatrix, icSparseMatrixFloatNum, true);
 
-    sprintf(buf, "\r\nBegin_Matrix_%d\r\n", i);
+    sprintf(buf, "\nBegin_Matrix_%d\n", i);
     sDescription += buf;
 
     icUInt16Number *start = mtx.GetRowStart();
@@ -4396,10 +4802,10 @@ void CIccTagSparseMatrixArray::Describe(std::string &sDescription)
       }
     }
 
-    sprintf(buf, "End_Matrix_%d\r\n", i);
+    sprintf(buf, "End_Matrix_%d\n", i);
     sDescription += buf;
   }
-  sDescription += "\r\nEnd_SparseMatrix_Array\r\n";
+  sDescription += "\nEnd_SparseMatrix_Array\n";
 
 }
 
@@ -4430,7 +4836,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
     default:
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - Invalid Sparse Matrix Type.\r\n";
+      sReport += " - Invalid Sparse Matrix Type.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
 
   }
@@ -4448,13 +4854,13 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
     if (!icIsSameColorSpaceType(pProfile->m_Header.spectralPCS, icSigSparseMatrixReflectanceData)) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - SparseMatrix data incompatible with spectral PCS.\r\n";
+      sReport += " - SparseMatrix data incompatible with spectral PCS.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (icGetSpaceSamples((icColorSpaceSignature)pProfile->m_Header.spectralPCS)!=m_nChannelsPerMatrix) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - SparseMatrix Output channels doesn't match spectral PCS channels.\r\n";
+      sReport += " - SparseMatrix Output channels doesn't match spectral PCS channels.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
   }
@@ -4462,14 +4868,14 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
   if (m_bNonZeroPadding) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Non zero padding in matrices used.\r\n";
+    sReport += " - Non zero padding in matrices used.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (!m_nSize) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - No Matrices Defined.\r\n";
+    sReport += " - No Matrices Defined.\n";
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
   }
@@ -4477,7 +4883,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
   if (!m_RawData) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Data dont defined for matrices\r\n";
+    sReport += " - Data dont defined for matrices\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
     return rv;
   }
@@ -4500,7 +4906,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
     if (mtx.Rows() != nRows || mtx.Cols() != nCols) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sprintf(buf, " - Matrix[%d] doesn't have matching rows and columns.\r\n", i);
+      sprintf(buf, " - Matrix[%d] doesn't have matching rows and columns.\n", i);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -4508,7 +4914,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
     if (mtx.GetNumEntries()>nMaxElements) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sprintf(buf, " - Matrix[%d] entries exceeds number supported by Output channels.\r\n", i);
+      sprintf(buf, " - Matrix[%d] entries exceeds number supported by Output channels.\n", i);
         sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -4516,7 +4922,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
     if (!mtx.IsValid()) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sprintf(buf, " - Matrix[%d] has an invalid matrix structure.\r\n", i);
+      sprintf(buf, " - Matrix[%d] has an invalid matrix structure.\n", i);
         sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -4529,7 +4935,7 @@ icValidateStatus CIccTagSparseMatrixArray::Validate(std::string sigPath, std::st
       if (!umtx.Union(mtx, mtx2)) {
         sReport += icMsgValidateCriticalError;
         sReport += sSigPathName;
-        sprintf(buf, " - Interpolation from Matrix[%d] exceeds number of supported Output channels.\r\n", i);
+        sprintf(buf, " - Interpolation from Matrix[%d] exceeds number of supported Output channels.\n", i);
         sReport += buf;
         rv = icMaxStatus(rv, icValidateCriticalError);
       }
@@ -4895,33 +5301,33 @@ bool CIccTagFixedNum<T, Tsig>::Write(CIccIO *pIO)
  *****************************************************************************
  */
 template <class T, icTagTypeSignature Tsig>
-void CIccTagFixedNum<T, Tsig>::Describe(std::string &sDescription)
+void CIccTagFixedNum<T, Tsig>::Describe(std::string &sDescription, int nVerboseness)
 {
-  icChar buf[128];
+  icChar buf[128] = { 0 };
 
   if (m_nSize == 1 ) {
     if (Tsig==icSigS15Fixed16ArrayType) 
-      sprintf(buf, "Value = %.4lf\r\n", icFtoD(m_Num[0]));
+      sprintf(buf, "Value = %.4lf\n", icFtoD(m_Num[0]));
     else
-      sprintf(buf, "Value = %.4lf\r\n", icUFtoD(m_Num[0]));
+      sprintf(buf, "Value = %.4lf\n", icUFtoD(m_Num[0]));
     sDescription += buf;
   }
   else {
     icUInt32Number i;
 
     if (Tsig==icSigS15Fixed16ArrayType && m_nSize==9) {
-      sDescription += "Matrix Form:\r\n";
+      sDescription += "Matrix Form:\n";
       icMatrixDump(sDescription, (icS15Fixed16Number*)m_Num);
 
-      sDescription += "\r\nArrayForm:\r\n";
+      sDescription += "\nArrayForm:\n";
     }
     sDescription.reserve(sDescription.size() + m_nSize*79);
 
     for (i=0; i<m_nSize; i++) {
       if (Tsig==icSigS15Fixed16ArrayType) 
-        sprintf(buf, "Value[%u] = %8.4lf\r\n", i, icFtoD(m_Num[i]));
+        sprintf(buf, "Value[%u] = %8.4lf\n", i, icFtoD(m_Num[i]));
       else
-        sprintf(buf, "Value[%u] = %8.4lf\r\n", i, icUFtoD(m_Num[i]));
+        sprintf(buf, "Value[%u] = %8.4lf\n", i, icUFtoD(m_Num[i]));
       sDescription += buf;
     }
   }
@@ -5103,7 +5509,8 @@ bool CIccTagFixedNum<T, Tsig>::ValuePos(icFloatNumber &DstPos, icFloatNumber val
   if(val<0.0)
     return false;
 
-  icFloatNumber nv, lv;
+  icFloatNumber nv = 0.0;
+  icFloatNumber lv = 0.0;
   switch (Tsig) {
     case icSigS15Fixed16ArrayType:
       lv = icFtoD(m_Num[0]);
@@ -5376,26 +5783,26 @@ bool CIccTagNum<T, Tsig>::Write(CIccIO *pIO)
  *****************************************************************************
  */
 template <class T, icTagTypeSignature Tsig>
-void CIccTagNum<T, Tsig>::Describe(std::string &sDescription)
+void CIccTagNum<T, Tsig>::Describe(std::string &sDescription, int nVerboseness)
 {
-  icChar buf[128];
+  icChar buf[128] = {0};
 
   if (m_nSize == 1 ) {
     switch (sizeof(T)) {
       case 1:
-        sprintf(buf, "Value = %u (0x02%x)\r\n", m_Num[0], m_Num[0]);
+        sprintf(buf, "Value = %u (0x02%x)\n", m_Num[0], m_Num[0]);
         break;
       case 2:
-        sprintf(buf, "Value = %u (0x04%x)\r\n", m_Num[0], m_Num[0]);
+        sprintf(buf, "Value = %u (0x04%x)\n", m_Num[0], m_Num[0]);
         break;
       case 4:
-        sprintf(buf, "Value = %u (0x08%x)\r\n", m_Num[0], m_Num[0]);
+        sprintf(buf, "Value = %u (0x08%x)\n", m_Num[0], m_Num[0]);
         break;
       case 8:
-        sprintf(buf, "Value = %u (0x016%x)\r\n", m_Num[0], m_Num[0]);
+        sprintf(buf, "Value = %u (0x016%x)\n", m_Num[0], m_Num[0]);
         break;
       default:
-        sprintf(buf, "Value = %u (0x%x)\r\n", m_Num[0], m_Num[0]);
+        sprintf(buf, "Value = %u (0x%x)\n", m_Num[0], m_Num[0]);
         break;
     }
     sDescription += buf;
@@ -5407,19 +5814,19 @@ void CIccTagNum<T, Tsig>::Describe(std::string &sDescription)
     for (i=0; i<m_nSize; i++) {
       switch (sizeof(T)) {
       case 1:
-        sprintf(buf, "Value = %u (0x02%x)\r\n", m_Num[i], m_Num[i]);
+        sprintf(buf, "Value = %u (0x02%x)\n", m_Num[i], m_Num[i]);
         break;
       case 2:
-        sprintf(buf, "Value = %u (0x04%x)\r\n", m_Num[i], m_Num[i]);
+        sprintf(buf, "Value = %u (0x04%x)\n", m_Num[i], m_Num[i]);
         break;
       case 4:
-        sprintf(buf, "Value = %u (0x08%x)\r\n", m_Num[i], m_Num[i]);
+        sprintf(buf, "Value = %u (0x08%x)\n", m_Num[i], m_Num[i]);
         break;
       case 8:
-        sprintf(buf, "Value = %u (0x016%x)\r\n", m_Num[i], m_Num[i]);
+        sprintf(buf, "Value = %u (0x016%x)\n", m_Num[i], m_Num[i]);
         break;
       default:
-        sprintf(buf, "Value = %u (0x%x)\r\n", m_Num[i], m_Num[i]);
+        sprintf(buf, "Value = %u (0x%x)\n", m_Num[i], m_Num[i]);
         break;
       }
       sDescription += buf;
@@ -5440,7 +5847,7 @@ icValidateStatus CIccTagNum<T, Tsig>::Validate(std::string sigPath, std::string 
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Number of material default values does not match MCS in header.\r\n";
+    sReport += " - Number of material default values does not match MCS in header.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -5451,12 +5858,12 @@ icValidateStatus CIccTagNum<T, Tsig>::Validate(std::string sigPath, std::string 
 
 // template function specialization to handle need for %llu and %llx for 64-bit ints
 template <>
-void CIccTagNum<icUInt64Number, icSigUInt64ArrayType>::Describe(std::string &sDescription)
+void CIccTagNum<icUInt64Number, icSigUInt64ArrayType>::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
   if (m_nSize == 1 ) {
-    sprintf(buf, "Value = %llu (0x016%llx)\r\n", m_Num[0], m_Num[0]);
+    sprintf(buf, "Value = %llu (0x016%llx)\n", m_Num[0], m_Num[0]);
     sDescription += buf;
   }
   else {
@@ -5464,7 +5871,7 @@ void CIccTagNum<icUInt64Number, icSigUInt64ArrayType>::Describe(std::string &sDe
     sDescription.reserve(sDescription.size() + m_nSize*79);
 
     for (i=0; i<m_nSize; i++) {
-      sprintf(buf, "Value = %llu (0x016%llx)\r\n", m_Num[i], m_Num[i]);
+      sprintf(buf, "Value = %llu (0x016%llx)\n", m_Num[i], m_Num[i]);
       sDescription += buf;
     }
   }
@@ -5665,7 +6072,8 @@ bool CIccTagNum<T, Tsig>::ValuePos(icFloatNumber &DstPos, icFloatNumber val, boo
   if(val<0.0)
     return false;
 
-  icFloatNumber nv, lv;
+  icFloatNumber nv = 0.0;
+  icFloatNumber lv = 0.0;
   switch (Tsig) {
     case icSigUInt8ArrayType:
       lv = icU8toF((icUInt8Number)m_Num[0]);
@@ -5976,20 +6384,20 @@ bool CIccTagFloatNum<T, Tsig>::Write(CIccIO *pIO)
  *****************************************************************************
  */
 template <class T, icTagTypeSignature Tsig>
-void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription)
+void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription, int nVerboseness)
 {
-  icChar buf[128];
+  icChar buf[128] = {0};
 
   if (m_nSize == 1 ) {
     switch (sizeof(T)) {
       case 4:
-        sprintf(buf, "Value = %.8f\r\n", m_Num[0]);
+        sprintf(buf, "Value = %.8f\n", m_Num[0]);
         break;
       case 8:
-        sprintf(buf, "Value = %.16f\r\n", m_Num[0]);
+        sprintf(buf, "Value = %.16f\n", m_Num[0]);
         break;
       default:
-        sprintf(buf, "Value = %.f\r\n", m_Num[0]);
+        sprintf(buf, "Value = %.f\n", m_Num[0]);
         break;
     }
     sDescription += buf;
@@ -5998,7 +6406,7 @@ void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription)
     icUInt32Number i, n;
     sDescription.reserve(sDescription.size() + m_nSize*79);
 
-    sprintf(buf, "Begin_Value_Array[%d]\r\n", m_nSize);
+    sprintf(buf, "Begin_Value_Array[%d]\n", m_nSize);
     sDescription += buf;
 
     if (sizeof(T)!=8)
@@ -6008,7 +6416,7 @@ void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription)
     
     for (i=0; i<m_nSize; i++) {
       if (i&& !(i%n))
-        sDescription += "\r\n";
+        sDescription += "\n";
        
       switch (sizeof(T)) {
       case 4:
@@ -6023,8 +6431,8 @@ void CIccTagFloatNum<T, Tsig>::Describe(std::string &sDescription)
       sDescription += buf;
     }
     if ((i%n)!=1)
-      sDescription += "\r\n";
-    sDescription += "End_Value_Array\r\n";
+      sDescription += "\n";
+    sDescription += "End_Value_Array\n";
   }
 }
 
@@ -6111,7 +6519,7 @@ icValidateStatus CIccTagFloatNum<T, Tsig>::Validate(std::string sigPath, std::st
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - Number of material default values does not match MCS in header.\r\n";
+      sReport += " - Number of material default values does not match MCS in header.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
@@ -6214,7 +6622,8 @@ bool CIccTagFloatNum<T, Tsig>::ValuePos(icFloatNumber &DstPos, icFloatNumber val
   if(val<0.0)
     return false;
 
-  icFloatNumber nv, lv;
+  icFloatNumber nv = 0.0;
+  icFloatNumber lv = 0.0;
   
   lv = (icFloatNumber)m_Num[0];
 
@@ -6396,20 +6805,20 @@ bool CIccTagMeasurement::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagMeasurement::Describe(std::string &sDescription)
+void CIccTagMeasurement::Describe(std::string &sDescription, int nVerboseness)
 {
   CIccInfo Fmt;
   icChar buf[128];
 
-   sDescription += Fmt.GetStandardObserverName(m_Data.stdObserver); sDescription += "\r\n";
-   sprintf(buf, "Backing measurement: X=%.4lf, Y=%.4lf, Z=%.4lf\r\n",
+   sDescription += Fmt.GetStandardObserverName(m_Data.stdObserver); sDescription += "\n";
+   sprintf(buf, "Backing measurement: X=%.4lf, Y=%.4lf, Z=%.4lf\n",
            icFtoD(m_Data.backing.X),
            icFtoD(m_Data.backing.Y),
            icFtoD(m_Data.backing.Z)); 
    sDescription += buf;
-   sDescription += Fmt.GetMeasurementGeometryName(m_Data.geometry); sDescription += "\r\n";
-   sDescription += Fmt.GetMeasurementFlareName(m_Data.flare); sDescription += "\r\n";
-   sDescription += Fmt.GetIlluminantName(m_Data.illuminant); sDescription += "\r\n";
+   sDescription += Fmt.GetMeasurementGeometryName(m_Data.geometry); sDescription += "\n";
+   sDescription += Fmt.GetMeasurementFlareName(m_Data.flare); sDescription += "\n";
+   sDescription += Fmt.GetIlluminantName(m_Data.illuminant); sDescription += "\n";
 }
 
 
@@ -6443,7 +6852,7 @@ icValidateStatus CIccTagMeasurement::Validate(std::string sigPath, std::string &
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid standard observer encoding.\r\n";
+    sReport += " - Invalid standard observer encoding.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -6456,7 +6865,7 @@ icValidateStatus CIccTagMeasurement::Validate(std::string sigPath, std::string &
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid measurement geometry encoding.\r\n";
+    sReport += " - Invalid measurement geometry encoding.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -6475,7 +6884,7 @@ icValidateStatus CIccTagMeasurement::Validate(std::string sigPath, std::string &
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid standard illuminant encoding.\r\n";
+    sReport += " - Invalid standard illuminant encoding.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -6584,7 +6993,7 @@ icUInt32Number CIccLocalizedUnicode::GetAnsiSize()
  ****************************************************************************
  * Name: CIccLocalizedUnicode::GetAnsi
  * 
- * Purpose: Extracts the ANSI data buffer
+ * Purpose: Extracts the ANSI data buffer (from UTF-16BE)
  *
  * Args:
  *  szBuf = pointer where the returned string buffer is to be stored
@@ -6604,13 +7013,13 @@ const icChar *CIccLocalizedUnicode::GetAnsi(icChar *szBuf, icUInt32Number nBufSi
   }
   else {
 #ifdef USE_WINDOWS_MB_SUPPORT
-    int len = WideCharToMultiByte(CP_ACP, 0x00000400, (LPCWSTR)m_pBuf, m_nLength,  szBuf, nBufSize, NULL, NULL);
+    int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)m_pBuf, m_nLength, szBuf, nBufSize, NULL, NULL);
     szBuf[len]='\0';
 #else
-  icUInt32Number i;
+    icUInt32Number i;
   
     for (i=0; i<m_nLength; i++) {
-      if (m_pBuf[i]<256) {
+      if (isprint(m_pBuf[i])) {
         szBuf[i] = (icChar)m_pBuf[i];
       }
       else {
@@ -7017,26 +7426,43 @@ bool CIccTagMultiLocalizedUnicode::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription)
+void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar *szBuf = (icChar*)malloc(128);
   int nSize = 127, nAnsiSize;
   CIccMultiLocalizedUnicode::iterator i;
 
   if (!szBuf) {
-    sDescription += "***Allocation Error***\r\n";
+    sDescription += "***Allocation Error***\n";
     return;
   }
 
   for (i=m_Strings->begin(); i!=m_Strings->end(); i++) {
     if (i!=m_Strings->begin())
-      sDescription += "\r\n";
+      sDescription += "\n";
 
-    sprintf(szBuf, "Language = '%c%c', Region = '%c%c'\r\n",
-      i->m_nLanguageCode>>8, i->m_nLanguageCode,
-      i->m_nCountryCode>>8, i->m_nCountryCode);
-    
+    // Bad ICCs can have unprintables...
+    sDescription += "Language = ";
+    if (isprint(i->m_nLanguageCode >> 8) && isprint(i->m_nLanguageCode & 0x00FF)) {
+        sprintf(szBuf, "'%c%c'", i->m_nLanguageCode >> 8, i->m_nLanguageCode & 0x00FF);
+    }
+    else {
+      sprintf(szBuf, "'\?\?' (0x%04X)", i->m_nLanguageCode);
+    }
     sDescription += szBuf;
+
+    if (i->m_nCountryCode) {
+        // Region Codes are optional according to ISO 
+        sDescription += ", Region = ";
+        if (isprint(i->m_nCountryCode >> 8) && isprint(i->m_nCountryCode & 0x00FF)) {
+          sprintf(szBuf, "'%c%c'", i->m_nCountryCode>>8, i->m_nCountryCode & 0x00FF);
+        }
+        else {
+            sprintf(szBuf, "'\?\?' (0x%04X)", i->m_nCountryCode);
+        }
+        sDescription += szBuf;
+    }
+    sDescription += "\n";
 
     nAnsiSize = i->GetAnsiSize();
 
@@ -7052,12 +7478,14 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription)
       i->GetAnsi(szBuf, nSize);
       sDescription += "\"";
       sDescription += szBuf;
-      sDescription += "\"\r\n";
+      sDescription += "\"\n";
     }
     else {
-      sDescription += "***Allocation Error***\r\n";
+      sDescription += "***Allocation Error***\n";
     }
   }
+  if (szBuf)
+    free(szBuf);
 }
 
 
@@ -7085,28 +7513,15 @@ icValidateStatus CIccTagMultiLocalizedUnicode::Validate(std::string sigPath, std
   if (!m_Strings->size()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty tag!\r\n";
+    sReport += " - Empty tag!\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
-  // TODO: Look at the ISO-639 and ISO-3166 documents for valid 
-  // Language and Region codes
-/*
   CIccMultiLocalizedUnicode::iterator i;
   for (i=m_Strings->begin(); i!=m_Strings->end(); i++) {
-    switch(i->m_nLanguageCode) {
-    case :
-      break;
-    default:
-    }
-
-    switch(i->m_nRegionCode) {
-    case :
-      break;
-    default:
-    }
+    // TODO: Validate ISO-639 Language Codes and and ISO-3166 Country codes.
+    // Needs to be done against a full set of codes or many false warnings.
   }
-*/
 
   return rv;
 }
@@ -7422,16 +7837,16 @@ bool CIccTagData::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagData::Describe(std::string &sDescription)
+void CIccTagData::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sDescription = "\r\n";
+  sDescription = "\n";
   if (IsTypeCompressed())
     sDescription += "Compressed ";  // If data is compressed, prepend appropriate text
 
   if (IsTypeAscii()) {
-    sDescription = "Ascii Data:\r\n";
+    sDescription = "Ascii Data:\n";
 
     for (int i=0; i<(int)m_nSize; i++)
       sDescription += (icChar)m_pData[i];
@@ -7446,7 +7861,7 @@ void CIccTagData::Describe(std::string &sDescription)
       icMemDump(sDescription, m_pData, m_nSize);
     }
     else { //UTF-8
-      sDescription = "UTF-8 Data:\r\n";
+      sDescription = "UTF-8 Data:\n";
 
       for (int i=0; i<(int)m_nSize; i++)
         sDescription += (icChar)m_pData[i];
@@ -7454,15 +7869,15 @@ void CIccTagData::Describe(std::string &sDescription)
   }
   else {
     if (IsTypeBinary()) {
-      sDescription = "Binary Data:\r\n";
+      sDescription = "Binary Data:\n";
     }
     else {
-      sDescription = "Other Data:\r\n";
+      sDescription = "Other Data:\n";
     }
 
     icMemDump(sDescription, m_pData, m_nSize);
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -7525,7 +7940,7 @@ icValidateStatus CIccTagData::Validate(std::string sigPath, std::string &sReport
       if (m_pData[i] & 0x80) {
         sReport += icMsgValidateWarning;
         sReport += sSigPathName;
-        sReport += " - Ascii Data is not just 7-bit data.\r\n";
+        sReport += " - Ascii Data is not just 7-bit data.\n";
         rv = icMaxStatus(rv, icValidateWarning);
         break;
       }
@@ -7540,14 +7955,14 @@ icValidateStatus CIccTagData::Validate(std::string sigPath, std::string &sReport
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid data flag encoding.\r\n";
+    sReport += " - Invalid data flag encoding.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
   
   if (m_nDataFlag & ~(icCompressedData | icDataTypeMask)) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Invalid data flag encoding (reserved high order bits).\r\n";
+      sReport += " - Invalid data flag encoding (reserved high order bits).\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -7711,16 +8126,16 @@ bool CIccTagDateTime::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagDateTime::Describe(std::string &sDescription)
+void CIccTagDateTime::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
   sDescription = "Date = ";
-  sprintf(buf, "%u-%u-%u\r\n", m_DateTime.month, m_DateTime.day, m_DateTime.year);
+  sprintf(buf, "%u-%u-%u\n", m_DateTime.month, m_DateTime.day, m_DateTime.year);
   sDescription += buf;
   
   sDescription += "Time = ";
-  sprintf(buf, "%u:%u:%u\r\n", m_DateTime.hours, m_DateTime.minutes, m_DateTime.seconds);
+  sprintf(buf, "%u:%u:%u\n", m_DateTime.hours, m_DateTime.minutes, m_DateTime.seconds);
   sDescription += buf;
 }
 
@@ -7933,16 +8348,16 @@ bool CIccTagColorantOrder::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagColorantOrder::Describe(std::string &sDescription)
+void CIccTagColorantOrder::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "Colorant Count : %u\r\n", m_nCount);
+  sprintf(buf, "Colorant Count : %u\n", m_nCount);
   sDescription += buf;
-  sDescription += "Order of Colorants:\r\n";
+  sDescription += "Order of Colorants:\n";
   
   for (int i=0; i<(int)m_nCount; i++) {
-    sprintf(buf, "%u\r\n", m_pData[i]);
+    sprintf(buf, "%u\n", m_pData[i]);
     sDescription += buf;
   }
 }
@@ -8005,7 +8420,7 @@ icValidateStatus CIccTagColorantOrder::Validate(std::string sigPath, std::string
   if (!pProfile) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
   }
@@ -8014,7 +8429,7 @@ icValidateStatus CIccTagColorantOrder::Validate(std::string sigPath, std::string
     if (m_nCount != icGetSpaceSamples(pProfile->m_Header.colorSpace)) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Incorrect number of colorants.\r\n";
+      sReport += " - Incorrect number of colorants.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -8022,14 +8437,14 @@ icValidateStatus CIccTagColorantOrder::Validate(std::string sigPath, std::string
     if (m_nCount != icGetSpaceSamples(pProfile->m_Header.pcs)) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Incorrect number of colorants.\r\n";
+      sReport += " - Incorrect number of colorants.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
   else {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Unknown number of required colorants.\r\n";
+    sReport += " - Unknown number of required colorants.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -8235,14 +8650,14 @@ bool CIccTagColorantTable::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagColorantTable::Describe(std::string &sDescription)
+void CIccTagColorantTable::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
   icUInt32Number i, nLen, nMaxLen=0;
-  icFloatNumber Lab[3];
+  icFloatNumber Lab[3] = {0};
 
-  sprintf(buf, "BEGIN_COLORANTS %u\r\n", m_nCount);
+  sprintf(buf, "BEGIN_COLORANTS %u\n", m_nCount);
   sDescription += buf;
 
   for (i=0; i<m_nCount; i++) {
@@ -8253,11 +8668,11 @@ void CIccTagColorantTable::Describe(std::string &sDescription)
   sDescription += "# NAME ";
 
   if (m_PCS == icSigXYZData) {
-    sprintf(buf, "XYZ_X XYZ_Y XYZ_Z\r\n");
+    sprintf(buf, "XYZ_X XYZ_Y XYZ_Z\n");
     sDescription += buf;
   }
   else {
-    sprintf(buf, "Lab_L Lab_a Lab_b\r\n");
+    sprintf(buf, "Lab_L Lab_a Lab_b\n");
     sDescription += buf;
   }
   for (i=0; i<m_nCount; i++) {
@@ -8268,7 +8683,7 @@ void CIccTagColorantTable::Describe(std::string &sDescription)
     sDescription += buf;
 
     if (m_PCS == icSigXYZData) {
-      sprintf(buf, "%7.4lf %7.4lf %7.4lf\r\n", icUSFtoD(m_pData[i].data[0]), icUSFtoD(m_pData[i].data[1]), icUSFtoD(m_pData[i].data[2]));
+      sprintf(buf, "%7.4lf %7.4lf %7.4lf\n", icUSFtoD(m_pData[i].data[0]), icUSFtoD(m_pData[i].data[1]), icUSFtoD(m_pData[i].data[2]));
       sDescription += buf;
     }
     else {
@@ -8276,7 +8691,7 @@ void CIccTagColorantTable::Describe(std::string &sDescription)
       Lab[1] = icU16toF(m_pData[i].data[1]);
       Lab[2] = icU16toF(m_pData[i].data[2]);
       icLabFromPcs(Lab);
-      sprintf(buf, "%7.4lf %8.4lf %8.4lf\r\n", Lab[0], Lab[1], Lab[2]);
+      sprintf(buf, "%7.4lf %8.4lf %8.4lf\n", Lab[0], Lab[1], Lab[2]);
       sDescription += buf;
     }
   }
@@ -8340,7 +8755,7 @@ icValidateStatus CIccTagColorantTable::Validate(std::string sigPath, std::string
   if (!pProfile) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
   }
@@ -8350,13 +8765,13 @@ icValidateStatus CIccTagColorantTable::Validate(std::string sigPath, std::string
     if (pProfile->m_Header.deviceClass!=icSigLinkClass) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Use of this tag is allowed only in DeviceLink Profiles.\r\n";
+      sReport += " - Use of this tag is allowed only in DeviceLink Profiles.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
     if (m_nCount != icGetSpaceSamples(pProfile->m_Header.pcs)) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Incorrect number of colorants.\r\n";
+      sReport += " - Incorrect number of colorants.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -8364,7 +8779,7 @@ icValidateStatus CIccTagColorantTable::Validate(std::string sigPath, std::string
     if (m_nCount != icGetSpaceSamples(pProfile->m_Header.colorSpace)) {
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
-      sReport += " - Incorrect number of colorants.\r\n";
+      sReport += " - Incorrect number of colorants.\n";
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
   }
@@ -8546,18 +8961,18 @@ bool CIccTagViewingConditions::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagViewingConditions::Describe(std::string &sDescription)
+void CIccTagViewingConditions::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
   CIccInfo Fmt;
 
-  sprintf(buf, "Illuminant Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\r\n", 
+  sprintf(buf, "Illuminant Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\n", 
                icFtoD(m_XYZIllum.X), 
                icFtoD(m_XYZIllum.Y),
                icFtoD(m_XYZIllum.Z));
   sDescription += buf;
 
-  sprintf(buf, "Surround Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\r\n",
+  sprintf(buf, "Surround Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\n",
                icFtoD(m_XYZSurround.X),
                icFtoD(m_XYZSurround.Y),
                icFtoD(m_XYZSurround.Z));
@@ -8566,7 +8981,7 @@ void CIccTagViewingConditions::Describe(std::string &sDescription)
   sDescription += "Illuminant Type: ";
 
   sDescription += Fmt.GetIlluminantName(m_illumType);
-  sDescription += "\r\n";
+  sDescription += "\n";
 
 }
 
@@ -8744,10 +9159,10 @@ icTagTypeSignature CIccProfileDescText::GetType() const
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccProfileDescText::Describe(std::string &sDescription)
+void CIccProfileDescText::Describe(std::string &sDescription, int nVerboseness)
 {
   if (m_pTag)
-    m_pTag->Describe(sDescription);
+    m_pTag->Describe(sDescription, nVerboseness);
 }
 
 
@@ -9089,40 +9504,40 @@ bool CIccTagProfileSeqDesc::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagProfileSeqDesc::Describe(std::string &sDescription)
+void CIccTagProfileSeqDesc::Describe(std::string &sDescription, int nVerboseness)
 {
   CIccProfileSeqDesc::iterator i;
   icChar buf[128], buf2[28];
   icUInt32Number count=0;
 
-  sprintf(buf, "Number of Profile Description Structures: %u\r\n", (icUInt32Number)m_Descriptions->size());
+  sprintf(buf, "Number of Profile Description Structures: %u\n", (icUInt32Number)m_Descriptions->size());
   sDescription += buf;
 
   for (i=m_Descriptions->begin(); i!=m_Descriptions->end(); i++, count++) {
-    sDescription += "\r\n";
+    sDescription += "\n";
 
-    sprintf(buf, "Profile Description Structure Number [%u] follows:\r\n", count+1);
+    sprintf(buf, "Profile Description Structure Number [%u] follows:\n", count+1);
     sDescription += buf;
 
-    sprintf(buf, "Device Manufacturer Signature: %s\r\n", icGetSig(buf2, i->m_deviceMfg, false));
+    sprintf(buf, "Device Manufacturer Signature: %s\n", icGetSig(buf2, i->m_deviceMfg, false));
     sDescription += buf;
 
-    sprintf(buf, "Device Model Signature: %s\r\n", icGetSig(buf2, i->m_deviceModel, false));
+    sprintf(buf, "Device Model Signature: %s\n", icGetSig(buf2, i->m_deviceModel, false));
     sDescription += buf;
 
-    sprintf(buf, "Device Attributes: %08x%08x\r\n", (icUInt32Number)(i->m_attributes >> 32), (icUInt32Number)(i->m_attributes));
+    sprintf(buf, "Device Attributes: %08x%08x\n", (icUInt32Number)(i->m_attributes >> 32), (icUInt32Number)(i->m_attributes));
     sDescription += buf;
 
-    sprintf(buf, "Device Technology Signature: %s\r\n", icGetSig(buf2, i->m_technology, false));
+    sprintf(buf, "Device Technology Signature: %s\n", icGetSig(buf2, i->m_technology, false));
     sDescription += buf;
 
-    sprintf(buf, "Description of device manufacturer: \r\n");
+    sprintf(buf, "Description of device manufacturer: \n");
     sDescription += buf;
-    i->m_deviceMfgDesc.Describe(sDescription);
+    i->m_deviceMfgDesc.Describe(sDescription, nVerboseness);
 
-    sprintf(buf, "Description of device model: \r\n");
+    sprintf(buf, "Description of device model: \n");
     sDescription += buf;
-    i->m_deviceModelDesc.Describe(sDescription);
+    i->m_deviceModelDesc.Describe(sDescription, nVerboseness);
   }
 }
 
@@ -9181,7 +9596,7 @@ icValidateStatus CIccTagProfileSeqDesc::Validate(std::string sigPath, std::strin
       {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sprintf(buf, " - %s: Unknown Technology.\r\n", Info.GetSigName(i->m_technology));
+        sprintf(buf, " - %s: Unknown Technology.\n", Info.GetSigName(i->m_technology));
         sReport += buf;
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
@@ -9191,7 +9606,7 @@ icValidateStatus CIccTagProfileSeqDesc::Validate(std::string sigPath, std::strin
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
 
-      sReport += " Contains non-aligned deviceMfgDesc text tag information\r\n";
+      sReport += " Contains non-aligned deviceMfgDesc text tag information\n";
 
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -9200,7 +9615,7 @@ icValidateStatus CIccTagProfileSeqDesc::Validate(std::string sigPath, std::strin
       sReport += icMsgValidateNonCompliant;
       sReport += sSigPathName;
 
-      sReport += " Contains non-aligned deviceModelDesc text tag information\r\n";
+      sReport += " Contains non-aligned deviceModelDesc text tag information\n";
 
       rv = icMaxStatus(rv, icValidateNonCompliant);
     }
@@ -9372,7 +9787,7 @@ bool CIccResponseCurveStruct::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
-  icResponse16Number nResponse16;
+  icResponse16Number nResponse16 = {};
   CIccResponse16List nResponseList;
 
   for (int i = 0; i<m_nChannels; i++) {
@@ -9467,7 +9882,7 @@ bool CIccResponseCurveStruct::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccResponseCurveStruct::Describe(std::string &sDescription)
+void CIccResponseCurveStruct::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
   CIccInfo Fmt;
@@ -9475,25 +9890,25 @@ void CIccResponseCurveStruct::Describe(std::string &sDescription)
   CIccResponse16List::iterator j;
 
   sDescription += "Measurement Unit: ";
-  sDescription += Fmt.GetMeasurementUnit((icSignature)GetMeasurementType()); sDescription += "\r\n";
+  sDescription += Fmt.GetMeasurementUnit((icSignature)GetMeasurementType()); sDescription += "\n";
 
   
   for (int i=0; i<m_nChannels; i++) {
     nResponseList = m_Response16ListArray[i];
 
-    sDescription += "\r\n";
-    sprintf(buf, "Maximum Colorant XYZ Measurement for Channel-%u : X=%.4lf, Y=%.4lf, Z=%.4lf\r\n", i+1, 
+    sDescription += "\n";
+    sprintf(buf, "Maximum Colorant XYZ Measurement for Channel-%u : X=%.4lf, Y=%.4lf, Z=%.4lf\n", i+1, 
       icFtoD(m_maxColorantXYZ[i].X), icFtoD(m_maxColorantXYZ[i].Y), icFtoD(m_maxColorantXYZ[i].Z));
     sDescription += buf;
 
-    sprintf(buf, "Number of Measurements for Channel-%u : %u\r\n", i+1, (icUInt32Number)nResponseList.size());
+    sprintf(buf, "Number of Measurements for Channel-%u : %u\n", i+1, (icUInt32Number)nResponseList.size());
     sDescription += buf;
 
-    sprintf(buf, "Measurement Data for Channel-%u follows:\r\n", i+1);
+    sprintf(buf, "Measurement Data for Channel-%u follows:\n", i+1);
     sDescription += buf;
 
     for (j=nResponseList.begin(); j!=nResponseList.end(); j++) {
-      sprintf(buf, "Device Value= %u : Measurement Value= %.4lf\r\n", j->deviceCode, icFtoD(j->measurementValue));
+      sprintf(buf, "Device Value= %u : Measurement Value= %.4lf\n", j->deviceCode, icFtoD(j->measurementValue));
       sDescription += buf;
     }
   }
@@ -9535,14 +9950,14 @@ icValidateStatus CIccResponseCurveStruct::Validate(std::string &sReport)
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigName;
-    sReport += " - Unknown measurement unit signature.\r\n";
+    sReport += " - Unknown measurement unit signature.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
   if (!m_nChannels) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigName;
-    sReport += " - Incorrect number of channels.\r\n";
+    sReport += " - Incorrect number of channels.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
     return rv;
   }
@@ -9790,25 +10205,25 @@ bool CIccTagResponseCurveSet16::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagResponseCurveSet16::Describe(std::string &sDescription)
+void CIccTagResponseCurveSet16::Describe(std::string &sDescription, int nVerboseness)
 {
   CIccResponseCurveSet::iterator i;
   icChar buf[128];
 
-  sprintf(buf, "Number of Channels: %u\r\n", m_nChannels);
+  sprintf(buf, "Number of Channels: %u\n", m_nChannels);
   sDescription += buf;
 
-  sprintf(buf, "Number of Measurement Types used: %u\r\n", (icUInt32Number)m_ResponseCurves->size());
+  sprintf(buf, "Number of Measurement Types used: %u\n", (icUInt32Number)m_ResponseCurves->size());
   sDescription += buf;
 
   int count = 0;
   for (i=m_ResponseCurves->begin(); i!=m_ResponseCurves->end(); i++, count++) {
-     sDescription += "\r\n";
+     sDescription += "\n";
 
-    sprintf(buf, "Response Curve for measurement type [%u] follows:\r\n", count+1);
+    sprintf(buf, "Response Curve for measurement type [%u] follows:\n", count+1);
     sDescription += buf;
 
-    i->Describe(sDescription);
+    i->Describe(sDescription, nVerboseness);
   }
 }
 
@@ -9974,7 +10389,7 @@ icValidateStatus CIccTagResponseCurveSet16::Validate(std::string sigPath, std::s
   if (!pProfile) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
   }
@@ -9982,13 +10397,13 @@ icValidateStatus CIccTagResponseCurveSet16::Validate(std::string sigPath, std::s
   if (m_nChannels!=icGetSpaceSamples(pProfile->m_Header.colorSpace)) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Incorrect number of channels.\r\n";
+    sReport += " - Incorrect number of channels.\n";
   }
 
   if (!GetNumResponseCurveTypes()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Empty Tag!.\r\n";
+    sReport += " - Empty Tag!.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
   else {
@@ -10191,18 +10606,18 @@ bool CIccTagSpectralDataInfo::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagSpectralDataInfo::Describe(std::string &sDescription)
+void CIccTagSpectralDataInfo::Describe(std::string &sDescription, int nVerboseness)
 {
   char buf[256];
 
   sDescription += "ColorSignature: ";
   sDescription += icGetColorSigStr(buf, m_nSig);
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  sprintf(buf, "SpectralRange: start %fnm end %fnm with %d steps\r\n", icF16toF(m_spectralRange.start), icF16toF(m_spectralRange.end), m_spectralRange.steps);
+  sprintf(buf, "SpectralRange: start %fnm end %fnm with %d steps\n", icF16toF(m_spectralRange.start), icF16toF(m_spectralRange.end), m_spectralRange.steps);
   sDescription += buf;
   if (m_biSpectralRange.steps) {
-    sprintf(buf, "BiSpectralRange: start %fnm end %fnm with %d steps\r\n", icF16toF(m_spectralRange.start), icF16toF(m_spectralRange.end), m_spectralRange.steps);
+    sprintf(buf, "BiSpectralRange: start %fnm end %fnm with %d steps\n", icF16toF(m_spectralRange.start), icF16toF(m_spectralRange.end), m_spectralRange.steps);
     sDescription += buf;
   }
 }
@@ -10238,7 +10653,7 @@ icValidateStatus CIccTagSpectralDataInfo::Validate(std::string sigPath, std::str
         memcmp(&m_biSpectralRange, &pHdr->biSpectralRange, sizeof(m_biSpectralRange))) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - SpectralDataInfo should be the same as the profile spectralPCS.\r\n";
+      sReport += " - SpectralDataInfo should be the same as the profile spectralPCS.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
   }
@@ -10598,63 +11013,68 @@ bool CIccTagSpectralViewingConditions::Write(CIccIO *pIO)
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagSpectralViewingConditions::Describe(std::string &sDescription)
+void CIccTagSpectralViewingConditions::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
   CIccInfo info;
 
-  sprintf(buf, "StdObserver: %s\r\n\r\n", info.GetStandardObserverName(m_stdObserver));
+  sprintf(buf, "StdObserver: %s\n\n", info.GetStandardObserverName(m_stdObserver));
   sDescription += buf;
 
-  sprintf(buf, "Illuminant Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\r\n\r\n", 
+  sprintf(buf, "Illuminant Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\n\n", 
     m_illuminantXYZ.X, m_illuminantXYZ.Y,m_illuminantXYZ.Z);
   sDescription += buf;
 
   if (m_observer) {
-    sprintf(buf, "Observer Functions: start=%.1fnm end=%.1fnm, steps=%d\r\n", 
+    sprintf(buf, "Observer Functions: start=%.1fnm end=%.1fnm, steps=%d\n", 
             icF16toF(m_observerRange.start), icF16toF(m_observerRange.end), m_observerRange.steps);
     sDescription += buf;
-    icFloat32Number *ptr = m_observer;
-    int i, j;
-    for (j=0; j<3; j++) {
-      for (i=0; i<m_observerRange.steps; i++) {
-        sprintf(buf, " %.4f", *ptr);
-        sDescription += buf;
-        ptr++;
-      }
-      sDescription += "\r\n\r\n";
+
+    if (nVerboseness > 75) {
+        icFloat32Number *ptr = m_observer;
+        int i, j;
+        for (j=0; j<3; j++) {
+          for (i=0; i<m_observerRange.steps; i++) {
+            sprintf(buf, " %.4f", *ptr);
+            sDescription += buf;
+            ptr++;
+          }
+          sDescription += "\n\n";
+        }
     }
   }
   else {
-    sDescription += "No custom Observer defined\r\n\r\n";
+    sDescription += "No custom Observer defined\n\n";
   }
 
   sDescription += "StdIlluminant Type: ";
 
   sDescription += info.GetIlluminantName(m_stdIlluminant);
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  sprintf(buf, "Color Temperature: %.1fK\r\n\r\n", m_colorTemperature);
+  sprintf(buf, "Color Temperature: %.1fK\n\n", m_colorTemperature);
   sDescription += buf;
 
   if (m_illuminant) {
-    sprintf(buf, "Illuminant SPD: start=%.1fm end=%.1fnm, steps=%d\r\n", 
+    sprintf(buf, "Illuminant SPD: start=%.1fm end=%.1fnm, steps=%d\n", 
       icF16toF(m_illuminantRange.start), icF16toF(m_illuminantRange.end), m_illuminantRange.steps);
     sDescription += buf;
-    icFloat32Number *ptr = m_illuminant;
-    int i;
-    for (i=0; i<m_illuminantRange.steps; i++) {
-      sprintf(buf, " %.4f", *ptr);
-      sDescription += buf;
-      ptr++;
+    if (nVerboseness > 75) {
+        icFloat32Number *ptr = m_illuminant;
+        int i;
+        for (i=0; i<m_illuminantRange.steps; i++) {
+          sprintf(buf, " %.4f", *ptr);
+          sDescription += buf;
+          ptr++;
+        }
     }
-    sDescription += "\r\n\r\n";
+    sDescription += "\n\n";
   }
   else {
-    sDescription += "No custom Observer defined\r\n\r\n";
+    sDescription += "No custom Observer defined\n\n";
   }
 
-  sprintf(buf, "Surround Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\r\n",
+  sprintf(buf, "Surround Tristimulus values: X = %.4lf, Y = %.4lf, Z = %.4lf\n",
     m_surroundXYZ.X, m_surroundXYZ.Y, m_surroundXYZ.Z);
   sDescription += buf;
 }
@@ -10682,16 +11102,51 @@ icValidateStatus CIccTagSpectralViewingConditions::Validate(std::string sigPath,
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
 
-  rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantXYZ, sSigPathName+":>illuminantXYZ"));
+  rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantXYZ, sSigPathName + ":>illuminantXYZ"));
   rv = icMaxStatus(rv, Info.CheckData(sReport, m_surroundXYZ, sSigPathName + ":>surroundXYZ"));
 
   rv = icMaxStatus(rv, Info.CheckLuminance(sReport, m_illuminantXYZ, sSigPathName + ":>illuminantXYZ"));
   rv = icMaxStatus(rv, Info.CheckLuminance(sReport, m_surroundXYZ, sSigPathName + ":>surroundXYZ"));
 
-  if (m_observerRange.steps)
+  icSpectralRange range;
+  icFloatNumber *pSpec;
+
+  if (getObserver(range)) {
+    rv = icMaxStatus(rv, Info.CheckData(sReport, range, sSigPathName + ":>observerRange"));
+
+    if (!m_observer && pProfile && pProfile->m_Header.version < icVersionNumberV5_1) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += sSigPathName;
+      sReport += " - Missing Observer CMF not supported by profile version!\r\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+  }
+  else {
     rv = icMaxStatus(rv, Info.CheckData(sReport, m_observerRange, sSigPathName + ":>observerRange"));
-  if (m_illuminantRange.steps)
+
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " - Missing Observer CMF!\r\n";
+    rv = icMaxStatus(rv, icValidateCriticalError);
+  }
+
+  if (getIlluminant(range)) {
+    rv = icMaxStatus(rv, Info.CheckData(sReport, range, sSigPathName + ":>illuminantRange"));
+
+    if (!m_illuminant && pProfile && pProfile->m_Header.version < icVersionNumberV5_1) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += sSigPathName;
+      sReport += " - Missing illuminant SPD not supported by profile version!\r\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+  }
+  else {
     rv = icMaxStatus(rv, Info.CheckData(sReport, m_illuminantRange, sSigPathName + ":>illuminantRange"));
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " - Missing Illuminant SPD!\r\n";
+    rv = icMaxStatus(rv, icValidateCriticalError);
+  }
 
   return rv;
 }
@@ -10733,8 +11188,84 @@ CIccMatrixMath *CIccTagSpectralViewingConditions::getObserverMatrix(const icSpec
   return pMtx;
 }
 
+typedef struct {
+  icIlluminant illum;
+  icFloatNumber spd[81];
+} icIllumDef;
+
+static icIllumDef icKnownIllums[] = {
+  { icIlluminantD50,
+    { 24.457147,   27.147280,   29.837414,   39.547443,   49.257472,   52.859364,   56.461255,
+      58.222678,   59.984100,   58.878685,   57.773270,   66.274622,   74.775973,   80.987003,
+      87.198034,   88.882488,   90.566943,   90.947782,   91.328622,   93.200755,   95.072887,
+      93.503707,   91.934527,   93.817670,   95.700813,   96.147589,   96.594366,   96.854869,
+      97.115372,   99.602130,  102.088888,  101.418624,  100.748359,  101.531110,  102.313861,
+     101.156931,  100.000000,   98.868725,   97.737450,   98.330520,   98.923589,   96.216919,
+      93.510248,   95.607997,   97.705746,   98.498795,   99.291845,   99.179895,   99.067945,
+      97.409311,   95.750676,   97.322057,   98.893438,   97.299430,   95.705421,   96.969799,
+      98.234177,  100.644248,  103.054319,  101.119636,   99.184954,   93.304566,   87.424178,
+      89.538557,   91.652935,   92.293256,   92.933577,   84.912496,   76.891415,   81.721450,
+      86.551486,   89.586840,   92.622195,   85.443791,   78.265387,   67.992302,   57.719217,
+      70.340670,   82.962124,   80.636096,   78.310068 }
+  },
+  { icIlluminantD65,
+    { 49.975500,   52.311800,   54.648200,   68.701500,   82.754900,   87.120400,   91.486000,
+      92.458900,   93.431800,   90.057000,   86.682300,   95.773600,  104.865000,  110.936000,
+     117.008000,  117.410000,  117.812000,  116.336000,  114.861000,  115.392000,  115.923000,
+     112.367000,  108.811000,  109.082000,  109.354000,  108.578000,  107.802000,  106.296000,
+     104.790000,  106.239000,  107.689000,  106.047000,  104.405000,  104.225000,  104.046000,
+     102.023000,  100.000000,   98.167100,   96.334200,   96.061100,   95.788000,   92.236800,
+      88.685600,   89.345900,   90.006200,   89.802600,   89.599100,   88.648900,   87.698700,
+      85.493600,   83.288600,   83.493900,   83.699200,   81.863000,   80.026800,   80.120700,
+      80.214600,   81.246200,   82.277800,   80.281000,   78.284200,   74.002700,   69.721300,
+      70.665200,   71.609100,   72.979000,   74.349000,   67.976500,   61.604000,   65.744800,
+      69.885600,   72.486300,   75.087000,   69.339800,   63.592700,   55.005400,   46.418200,
+      56.611800,   66.805400,   65.094100,   63.382800 }
+  },
+  { icIlluminantD93,
+    { 92.424314,   92.694368,   92.964422,  111.383899,  129.803377,  135.801152,  141.798926,
+     141.447583,  141.096240,  133.975439,  126.854638,  135.602812,  144.350987,  149.960021,
+     155.569056,  154.184112,  152.799168,  148.783207,  144.767246,  143.338753,  141.910261,
+     136.139746,  130.369231,  128.545220,  126.721209,  124.329813,  121.938418,  117.937629,
+     113.936841,  114.043847,  114.150853,  111.519464,  108.888075,  107.474441,  106.060808,
+     103.030404,  100.000000,   97.314129,   94.628259,   93.347855,   92.067450,   88.659570,
+      85.251689,   84.758623,   84.265557,   83.380599,   82.495642,   80.837162,   79.178681,
+      76.519588,   73.860495,   73.447089,   73.033684,   71.360089,   69.686495,   69.189247,
+      68.692000,   68.742482,   68.792965,   67.049716,   65.306467,   61.725711,   58.144955,
+      58.497707,   58.850460,   60.339599,   61.828738,   56.573774,   51.318811,   54.969052,
+      58.619293,   60.929241,   63.239189,   58.464199,   53.689209,   46.273925,   38.858642,
+      47.398674,   55.938706,   54.609104,   53.279502,
+    }
+  },
+  { icIlluminantA,
+    { 9.7951,   10.8996,   12.0853,   13.3543,   14.7080,   16.1480,   17.6753,   19.2907,
+     20.9950,   22.7883,   24.6709,   26.6425,   28.7027,   30.8508,   33.0859,   35.4068,
+     37.8121,   40.3002,   42.8693,   45.5174,   48.2423,   51.0418,   53.9132,   56.8539,
+     59.8611,   62.9320,   66.0635,   69.2525,   72.4959,   75.7903,   79.1326,   82.5193,
+     85.9470,   89.4124,   92.9120,   96.4423,  100.0000,  103.5820,  107.1840,  110.8030,
+    114.4360,  118.0800,  121.7310,  125.3860,  129.0430,  132.6970,  136.3460,  139.9880,
+    143.6180,  147.2350,  150.8360,  154.4180,  157.9790,  161.5160,  165.0280,  168.5100,
+    171.9630,  175.3830,  178.7690,  182.1180,  185.4290,  188.7010,  191.9310,  195.1180,
+    198.2610,  201.3590,  204.4090,  207.4110,  210.3650,  213.2680,  216.1200,  218.9200,
+    221.6670,  224.3610,  227.0000,  229.5850,  232.1150,  234.5890,  237.0080,  239.3700,
+    241.6750, }
+  },
+};
+#define NUM_KNOWN_ILLUM (sizeof(icKnownIllums)/sizeof(icKnownIllums[0]))
+
+static icSpectralRange icKnownIllumObsRange = { icRange380nm, icRange780nm, 81 };
+
 const icFloatNumber *CIccTagSpectralViewingConditions::getIlluminant(icSpectralRange &illumRange) const
 {
+  if (!m_illuminant || !m_illuminantRange.steps) {
+    for (int i = 0; i < NUM_KNOWN_ILLUM; i++) {
+      if (m_stdIlluminant == icKnownIllums[i].illum) {
+        illumRange = icKnownIllumObsRange;
+        return &icKnownIllums[i].spd[0];
+      }
+    }
+  }
+
   illumRange = m_illuminantRange;
   return m_illuminant;
 }
@@ -10774,7 +11305,7 @@ bool CIccTagSpectralViewingConditions::setIlluminant(icFloatNumber *pWhiteXYZ)
 {
   icSpectralRange zeroRange;
   memset(&zeroRange, 0, sizeof(zeroRange));
-  icFloatNumber white[3];
+  icFloatNumber white[3] = {0};
   white[0] = pWhiteXYZ[0] / pWhiteXYZ[1];
   white[1] = 1.0;
   white[2] = pWhiteXYZ[2] / pWhiteXYZ[1];
@@ -10802,8 +11333,103 @@ bool CIccTagSpectralViewingConditions::setIlluminant(icFloatNumber *pWhiteXYZ)
   return false;
 }
 
+typedef struct {
+  icStandardObserver obs;
+  icFloatNumber cmf[81*3];
+} icObserverDef;
+
+static icObserverDef icKnownObservers[] = {
+  { icStdObs1931TwoDegrees,
+    { 0.001368,    0.002236,    0.004243,    0.007650,    0.014310,    0.023190,    0.043510,
+      0.077630,    0.134380,    0.214770,    0.283900,    0.328500,    0.348280,    0.348060,
+      0.336200,    0.318700,    0.290800,    0.251100,    0.195360,    0.142100,    0.095640,
+      0.057950,    0.032010,    0.014700,    0.004900,    0.002400,    0.009300,    0.029100,
+      0.063270,    0.109600,    0.165500,    0.225750,    0.290400,    0.359700,    0.433450,
+      0.512050,    0.594500,    0.678400,    0.762100,    0.842500,    0.916300,    0.978600,
+      1.026300,    1.056700,    1.062200,    1.045600,    1.002600,    0.938400,    0.854450,
+      0.751400,    0.642400,    0.541900,    0.447900,    0.360800,    0.283500,    0.218700,
+      0.164900,    0.121200,    0.087400,    0.063600,    0.046770,    0.032900,    0.022700,
+      0.015840,    0.011359,    0.008111,    0.005790,    0.004109,    0.002899,    0.002049,
+      0.001440,    0.001000,    0.000690,    0.000476,    0.000332,    0.000235,    0.000166,
+      0.000117,    0.000083,    0.000059,    0.000042,
+      0.000039,    0.000064,    0.000120,    0.000217,    0.000396,    0.000640,    0.001210,
+      0.002180,    0.004000,    0.007300,    0.011600,    0.016840,    0.023000,    0.029800,
+      0.038000,    0.048000,    0.060000,    0.073900,    0.090980,    0.112600,    0.139020,
+      0.169300,    0.208020,    0.258600,    0.323000,    0.407300,    0.503000,    0.608200,
+      0.710000,    0.793200,    0.862000,    0.914850,    0.954000,    0.980300,    0.994950,
+      1.000000,    0.995000,    0.978600,    0.952000,    0.915400,    0.870000,    0.816300,
+      0.757000,    0.694900,    0.631000,    0.566800,    0.503000,    0.441200,    0.381000,
+      0.321000,    0.265000,    0.217000,    0.175000,    0.138200,    0.107000,    0.081600,
+      0.061000,    0.044580,    0.032000,    0.023200,    0.017000,    0.011920,    0.008210,
+      0.005723,    0.004102,    0.002929,    0.002091,    0.001484,    0.001047,    0.000740,
+      0.000520,    0.000361,    0.000249,    0.000172,    0.000120,    0.000085,    0.000060,
+      0.000042,    0.000030,    0.000021,    0.000015,
+      0.006450,    0.010550,    0.020050,    0.036210,    0.067850,    0.110200,    0.207400,
+      0.371300,    0.645600,    1.039050,    1.385600,    1.622960,    1.747060,    1.782600,
+      1.772110,    1.744100,    1.669200,    1.528100,    1.287640,    1.041900,    0.812950,
+      0.616200,    0.465180,    0.353300,    0.272000,    0.212300,    0.158200,    0.111700,
+      0.078250,    0.057250,    0.042160,    0.029840,    0.020300,    0.013400,    0.008750,
+      0.005750,    0.003900,    0.002750,    0.002100,    0.001800,    0.001650,    0.001400,
+      0.001100,    0.001000,    0.000800,    0.000600,    0.000340,    0.000240,    0.000190,
+      0.000100,    0.000050,    0.000030,    0.000020,    0.000010,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000 }
+    },
+  { icStdObs1964TenDegrees,
+    { 0.000160,    0.000662,    0.002362,    0.007242,    0.019110,    0.043400,    0.084736,
+      0.140638,    0.204492,    0.264737,    0.314679,    0.357719,    0.383734,    0.386726,
+      0.370702,    0.342957,    0.302273,    0.254085,    0.195618,    0.132349,    0.080507,
+      0.041072,    0.016172,    0.005132,    0.003816,    0.015444,    0.037465,    0.071358,
+      0.117749,    0.172953,    0.236491,    0.304213,    0.376772,    0.451584,    0.529826,
+      0.616053,    0.705224,    0.793832,    0.878655,    0.951162,    1.014160,    1.074300,
+      1.118520,    1.134300,    1.123990,    1.089100,    1.030480,    0.950740,    0.856297,
+      0.754930,    0.647467,    0.535110,    0.431567,    0.343690,    0.268329,    0.204300,
+      0.152568,    0.112210,    0.081261,    0.057930,    0.040851,    0.028623,    0.019941,
+      0.013842,    0.009577,    0.006605,    0.004553,    0.003145,    0.002175,    0.001506,
+      0.001045,    0.000727,    0.000508,    0.000356,    0.000251,    0.000178,    0.000126,
+      0.000090,    0.000065,    0.000046,    0.000033,
+      0.000017,    0.000072,    0.000253,    0.000769,    0.002004,    0.004509,    0.008756,
+      0.014456,    0.021391,    0.029497,    0.038676,    0.049602,    0.062077,    0.074704,
+      0.089456,    0.106256,    0.128201,    0.152761,    0.185190,    0.219940,    0.253589,
+      0.297665,    0.339133,    0.395379,    0.460777,    0.531360,    0.606741,    0.685660,
+      0.761757,    0.823330,    0.875211,    0.923810,    0.961988,    0.982200,    0.991761,
+      0.999110,    0.997340,    0.982380,    0.955552,    0.915175,    0.868934,    0.825623,
+      0.777405,    0.720353,    0.658341,    0.593878,    0.527963,    0.461834,    0.398057,
+      0.339554,    0.283493,    0.228254,    0.179828,    0.140211,    0.107633,    0.081187,
+      0.060281,    0.044096,    0.031800,    0.022602,    0.015905,    0.011130,    0.007749,
+      0.005375,    0.003718,    0.002565,    0.001768,    0.001222,    0.000846,    0.000586,
+      0.000407,    0.000284,    0.000199,    0.000140,    0.000098,    0.000070,    0.000050,
+      0.000036,    0.000025,    0.000018,    0.000013,
+      0.000705,    0.002928,    0.010482,    0.032344,    0.086011,    0.197120,    0.389366,
+      0.656760,    0.972542,    1.282500,    1.553480,    1.798500,    1.967280,    2.027300,
+      1.994800,    1.900700,    1.745370,    1.554900,    1.317560,    1.030200,    0.772125,
+      0.570060,    0.415254,    0.302356,    0.218502,    0.159249,    0.112044,    0.082248,
+      0.060709,    0.043050,    0.030451,    0.020584,    0.013676,    0.007918,    0.003988,
+      0.001091,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,    0.000000,
+      0.000000,    0.000000,    0.000000,    0.000000, }
+  },
+};
+#define NUM_KNOWN_OBSERVERS (sizeof(icKnownObservers)/sizeof(icKnownObservers[0]))
+
+
 const icFloatNumber *CIccTagSpectralViewingConditions::getObserver(icSpectralRange &observerRange) const
 {
+  if (!m_observer || !m_observerRange.steps) {
+    for (int i = 0; i < NUM_KNOWN_OBSERVERS; i++) {
+      if (m_stdObserver == icKnownObservers[i].obs) {
+        observerRange = icKnownIllumObsRange;
+        return &icKnownObservers[i].cmf[0];
+      }
+    }
+  }
+
   observerRange = m_observerRange;
   return m_observer;
 }
@@ -11123,19 +11749,19 @@ bool CIccTagEmbeddedHeightImage::Write(CIccIO *pIO)
 *  sDescription - string to concatenate tag dump to
 *****************************************************************************
 */
-void CIccTagEmbeddedHeightImage::Describe(std::string &sDescription)
+void CIccTagEmbeddedHeightImage::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "\r\nSeamlessIndicater: %d\r\n", m_nSeamlesIndicator);
+  sprintf(buf, "\nSeamlessIndicater: %d\n", m_nSeamlesIndicator);
   sDescription += buf;
 
   switch (m_nEncodingFormat) {
   case icPngImageType:
-    strcpy(buf, "EncodingFormat: PNG\r\n");
+    strcpy(buf, "EncodingFormat: PNG\n");
     break;
   case icTiffImageType:
-    strcpy(buf, "EncodingFormat: TIFF\r\n");
+    strcpy(buf, "EncodingFormat: TIFF\n");
     break;
   default:
     sprintf(buf, "EncodingFormat: %d", m_nEncodingFormat);
@@ -11143,18 +11769,18 @@ void CIccTagEmbeddedHeightImage::Describe(std::string &sDescription)
   }
   sDescription += buf;
 
-  sprintf(buf, "Height minimum pixel: %.4fmeters\r\n", m_fMetersMinPixelValue);
-  sprintf(buf, "Height maximum pixel: %.4fmeters\r\n", m_fMetersMaxPixelValue);
+  sprintf(buf, "Height minimum pixel: %.4fmeters\n", m_fMetersMinPixelValue);
+  sprintf(buf, "Height maximum pixel: %.4fmeters\n", m_fMetersMaxPixelValue);
 
-  sDescription += "\r\nImage Data:\r\n";
+  sDescription += "\nImage Data:\n";
 
   for (int i = 0; i<(int)m_nSize; i++) {
     if (!(i & 0x1f))
-      sDescription += "\r\n";
+      sDescription += "\n";
     sprintf(buf, "%02X", m_pData[i]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -11217,7 +11843,7 @@ icValidateStatus CIccTagEmbeddedHeightImage::Validate(std::string sigPath, std::
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid data flag Seamless Indicator.\r\n";
+    sReport += " - Invalid data flag Seamless Indicator.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -11228,7 +11854,7 @@ icValidateStatus CIccTagEmbeddedHeightImage::Validate(std::string sigPath, std::
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid data flag Encoding Image Type.\r\n";
+    sReport += " - Invalid data flag Encoding Image Type.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -11425,19 +12051,19 @@ bool CIccTagEmbeddedNormalImage::Write(CIccIO *pIO)
 *  sDescription - string to concatenate tag dump to
 *****************************************************************************
 */
-void CIccTagEmbeddedNormalImage::Describe(std::string &sDescription)
+void CIccTagEmbeddedNormalImage::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "\r\nSeamlessIndicater: %d\r\n", m_nSeamlesIndicator);
+  sprintf(buf, "\nSeamlessIndicater: %d\n", m_nSeamlesIndicator);
   sDescription += buf;
 
   switch (m_nEncodingFormat) {
   case icPngImageType:
-    strcpy(buf, "EncodingFormat: PNG\r\n");
+    strcpy(buf, "EncodingFormat: PNG\n");
     break;
   case icTiffImageType:
-    strcpy(buf, "EncodingFormat: TIFF\r\n");
+    strcpy(buf, "EncodingFormat: TIFF\n");
     break;
   default:
     sprintf(buf, "EncodingFormat: %d", m_nEncodingFormat);
@@ -11445,15 +12071,15 @@ void CIccTagEmbeddedNormalImage::Describe(std::string &sDescription)
   }
   sDescription += buf;
 
-  sDescription += "\r\nImage Data:\r\n";
+  sDescription += "\nImage Data:\n";
 
   for (int i = 0; i < (int)m_nSize; i++) {
     if (!(i & 0x1f))
-      sDescription += "\r\n";
+      sDescription += "\n";
     sprintf(buf, "%02X", m_pData[i]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -11516,7 +12142,7 @@ icValidateStatus CIccTagEmbeddedNormalImage::Validate(std::string sigPath, std::
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid data flag Seamless Indicator.\r\n";
+    sReport += " - Invalid data flag Seamless Indicator.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 
@@ -11527,7 +12153,7 @@ icValidateStatus CIccTagEmbeddedNormalImage::Validate(std::string sigPath, std::
       if (memcmp(m_pData+1, PNGhdr, 3)) {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sReport += " - Non-PNG file stored as Embedded image.\r\n";
+        sReport += " - Non-PNG file stored as Embedded image.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
     }
@@ -11540,7 +12166,7 @@ icValidateStatus CIccTagEmbeddedNormalImage::Validate(std::string sigPath, std::
       if (memcmp(m_pData, IIhdr, 4) && memcmp(m_pData, MMhdr, 4)) {
         sReport += icMsgValidateNonCompliant;
         sReport += sSigPathName;
-        sReport += " - Non-TIFF file stored as Embedded image.\r\n";
+        sReport += " - Non-TIFF file stored as Embedded image.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
       }
     }
@@ -11548,7 +12174,7 @@ icValidateStatus CIccTagEmbeddedNormalImage::Validate(std::string sigPath, std::
   default:
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Invalid data flag Encoding Image Type.\r\n";
+    sReport += " - Invalid data flag Encoding Image Type.\n";
     rv = icMaxStatus(rv, icValidateNonCompliant);
   }
 

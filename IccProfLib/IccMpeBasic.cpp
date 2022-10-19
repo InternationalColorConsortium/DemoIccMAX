@@ -81,6 +81,7 @@
 #include <map>
 #include "IccUtil.h"
 #include "IccCAM.h"
+#include "IccMpeCalc.h"
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {
@@ -132,7 +133,8 @@ CIccFormulaCurveSegment::CIccFormulaCurveSegment(const CIccFormulaCurveSegment &
 
   if (seg.m_params) {
     m_params = (icFloatNumber*)malloc(m_nParameters*sizeof(icFloatNumber));
-    memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
   }
   else
     m_params = NULL;
@@ -163,7 +165,8 @@ CIccFormulaCurveSegment &CIccFormulaCurveSegment::operator=(const CIccFormulaCur
   m_nParameters = seg.m_nParameters;
   if (seg.m_params) {
     m_params = (icFloatNumber*)malloc(m_nParameters*sizeof(icFloatNumber));
-    memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
   }
   else
     m_params = NULL;
@@ -198,7 +201,7 @@ CIccFormulaCurveSegment::~CIccFormulaCurveSegment()
  * 
  * Return: 
  ******************************************************************************/
-void CIccFormulaCurveSegment::Describe(std::string &sDescription)
+void CIccFormulaCurveSegment::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
@@ -215,60 +218,107 @@ void CIccFormulaCurveSegment::Describe(std::string &sDescription)
   sprintf(buf, "%.8f", m_endPoint);
   sDescription += buf;
   }
-  sprintf(buf, "]\r\nFunctionType: %04Xh\r\n", m_nFunctionType);
+  sprintf(buf, "]\nFunctionType: %04Xh\n", m_nFunctionType);
   sDescription += buf;
 
   switch(m_nFunctionType) {
   case 0x0000:
-    if (m_params[1]==0.0 && m_params[2]==0.0)
-      sprintf(buf, "Y = %.8f\r\n\r\n", m_params[3]);
-    else if (m_params[0]==1.0 && m_params[1]==1.0 && m_params[2]==0.0 && m_params[3]==0.0)
-      sprintf(buf, "Y = X\r\n\r\n");
-    else if (m_params[0]==1.0 && m_params[2]==0.0)
-      sprintf(buf, "Y = %.8f * X + %.8f\r\n\r\n", 
+    if (icIsNear(m_params[1], 0.0) && icIsNear(m_params[2], 0.0))
+      sprintf(buf, "Y = %.8f\n\n", m_params[3]);
+    else if (icIsNear(m_params[0], 1.0) && icIsNear(m_params[1], 1.0) &&
+             icIsNear(m_params[2], 0.0) && icIsNear(m_params[3], 0.0))
+      sprintf(buf, "Y = X\n\n");
+    else if (icIsNear(m_params[0], 1.0) && icIsNear(m_params[2], 0.0))
+      sprintf(buf, "Y = %.8f * X + %.8f\n\n", 
               m_params[1], m_params[3]);
     else
-      sprintf(buf, "Y = (%.8f * X + %.8f)^%.4f + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = (%.8f * X + %.8f)^%.4f + %.8f\n\n", 
               m_params[1], m_params[2], m_params[0], m_params[3]);
     sDescription += buf;
     return;
 
   case 0x0001:
-    sprintf(buf, "Y = %.8f * log (%.8f * (X ^ %.8f)  + %.8f) + %.8f\r\n\r\n",
+    sprintf(buf, "Y = %.8f * log (%.8f * (X ^ %.8f)  + %.8f) + %.8f\n\n",
             m_params[1], m_params[2], m_params[0], m_params[3], m_params[4]);
     sDescription += buf;
     return;
 
   case 0x0002:
-    sprintf(buf, "Y = %.8f * (%.8f ^ (%.8f * X + %.8f)) + %.8f\r\n\r\n",
+    sprintf(buf, "Y = %.8f * (%.8f ^ (%.8f * X + %.8f)) + %.8f\n\n",
             m_params[0], m_params[1], m_params[2], m_params[3], m_params[4]);
     sDescription += buf;
     return;
 
   case 0x0003:
-    if (m_params[1]==0.0 && m_params[2]==0.0)
-      sprintf(buf, "Y = %.8f\r\n\r\n", m_params[3]);
-    else if (m_params[0]==1.0 && m_params[1]==1.0 && m_params[2]==1.0 && m_params[3]==0.0 && m_params[4]==0.0)
-      sprintf(buf, "Y = X\r\n\r\n");
-    else if (m_params[0]==1.0 && m_params[1]==1.0 && m_params[3]==0.0)
-      sprintf(buf, "Y = %.8f * X + %.8f\r\n\r\n", 
+    if (icIsNear(m_params[1],0.0) && icIsNear(m_params[2], 0.0))
+      sprintf(buf, "Y = %.8f\n\n", m_params[3]);
+    else if (icIsNear(m_params[0], 1.0) && icIsNear(m_params[1], 1.0) &&
+             icIsNear(m_params[2], 1.0) && icIsNear(m_params[3], 0.0) &&
+             icIsNear(m_params[4], 0.0))
+      sprintf(buf, "Y = X\n\n");
+    else if (icIsNear(m_params[0], 1.0) && icIsNear(m_params[1], 1.0) &&
+             icIsNear(m_params[3], 0.0))
+      sprintf(buf, "Y = %.8f * X + %.8f\n\n", 
               m_params[2], m_params[3]);
-    else if (m_params[0]==1.0 && m_params[2]==1.0 && m_params[3]==0.0)
-      sprintf(buf, "Y = %.8f * X + %.8f\r\n\r\n", 
+    else if (icIsNear(m_params[0], 1.0) && icIsNear(m_params[2], 1.0) &&
+             icIsNear(m_params[3], 0.0))
+      sprintf(buf, "Y = %.8f * X + %.8f\n\n", 
       m_params[1], m_params[3]);
     else
-      sprintf(buf, "Y = %8f * (%.8f * X + %.8f)^%.4f + %.8f\r\n\r\n", 
+      sprintf(buf, "Y = %8f * (%.8f * X + %.8f)^%.4f + %.8f\n\n", 
               m_params[1], m_params[2], m_params[3], m_params[0], m_params[4]);
+    sDescription += buf;
+    return;
+
+  case 0x0004:
+    if (!icIsNear(m_params[0], 1.0))
+      sprintf(buf, "Y = %.8f * ln(%.8f * X^%8.f - %.8f) + %.8f\n\n",
+        m_params[1], m_params[4], m_params[0], m_params[2], m_params[3]);
+    else
+      sprintf(buf, "Y = %.8f * ln(%.8f * X - %.8f) + %.8f\n\n",
+        m_params[1], m_params[4], m_params[2], m_params[3]);
+
+    sDescription += buf;
+    return;
+
+  case 0x0005:
+    if (!icIsNear(m_params[0], 1.0))
+      sprintf(buf, "Y = %.8f * exp((%.8f * X^%.8f - %.8f) / %.8f) + %.8f\n\n",
+        m_params[5], m_params[4], m_params[0], m_params[3], m_params[1], m_params[2]);
+    else
+      sprintf(buf, "Y = %.8f * exp((%.8f * X - %.8f) / %.8f) + %.8f\n\n",
+        m_params[5], m_params[4], m_params[3], m_params[1], m_params[2]);
+
+    sDescription += buf;
+    return;
+
+  case 0x0006:
+    if (!icIsNear(m_params[1], 1.0))
+      sprintf(buf, "Y = %.8f * (max[(%.8f * X^%.8f - %.8f), 0] / (%.8f - %.8f * X^%.8f))^%.8f\n\n",
+        m_params[5], m_params[6], m_params[1], m_params[2], m_params[3], m_params[4], m_params[1], m_params[0]);
+    else
+      sprintf(buf, "Y = %.8f * (max[(%.8f * X - %.8f), 0] / (%.8f - %.8f * X))^%.8f\n\n",
+        m_params[5], m_params[6], m_params[2], m_params[3], m_params[4], m_params[0]);
+    sDescription += buf;
+    return;
+
+  case 0x0007:
+    if (!icIsNear(m_params[1], 1.0))
+      sprintf(buf, "Y = %.8f * ((%.8f + %.8f * X^%.8f) / (1 + %.8f * X^%.8f))^%.8f\n\n",
+        m_params[5], m_params[2], m_params[3], m_params[1], m_params[4], m_params[1], m_params[0]);
+    else
+      sprintf(buf, "Y = %.8f * ((%.8f + %.8f * X) / (1 + %.8f * X))^%.8f\n\n",
+        m_params[5], m_params[2], m_params[3], m_params[4], m_params[0]);
     sDescription += buf;
     return;
 
   default:
     int i;
-    sprintf(buf, "Unknown Function with %d parameters:\r\n\r\n", m_nParameters);
+    sprintf(buf, "Unknown Function with %d parameters:\n\n", m_nParameters);
     sDescription += buf;
 
     for (i=0; i<m_nParameters; i++) {
-      sprintf(buf, "Param[%d] = %.8lf\r\n\r\n", i, m_params[i]);
+      sprintf(buf, "Param[%d] = %.8lf\n\n", i, m_params[i]);
       sDescription += buf;
     }
   }
@@ -292,7 +342,8 @@ void CIccFormulaCurveSegment::SetFunction(icUInt16Number functionType, icUInt8Nu
 
   if (num_parameters) {
     m_params = (icFloatNumber*)malloc(num_parameters * sizeof(icFloatNumber));
-    memcpy(m_params, parameters, num_parameters * sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, parameters, num_parameters * sizeof(icFloatNumber));
   }
   else
     m_params = NULL;
@@ -351,7 +402,17 @@ bool CIccFormulaCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
     case 0x0001:
     case 0x0002:
     case 0x0003:
+    case 0x0004:
       m_nParameters = 5;
+      break;
+
+    case 0x0005:
+    case 0x0007:
+      m_nParameters = 6;
+      break;
+
+    case 0x0006:
+      m_nParameters = 7;
       break;
 
     default:
@@ -412,7 +473,19 @@ bool CIccFormulaCurveSegment::Write(CIccIO *pIO)
     case 0x0001:
     case 0x0002:
     case 0x0003:
+    case 0x0004:
       if (m_nParameters!=5)
+        return false;
+      break;
+
+    case 0x0005:
+    case 0x0007:
+      if (m_nParameters != 6)
+        return false;
+      break;
+
+    case 0x0006:
+      if (m_nParameters != 7)
         return false;
       break;
   }
@@ -442,12 +515,12 @@ bool CIccFormulaCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
     if (!m_params || m_nParameters<4)
       return false;
 
-    if (m_params[0] == (icFloatNumber)1.0) { //don't apply gamma
-      if (m_params[2] == (icFloatNumber)0.0 && m_params[3] == (icFloatNumber)0.0)
+    if (icIsNear(m_params[0], 1.0)) { //don't apply gamma
+      if (icIsNear(m_params[2], 0.0) && icIsNear(m_params[3], 0.0))
         m_nShortcutType = 1;
-      else if (m_params[2] == 0.0)
+      else if (icIsNear(m_params[2], 0.0))
         m_nShortcutType = 2;
-      else if (m_params[3] == 0.0)
+      else if (icIsNear(m_params[3], 0.0))
         m_nShortcutType = 3;
       else
         m_nShortcutType = 4;
@@ -466,16 +539,70 @@ bool CIccFormulaCurveSegment::Begin(CIccCurveSegment *pPrevSeg = NULL)
 
   case 0x0002:
   case 0x0003:
-    if (!m_params || m_nParameters<5)
+    if (!m_params || m_nParameters < 5)
       return false;
-    
+
+  case 0x0004:
+    if (!m_params || m_nParameters < 5)
+      return false;
+
+    if (icIsNear(m_params[0], 1.0)) { //don't apply gamma
+      m_nShortcutType = 1;
+    }
+    else {
+      m_nShortcutType = 0;
+    }
     return true;
+
+  case 0x0005:
+    if (!m_params || m_nParameters < 6)
+      return false;
+
+    if (icIsNear(m_params[0], 1.0)) { //don't apply gamma
+      m_nShortcutType = 1;
+    }
+    else {
+      m_nShortcutType = 0;
+    }
+    return true;
+
+  case 0x0006:
+    if (!m_params || m_nParameters < 7)
+      return false;
+
+    if (icIsNear(m_params[1], 1.0)) { //don't apply gamma
+      m_nShortcutType = 1;
+    }
+    else {
+      m_nShortcutType = 0;
+    }
+    return true;
+
+  case 0x0007:
+    if (!m_params || m_nParameters < 6)
+      return false;
+
+    if (icIsNear(m_params[1], 1.0)) { //don't apply gamma
+      m_nShortcutType = 1;
+    }
+    else {
+      m_nShortcutType = 0;
+    }
+    return true;
+
 
   default:
     return false;
   }
 
   return true;
+}
+
+static icFloatNumber clipPow(double v, double g)
+{
+  if (v <= 0)
+    return 0;
+  return pow(v, g);
 }
 
 /**
@@ -508,16 +635,52 @@ icFloatNumber CIccFormulaCurveSegment::Apply(icFloatNumber v) const
     }
 
   case 0x0001:
-    // Y = a * log (b * X^g + c) + d  : g a b c d
+    // Y = a * log (b * X^g + c) + d      : g a b c d
     return (icFloatNumber)(m_params[1] * log10(m_params[2] * pow(v, m_params[0]) + m_params[3]) + m_params[4]);
 
   case 0x0002:
-    //Y = a * b^(c*X+d) + e           : a b c d e
+    //Y = a * b^(c*X+d) + e               : a b c d e
     return (icFloatNumber)(m_params[0] * pow(m_params[1], m_params[2] * v + m_params[3]) + m_params[4]);
 
   case 0x0003:
     //Y = a * (b * X + c) ^ g  + d        : g a b c d
-    return (icFloatNumber)(m_params[1] * pow(m_params[2] * v + m_params[3], m_params[0]) + m_params[4]);
+    return (icFloatNumber)(m_params[1] * clipPow(m_params[2] * v + m_params[3], m_params[0]) + m_params[4]);
+
+  case 0x0004:
+    //Y = a * ln(d * X^g - b) + c         : g a b c d
+    if (m_nShortcutType != 1)
+      return (icFloatNumber)(m_params[1] * log(m_params[4] * pow(v, m_params[0]) - m_params[2]) + m_params[3]);
+    else
+      return (icFloatNumber)(m_params[1] * log(m_params[4] * v - m_params[2]) + m_params[3]);
+
+  case 0x0005:
+    //Y = e * exp((d * X^g - c) / a) + b  : g a b c d e
+    if (m_nShortcutType != 1)
+      return (icFloatNumber)(m_params[5] * exp((m_params[4] * pow(v, m_params[0]) - m_params[3]) / m_params[1]) + m_params[2]);
+    else
+      return (icFloatNumber)(m_params[5] * exp((m_params[4] * v - m_params[3]) / m_params[1]) + m_params[2]);
+
+  case 0x0006:
+    //Y = d * (max(e * X^g - a, 0)/(b - c * X^g))^w  : w g a b c d e
+    if (m_nShortcutType!=1) {
+      return (icFloatNumber)(m_params[5] * pow(icMax((icFloatNumber)(m_params[6] * pow(v, m_params[1]) - m_params[2]), 0.0f) /
+                                               (m_params[3] - m_params[4] * pow(v, m_params[1])), m_params[0]));
+    }
+    else { //m_nShortcutType == 1
+      return (icFloatNumber)(m_params[5] * pow(icMax((icFloatNumber)(m_params[6] * v - m_params[2]), 0.0f) /
+                                               (m_params[3] - m_params[4] * v), m_params[0]));
+    }
+
+  case 0x0007:
+    //Y = d * ((a + b * X^g)/(1 + c * X^g)) ^ w     : w g a b c d
+    if (m_nShortcutType != 1) {
+      return (icFloatNumber)(m_params[5] * pow((m_params[2] + m_params[3] * pow(v, m_params[1])) /
+                                               (1.0 + m_params[4] * pow(v, m_params[1])), m_params[0]));
+    }
+    else { //m_nShortcutType == 1
+      return (icFloatNumber)(m_params[5] * pow((m_params[2] + m_params[3] * v) /
+                                               (1.0 + m_params[4] * v), m_params[0]));
+    }
   }
 
   //Shouldn't get here!
@@ -534,7 +697,7 @@ icFloatNumber CIccFormulaCurveSegment::Apply(icFloatNumber v) const
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
@@ -543,7 +706,7 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
   if (m_nReserved || m_nReserved2) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " formula curve has non zero reserved data.\r\n";
+    sReport += " formula curve has non zero reserved data.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -552,13 +715,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<4) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 4) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -567,13 +730,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<5) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -582,13 +745,13 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<5) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -597,13 +760,73 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
     if (!m_params || m_nParameters<5) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " formula curve has Invalid formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else if (m_nParameters > 5) {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " formula curve has too many formulaCurveSegment parameters.\r\n";
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateWarning);
+    }
+    break;
+
+  case 0x0004:
+    if (!m_params || m_nParameters < 5) {
+      sReport += icMsgValidateCriticalError;
+      sReport += sSigPathName;
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+    else if (m_nParameters > 5) {
+      sReport += icMsgValidateWarning;
+      sReport += sSigPathName;
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateWarning);
+    }
+    break;
+
+  case 0x0005:
+    if (!m_params || m_nParameters < 6) {
+      sReport += icMsgValidateCriticalError;
+      sReport += sSigPathName;
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+    else if (m_nParameters > 6) {
+      sReport += icMsgValidateWarning;
+      sReport += sSigPathName;
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateWarning);
+    }
+    break;
+
+  case 0x0006:
+    if (!m_params || m_nParameters < 6) {
+      sReport += icMsgValidateCriticalError;
+      sReport += sSigPathName;
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+    else if (m_nParameters > 6) {
+      sReport += icMsgValidateWarning;
+      sReport += sSigPathName;
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateWarning);
+    }
+    break;
+
+  case 0x0007:
+    if (!m_params || m_nParameters < 6) {
+      sReport += icMsgValidateCriticalError;
+      sReport += sSigPathName;
+      sReport += " formula curve has Invalid formulaCurveSegment parameters.\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+    else if (m_nParameters > 6) {
+      sReport += icMsgValidateWarning;
+      sReport += sSigPathName;
+      sReport += " formula curve has too many formulaCurveSegment parameters.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
     break;
@@ -613,7 +836,7 @@ icValidateStatus CIccFormulaCurveSegment::Validate(std::string sigPath, std::str
       icChar buf[128];
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sprintf(buf, " formula curve uses unknown formulaCurveSegment function type %d\r\n", m_nFunctionType);
+      sprintf(buf, " formula curve uses unknown formulaCurveSegment function type %d\n", m_nFunctionType);
       sReport += buf;
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
@@ -637,8 +860,10 @@ CIccSampledCurveSegment::CIccSampledCurveSegment(icFloatNumber start, icFloatNum
   m_nReserved = 0;
   m_startPoint = start;
   m_endPoint = end;
+  m_range = end - start;
   m_nCount = 0;
   m_pSamples = 0;
+  m_last = 0;
 }
 
 /**
@@ -656,7 +881,9 @@ CIccSampledCurveSegment::CIccSampledCurveSegment(const CIccSampledCurveSegment &
   m_nReserved = curve.m_nReserved;
   m_startPoint = curve.m_startPoint;
   m_endPoint = curve.m_endPoint;
+  m_range = m_endPoint - m_startPoint;
   m_nCount = curve.m_nCount;
+  m_last = curve.m_last;
 
   if (m_nCount) {
     m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
@@ -774,7 +1001,7 @@ bool CIccSampledCurveSegment::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=t
  * 
  * Return: 
  ******************************************************************************/
-void CIccSampledCurveSegment::Describe(std::string &sDescription)
+void CIccSampledCurveSegment::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
@@ -793,7 +1020,7 @@ void CIccSampledCurveSegment::Describe(std::string &sDescription)
     sDescription += buf;
     }
 
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
   }
   else {
@@ -810,9 +1037,9 @@ void CIccSampledCurveSegment::Describe(std::string &sDescription)
     sprintf(buf, "%.8f", m_endPoint);
     sDescription += buf;
     }
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
-    sDescription += "IN  OUT\r\n";
+    sDescription += "IN  OUT\n";
 
     icUInt32Number i;
 
@@ -820,11 +1047,11 @@ void CIccSampledCurveSegment::Describe(std::string &sDescription)
     icFloatNumber last = (icFloatNumber)(m_nCount-1);
 
     for (i=1; i<m_nCount; i++) {
-      sprintf(buf, "%.8f %.8f\r\n", m_startPoint + (icFloatNumber)i*range/last, m_pSamples[i]);
+      sprintf(buf, "%.8f %.8f\n", m_startPoint + (icFloatNumber)i*range/last, m_pSamples[i]);
       sDescription += buf;
     }
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -990,7 +1217,7 @@ icFloatNumber CIccSampledCurveSegment::Apply(icFloatNumber v) const
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
@@ -999,20 +1226,20 @@ icValidateStatus CIccSampledCurveSegment::Validate(std::string sigPath, std::str
   if (m_nReserved) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " sampled curve has non zero reserved data.\r\n";
+    sReport += " sampled curve has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (m_nCount<1) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " sampled curve has too few sample points.\r\n";
+    sReport += " sampled curve has too few sample points.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
   else if (m_endPoint-m_startPoint == 0.0) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " sampled curve has a range of zero.\r\n";
+    sReport += " sampled curve has a range of zero.\n";
     rv = icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1036,6 +1263,7 @@ CIccSingleSampledCurve::CIccSingleSampledCurve(icFloatNumber first, icFloatNumbe
   m_nReserved = 0;
   m_nCount = 0;
   m_pSamples = 0;
+  m_last = 0;
 
   m_storageType = icValueTypeFloat32;
   m_extensionType = icClipSingleSampledCurve;
@@ -1049,6 +1277,7 @@ CIccSingleSampledCurve::CIccSingleSampledCurve(icFloatNumber first, icFloatNumbe
     m_lastEntry = first;
   }
 
+  m_range = m_lastEntry - m_firstEntry;
   m_loIntercept = 0;
   m_loSlope = 0;
   m_hiIntercept = 1.0;
@@ -1086,6 +1315,7 @@ CIccSingleSampledCurve::CIccSingleSampledCurve(const CIccSingleSampledCurve &cur
 
   m_firstEntry = curve.m_firstEntry;
   m_lastEntry = curve.m_lastEntry;
+  m_range = m_lastEntry - m_firstEntry;
 
   m_loIntercept = curve.m_loIntercept;
   m_loSlope = curve.m_loSlope;
@@ -1279,7 +1509,7 @@ bool CIccSingleSampledCurve::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=tr
 * 
 * Return: 
 ******************************************************************************/
-void CIccSingleSampledCurve::Describe(std::string &sDescription)
+void CIccSingleSampledCurve::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
@@ -1291,7 +1521,7 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
     sprintf(buf, "%.8f", m_lastEntry);
     sDescription += buf;
 
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
   }
   else {
@@ -1303,7 +1533,7 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
     sprintf(buf, "%.8f", m_lastEntry);
     sDescription += buf;
 
-    sprintf(buf, "]\r\n");
+    sprintf(buf, "]\n");
     sDescription += buf;
 
     switch(m_storageType) {
@@ -1335,7 +1565,7 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
         sDescription += "Unknown extension handling\n";
         break;
     }
-    sDescription += "IN  OUT\r\n";
+    sDescription += "IN  OUT\n";
 
     icUInt32Number i;
 
@@ -1343,11 +1573,11 @@ void CIccSingleSampledCurve::Describe(std::string &sDescription)
     icFloatNumber last = (icFloatNumber)(m_nCount-1);
 
     for (i=0; i<m_nCount; i++) {
-      sprintf(buf, "%.8f %.8f\r\n", m_firstEntry + (icFloatNumber)i*range/last, m_pSamples[i]);
+      sprintf(buf, "%.8f %.8f\n", m_firstEntry + (icFloatNumber)i*range/last, m_pSamples[i]);
       sDescription += buf;
     }
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 /**
@@ -1519,7 +1749,7 @@ bool CIccSingleSampledCurve::Write(CIccIO *pIO)
 * 
 * Return: 
 ******************************************************************************/
-bool CIccSingleSampledCurve::Begin()
+bool CIccSingleSampledCurve::Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE)
 {
   if (m_nCount<2)
     return false;
@@ -1594,7 +1824,7 @@ icFloatNumber CIccSingleSampledCurve::Apply(icFloatNumber v) const
 * 
 * Return: 
 ******************************************************************************/
-icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
@@ -1603,32 +1833,32 @@ icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::stri
   if (m_nReserved) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " single sampled curve has non zero reserved data.\r\n";
+    sReport += " single sampled curve has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (m_extensionType > icMaxSingleSampledCurveType) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " single sampled curve has unknown extension type\r\n";
+    sReport += " single sampled curve has unknown extension type\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   if (m_storageType > icMaxValueType) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " single sampled curve uses unknown value type\r\n";
+    sReport += " single sampled curve uses unknown value type\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
 
   if (m_nCount<2) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " single sampled curve has too few sample points.\r\n";
+    sReport += " single sampled curve has too few sample points.\n";
     rv = icMaxStatus(rv, icValidateCriticalError);
   }
-
-  else if (m_lastEntry-m_firstEntry <= 0.0) {
+  
+  if (m_lastEntry-m_firstEntry <= 0.0) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
     sReport += " single sampled curve has an invalid sample range.\r\n";
@@ -1637,6 +1867,625 @@ icValidateStatus CIccSingleSampledCurve::Validate(std::string sigPath, std::stri
 
   return rv;
 }
+
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::CIccSampledCalculatorCurve
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+CIccSampledCalculatorCurve::CIccSampledCalculatorCurve(icFloatNumber first, icFloatNumber last)
+{
+  m_nReserved = 0;
+  m_nReserved2 = 0;
+
+  m_pCalc = 0;
+
+  m_nCount = 0;
+  m_pSamples = 0;
+
+  m_extensionType = icClipSingleSampledCurve;
+
+  if (first < last) {
+    m_firstEntry = first;
+    m_lastEntry = last;
+  }
+  else {
+    m_firstEntry = last;
+    m_lastEntry = first;
+  }
+
+  m_loIntercept = 0;
+  m_loSlope = 0;
+  m_hiIntercept = 1.0;
+  m_hiSlope = 0;
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::CIccSampledCalculatorCurve
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+CIccSampledCalculatorCurve::CIccSampledCalculatorCurve(const CIccSampledCalculatorCurve &curve)
+{
+  m_nReserved = curve.m_nReserved;
+  m_nReserved2 = curve.m_nReserved2;
+
+  m_nCount = curve.m_nCount;
+
+  m_extensionType = curve.m_extensionType;
+
+  m_nDesiredSize = curve.m_nDesiredSize;
+
+  if (curve.m_pCalc)
+    m_pCalc = curve.m_pCalc->NewCopy();
+
+  if (m_nCount) {
+    m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
+    if (m_pSamples)
+      memcpy(m_pSamples, curve.m_pSamples, m_nCount * sizeof(icFloatNumber));
+    else
+      m_nCount = 0;
+  }
+  else {
+    m_pSamples = NULL;
+  }
+
+  m_firstEntry = curve.m_firstEntry;
+  m_lastEntry = curve.m_lastEntry;
+
+  m_loIntercept = curve.m_loIntercept;
+  m_loSlope = curve.m_loSlope;
+  m_hiIntercept = curve.m_hiIntercept;
+  m_hiSlope = curve.m_hiSlope;
+}
+
+/**
+******************************************************************************
+* Name: &CIccSampledCalculatorCurve::operator=
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+CIccSampledCalculatorCurve &CIccSampledCalculatorCurve::operator=(const CIccSampledCalculatorCurve &curve)
+{
+  if (m_pCalc)
+    delete m_pCalc;
+
+  if (m_pSamples)
+    free(m_pSamples);
+
+  m_nReserved = curve.m_nReserved;
+  m_nReserved2 = curve.m_nReserved2;
+
+  m_nCount = curve.m_nCount;
+
+  m_nDesiredSize = curve.m_nDesiredSize;
+
+  m_extensionType = curve.m_extensionType;
+
+  if (curve.m_pCalc)
+    m_pCalc = curve.m_pCalc->NewCopy();
+
+  if (m_nCount) {
+    m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
+    if (m_pSamples)
+      memcpy(m_pSamples, curve.m_pSamples, m_nCount * sizeof(icFloatNumber));
+    else
+      m_nCount = 0;
+  }
+  else {
+    m_pSamples = NULL;
+  }
+
+  m_firstEntry = curve.m_firstEntry;
+  m_lastEntry = curve.m_lastEntry;
+
+  m_loIntercept = curve.m_loIntercept;
+  m_loSlope = curve.m_loSlope;
+  m_hiIntercept = curve.m_hiIntercept;
+  m_hiSlope = curve.m_hiSlope;
+  return (*this);
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::~CIccSampledCalculatorCurve
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+CIccSampledCalculatorCurve::~CIccSampledCalculatorCurve()
+{
+  if (m_pSamples)
+    free(m_pSamples);
+
+  if (m_pCalc)
+    delete m_pCalc;
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::SetRange
+*
+* Purpose:
+*  Sets range of sampled lookup table.
+*
+* Args:
+*  first = first entry input position
+*  last = last entry input position
+******************************************************************************/
+void CIccSampledCalculatorCurve::SetRange(icFloatNumber first/* =0.0f */, icFloatNumber last/* =1.0f */)
+{
+  if (first < last) {
+    m_firstEntry = first;
+    m_lastEntry = last;
+  }
+  else {
+    m_firstEntry = last;
+    m_lastEntry = first;
+  }
+}
+
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::SetExtensionType
+*
+* Purpose:
+*  Sets extension type of the single sampled curve
+*
+* Args:
+*  nExtensionType is type of extension to use
+*
+* Return:
+*  true if valid extension type, false otherwise
+******************************************************************************/
+bool CIccSampledCalculatorCurve::SetExtensionType(icUInt16Number nExtensionType)
+{
+  m_extensionType = nExtensionType;
+
+  switch (nExtensionType) {
+  case icClipSingleSampledCurve:
+  case icExtendSingleSampledCurve:
+    return true;
+  }
+  return false;
+}
+
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::SetCalculator
+* Purpose:
+*  Sets calculator associated with the curve
+*
+* Args:
+*  nSize = desired number of elements in lut (must be >= 2).
+*
+*
+* Return:
+*  true if calculator element is valid for curve, false otherwise
+******************************************************************************/
+bool CIccSampledCalculatorCurve::SetCalculator(CIccMpeCalculator *pCalc)
+{
+  if (m_pCalc)
+    delete m_pCalc;
+
+  m_pCalc = pCalc;
+
+  return true;
+}
+
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::SetRecommendedSize
+*
+* Purpose:
+*  Sets size of sampled lookup table.  Previous data (if exists) is lost.
+*
+* Args:
+*  nSize = desired number of elements in lut (must be >= 2).
+*
+* Return:
+*  true if amount is valid.
+******************************************************************************/
+bool CIccSampledCalculatorCurve::SetRecommendedSize(icUInt32Number nSize)
+{
+  if (nSize < 2) {
+    return false;
+  }
+
+  m_nDesiredSize = nSize;
+
+  return true;
+}
+
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::SetSize
+*
+* Purpose:
+*  Sets size of sampled lookup table.  Previous data (if exists) is lost.
+*
+* Args:
+*  nCount = number of elements in lut (must be >= 2).
+*  bZeroAlloc = flag to decide if memory should be set to zero.
+*
+* Return:
+*  true if allocation successful.
+******************************************************************************/
+bool CIccSampledCalculatorCurve::SetSize(icUInt32Number nCount, bool bZeroAlloc/*=true*/)
+{
+  if (nCount<2) {
+    if (m_pSamples)
+      free(m_pSamples);
+    m_pSamples = NULL;
+    m_nCount = nCount;
+    return nCount == 0;
+  }
+
+  if (m_pSamples) {
+    free(m_pSamples);
+  }
+
+  if (bZeroAlloc)
+    m_pSamples = (icFloatNumber*)calloc(nCount, sizeof(icFloatNumber));
+  else
+    m_pSamples = (icFloatNumber*)malloc(nCount * sizeof(icFloatNumber));
+
+  if (m_pSamples)
+    m_nCount = nCount;
+  else
+    m_nCount = 0;
+
+  return (m_pSamples != NULL);
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::Describe
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+void CIccSampledCalculatorCurve::Describe(std::string &sDescription, int nVerboseness/*=*100*/)
+{
+  icChar buf[128];
+
+  if (!m_pCalc) {
+    sDescription += "Empty Sampled Calculator Curve [";
+    sprintf(buf, "%.8f, ", m_firstEntry);
+    sDescription += buf;
+
+    sprintf(buf, "%.8f,", m_lastEntry);
+    sDescription += buf;
+
+    sprintf(buf, "%d", m_nDesiredSize);
+    sDescription += buf;
+
+    sprintf(buf, "]\r\n");
+    sDescription += buf;
+  }
+  else {
+    sDescription += "Sampled Calculator Curve [";
+
+    sprintf(buf, "%.8f, ", m_firstEntry);
+    sDescription += buf;
+
+    sprintf(buf, "%.8f,", m_lastEntry);
+    sDescription += buf;
+
+    sprintf(buf, "%d", m_nDesiredSize);
+    sDescription += buf;
+
+    sprintf(buf, "]\r\n");
+    sDescription += buf;
+
+    switch (m_extensionType) {
+    case icClipSingleSampledCurve:
+      sDescription += "Clip End Points\n";
+      break;
+    case icExtendSingleSampledCurve:
+      sDescription += "Extend End Points\n";
+      break;
+    default:
+      sDescription += "Unknown extension handling\n";
+      break;
+    }
+    m_pCalc->Describe(sDescription, nVerboseness);
+  }
+  sDescription += "\r\n";
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::Read
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+bool CIccSampledCalculatorCurve::Read(icUInt32Number size, CIccIO *pIO)
+{
+  icCurveSegSignature sig;
+
+  icUInt32Number headerSize = sizeof(icTagTypeSignature) +
+    sizeof(icUInt32Number) +
+    sizeof(icUInt32Number) +
+    sizeof(icFloat32Number) +
+    sizeof(icFloat32Number) +
+    sizeof(icUInt16Number) +
+    sizeof(icUInt16Number);
+
+  if (headerSize >= size)
+    return false;
+
+  if (!pIO) {
+    return false;
+  }
+
+  if (!pIO->Read32(&sig) || sig != GetType())
+    return false;
+
+  if (!pIO->Read32(&m_nReserved))
+    return false;
+
+  if (!pIO->Read32(&m_nDesiredSize))
+    return false;
+
+  if (!pIO->ReadFloat32Float(&m_firstEntry))
+    return false;
+
+  if (!pIO->ReadFloat32Float(&m_lastEntry))
+    return false;
+
+  if (!pIO->Read16(&m_extensionType))
+    return false;
+
+  if (!pIO->Read16(&m_nReserved2))
+    return false;
+
+  if (!SetCalculator((CIccMpeCalculator*)CIccMultiProcessElement::Create(icSigCalculatorElemType)) || !m_pCalc)
+    return false;
+
+  if (!m_pCalc->Read(size - headerSize, pIO))
+    return false;
+
+  return true;
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::Write
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+bool CIccSampledCalculatorCurve::Write(CIccIO *pIO)
+{
+  icCurveElemSignature sig = GetType();
+
+  if (!pIO)
+    return false;
+
+  if (!pIO->Write32(&sig))
+    return false;
+
+  if (!pIO->Write32(&m_nReserved))
+    return false;
+
+  if (!pIO->Write32(&m_nDesiredSize))
+    return false;
+
+  if (!pIO->WriteFloat32Float(&m_firstEntry))
+    return false;
+
+  if (!pIO->WriteFloat32Float(&m_lastEntry))
+    return false;
+
+  if (!pIO->Write16(&m_extensionType))
+    return false;
+
+  if (!pIO->Write16(&m_nReserved2))
+    return false;
+
+  if (m_pCalc && m_pCalc->Write(pIO)) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::Begin
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+bool CIccSampledCalculatorCurve::Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE)
+{
+  if (m_nDesiredSize < 2 || !m_pCalc || !m_pCalc->Begin(nInterp, pMPE))
+    return false;
+  
+  icUInt32Number nSize = m_nDesiredSize;
+  if (nSize < 2)
+    nSize = 2;
+  if (nSize > ICC_MAXCALCCURVESIZE)
+    nSize = ICC_MAXCALCCURVESIZE;
+
+  SetSize(nSize);
+
+  m_range = m_lastEntry - m_firstEntry;
+
+  if (m_range == 0.0)
+    return false;
+
+  m_last = (icFloatNumber)(m_nCount - 1);
+  icFloatNumber stepSize = m_range / m_last;
+
+  //Use calculator element to populate lookup table
+  CIccApplyMpe *pApply = m_pCalc->GetNewApply(NULL);
+  for (icUInt32Number i = 0; i < m_nCount; i++) {
+    icFloatNumber src, dst;
+    src = (icFloatNumber)i / m_last * m_range + m_firstEntry;
+
+    m_pCalc->Apply(pApply, &dst, &src);
+    m_pSamples[i] = dst;
+  }
+
+  if (pApply)
+    delete pApply;
+
+  switch (m_extensionType) {
+  case icClipSingleSampledCurve:
+    m_loSlope = 0.0;
+    m_loIntercept = m_pSamples[0];
+
+    m_hiSlope = 0.0;
+    m_hiIntercept = m_pSamples[m_nCount - 1];
+    break;
+
+  case icExtendSingleSampledCurve:
+    m_loSlope = (m_pSamples[1] - m_pSamples[0]) / stepSize;
+    m_loIntercept = m_pSamples[0] - m_loSlope*m_firstEntry;
+
+    m_hiSlope = (m_pSamples[m_nCount - 1] - m_pSamples[m_nCount - 2]) / stepSize;
+    m_hiIntercept = m_pSamples[m_nCount - 1] - m_hiSlope*m_lastEntry;
+    break;
+
+  default:
+    return false;
+  }
+
+  return true;
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::Apply
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+icFloatNumber CIccSampledCalculatorCurve::Apply(icFloatNumber v) const
+{
+  if (v < m_firstEntry) {
+    return m_loSlope * v + m_loIntercept;;
+  }
+  else if (v > m_lastEntry) {
+    return m_hiSlope * v + m_hiIntercept;
+  }
+
+  icFloatNumber pos = (v - m_firstEntry) / m_range * m_last;
+  icUInt32Number index = (icUInt32Number)pos;
+  icFloatNumber remainder = pos - (icFloatNumber)index;
+
+  if (remainder == 0.0)
+    return m_pSamples[index];
+
+  return (icFloatNumber)((1.0 - remainder)*m_pSamples[index] + remainder*m_pSamples[index + 1]);
+}
+
+/**
+******************************************************************************
+* Name: CIccSampledCalculatorCurve::Validate
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+icValidateStatus CIccSampledCalculatorCurve::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
+{
+  CIccInfo Info;
+  std::string sSigPathName = Info.GetSigPathName(sigPath);
+
+  icValidateStatus rv = icValidateOK;
+  if (m_nReserved || m_nReserved2) {
+    sReport += icMsgValidateWarning;
+    sReport += sSigPathName;
+    sReport += " sampled calculator curve has non zero reserved data.\r\n";
+    rv = icValidateWarning;
+  }
+
+  if (m_extensionType > icMaxSingleSampledCurveType) {
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " sampled calculator curve has unknown extension type\r\n";
+    rv = icMaxStatus(rv, icValidateCriticalError);
+  }
+
+  if (m_nDesiredSize < 2) {
+    sReport += icMsgValidateWarning;
+    sReport += sSigPathName;
+    sReport += " sampled calculator curve has too few desired sample points.\r\n";
+    rv = icMaxStatus(rv, icValidateWarning);
+  }
+
+  if (m_lastEntry - m_firstEntry <= 0.0) {
+    sReport += icMsgValidateWarning;
+    sReport += sSigPathName;
+    sReport += " sampled calculator curve has an invalid sample range.\n";
+    rv = icMaxStatus(rv, icValidateWarning);
+  }
+
+  if (pProfile && pProfile->m_Header.version < icVersionNumberV5_1) {
+    sReport += icMsgValidateWarning;
+    sReport += sSigPathName;
+    sReport += " sampled calculator curve is not supported by version of profile.\n";
+    rv = icMaxStatus(rv, icValidateWarning);
+  }
+
+  if (!m_pCalc) {
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " sampled calculator curve has no calculator element\r\n";
+    rv = icMaxStatus(rv, icValidateCriticalError);
+  }
+  else {
+    icValidateStatus stat = m_pCalc->Validate(sSigPathName, sReport, pMPE, pProfile);
+
+    rv = icMaxStatus(rv, stat);
+  }
+ 
+  return rv;
+}
+
 
 /**
  ******************************************************************************
@@ -1757,13 +2606,13 @@ CIccSegmentedCurve::~CIccSegmentedCurve()
  * 
  * Return: 
  ******************************************************************************/
-void CIccSegmentedCurve::Describe(std::string &sDescription)
+void CIccSegmentedCurve::Describe(std::string &sDescription, int nVerboseness)
 {
   CIccCurveSegmentList::iterator i;
 
-  sDescription += "BEGIN_CURVE\r\n";
+  sDescription += "BEGIN_CURVE\n";
   for (i=m_list->begin(); i!=m_list->end(); i++) {
-    (*i)->Describe(sDescription);
+    (*i)->Describe(sDescription, nVerboseness);
   }
 }
 
@@ -2002,7 +2851,7 @@ bool CIccSegmentedCurve::Insert(CIccCurveSegment *pCurveSegment)
  * 
  * Return: 
  ******************************************************************************/
-bool CIccSegmentedCurve::Begin()
+bool CIccSegmentedCurve::Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE)
 {
   if (m_list->size()==0)
     return false;
@@ -2051,7 +2900,7 @@ icFloatNumber CIccSegmentedCurve::Apply(icFloatNumber v) const
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccSegmentedCurve::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccSegmentedCurve::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   CIccInfo Info;
   std::string sSigPathName = Info.GetSigPathName(sigPath);
@@ -2060,21 +2909,21 @@ icValidateStatus CIccSegmentedCurve::Validate(std::string sigPath, std::string &
   if (m_nReserved1 || m_nReserved2) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " Segmented curve has non zero reserved data.\r\n";
+    sReport += " Segmented curve has non zero reserved data.\n";
     rv = icValidateWarning;
   }
 
   if (m_list->size()==0) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " Has Empty CurveSegment!\r\n";
+    sReport += " Has Empty CurveSegment!\n";
     return icMaxStatus(rv, icValidateCriticalError);
   }
 
   CIccCurveSegmentList::iterator i;
 
   for (i=m_list->begin(); i!=m_list->end(); i++) {
-    rv = icMaxStatus(rv, (*i)->Validate(sigPath+icGetSigPath(GetType()), sReport, pMPE));
+    rv = icMaxStatus(rv, (*i)->Validate(sigPath+icGetSigPath(GetType()), sReport, pMPE, pProfile));
   }
 
   return rv;
@@ -2098,6 +2947,8 @@ CIccCurveSetCurve* CIccCurveSetCurve::Create(icCurveElemSignature sig)
     return new CIccSegmentedCurve();
   case icSigSingleSampledCurve:
     return new CIccSingleSampledCurve();
+  case icSigSampledCalculatorCurve:
+    return new CIccSampledCalculatorCurve();
   default:
     return NULL;
   }
@@ -2329,23 +3180,23 @@ bool CIccMpeCurveSet::SetCurve(int nIndex, icCurveSetCurvePtr newCurve)
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeCurveSet::Describe(std::string &sDescription)
+void CIccMpeCurveSet::Describe(std::string &sDescription, int nVerboseness)
 {
   if (m_curve) {
     icChar buf[81];
     int i;
 
-    sprintf(buf, "BEGIN_CURVE_SET %d\r\n", m_nInputChannels);
+    sprintf(buf, "BEGIN_CURVE_SET %d\n", m_nInputChannels);
     sDescription += buf;
 
     for (i=0; i<m_nInputChannels; i++) {
-      sprintf(buf, "Curve %d of %d\r\n", i+1, m_nInputChannels);
+      sprintf(buf, "Curve %d of %d\n", i+1, m_nInputChannels);
       sDescription += buf;
       if (m_curve[i]) {
-        m_curve[i]->Describe(sDescription);
+        m_curve[i]->Describe(sDescription, nVerboseness);
       }
     }
-    sDescription += "END_CURVE_SET\r\n";
+    sDescription += "END_CURVE_SET\n";
   }
 }
 
@@ -2553,10 +3404,20 @@ bool CIccMpeCurveSet::Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pM
   if (!m_curve)
     return false;
 
+  icCurveMap map;
+
   int i;
   for (i=0; i<m_nInputChannels; i++) {
-    if (!m_curve[i] || !m_curve[i]->Begin())
+    if (!m_curve[i])
       return false;
+
+    if (!map[m_curve[i]]) {
+      if (!m_curve[i]->Begin(nInterp, pMPE)) {
+        return false;
+      }
+      //ensure that Begin is called only once for each curve
+      map[m_curve[i]] = (CIccCurveSetCurve*)1;
+    }
   }
 
   return true;
@@ -2590,10 +3451,10 @@ void CIccMpeCurveSet::Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, con
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccMpeCurveSet::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeCurveSet::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   std::string mpeSigPath = sigPath + icGetSigPath(GetType());
-  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE);
+  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE, pProfile);
 
   bool empty=false;
   if (m_curve) {
@@ -2603,7 +3464,7 @@ icValidateStatus CIccMpeCurveSet::Validate(std::string sigPath, std::string &sRe
         empty = true;
       }
       else {
-        rv = icMaxStatus(rv, m_curve[i]->Validate(mpeSigPath, sReport, pMPE));
+        rv = icMaxStatus(rv, m_curve[i]->Validate(mpeSigPath, sReport, pMPE, pProfile));
       }
     }
   }
@@ -2616,7 +3477,7 @@ icValidateStatus CIccMpeCurveSet::Validate(std::string sigPath, std::string &sRe
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Has Empty Curve Element(s)!\r\n";
+    sReport += " -  Has Empty Curve Element(s)!\n";
     return icValidateCriticalError;
   }
 
@@ -2752,17 +3613,17 @@ void CIccMpeTintArray::SetArray(CIccTagNumArray *pArray)
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeTintArray::Describe(std::string &sDescription)
+void CIccMpeTintArray::Describe(std::string &sDescription, int nVerboseness)
 {
   if (m_Array) {
     icChar buf[81];
 
-    sprintf(buf, "BEGIN_TINT_ARRAY %d\r\n", m_nOutputChannels);
+    sprintf(buf, "BEGIN_TINT_ARRAY %d\n", m_nOutputChannels);
     sDescription += buf;
 
-    m_Array->Describe(sDescription);
+    m_Array->Describe(sDescription, nVerboseness);
 
-    sDescription += "END_TINT_ARRAY\r\n";
+    sDescription += "END_TINT_ARRAY\n";
   }
 }
 
@@ -2933,10 +3794,10 @@ void CIccMpeTintArray::Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, co
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   std::string mpeSigPath = sigPath + icGetSigPath(GetType());
-  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE);
+  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE, pProfile);
 
   if (m_nInputChannels!=1) {
     CIccInfo Info;
@@ -2944,7 +3805,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Bad number of input channels!\r\n";
+    sReport += " -  Bad number of input channels!\n";
     return icValidateCriticalError;
   }
 
@@ -2954,7 +3815,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Bad number of output channels!\r\n";
+    sReport += " -  Bad number of output channels!\n";
     return icValidateCriticalError;
   }
 
@@ -2964,7 +3825,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " -  Has no tint values(s)!\r\n";
+    sReport += " -  Has no tint values(s)!\n";
     return icValidateCriticalError;
   }
   else {
@@ -2982,7 +3843,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " -  Needs two or more tint steps!\r\n";
+      sReport += " -  Needs two or more tint steps!\n";
       bBad = true;
     }
     */
@@ -2992,7 +3853,7 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " -  Array size must be multiple of output channels!\r\n";
+      sReport += " -  Array size must be multiple of output channels!\n";
       bBad = true;
     }
 
@@ -3003,6 +3864,951 @@ icValidateStatus CIccMpeTintArray::Validate(std::string sigPath, std::string &sR
 
   return rv;
 }
+
+CIccToneMapFunc::CIccToneMapFunc()
+{
+  m_nFunctionType = 0;
+  m_nParameters = 0;
+  m_params = NULL;
+  m_nReserved = 0;
+  m_nReserved2 = 0;
+}
+
+
+CIccToneMapFunc::~CIccToneMapFunc()
+{
+  if (m_params)
+    free(m_params);
+}
+
+CIccToneMapFunc& CIccToneMapFunc::operator=(const CIccToneMapFunc& toneMapFunc)
+{
+  if (&toneMapFunc == this)
+    return *this;
+
+  m_nFunctionType = toneMapFunc.m_nFunctionType;
+  m_nParameters = toneMapFunc.m_nParameters;
+  
+  if (m_params)
+    free(m_params);
+  if (toneMapFunc.m_nParameters && toneMapFunc.m_params) {
+    m_params = (icFloatNumber*)malloc(m_nParameters * sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, toneMapFunc.m_params, m_nParameters * sizeof(icFloatNumber));
+  }
+  else
+    m_params = NULL;
+
+  m_nReserved = toneMapFunc.m_nReserved;
+  m_nReserved2 = toneMapFunc.m_nReserved2;
+
+  return *this;
+}
+
+CIccToneMapFunc* CIccToneMapFunc::NewCopy() const
+{
+  CIccToneMapFunc* rv = new CIccToneMapFunc();
+
+  if (rv)
+    *rv = *this;
+
+  return rv;
+}
+
+int CIccToneMapFunc::NumArgs() const
+{
+  if (m_nFunctionType == 0)
+    return 3;
+  return 0;
+}
+
+bool CIccToneMapFunc::SetFunction(icUInt16Number nFunc, icUInt8Number nParams, icFloatNumber* pParams)
+{
+  m_nFunctionType = nFunc;
+
+  if (m_params)
+    free(m_params);
+
+  int nArgs = NumArgs();
+  m_nParameters = (icUInt8Number)icIntMin(nParams, NumArgs());
+  if (nArgs && pParams) {
+    m_params = (icFloatNumber*)calloc(nArgs, sizeof(icFloatNumber));
+    if (m_params)
+      memcpy(m_params, pParams, icIntMin(nArgs, nParams) * sizeof(icFloatNumber));
+  }
+
+  return nParams == NumArgs();
+}
+
+void CIccToneMapFunc::Describe(std::string& sDescription, int nVerboseness)
+{
+  icChar buf[128];
+
+  sprintf(buf, "ToneFunctionType: %04Xh\n", m_nFunctionType);
+  sDescription += buf;
+
+  switch (m_nFunctionType) {
+  case 0x0000:
+    sprintf(buf, "Y = %.8f * M * ( X + %.8f) + %.8f\n\n", m_params[0], m_params[1], m_params[2]);
+    sDescription += buf;
+    return;
+
+  default:
+    int i;
+    sprintf(buf, "Unknown Function with %d parameters:\n\n", m_nParameters);
+    sDescription += buf;
+
+    for (i = 0; i < m_nParameters; i++) {
+      sprintf(buf, "Param[%d] = %.8lf\n\n", i, m_params[i]);
+      sDescription += buf;
+    }
+
+  }
+}
+
+bool CIccToneMapFunc::Read(icUInt32Number size, CIccIO* pIO)
+{
+  icCurveSegSignature sig;
+
+  icUInt32Number headerSize = sizeof(icTagTypeSignature) +
+    sizeof(icUInt32Number) +
+    sizeof(icUInt16Number) +
+    sizeof(icUInt16Number);
+
+  if (headerSize > size)
+    return false;
+
+  if (!pIO) {
+    return false;
+  }
+
+  if (!pIO->Read32(&sig))
+    return false;
+
+  if (sig != icSigToneMapFunction)
+    return false;
+
+  if (!pIO->Read32(&m_nReserved))
+    return false;
+
+  if (!pIO->Read16(&m_nFunctionType))
+    return false;
+
+  if (!pIO->Read16(&m_nReserved2))
+    return false;
+
+  if (m_params) {
+    free(m_params);
+  }
+
+  m_nParameters = (icUInt8Number)((size - headerSize)/sizeof(icFloatNumber));
+
+  if (m_nParameters) {
+
+    m_params = (icFloatNumber*)malloc(m_nParameters * sizeof(icFloatNumber));
+    if (!m_params)
+      return false;
+
+    if (pIO->ReadFloat32Float(m_params, m_nParameters) != m_nParameters) {
+      return false;
+    }
+  }
+  else
+    m_params = NULL;
+
+  return true;
+
+}
+
+bool CIccToneMapFunc::Write(CIccIO* pIO)
+{
+  icToneFunctionSignature sig = GetType();
+
+  if (!pIO)
+    return false;
+
+  if (!pIO->Write32(&sig))
+    return false;
+
+  if (!pIO->Write32(&m_nReserved))
+    return false;
+
+  if (!pIO->Write16(&m_nFunctionType))
+    return false;
+
+  if (!pIO->Write16(&m_nReserved2))
+    return false;
+
+
+  if (m_nParameters != NumArgs())
+    return false;
+
+  if (m_nParameters) {
+    if (pIO->WriteFloat32Float(m_params, m_nParameters) != m_nParameters)
+      return false;
+  }
+
+  return true;
+
+}
+
+bool CIccToneMapFunc::Begin()
+{
+  if (m_nFunctionType != 0x0000)
+    return false;
+
+  if (m_nParameters < NumArgs() || !m_params)
+    return false;
+
+  return true;
+}
+
+icFloatNumber CIccToneMapFunc::Apply(icFloatNumber lumValue, icFloatNumber pixelValue) const
+{
+  if (!m_nFunctionType && m_params) {
+    return m_params[0] * lumValue * (pixelValue + m_params[1]) + m_params[2];
+  }
+
+  return 0;
+}
+
+icValidateStatus CIccToneMapFunc::Validate(std::string& sReport, int nVerboseness) const
+{
+  CIccInfo Info;
+
+  icValidateStatus rv = icValidateOK;
+
+  if (m_nReserved || m_nReserved2) {
+    sReport += icMsgValidateWarning;
+    sReport += " formula curve has non zero reserved data.\n";
+    rv = icMaxStatus(rv, icValidateWarning);
+  }
+
+  switch (m_nFunctionType) {
+    case 0x0000:
+      if (!m_params || m_nParameters < 3) {
+        sReport += icMsgValidateCriticalError;
+        sReport += " Tone mapping function has invalid parameters.\n";
+        rv = icMaxStatus(rv, icValidateCriticalError);
+      }
+      else if (m_nParameters > 3) {
+        sReport += icMsgValidateWarning;
+        sReport += " tone mapping function has too many formulaCurveSegment parameters.\n";
+        rv = icMaxStatus(rv, icValidateWarning);
+      }
+      break;
+
+    default:
+    {
+      icChar buf[128];
+      sReport += icMsgValidateCriticalError;
+      sprintf(buf, " tone mapping function uses unknown function type %d\n", m_nFunctionType);
+      sReport += buf;
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+  }
+
+  return rv;
+}
+
+
+
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::CIccMpeToneMap
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+CIccMpeToneMap::CIccMpeToneMap(icUInt16Number nOutputChannels/*=0*/)
+{
+  m_nReserved = 0;
+  m_nInputChannels = nOutputChannels + 1;
+  m_nOutputChannels = nOutputChannels;
+  m_pLumCurve = NULL;
+  m_pToneFuncs = NULL;
+
+  SetNumOutputChannels(nOutputChannels);
+
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::CIccMpeToneMap
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+CIccMpeToneMap::CIccMpeToneMap(const CIccMpeToneMap& toneMap)
+{
+  m_nReserved = toneMap.m_nReserved;
+
+  m_nInputChannels = toneMap.m_nInputChannels;
+  m_nOutputChannels = toneMap.m_nOutputChannels;
+
+  if (toneMap.m_pLumCurve)
+    m_pLumCurve = toneMap.m_pLumCurve->NewCopy();
+
+  m_nFunc = toneMap.m_nFunc;
+  if (toneMap.m_pToneFuncs)
+    m_pToneFuncs = toneMap.CopyToneFuncs();
+  else
+    m_pToneFuncs = NULL;
+}
+
+/**
+ ******************************************************************************
+ * Name: &CIccMpeToneMap::operator=
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+CIccMpeToneMap& CIccMpeToneMap::operator=(const CIccMpeToneMap& toneMap)
+{
+  if (&toneMap == this)
+    return *this;
+
+  m_nReserved = toneMap.m_nReserved;
+
+  m_nInputChannels = toneMap.m_nInputChannels;
+  m_nOutputChannels = toneMap.m_nOutputChannels;
+
+  if (m_pLumCurve)
+    delete m_pLumCurve;
+
+  if (toneMap.m_pLumCurve)
+    m_pLumCurve = toneMap.m_pLumCurve->NewCopy();
+  else
+    m_pLumCurve = NULL;
+
+  ClearToneFuncs();
+
+  m_nFunc = toneMap.m_nFunc;
+  if (toneMap.m_pToneFuncs)
+    m_pToneFuncs = toneMap.CopyToneFuncs();
+  else
+    m_pToneFuncs = NULL;
+
+  return *this;
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::~CIccMpeToneMap
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+CIccMpeToneMap::~CIccMpeToneMap()
+{
+  if (m_pLumCurve)
+    delete m_pLumCurve;
+
+  ClearToneFuncs();
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::CopyToneFuncs
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+CIccToneMapFunc** CIccMpeToneMap::CopyToneFuncs() const
+{
+  if (!m_pToneFuncs || m_nOutputChannels==0)
+    return NULL;
+
+  CIccToneMapFunc** rv = (CIccToneMapFunc**)calloc(m_nOutputChannels, sizeof(CIccToneMapFunc*));
+  if (!rv)
+    return NULL;
+
+  rv[0] = m_pToneFuncs[0] ? m_pToneFuncs[0]->NewCopy() : NULL;
+
+  int j;
+  for (int i = 1; i < m_nOutputChannels; i++) {
+    for (j = 0; j < i; j++)
+      if (m_pToneFuncs[j] == m_pToneFuncs[i])
+        break;
+    if (j < i)
+      rv[i] = rv[j];
+    else
+      rv[i] = m_pToneFuncs[i] ? m_pToneFuncs[i]->NewCopy() : NULL;
+  }
+
+  return rv;
+}
+
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::ClearToneFuncs
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+void CIccMpeToneMap::ClearToneFuncs()
+{
+  if (m_pToneFuncs) {
+
+    if (m_nOutputChannels) {
+      if (m_pToneFuncs[0])
+        delete m_pToneFuncs[0];
+
+      int j;
+      for (int i = 1; i < m_nOutputChannels; i++) {
+        for (j = 0; j < i; j++)
+          if (m_pToneFuncs[j] == m_pToneFuncs[i])
+            break;
+        if (j == i && m_pToneFuncs[i])
+          delete m_pToneFuncs[i];
+      }
+    }
+
+    free(m_pToneFuncs);
+    m_pToneFuncs = NULL;
+  }
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::SetLumCurve
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+void CIccMpeToneMap::SetLumCurve(CIccCurveSetCurve *pLumCurve)
+{
+  if (pLumCurve == m_pLumCurve)
+    return;
+
+  if (m_pLumCurve)
+    delete m_pLumCurve;
+
+  m_pLumCurve = pLumCurve;
+}
+
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::SetNumOutputChannels
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+void CIccMpeToneMap::SetNumOutputChannels(icUInt16Number nVectorSize)
+{
+  ClearToneFuncs();
+  m_nOutputChannels = nVectorSize;
+  if (m_nOutputChannels) {
+    m_pToneFuncs = (CIccToneMapFunc**)calloc(m_nOutputChannels, sizeof(CIccToneMapFunc*));
+  }
+  m_nFunc = 0;
+}
+
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::PushBackFunc
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+bool CIccMpeToneMap::Insert(CIccToneMapFunc* pToneMapFunc)
+{
+  if (!m_pToneFuncs || m_nFunc >= m_nOutputChannels)
+    return false;
+
+  m_pToneFuncs[m_nFunc++] = pToneMapFunc;
+
+  return true;
+}
+
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::Describe
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+void CIccMpeToneMap::Describe(std::string& sDescription, int nVerboseness)
+{
+  char buf[256];
+
+  sprintf(buf, "BEGIN_TONE_MAP %d\n", m_nOutputChannels);
+  sDescription += buf;
+
+  if (m_pLumCurve) {
+    sDescription += "LUM_FUNCTION:\n";
+    m_pLumCurve->Describe(sDescription, nVerboseness);
+  }
+
+  if (m_pToneFuncs) {
+    for (int i = 0; i < m_nOutputChannels; i++) {
+      sprintf(buf, "TONE_FUNCTION_%d:\n", i);
+      sDescription += buf;
+      if (m_pToneFuncs[i])
+        m_pToneFuncs[i]->Describe(sDescription, nVerboseness);
+    }
+  }
+
+  sDescription += "END_TINT_ARRAY\n";
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::Read
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+bool CIccMpeToneMap::Read(icUInt32Number size, CIccIO* pIO)
+{
+  if (m_pLumCurve)
+    delete m_pLumCurve;
+  m_pLumCurve = NULL;
+
+  ClearToneFuncs();
+
+  icElemTypeSignature sig;
+
+  icUInt32Number startPos = pIO->Tell();
+
+  icUInt32Number headerSize = sizeof(icElemTypeSignature) +
+    sizeof(icUInt32Number) +
+    sizeof(icUInt16Number) +
+    sizeof(icUInt16Number) +
+    sizeof(icUInt32Number)*2;
+
+  if (headerSize + sizeof(icTagTypeSignature) > size)
+    return false;
+
+  if (!pIO) {
+    return false;
+  }
+
+  icUInt16Number nInputChannels, nOutputChannels;
+
+  if (!pIO->Read32(&sig))
+    return false;
+
+  if (!pIO->Read32(&m_nReserved))
+    return false;
+
+  if (!pIO->Read16(&nInputChannels))
+    return false;
+
+  if (!pIO->Read16(&nOutputChannels))
+    return false;
+
+  if (nInputChannels != nOutputChannels+1 || !nOutputChannels)
+    return false;
+
+  m_nInputChannels = nInputChannels;
+  SetNumOutputChannels(nOutputChannels);
+
+  //setup to read luminance curve based on position
+  icPositionNumber lumPos;
+  if (!pIO->Read32(&lumPos.offset) ||
+      !pIO->Read32(&lumPos.size))
+    return false;
+
+  icUInt32Number curPos = pIO->Tell();
+
+  //We need signature of curve type to construct and read it
+  icCurveElemSignature curveSig;
+  if (lumPos.size < sizeof(curveSig))
+    return false;
+
+  pIO->Seek(startPos + lumPos.offset, icSeekSet);
+  if (!pIO->Read32(&curveSig))
+    return false;
+  pIO->Seek(startPos + lumPos.offset, icSeekSet);
+  
+  CIccCurveSetCurve* pCurve = CIccCurveSetCurve::Create(curveSig);
+
+  if (!pCurve) {
+    return false;
+  }
+
+  if (!pCurve->Read(lumPos.size, pIO)) {
+    return false;
+  }
+
+  SetLumCurve(pCurve);
+
+  //setup positions to get the output channel mapping functions
+  pIO->Seek(curPos, icSeekSet);
+
+  headerSize += nOutputChannels + sizeof(icUInt32Number)*2;
+
+  if (headerSize + sizeof(icTagTypeSignature) > size)
+    return false;
+
+  if (!icValidTagPos(lumPos, headerSize, size))
+    return false;
+
+  icPositionNumber* funcPos = new icPositionNumber[m_nOutputChannels];
+  if (!funcPos)
+    return false;
+
+  //read output tone mapping function positions
+  int j;
+  for (int i = 0; i < m_nOutputChannels; i++) {
+    if (!pIO->Read32(&funcPos[i].offset) ||
+      !pIO->Read32(&funcPos[i].size) ||
+      !icValidTagPos(funcPos[i], headerSize, size)) {
+      delete[] funcPos;
+      return false;
+    }
+
+    if (!icValidOverlap(lumPos, funcPos[i], false)) {
+      delete[] funcPos;
+      return false;
+    }
+    for (j = 0; j < i; j++) {
+      if (!icValidOverlap(funcPos[j], funcPos[i], true)) {
+        delete[] funcPos;
+        return false;
+      }
+    }
+  }
+
+  //Read tone mapping functions making copies as we go
+  m_pToneFuncs[0] = NewToneMapFunc();
+  if (!m_pToneFuncs[0]) {
+    delete[] funcPos;
+    return false;
+  }
+  pIO->Seek(startPos + funcPos[0].offset, icSeekSet);
+  if (!m_pToneFuncs[0]->Read(funcPos[0].size, pIO)) {
+    delete[] funcPos;
+    return false;
+  }
+
+  for (int i = 1; i < m_nOutputChannels; i++) {
+    for (j = 0; j < i; i++) {
+      if (funcPos[j].offset == funcPos[i].offset)
+        break;
+    }
+    if (j != i)
+      m_pToneFuncs[i] = m_pToneFuncs[j];
+    else {
+      m_pToneFuncs[i] = NewToneMapFunc();
+      if (!m_pToneFuncs[i]) {
+        delete[] funcPos;
+        return false;
+      }
+      pIO->Seek(startPos + funcPos[i].offset, icSeekSet);
+      if (!m_pToneFuncs[i]->Read(funcPos[i].size, pIO)) {
+        delete[] funcPos;
+        return false;
+      }
+    }
+  }
+
+  //keep track of functions read in
+  m_nFunc = m_nOutputChannels;
+
+  return true;
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::Write
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+bool CIccMpeToneMap::Write(CIccIO* pIO)
+{
+  if (!m_pLumCurve || !m_pToneFuncs || !m_nOutputChannels)
+    return false;
+
+  icElemTypeSignature sig = GetType();
+
+  if (!pIO)
+    return false;
+
+  icUInt32Number nTagStartPos = pIO->Tell();
+
+  if (!pIO->Write32(&sig))
+    return false;
+
+  if (!pIO->Write32(&m_nReserved))
+    return false;
+
+  if (!pIO->Write16(&m_nInputChannels))
+    return false;
+
+  if (!pIO->Write16(&m_nOutputChannels))
+    return false;
+
+  icUInt32Number lumOffset = pIO->Tell();
+
+  //Reserve position entry for Luminance Curve
+  icUInt32Number zero = 0;
+  if (!pIO->Write32(&zero) ||
+      !pIO->Write32(&zero))
+    return false;
+
+  //Reserve Position entry for mapping functions
+  for (int i = 0; i < m_nOutputChannels; i++) {
+    if (!pIO->Write32(&zero) ||
+      !pIO->Write32(&zero))
+      return false;
+  }
+
+  //write out luminance curve
+  icPositionNumber lumPos;
+  lumPos.offset = pIO->Tell()- nTagStartPos;
+
+  if (!m_pLumCurve->Write(pIO))
+    return false;
+
+  lumPos.size = pIO->Tell() - (lumPos.offset + nTagStartPos);
+
+  //Keep track of tone function positions
+  icPositionNumber* funcPos = new icPositionNumber[m_nOutputChannels];
+  if (!funcPos)
+    return false;
+
+  //write out first tone function
+  int j;
+  funcPos[0].offset = pIO->Tell() - nTagStartPos;
+  if (!m_pToneFuncs[0]->Write(pIO)) {
+    delete[] funcPos;
+    return false;
+  }
+  funcPos[0].size = pIO->Tell() - (funcPos[0].offset + nTagStartPos);
+
+  //write out additional non-copied tone functions
+  for (int i = 1; i < m_nOutputChannels; i++) {
+    for (j = 0; j < i; j++)
+      if (m_pToneFuncs[j] == m_pToneFuncs[i])
+        break;
+    if (j < i) {
+      funcPos[i] = funcPos[j];
+    }
+    else {
+      funcPos[i].offset = pIO->Tell() - nTagStartPos;
+      if (!m_pToneFuncs[i]->Write(pIO)) {
+        delete[] funcPos;
+        return false;
+      }
+      funcPos[i].size = pIO->Tell() - (funcPos[i].offset + nTagStartPos);
+    }
+  }
+
+  //Everything but positions is written so make sure we end on 32 bit boundary
+  pIO->Align32();
+  icUInt32Number endOffset = pIO->Tell();
+
+  //write out luminance curve position
+  pIO->Seek(lumOffset, icSeekSet);
+
+  if (!pIO->Write32(&lumPos.offset) ||
+      !pIO->Write32(&lumPos.size)) {
+    delete[] funcPos;
+    return false;
+  }
+
+  //write out tone mapping function positions
+  for (int i = 0; i < m_nOutputChannels; i++) {
+    if (!pIO->Write32(&funcPos[i].offset) ||
+      !pIO->Write32(&funcPos[i].size)) {
+      delete[] funcPos;
+      return false;
+    }
+  }
+  delete[] funcPos;
+
+  //Go back to end and we are done
+  pIO->Seek(endOffset, icSeekSet);
+
+  return true;
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::Begin
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+bool CIccMpeToneMap::Begin(icElemInterp nInterp, CIccTagMultiProcessElement* pMPE)
+{
+  if (!m_pLumCurve || !m_pToneFuncs)
+    return false;
+
+  if (!m_pLumCurve->Begin(nInterp, pMPE))
+    return false;
+
+  if (!m_pToneFuncs[0] || !m_pToneFuncs[0]->Begin())
+    return false;
+
+  int j;
+  for (int i=1; i<m_nOutputChannels; i++) {
+    for (j = 0; j < i; j++)
+      if (m_pToneFuncs[j] == m_pToneFuncs[i])
+        break;
+    if (j==i && (!m_pToneFuncs[i] || !m_pToneFuncs[i]->Begin()))
+      return false;
+  }
+  return true;
+}
+
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::Apply
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+void CIccMpeToneMap::Apply(CIccApplyMpe* pApply, icFloatNumber* pDestPixel, const icFloatNumber* pSrcPixel) const
+{
+  icFloatNumber lum = m_pLumCurve->Apply(pSrcPixel[m_nOutputChannels]);
+  for (int i = 0; i < m_nOutputChannels; i++) {
+    pDestPixel[i] = m_pToneFuncs[i]->Apply(lum, pSrcPixel[i]);
+  }
+}
+
+/**
+ ******************************************************************************
+ * Name: CIccMpeToneMap::Validate
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+icValidateStatus CIccMpeToneMap::Validate(std::string sigPath, std::string& sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile* pProfile/*=NULL*/) const
+{
+  std::string mpeSigPath = sigPath + icGetSigPath(GetType());
+  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE, pProfile);
+
+  if (m_nInputChannels != m_nOutputChannels + 1) {
+    CIccInfo Info;
+    std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
+
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " -  Bad number of input channels!\n";
+    return icValidateCriticalError;
+  }
+
+  if (!m_nOutputChannels) {
+    CIccInfo Info;
+    std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
+
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " -  Bad number of output channels!\n";
+    return icValidateCriticalError;
+  }
+
+  if (!m_pLumCurve) {
+    CIccInfo Info;
+    std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
+
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " -  Has no luminance mapping curve!\n";
+    return icValidateCriticalError;
+  }
+  else {
+    rv = icMaxStatus(rv, m_pLumCurve->Validate(mpeSigPath, sReport, pMPE, pProfile));
+  }
+
+  if (!m_pToneFuncs) {
+    CIccInfo Info;
+    std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
+
+    sReport += icMsgValidateCriticalError;
+    sReport += sSigPathName;
+    sReport += " -  Has no tone mapping functions!\n";
+    return icValidateCriticalError;
+  }
+  else {
+    for (int i = 0; i < m_nOutputChannels; i++) {
+      std::string funcReport;
+      char buf[20];
+      sprintf(buf, "#%d", i);
+      if (!m_pToneFuncs[i]) {
+        CIccInfo Info;
+        std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
+
+        sReport += icMsgValidateCriticalError;
+        sReport += sSigPathName;
+        sReport += std::string(" -  Missing Tone function #") + buf + "\n";
+
+        return icValidateCriticalError;
+      }
+
+      icValidateStatus crv = m_pToneFuncs[i]->Validate(funcReport);
+      if (crv != icValidateOK) {
+        CIccInfo Info;
+        std::string sSigPathName = Info.GetSigPathName(mpeSigPath);
+
+        sReport += icMsgValidateInformation;
+        sReport += sSigPathName;
+        sReport += std::string(" - Tone Function #") + buf + " status:\n" + funcReport;
+
+        rv = icMaxStatus(rv, crv);
+      }
+    }
+  }
+
+  return rv;
+}
+
+
 
 /**
  ******************************************************************************
@@ -3177,13 +4983,13 @@ bool CIccMpeMatrix::SetSize(icUInt16Number nInputChannels, icUInt16Number nOutpu
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeMatrix::Describe(std::string &sDescription)
+void CIccMpeMatrix::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[81];
   int i, j;
   icFloatNumber *data = m_pMatrix;
 
-  sprintf(buf, "BEGIN_ELEM_MATRIX %d %d\r\n", m_nInputChannels, m_nOutputChannels);
+  sprintf(buf, "BEGIN_ELEM_MATRIX %d %d\n", m_nInputChannels, m_nOutputChannels);
   sDescription += buf;
 
   for (j=0; j<m_nOutputChannels; j++) {
@@ -3195,17 +5001,17 @@ void CIccMpeMatrix::Describe(std::string &sDescription)
         sDescription += buf;
       }
       if (m_pConstants) {
-        sprintf(buf, "  +  %12.8lf\r\n", m_pConstants[j]);
+        sprintf(buf, "  +  %12.8lf\n", m_pConstants[j]);
         sDescription += buf;
       }
       data += i;
     }
     else {
-      sprintf(buf, "ZeroRow  +  %12.8lf\r\n", m_pConstants[j]);
+      sprintf(buf, "ZeroRow  +  %12.8lf\n", m_pConstants[j]);
       sDescription += buf;
     }
   }
-  sDescription += "END_ELEM_MATRIX\r\n";
+  sDescription += "END_ELEM_MATRIX\n";
 }
 
 /**
@@ -3519,10 +5325,10 @@ void CIccMpeMatrix::Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const i
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccMpeMatrix::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeMatrix::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   std::string mpeSigPath = sigPath + icGetSigPath(GetType());
-  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE);
+  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE, pProfile);
   
   if (!m_pConstants) {
     CIccInfo Info;
@@ -3530,7 +5336,7 @@ icValidateStatus CIccMpeMatrix::Validate(std::string sigPath, std::string &sRepo
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has Empty Matrix Constant data!\r\n";
+    sReport += " - Has Empty Matrix Constant data!\n";
     return icValidateCriticalError;
   }
 
@@ -3558,7 +5364,7 @@ CIccMpeCLUT::CIccMpeCLUT()
   m_pCLUT = NULL;
   m_nInputChannels = 0;
   m_nOutputChannels = 0;
-
+  m_interpType  = ic1dInterp;
   m_nReserved = 0;
 }
 
@@ -3582,6 +5388,7 @@ CIccMpeCLUT::CIccMpeCLUT(const CIccMpeCLUT &clut)
   m_nReserved = clut.m_nReserved;
   m_nInputChannels = clut.m_nInputChannels;
   m_nOutputChannels = clut.m_nOutputChannels;
+  m_interpType = ic1dInterp;
 }
 
 /**
@@ -3660,10 +5467,10 @@ void CIccMpeCLUT::SetCLUT(CIccCLUT *pCLUT)
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeCLUT::Describe(std::string &sDescription)
+void CIccMpeCLUT::Describe(std::string &sDescription, int nVerboseness)
 {
   if (m_pCLUT) {
-    m_pCLUT->DumpLut(sDescription, "ELEM_CLUT", icSigUnknownData, icSigUnknownData);
+    m_pCLUT->DumpLut(sDescription, "ELEM_CLUT", icSigUnknownData, icSigUnknownData, nVerboseness);
   }
 }
 
@@ -3888,10 +5695,10 @@ void CIccMpeCLUT::Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icF
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccMpeCLUT::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeCLUT::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   std::string mpeSigPath = sigPath + icGetSigPath(GetType());
-  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE);
+  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE, pProfile);
 
   if (!m_pCLUT) {
     CIccInfo Info;
@@ -3899,7 +5706,7 @@ icValidateStatus CIccMpeCLUT::Validate(std::string sigPath, std::string &sReport
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Has No CLUT!\r\n";
+    sReport += " - Has No CLUT!\n";
     return icValidateCriticalError;
   }
 
@@ -3974,13 +5781,13 @@ CIccMpeExtCLUT &CIccMpeExtCLUT::operator=(const CIccMpeExtCLUT &clut)
 * 
 * Return: 
 ******************************************************************************/
-void CIccMpeExtCLUT::Describe(std::string &sDescription)
+void CIccMpeExtCLUT::Describe(std::string &sDescription, int nVerboseness)
 {
   if (m_pCLUT) {
     char desc[256];
     sprintf(desc, "EXT_ELEM_CLUT(%d)", m_storageType);
 
-    m_pCLUT->DumpLut(sDescription, desc, icSigUnknownData, icSigUnknownData);
+    m_pCLUT->DumpLut(sDescription, desc, icSigUnknownData, icSigUnknownData, nVerboseness);
   }
 }
 
@@ -4213,10 +6020,10 @@ bool CIccMpeExtCLUT::Write(CIccIO *pIO)
 * 
 * Return: 
 ******************************************************************************/
-icValidateStatus CIccMpeExtCLUT::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeExtCLUT::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   std::string mpeSigPath = sigPath + icGetSigPath(GetType());
-  icValidateStatus rv = CIccMpeCLUT::Validate(sigPath, sReport, pMPE);
+  icValidateStatus rv = CIccMpeCLUT::Validate(sigPath, sReport, pMPE, pProfile);
 
   if (m_storageType>icMaxValueType) {
     CIccInfo Info;
@@ -4224,7 +6031,7 @@ icValidateStatus CIccMpeExtCLUT::Validate(std::string sigPath, std::string &sRep
 
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " - Invalid value type!\r\n";
+    sReport += " - Invalid value type!\n";
     return icValidateCriticalError;
   }
 
@@ -4350,7 +6157,7 @@ void CIccMpeCAM::SetCAM(CIccCamConverter *pCAM)
   m_pCAM = pCAM;
 }
 
-void CIccMpeCAM::Describe(std::string &sDescription)
+void CIccMpeCAM::Describe(std::string &sDescription, int nVerboseness)
 {
   sDescription += "Begin ";
   sDescription += GetXformName();
@@ -4386,7 +6193,7 @@ void CIccMpeCAM::Describe(std::string &sDescription)
 }
 
 
-icValidateStatus CIccMpeCAM::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeCAM::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   icValidateStatus rv = icValidateOK;
 

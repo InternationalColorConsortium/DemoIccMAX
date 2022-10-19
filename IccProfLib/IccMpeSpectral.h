@@ -98,7 +98,7 @@ public:
   CIccMpeSpectralMatrix(const CIccMpeSpectralMatrix &ITPC);
   virtual ~CIccMpeSpectralMatrix();
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -114,7 +114,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE) = 0;
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const = 0;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   virtual bool IsLateBinding() const { return true; }
 
@@ -186,7 +186,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   virtual const char *GetDescribeName() const { return "ELEM_INV_OBS_EMIS_MATRIX"; }
@@ -207,14 +207,14 @@ public:
   CIccMpeSpectralCLUT(const CIccMpeSpectralCLUT &ITPC);
   virtual ~CIccMpeSpectralCLUT();
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   void SetData(CIccCLUT *pCLUT, icUInt16Number nStorageType, 
                const icSpectralRange &range, icFloatNumber *pWhite,
@@ -310,7 +310,7 @@ public:
   CIccMpeSpectralObserver(const CIccMpeSpectralObserver &ITPC);
   virtual ~CIccMpeSpectralObserver();
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -324,7 +324,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE) = 0;
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   virtual bool IsLateBinding() const { return true; }
 

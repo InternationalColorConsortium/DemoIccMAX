@@ -73,13 +73,14 @@
 #include "IccCmm.h"
 #include "IccUtil.h"
 #include "IccDefs.h"
+#include "IccProfLibVer.h"
 #include "IccApplyBPC.h"
 #include "TiffImg.h"
 
 
 typedef struct {
   unsigned long nId;
-  char *szName;
+  char const * const szName;
 } IdList;
 #define UNKNOWNID 0xffffffff
 
@@ -121,6 +122,8 @@ const char* GetId(unsigned long nId, IdList* pIdList)
 
 void Usage() 
 {
+  printf("iccTiffDump built with IccProfLib version " ICCPROFLIBVER "\n\n");
+
   printf("Usage: iccTiffDump tiff_file {exported_icc_file}\n\n");
 }
 

@@ -91,7 +91,7 @@ public:
   CIccProfileIdDesc(const CIccProfileIdDesc &pid);
   CIccProfileIdDesc &operator=(const CIccProfileIdDesc &pid);
 
-  void Describe(std::string &sDescription);
+  void Describe(std::string &sDescription, int nVerboseness);
 
   bool Read(icUInt32Number size, CIccIO *pIO);
   bool Write(CIccIO *pIO);
@@ -125,7 +125,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigProfileSequceIdType; }
   virtual const icChar *GetClassName() const { return "CIccTagProfileSequenceId"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

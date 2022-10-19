@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.10</ProfileVersion>
+    <ProfileDeviceClass>mntr</ProfileDeviceClass>
+    <DataColourSpace>RGB </DataColourSpace>
+    <PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.9504222269" Y="1.0000000000" Z="1.0884541014"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+  </Header>
+  <Tags>
+    <profileDescriptionTag> <multiLocalizedUnicodeType>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Rec. 2100 RGB with Hlg using calc curves]]></LocalizedText>
+    </multiLocalizedUnicodeType> </profileDescriptionTag>
+	
+	<AToB1Tag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+		  <!-- Apply OETF -->
+		  <CurveSetElement InputChannels="3" OutputChannels="3">
+			  <SampledCalculatorCurve FirstEntry = "0.0" LastEntry="1.0" ExtentionType="0" DesiredSize="2048">
+				  <CalculatorElement InputChannels="1" OutputChannels="1">
+						<Macros>
+							<!-- Macro constants for OETF -->
+							<Macro Name="a">0.17883277</Macro>
+							<Macro Name="b">2.846689200000000e-001</Macro> <!-- b=1-4*a -->
+							<Macro Name="c">5.599107295295620e-001</Macro> <!-- c=0.5-a*ln(4*a) -->
+						</Macros>
+						<MainFunction>{ in(0) 0.5 le if { in(0) copy mul 3 div } else { in(0) #c sub #a div exp #b add 12 div } out(0) }</MainFunction>
+					</CalculatorElement>			
+				</SampledCalculatorCurve>
+			  <DuplicateCurve Index="0"/>
+			  <DuplicateCurve Index="0"/>
+			</CurveSetElement>
+			
+		  <!-- Apply OOTF -->
+			<MatrixElement InputChannels="3" OutputChannels="4">
+			  <MatrixData>
+				  1 0 0
+					0 1 0
+					0 0 1
+					0.2627 0.6780 0.0593
+				</MatrixData>
+			</MatrixElement>
+			
+			<ToneMapElement InputChannels="4" OutputChannels="3">
+			  <LuminanceCurve>
+				  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0" End="+infinity" FunctionType="3">0.2 1 1 0 0</FormulaSegment>
+					</SegmentedCurve>
+				</LuminanceCurve>
+				<ToneMapFunctions>
+				  <ToneMapFunction FunctionType="0">0.99375 0.0 0.00625</ToneMapFunction>
+				  <DuplicateFunction Index="0"/>
+				  <DuplicateFunction Index="0"/>
+				</ToneMapFunctions>
+			</ToneMapElement>
+			
+      <!-- Scale so that 75% becomes Media White Point -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData>
+				  4.804804804804805 0 0
+          0 4.804804804804805 0
+          0 0 4.804804804804805
+				</MatrixData>
+			</MatrixElement>
+		
+			<!-- Convert RGB to XYZ -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData>
+				  0.63695805 0.14461690 0.16888098
+          0.26270021 0.67799807 0.05930172
+          0.00000000 0.02807269 1.06098506
+				</MatrixData>
+			</MatrixElement>
+	  </MultiProcessElements>
+	</multiProcessElementType> </AToB1Tag>
+	
+	<BToA1Tag> <multiProcessElementType>
+      <MultiProcessElements InputChannels="3" OutputChannels="3">
+			<!-- Convert XYZ to RGB -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData InvertMatrix="true">
+				  0.63695805 0.14461690 0.16888098
+          0.26270021 0.67799807 0.05930172
+          0.00000000 0.02807269 1.06098506
+				</MatrixData>
+			</MatrixElement>
+			
+      <!-- Invert scaling of 75% media white point -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData InvertMatrix="true">
+				  4.804804804804805 0 0
+          0 4.804804804804805 0
+          0 0 4.804804804804805
+				</MatrixData>
+			</MatrixElement>
+
+		  <!-- Apply inverse OOTF -->
+			<MatrixElement InputChannels="3" OutputChannels="4">
+			  <MatrixData>
+				  1 0 0
+					0 1 0
+					0 0 1
+					0.2627 0.6780 0.0593
+				</MatrixData>
+			</MatrixElement>
+			
+			<ToneMapElement InputChannels="4" OutputChannels="3">
+			  <LuminanceCurve>
+				  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0" End="+infinity" FunctionType="3">-0.166666666666667 1 1.006289308176101 -0.006289308176100629 0</FormulaSegment>
+					</SegmentedCurve>
+				</LuminanceCurve>
+				<ToneMapFunctions>
+				  <ToneMapFunction FunctionType="0">1.006289308176101 -0.006289308176100629 0.0</ToneMapFunction>
+				  <DuplicateFunction Index="0"/>
+				  <DuplicateFunction Index="0"/>
+				</ToneMapFunctions>
+			</ToneMapElement>
+			
+		  <!-- Apply inverse OETF -->
+		  <CurveSetElement InputChannels="3" OutputChannels="3">
+			  <SampledCalculatorCurve FirstEntry = "0.0" LastEntry="1.0" ExtentionType="0" DesiredSize="2048">
+				  <CalculatorElement InputChannels="1" OutputChannels="1">
+						<Macros>
+							<!-- Macro constants for inverse OETF -->
+							<Macro Name="a">0.17883277</Macro>
+							<Macro Name="b">2.846689200000000e-001</Macro> <!-- b=1-4*a -->
+							<Macro Name="c">5.599107295295620e-001</Macro> <!-- c=0.5-a*ln(4*a) -->
+			        <Macro Name="one_twelth">8.333333333333333e-002</Macro>
+						</Macros>
+						<MainFunction>{ in(0) #one_twelth le if { in(0) 3 mul sqrt } else { 12 in(0) mul #b sub ln #a mul #c add } out(0) }</MainFunction>
+					</CalculatorElement>			
+				</SampledCalculatorCurve>
+			  <DuplicateCurve Index="0"/>
+			  <DuplicateCurve Index="0"/>
+			</CurveSetElement>
+
+      </MultiProcessElements>
+    </multiProcessElementType> </BToA1Tag>
+	
+	  <!-- D65 to D50 MAT -->
+    <customToStandardPccTag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+	    <MatrixElement InputChannels="3" OutputChannels="3">
+		  <MatrixData>
+		    1.15213478 -0.06226214 -0.06292737
+		    0.09892068 0.93407047 -0.02579682
+		   -0.02836701 0.03469112 0.75031996
+		  </MatrixData>
+	    </MatrixElement>
+	  </MultiProcessElements>
+    </multiProcessElementType> </customToStandardPccTag>
+
+	  <!-- D50 to D65 MAT -->
+    <standardToCustomPccTag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+	    <MatrixElement InputChannels="3" OutputChannels="3">
+		  <MatrixData InvertMatrix="true">
+		    1.15213478 -0.06226214 -0.06292737
+		    0.09892068 0.93407047 -0.02579682
+		   -0.02836701 0.03469112 0.75031996
+		  </MatrixData>
+	    </MatrixElement>
+	  </MultiProcessElements>
+    </multiProcessElementType> </standardToCustomPccTag>
+	
+  <!-- Abreviated D65 spectral viewing conditions -->
+	<spectralViewingConditionsTag> <spectralViewingConditionsType>
+	  <StdObserver>CIE 1931 (two degree) standard observer</StdObserver>
+	  <IlluminantXYZ X="760.3437296879144" Y="800.00000000" Z="871.0404544405391"/>
+	  <StdIlluminant>Illuminant D65</StdIlluminant>
+	  <ColorTemperature>6500.00000000</ColorTemperature>
+	  <SurroundXYZ X="4.752148310549465" Y="5.00000000" Z="5.444002840253368"/>
+	</spectralViewingConditionsType> </spectralViewingConditionsTag>
+
+  <!-- D65 White point indicating extended PCS range -->
+	<mediaWhitePointTag> <XYZArrayType>
+	  <XYZNumber X="0.197822914481250" Y="0.208125" Z="0.226668119568750"/>
+	</XYZArrayType> </mediaWhitePointTag>
+
+	<copyrightTag> <multiLocalizedUnicodeType>
+	  <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2022 International Color Consortium]]></LocalizedText>
+	</multiLocalizedUnicodeType> </copyrightTag>
+
+  </Tags>
+</IccProfile>

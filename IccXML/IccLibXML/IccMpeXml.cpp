@@ -202,6 +202,7 @@ bool CIccFormulaCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
   m_nReserved2 = atoi(icXmlAttrValue(pNode, "Reserved2"));
   m_nFunctionType = atoi(icXmlAttrValue(funcType));
 
+
   switch(m_nFunctionType) {
     case 0x0000:
       m_nParameters = 4;
@@ -210,7 +211,17 @@ bool CIccFormulaCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
     case 0x0001:
     case 0x0002:
     case 0x0003:
+    case 0x0004:
       m_nParameters = 5;
+      break;
+
+    case 0x0005:
+    case 0x0007:
+      m_nParameters = 6;
+      break;
+
+    case 0x0006:
+      m_nParameters = 7;
       break;
 
     default:
@@ -223,7 +234,7 @@ bool CIccFormulaCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
   if (!args.ParseArray(pNode->children))
     return false;
 
-  if (args.GetSize()>m_nParameters)
+  if (args.GetSize()<m_nParameters)
     return false;
 
   if (m_params) {
@@ -495,10 +506,104 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
 }
 
 
+class CIccSampledCalculatorCurveXml : public CIccSampledCalculatorCurve
+{
+public:
+  CIccSampledCalculatorCurveXml(icFloatNumber first=0, icFloatNumber last=0) : CIccSampledCalculatorCurve(first, last) {}
+
+  bool ToXml(std::string &xml, std::string blanks/* = ""*/);
+  bool ParseXml(xmlNode *pNode, std::string &parseStr);
+};
+
+bool CIccSampledCalculatorCurveXml::ToXml(std::string &xml, std::string blanks)
+{
+  char line[256];
+
+  xml += blanks;
+  sprintf(line, "<SampledCalculatorCurve FirstEntry=\"" icXmlFloatFmt "\"", m_firstEntry);
+  xml += line;
+
+  sprintf(line, " LastEntry=\"" icXmlFloatFmt "\"", m_lastEntry);
+  xml += line;
+
+  sprintf(line, " ExtensionType=\"%u\"", m_extensionType);
+  xml += line;
+
+  sprintf(line, " DesiredSize=\"%u\">\n", m_nDesiredSize);
+  xml += line;
+
+  if (m_nReserved2) {
+    sprintf(line, " Reservered2=\"%u\">\n", m_nReserved2);
+    xml += line;
+  }
+
+  if (m_pCalc && !strcmp(m_pCalc->GetClassName(), "CIccMpeXmlCalculator")) {
+    CIccMpeXmlCalculator *pXmlCalc = (CIccMpeXmlCalculator*)m_pCalc;
+    if (!pXmlCalc->ToXml(xml, blanks + "  "))
+      return false;
+  }
+  else {
+    return false;
+  }
+
+  xml += blanks + "</SampledCalculatorCurve>\n";
+
+  return true;
+}
+
+
+bool CIccSampledCalculatorCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
+{
+  xmlAttr *attr = icXmlFindAttr(pNode, "FirstEntry");
+
+  if (!attr) {
+    parseStr += "Bad FirstEntry in Sampled Calculator Curve\n";
+    return false;
+  }
+
+  m_firstEntry = (icFloatNumber)atof(icXmlAttrValue(attr));
+
+  attr = icXmlFindAttr(pNode, "LastEntry");
+
+  if (!attr) {
+    parseStr += "Bad LastEntry in Sampled Calculator Curve\n";
+    return false;
+  }
+
+  m_lastEntry = (icFloatNumber)atof(icXmlAttrValue(attr));
+
+  attr = icXmlFindAttr(pNode, "DesiredSize");
+
+  if (!attr) {
+    parseStr += "Bad DesiredSize in Sampled Calculator Curve\n";
+    return false;
+  }
+
+  m_nDesiredSize = (icUInt32Number)atoi(icXmlAttrValue(attr));
+
+  xmlNode *pCalcNode = icXmlFindNode(pNode->children, "CalculatorElement");
+  if (pCalcNode) {
+    CIccMpeXmlCalculator *pCalc = new CIccMpeXmlCalculator();
+
+    if (!pCalc->ParseXml(pCalcNode, parseStr)) {
+      parseStr += "Unable to parse calculator element in Sampled Calculator Curve\n";
+      return false;
+    }
+    m_pCalc = pCalc;
+  }
+  else {
+    parseStr += "Missing Calculator Element in Sampled Calculator Curve\n";
+    return false;
+  }
+
+  return true;
+}
+
+
 class CIccSinglSampledeCurveXml : public CIccSingleSampledCurve
 {
 public:
-  CIccSinglSampledeCurveXml(icFloatNumber first=0, icFloatNumber last=0) : CIccSingleSampledCurve(first, last) {}
+  CIccSinglSampledeCurveXml(icFloatNumber first = 0, icFloatNumber last = 0) : CIccSingleSampledCurve(first, last) {}
 
   bool ToXml(std::string &xml, std::string blanks/* = ""*/);
   bool ParseXml(xmlNode *pNode, std::string &parseStr);
@@ -509,10 +614,10 @@ bool CIccSinglSampledeCurveXml::ToXml(std::string &xml, std::string blanks)
   char line[256];
 
   xml += blanks;
-  sprintf(line, "<SingleSampledCurve FirstEntry=\"%.8f\"", m_firstEntry);
+  sprintf(line, "<SingleSampledCurve FirstEntry=\"" icXmlFloatFmt "\"", m_firstEntry);
   xml += line;
 
-  sprintf(line, " LastEntry=\"%.8f\"", m_lastEntry);
+  sprintf(line, " LastEntry=\"" icXmlFloatFmt "\"", m_lastEntry);
   xml += line;
 
   sprintf(line, " StorageType=\"%u\"", m_storageType);
@@ -521,7 +626,7 @@ bool CIccSinglSampledeCurveXml::ToXml(std::string &xml, std::string blanks)
   sprintf(line, " ExtensionType=\"%u\">\n", m_extensionType);
   xml += line;
 
-  CIccFloatArray::DumpArray(xml, blanks+"  ", m_pSamples, m_nCount, icConvertFloat, 8);
+  CIccFloatArray::DumpArray(xml, blanks + "  ", m_pSamples, m_nCount, icConvertFloat, 8);
 
   xml += blanks + "</SingleSampledCurve>\n";
 
@@ -566,10 +671,10 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
   // file exists
   if (filename[0]) {
     CIccIO *file = IccOpenFileIO(filename, "rb");
-    if (!file){
+    if (!file) {
       parseStr += "Error! - File '";
       parseStr += filename;
-      parseStr +="' not found.\n";
+      parseStr += "' not found.\n";
       delete file;
       return false;
     }
@@ -581,7 +686,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       icUInt32Number num = file->GetLength();
       char *buf = (char *) new char[num];
 
-      if (!buf) {          
+      if (!buf) {
         perror("Memory Error");
         parseStr += "'";
         parseStr += filename;
@@ -591,22 +696,22 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         return false;
       }
 
-      if (file->Read8(buf, num) !=num) {
+      if (file->Read8(buf, num) != num) {
         perror("Read-File Error");
         parseStr += "'";
         parseStr += filename;
         parseStr += "' may not be a valid text file.\n";
         free(buf);
-        delete file;             
+        delete file;
         return false;
-      }         
+      }
 
       // lut8type
       if (m_storageType == icValueTypeUInt8) {
         CIccUInt8Array data;
 
         //if (!data.ParseTextArray(buf)) {
-        if (!data.ParseTextArrayNum(buf, num, parseStr)){
+        if (!data.ParseTextArrayNum(buf, num, parseStr)) {
           parseStr += "File '";
           parseStr += filename;
           parseStr += "' is not a valid text file.\n";
@@ -622,8 +727,8 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           icFloatNumber *dst = m_pSamples;
 
           icUInt32Number i;
-          for (i=0; i<data.GetSize(); i++) {  
-            *dst = (icFloatNumber)(*src) / 255.0f;              
+          for (i = 0; i < data.GetSize(); i++) {
+            *dst = (icFloatNumber)(*src) / 255.0f;
             dst++;
             src++;
           }
@@ -636,14 +741,14 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           delete file;
           return true;
         }
-      } 
+      }
 
       //lut16type
       else if (m_storageType == icValueTypeUInt16) {
         CIccUInt16Array data;
 
         //if (!data.ParseTextArray(buf)) {
-        if (!data.ParseTextArrayNum(buf, num, parseStr)){
+        if (!data.ParseTextArrayNum(buf, num, parseStr)) {
           parseStr += "File '";
           parseStr += filename;
           parseStr += "' is not a valid text file.\n";
@@ -660,8 +765,8 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           icFloatNumber *dst = m_pSamples;
 
           icUInt32Number i;
-          for (i=0; i<data.GetSize(); i++) {
-            *dst = (icFloatNumber)(*src) / 65535.0f; 
+          for (i = 0; i < data.GetSize(); i++) {
+            *dst = (icFloatNumber)(*src) / 65535.0f;
             dst++;
             src++;
           }
@@ -671,11 +776,11 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
       }
 
       //float type
-      else if (m_storageType == icValueTypeFloat32){
+      else if (m_storageType == icValueTypeFloat32) {
         CIccFloatArray data;
 
         //if (!data.ParseTextArray(buf)) {
-        if (!data.ParseTextArrayNum(buf, num, parseStr)){
+        if (!data.ParseTextArrayNum(buf, num, parseStr)) {
           parseStr += "File '";
           parseStr += filename;
           parseStr += "' is not a valid text file.\n";
@@ -688,18 +793,18 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         else {
           SetSize(data.GetSize());
           icFloatNumber *src = data.GetBuf();
-          icFloatNumber *dst = m_pSamples;          
+          icFloatNumber *dst = m_pSamples;
 
           icUInt32Number i;
-          for (i=0; i<data.GetSize(); i++) {
-            *dst = *src; 
+          for (i = 0; i < data.GetSize(); i++) {
+            *dst = *src;
             dst++;
             src++;
           }
-        }  
+        }
         delete file;
         return true;
-      }        
+      }
       else {
         delete file;
         return false;
@@ -708,30 +813,30 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
     // format is binary
     else if (!strcmp(format, "binary")) {
       const char *order = icXmlAttrValue(pNode, "Endian");
-      bool little_endian = !strcmp(order, "little");    
+      bool little_endian = !strcmp(order, "little");
 
-      if (m_storageType == icValueTypeUInt8){
+      if (m_storageType == icValueTypeUInt8) {
         icUInt32Number num = file->GetLength();
         icUInt8Number value;
 
         SetSize(num);
-        icFloatNumber *dst =  m_pSamples;
+        icFloatNumber *dst = m_pSamples;
         icUInt32Number i;
-        for (i=0; i<num; i++) {
-          if (!file->Read8(&value)) { 
+        for (i = 0; i < num; i++) {
+          if (!file->Read8(&value)) {
             perror("Read-File Error");
             parseStr += "'";
             parseStr += filename;
             parseStr += "' may not be a valid binary file.\n";
             delete file;
             return false;
-          } 
+          }
           *dst++ = (icFloatNumber)value / 255.0f;
-        }         
+        }
         delete file;
         return true;
-      }        
-      else if (m_storageType == icValueTypeUInt16){
+      }
+      else if (m_storageType == icValueTypeUInt16) {
         icUInt32Number num = file->GetLength() / sizeof(icUInt16Number);
         icUInt16Number value;
         icUInt8Number *m_ptr = (icUInt8Number*)&value;
@@ -739,13 +844,13 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
         icUInt32Number i;
-        for (i=0; i<num; i++) {
+        for (i = 0; i < num; i++) {
           if (!file->Read16(&value)) { //assumes data is big endian
             perror("Read-File Error");
             parseStr += "'";
             parseStr += filename;
             parseStr += "' may not be a valid binary file.\n";
-            delete file;              
+            delete file;
             return false;
           }
 #ifdef ICC_BYTE_ORDER_LITTLE_ENDIAN
@@ -758,11 +863,11 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
             m_ptr[1] = t;
           }
           *dst++ = (icFloatNumber)value / 65535.0f;
-        }
+          }
         delete file;
         return true;
-      }
-      else if (m_storageType == icValueTypeFloat16){
+        }
+      else if (m_storageType == icValueTypeFloat16) {
         icUInt32Number num = file->GetLength() / sizeof(icFloat16Number);
         icFloat16Number value;
         icUInt8Number *m_ptr = (icUInt8Number*)&value;
@@ -770,13 +875,13 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         SetSize(num);
         icFloatNumber *dst = m_pSamples;
         icUInt32Number i;
-        for (i=0; i<num; i++) {
+        for (i = 0; i < num; i++) {
           if (!file->Read16(&value)) {  //assumes data is big endian
             perror("Read-File Error");
             parseStr += "'";
             parseStr += filename;
             parseStr += "' may not be a valid binary file.\n";
-            delete file;              
+            delete file;
             return false;
           }
 #ifdef ICC_BYTE_ORDER_LITTLE_ENDIAN
@@ -789,12 +894,12 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
             m_ptr[1] = t;
           }
           *dst++ = icF16toF(value);
-        }
+          }
         delete file;
         return true;
-      }
+        }
       else if (m_storageType == icValueTypeFloat32) {
-        icUInt32Number num = file->GetLength()/sizeof(icFloat32Number);
+        icUInt32Number num = file->GetLength() / sizeof(icFloat32Number);
         icFloat32Number value;
         icUInt8Number *m_ptr = (icUInt8Number*)&value;
 
@@ -802,7 +907,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         icFloatNumber *dst = m_pSamples;
 
         icUInt32Number i;
-        for (i=0; i<num; i++) {
+        for (i = 0; i < num; i++) {
           if (!file->ReadFloat32Float(&value)) {
             perror("Read-File Error");
             parseStr += "'";
@@ -821,22 +926,22 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
             tmp = m_ptr[1]; m_ptr[1] = m_ptr[2]; m_ptr[2] = tmp;
           }
           *dst++ = value;
-        }        
+          }
         delete file;
         return true;
-      }
+        }
       else { //not 8bit/16bit/float        
         delete file;
         return false;
-      } 
-    }       
+      }
+      }
     else {//not text/binary
       delete file;
       return false;
     }
-  }    
+      }
   // no file
-  else{
+  else {
     CIccFloatArray samples;
 
     if (!samples.ParseArray(pNode->children)) {
@@ -851,7 +956,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
   }
 
   return true;
-}
+      }
 
 
 bool CIccSegmentedCurveXml::ToXml(std::string &xml, std::string blanks)
@@ -914,6 +1019,32 @@ bool CIccSegmentedCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
 }
 
 
+static bool ToXmlCurve(std::string& xml, std::string blanks, icCurveSetCurvePtr pCurve)
+{
+  if (pCurve->GetType() == icSigSingleSampledCurve) {
+    CIccSinglSampledeCurveXml* m_ptr = (CIccSinglSampledeCurveXml*)pCurve;
+
+    if (!(m_ptr->ToXml(xml, blanks + "  ")))
+      return false;
+  }
+  else if (pCurve->GetType() == icSigSegmentedCurve) {
+    CIccSegmentedCurveXml* m_ptr = (CIccSegmentedCurveXml*)pCurve;
+
+    if (!(m_ptr->ToXml(xml, blanks + "  ")))
+      return false;
+  }
+  else if (pCurve->GetType() == icSigSampledCalculatorCurve) {
+    CIccSampledCalculatorCurveXml* m_ptr = (CIccSampledCalculatorCurveXml*)pCurve;
+
+    if (!(m_ptr->ToXml(xml, blanks + "  ")))
+      return false;
+  }
+  else
+    return false;
+
+  return true;
+}
+
 bool CIccMpeXmlCurveSet::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
   char line[256];
@@ -926,28 +1057,64 @@ bool CIccMpeXmlCurveSet::ToXml(std::string &xml, std::string blanks/* = ""*/)
   }
   xml += ">\n";
 
-  int i;
+  int i, j;
 
   for (i=0; i<NumInputChannels(); i++) {
     CIccCurveSetCurve* curve = m_curve[i];
-    if (curve->GetType() == icSigSingleSampledCurve) {
-      CIccSinglSampledeCurveXml *m_ptr = (CIccSinglSampledeCurveXml*)m_curve[i];
 
-      if (!(m_ptr->ToXml(xml, blanks + "  ")))
-        return false;
+    //check for duplicate curves
+    for (j = 0; j < i; j++) {
+      if (m_curve[i] == m_curve[j])
+        break;
     }
-    else if (curve->GetType() == icSigSegmentedCurve) {
-      CIccSegmentedCurveXml *m_ptr = (CIccSegmentedCurveXml*)m_curve[i];
 
-      if (!(m_ptr->ToXml(xml, blanks + "  ")))
-        return false;
+    //handle case of duplicate curve
+    if (j < i) {
+      sprintf(line, "<DuplicateCurve Index=\"%d\"/>\n", j);
+      xml += blanks + "  ";
+      xml += line;
     }
-    else
+    else if (!ToXmlCurve(xml, blanks, m_curve[i]))
       return false;
   }
 
   xml += blanks + "</CurveSetElement>\n";
   return true;
+}
+
+static icCurveSetCurvePtr ParseXmlCurve(xmlNode* pNode, std::string parseStr)
+{
+  icCurveSetCurvePtr rv = NULL;
+
+  if (!strcmp((const char*)pNode->name, "SegmentedCurve")) {
+    CIccSegmentedCurveXml* pCurve = new CIccSegmentedCurveXml();
+
+    if (pCurve->ParseXml(pNode, parseStr)) {
+      rv = pCurve;
+    }
+    else
+      delete pCurve;
+  }
+  else if (!strcmp((const char*)pNode->name, "SingleSampledCurve")) {
+    CIccSinglSampledeCurveXml* pCurve = new CIccSinglSampledeCurveXml();
+
+    if (pCurve->ParseXml(pNode, parseStr)) {
+      rv = pCurve;
+    }
+    else
+      delete pCurve;
+  }
+  else if (!strcmp((const char*)pNode->name, "SampledCalculatorCurve")) {
+    CIccSampledCalculatorCurveXml* pCurve = new CIccSampledCalculatorCurveXml();
+
+    if (pCurve->ParseXml(pNode, parseStr)) {
+      rv = pCurve;
+    }
+    else
+      delete pCurve;
+  }
+
+  return rv;
 }
 
 
@@ -969,30 +1136,35 @@ bool CIccMpeXmlCurveSet::ParseXml(xmlNode *pNode, std::string &parseStr)
       if (nIndex >= nChannels) {
         return false;
       }
-      else if (!strcmp((const char*)pNode->name, "SegmentedCurve")) {
-        CIccSegmentedCurveXml *pCurve = new CIccSegmentedCurveXml();
+      else if (!strcmp((const char*)pNode->name, "DuplicateCurve")) {
+        const char *attr = icXmlAttrValue(pNode, "Index", NULL);
 
-        if (!pCurve->ParseXml(pNode, parseStr)) {
-          delete pCurve;
+        if (attr) {
+          int nCopyIndex = atoi(attr);
+          if (nCopyIndex >= 0 && nCopyIndex < nIndex) {
+            m_curve[nIndex] = m_curve[nCopyIndex];
+            nIndex++;
+          }
+          else {
+            parseStr += "Invalid index for duplicate CurveSet Curve\n";
+            return false;
+          }
+        }
+        else {
+          parseStr += "Missing index for duplicate CurveSet Curve\n";
           return false;
         }
+      }
+      else {
+        icCurveSetCurvePtr pCurve = ParseXmlCurve(pNode, parseStr);
+
+        if (!pCurve)
+          return false;
+
         if (!SetCurve(nIndex, pCurve))
           return false;
         nIndex++;
       }
-      else if (!strcmp((const char*)pNode->name, "SingleSampledCurve")) {
-        CIccSinglSampledeCurveXml *pCurve = new CIccSinglSampledeCurveXml();
-
-        if (!pCurve->ParseXml(pNode, parseStr)) {
-          delete pCurve;
-          return false;
-        }
-        if (!SetCurve(nIndex, pCurve))
-          return false;
-        nIndex++;
-      }
-      else
-        return false;
     }
   }
 
@@ -1023,7 +1195,7 @@ bool CIccMpeXmlMatrix::ToXml(std::string &xml, std::string blanks/* = ""*/)
     for (n=0, j=0; j<NumOutputChannels(); j++) {
       xml += blanks + "   ";
       for (i=0; i<NumInputChannels(); i++, n++) {
-         sprintf(buf, " %.8f", m_pMatrix[n]);
+         sprintf(buf, " " icXmlFloatFmt, m_pMatrix[n]);
          xml += buf;
       }
       xml += "\n";
@@ -1041,7 +1213,7 @@ bool CIccMpeXmlMatrix::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
       xml += blanks + "   ";
       for (i = 0; i < NumOutputChannels(); i++) {
-        sprintf(buf, " %.8f", m_pConstants[i]);
+        sprintf(buf, " " icXmlFloatFmt, m_pConstants[i]);
         xml += buf;
       }
       xml += "\n";
@@ -1112,7 +1284,7 @@ bool CIccMpeXmlEmissionMatrix::ToXml(std::string &xml, std::string blanks/* = ""
   }
   xml += ">\n";
 
-  sprintf(buf, "  <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "  <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   xml += blanks + buf;
 
   int i, j, n;
@@ -1122,7 +1294,7 @@ bool CIccMpeXmlEmissionMatrix::ToXml(std::string &xml, std::string blanks/* = ""
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pWhite[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pWhite[i]);
       xml += buf;
     }
     xml += "\n";
@@ -1136,7 +1308,7 @@ bool CIccMpeXmlEmissionMatrix::ToXml(std::string &xml, std::string blanks/* = ""
     for (n=0, j=0; j<numVectors(); j++) {
       xml += blanks + "   ";
       for (i=0; i<(int)m_Range.steps; i++, n++) {
-        sprintf(buf, " %.8f", m_pMatrix[n]);
+        sprintf(buf, " " icXmlFloatFmt, m_pMatrix[n]);
         xml += buf;
       }
       xml += "\n";
@@ -1149,7 +1321,7 @@ bool CIccMpeXmlEmissionMatrix::ToXml(std::string &xml, std::string blanks/* = ""
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pOffset[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pOffset[i]);
       xml += buf;
     }
     xml += "\n";
@@ -1239,7 +1411,7 @@ bool CIccMpeXmlInvEmissionMatrix::ToXml(std::string &xml, std::string blanks/* =
   }
   xml += ">\n";
 
-  sprintf(buf, "  <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "  <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   xml += blanks + buf;
 
   int i, j, n;
@@ -1249,7 +1421,7 @@ bool CIccMpeXmlInvEmissionMatrix::ToXml(std::string &xml, std::string blanks/* =
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pWhite[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pWhite[i]);
       xml += buf;
     }
     xml += "\n";
@@ -1263,7 +1435,7 @@ bool CIccMpeXmlInvEmissionMatrix::ToXml(std::string &xml, std::string blanks/* =
     for (n=0, j=0; j<numVectors(); j++) {
       xml += blanks + "   ";
       for (i=0; i<(int)m_Range.steps; i++, n++) {
-        sprintf(buf, " %.8f", m_pMatrix[n]);
+        sprintf(buf, " " icXmlFloatFmt, m_pMatrix[n]);
         xml += buf;
       }
       xml += "\n";
@@ -1276,7 +1448,7 @@ bool CIccMpeXmlInvEmissionMatrix::ToXml(std::string &xml, std::string blanks/* =
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pOffset[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pOffset[i]);
       xml += buf;
     }
     xml += "\n";
@@ -1394,7 +1566,7 @@ bool CIccMpeXmlTintArray::ParseXml(xmlNode *pNode, std::string &parseStr)
   icUInt16Number nInputChannels = atoi(icXmlAttrValue(pNode, "InputChannels"));
   icUInt16Number nOutputChannels = atoi(icXmlAttrValue(pNode, "OutputChannels"));
   if (!nInputChannels || !nOutputChannels) {
-    parseStr += "Invalid InputChannels or OutputChannels In MatrixElement\n";
+    parseStr += "Invalid InputChannels or OutputChannels In TintArrayElement\n";
     return false;
   }
   m_nInputChannels = nInputChannels;
@@ -1465,6 +1637,231 @@ bool CIccMpeXmlTintArray::ParseXml(xmlNode *pNode, std::string &parseStr)
   return true;
 }
 
+
+CIccToneMapFunc* CIccXmlToneMapFunc::NewCopy()
+{
+  CIccToneMapFunc* rv = new CIccXmlToneMapFunc();
+
+  if (rv)
+    *rv = *this;
+
+  return rv;
+}
+
+bool CIccXmlToneMapFunc::ToXml(std::string& xml, std::string blanks /* = "" */)
+{
+  char line[256];
+
+  sprintf(line, "<ToneMapFunction FunctionType=\"%d\"", m_nFunctionType);
+  xml += blanks + line;
+
+  if (m_nReserved) {
+    sprintf(line, " Reserved=\"%d\"", m_nReserved);
+    xml += line;
+  }
+  if (m_nReserved2) {
+    sprintf(line, " Reserved2=\"%d\"", m_nReserved2);
+    xml += line;
+  }
+  xml += ">\n";
+
+  CIccFloatArray::DumpArray(xml, blanks + "  ", m_params, m_nParameters, icConvertFloat, 8);
+
+  xml += blanks + "</ToneMapFunction>\n";
+
+  return true;
+
+}
+
+bool CIccXmlToneMapFunc::ParseXml(xmlNode* pNode, std::string& parseStr)
+{
+  xmlAttr* funcType = icXmlFindAttr(pNode, "FunctionType");
+
+  if (!funcType) {
+    parseStr += "Bad FunctionType in Tone Map Function\n";
+    return false;
+  }
+
+  m_nReserved2 = atoi(icXmlAttrValue(pNode, "Reserved2"));
+  m_nFunctionType = atoi(icXmlAttrValue(funcType));
+
+  switch (m_nFunctionType) {
+  case 0x0000:
+    m_nParameters = 3;
+    break;
+
+  default:
+    parseStr += "Unsupported FunctionType value in Tone Map Function\n";
+    return false;
+  }
+
+  CIccFloatArray args;
+
+  if (!args.ParseArray(pNode->children))
+    return false;
+
+  if (args.GetSize() < m_nParameters)
+    return false;
+
+  if (m_params) {
+    free(m_params);
+  }
+
+  if (m_nParameters) {
+    m_params = (icFloatNumber*)malloc(m_nParameters * sizeof(icFloatNumber));
+    if (!m_params)
+      return false;
+
+    memcpy(m_params, args.GetBuf(), m_nParameters * sizeof(icFloatNumber));
+  }
+  else
+    m_params = NULL;
+
+  return true;
+}
+
+
+bool CIccMpeXmlToneMap::ToXml(std::string& xml, std::string blanks/* = ""*/)
+{
+  char buf[128], line[128];
+  sprintf(buf, "<ToneMapElement InputChannels=\"%d\" OutputChannels=\"%d\"", NumInputChannels(), NumOutputChannels());
+  xml += blanks + buf;
+
+  if (m_nReserved) {
+    sprintf(buf, " Reserved=\"%u\"", m_nReserved);
+    xml += buf;
+  }
+  xml += ">\n";
+
+  if (m_pLumCurve) {
+    xml += blanks + "  <LuminanceCurve>\n";
+    if (!ToXmlCurve(xml, blanks + "  ", m_pLumCurve))
+      return false;
+    xml += blanks + "  </LuminanceCurve>\n";
+  }
+
+  if (m_pToneFuncs) {
+    xml += blanks + "  <ToneMapFunctions>\n";
+    int i, j;
+    for (i = 0; i < NumOutputChannels(); i++) {
+      if (m_pToneFuncs[i] && !strcmp(m_pToneFuncs[i]->GetClassName(), "CIccXmlToneMapFunc")) {
+        CIccXmlToneMapFunc* pFunc = (CIccXmlToneMapFunc*)m_pToneFuncs[i];
+
+        //check for duplicate curves
+        for (j = 0; j < i; j++) {
+          if (m_pToneFuncs[i] == m_pToneFuncs[j])
+            break;
+        }
+
+        //handle case of duplicate curve
+        if (j < i) {
+          sprintf(line, "<DuplicateFunction Index=\"%d\"/>\n", j);
+          xml += blanks + "    ";
+          xml += line;
+        }
+        else if (!pFunc->ToXml(xml, blanks + "    "))
+          return false;
+      }
+      else
+        return false;
+    }
+    xml += blanks + "  </ToneMapFunctions>\n";
+  }
+
+  xml += blanks + "</ToneMapElement>\n";
+
+  return true;
+}
+
+
+bool CIccMpeXmlToneMap::ParseXml(xmlNode* pNode, std::string& parseStr)
+{
+  icUInt16Number nInputChannels = atoi(icXmlAttrValue(pNode, "InputChannels"));
+  icUInt16Number nOutputChannels = atoi(icXmlAttrValue(pNode, "OutputChannels"));
+  if (!nInputChannels || !nOutputChannels || nInputChannels!=nOutputChannels+1) {
+    parseStr += "Invalid InputChannels or OutputChannels In ToneMapElement\n";
+    return false;
+  }
+  m_nInputChannels = nInputChannels;
+
+  SetNumOutputChannels(nOutputChannels);
+
+  if (!m_pToneFuncs) {
+    parseStr += "Unable to allocate ToneMapFunctions\n";
+    return false;
+  }
+  
+  xmlNode* pSubNode = icXmlFindNode(pNode->children, "LuminanceCurve");
+
+  if (pSubNode) {
+    xmlNode* pNode;
+    for (pNode = pSubNode->children; pNode && pNode->type != XML_ELEMENT_NODE; pNode = pNode->next);
+    m_pLumCurve = ParseXmlCurve(pNode, parseStr);
+    if (!m_pLumCurve) {
+      parseStr += "Unable to parse Luminance Curve\n";
+      return false;
+    }
+  }
+  else {
+    parseStr += "Missing Luminance Curve";
+  }
+
+  pSubNode = icXmlFindNode(pNode->children, "ToneMapFunctions");
+
+  if (pSubNode) {
+    xmlNode* pNode;
+    int nIndex = 0;
+    for (pNode = pSubNode->children, nIndex = 0;
+      pNode;
+      pNode = pNode->next) {
+      if (pNode->type == XML_ELEMENT_NODE) {
+        if (nIndex >= nOutputChannels) {
+          parseStr += "Too many ToneFunctions";
+          return false;
+        }
+        else if (!strcmp((const char*)pNode->name, "DuplicateFunction")) {
+          const char* attr = icXmlAttrValue(pNode, "Index", NULL);
+
+          if (attr) {
+            int nCopyIndex = atoi(attr);
+            if (nCopyIndex >= 0 && nCopyIndex < nIndex) {
+              m_pToneFuncs[nIndex] = m_pToneFuncs[nCopyIndex];
+              nIndex++;
+            }
+            else {
+              parseStr += "Invalid index for duplicate ToneMapFunction\n";
+              return false;
+            }
+          }
+          else {
+            parseStr += "Missing index for duplicate ToneMapFunction\n";
+            return false;
+          }
+        }
+        else if (!strcmp((const char*)pNode->name, "ToneMapFunction")) {
+          CIccXmlToneMapFunc* pFunc = new CIccXmlToneMapFunc();
+
+          if (!pFunc->ParseXml(pNode, parseStr)) {
+            delete pFunc;
+            return false;
+          }
+          if (!Insert(pFunc))
+            return false;
+          nIndex++;
+        }
+        else {
+          parseStr += std::string("Unknown Tone Map Function '") + (const char*)pNode->name + "'\n";
+          return false;
+        }
+      }
+    }
+    if (nIndex < m_nOutputChannels) {
+      parseStr += "Missing ToneMap Functions\n";
+    }
+  }
+
+  return true;
+}
 
 extern CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, std::string &parseStr);
 
@@ -1662,25 +2059,25 @@ static bool icXmlDumpColorAppearanceParams(std::string &xml, std::string blanks,
   xml += blanks + "<ColorAppearanceParams>\n";
   
   pCam->GetParameter_WhitePoint(&xyz[0]);
-  sprintf(line, "  <XYZNumber X=\"%.8f\" Y=\"%.8f\" Z=\"%.8f\"/>", xyz[0], xyz[1], xyz[2]);
+  sprintf(line, "  <XYZNumber X=\"" icXmlFloatFmt "\" Y=\"" icXmlFloatFmt "\" Z=\"" icXmlFloatFmt "\"/>", xyz[0], xyz[1], xyz[2]);
 
   xml += blanks + " <WhitePoint>\n";
   xml += blanks + line;
   xml += blanks + " </WhitePoint>\n";
   
-  sprintf(line, " <Luminance>%f</Luminance>\n", pCam->GetParameter_La());
+  sprintf(line, " <Luminance>" icXmlFloatFmt "</Luminance>\n", pCam->GetParameter_La());
   xml += blanks + line;
 
-  sprintf(line, " <BackgroundLuminance>%.8f</BackgroundLuminance>\n", pCam->GetParameter_Yb());
+  sprintf(line, " <BackgroundLuminance>" icXmlFloatFmt "</BackgroundLuminance>\n", pCam->GetParameter_Yb());
   xml += blanks + line;
 
-  sprintf(line, " <ImpactSurround>%f</ImpactSurround>\n", pCam->GetParameter_C());
+  sprintf(line, " <ImpactSurround>" icXmlFloatFmt "</ImpactSurround>\n", pCam->GetParameter_C());
   xml += blanks + line;
 
-  sprintf(line, " <ChromaticInductionFactor>%f</ChromaticInductionFactor>\n", pCam->GetParameter_Nc());
+  sprintf(line, " <ChromaticInductionFactor>" icXmlFloatFmt "</ChromaticInductionFactor>\n", pCam->GetParameter_Nc());
   xml += blanks + line;
 
-  sprintf(line, " <AdaptationFactor>%f</AdaptationFactor>\n", pCam->GetParameter_F());
+  sprintf(line, " <AdaptationFactor>" icXmlFloatFmt "</AdaptationFactor>\n", pCam->GetParameter_F());
   xml += blanks + line;
 
   xml += "</ColorAppearanceParams>\n";
@@ -1901,7 +2298,7 @@ bool CIccMpeXmlCalculator::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
     xml += blanks2 + "<MainFunction>\n";
 
-    m_calcFunc->Describe(desc, (int)blanks2.size()+2);
+    m_calcFunc->Describe(desc, 100, (int)blanks2.size()+2);
     xml += desc;
 
     xml+= blanks2 + "</MainFunction>\n";
@@ -2765,7 +3162,7 @@ bool CIccMpeXmlCalculator::ParseXml(xmlNode *pNode, std::string &parseStr)
           parseStr += "Unable to parse Main Calculator Function from \"";
       }
       parseStr += buf;
-      parseStr += "\"\r\n";
+      parseStr += "\"\n";
       return false;
     }
   }
@@ -2790,7 +3187,7 @@ bool CIccMpeXmlEmissionCLUT::ToXml(std::string &xml, std::string blanks/* = ""*/
   sprintf(buf, " InputChannels=\"%d\" OutputChannels=\"%d\" Flags=\"%d\" StorageType=\"%d\">\n", NumInputChannels(), NumOutputChannels(), m_flags, m_nStorageType);
   xml += buf;
 
-  sprintf(buf, "  <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "  <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   xml += blanks + buf;
 
   int i;
@@ -2800,7 +3197,7 @@ bool CIccMpeXmlEmissionCLUT::ToXml(std::string &xml, std::string blanks/* = ""*/
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pWhite[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pWhite[i]);
       xml += buf;
     }
     xml += "\n";
@@ -2903,7 +3300,7 @@ bool CIccMpeXmlReflectanceCLUT::ToXml(std::string &xml, std::string blanks/* = "
   sprintf(buf, " InputChannels=\"%d\" OutputChannels=\"%d\" Flags=\"%d\">\n", NumInputChannels(), NumOutputChannels(), m_flags);
   xml += buf;
 
-  sprintf(buf, "  <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "  <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   xml += buf;
 
   int i;
@@ -2913,7 +3310,7 @@ bool CIccMpeXmlReflectanceCLUT::ToXml(std::string &xml, std::string blanks/* = "
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pWhite[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pWhite[i]);
       xml += buf;
     }
     xml += "\n";
@@ -3060,7 +3457,7 @@ bool CIccMpeXmlEmissionObserver::ToXml(std::string &xml, std::string blanks/* = 
   }
   xml += ">\n";
 
-  sprintf(buf, "  <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "  <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   xml += buf;
 
   int i;
@@ -3070,7 +3467,7 @@ bool CIccMpeXmlEmissionObserver::ToXml(std::string &xml, std::string blanks/* = 
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pWhite[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pWhite[i]);
       xml += buf;
     }
     xml += "\n";
@@ -3142,7 +3539,7 @@ bool CIccMpeXmlReflectanceObserver::ToXml(std::string &xml, std::string blanks/*
   }
   xml += ">\n";
 
-  sprintf(buf, "  <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
+  sprintf(buf, "  <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n", icF16toF(m_Range.start), icF16toF(m_Range.end), m_Range.steps);
   xml += buf;
 
   int i;
@@ -3152,7 +3549,7 @@ bool CIccMpeXmlReflectanceObserver::ToXml(std::string &xml, std::string blanks/*
 
     xml += blanks + "   ";
     for (i=0; i<(int)m_Range.steps; i++) {
-      sprintf(buf, " %.8f", m_pWhite[i]);
+      sprintf(buf, " " icXmlFloatFmt, m_pWhite[i]);
       xml += buf;
     }
     xml += "\n";

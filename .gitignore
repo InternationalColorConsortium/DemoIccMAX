@@ -29,14 +29,6 @@
 
 # Testing icc
 Testing/*/*.icc
-Testing/IccApplyNamedCmm
-Testing/IccApplyProfiles
-Testing/IccDumpProfile
-Testing/IccFromXml
-Testing/IccRoundTrip
-Testing/IccSpecSepToTiff
-Testing/IccTiffDump
-Testing/IccToXml
 
 # Xcode deps
 Build/XCode/libtiff/*.h*
@@ -60,8 +52,12 @@ Build/XCode/libxml/*.h*
 *.ilk
 *.tlog
 *.log
+*.recipe
 **/Release/**
 **/Debug/**
+**/x64/**
+**/Win32/**
+
 
 # copied code
 Tools/CmdLine/IccSpecSepToTiff/TiffImg.cpp

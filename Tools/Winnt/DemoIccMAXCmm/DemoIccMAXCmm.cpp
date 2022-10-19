@@ -434,6 +434,8 @@ BOOL WINAPI CMCheckColors(
 }
 
 
+// Avoid " warning C4995: 'CMxxxx': name was marked as #pragma deprecated
+#pragma warning(disable : 4995)
 BOOL WINAPI CMCheckColorsInGamut(
                                  HCMTRANSFORM hcmTransform,  // transform handle
                                  RGBTRIPLE *lpaRGBTriple,    // RGB triple array

@@ -126,7 +126,7 @@
 			<SurroundXYZ X="151.6988680274259" Y="160.00000000" Z="171.7185830726015"/>
     </spectralViewingConditionsType>
     
-	<XYZType>
+    <XYZType>
       <TagSignature>wtpt</TagSignature>
       <XYZNumber X="0.948117925171412" Y="1.00000000" Z="1.073241144203759"/>
     </XYZType>
