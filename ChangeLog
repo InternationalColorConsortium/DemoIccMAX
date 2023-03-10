@@ -1,11 +1,3 @@
-2022-10 Max Derhak
-* Incorporate changes Relative to Prototype V5.1 profiles proposed changes to ICC.2 
-* Added additional Parametric types to Formula sements
-* Added support for abreviated Spectral Viewing Conditions Tags
-* Added support for ToneMapping elements
-* Added support for SampleCalculatorCurves
-* Various bug fixes
-
 2021-09 to 2021-10 Peter Wyatt
 * Fixed MSVC Solution files for MSVC v19 due to name change to DemoIccMAX
 * Fixed various compiler errors for newer versions of LLVM and CLANG

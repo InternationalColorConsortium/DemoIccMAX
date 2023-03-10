@@ -755,6 +755,14 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, m_Header.colorSpace);
     break;
 
+  case icSigHToS0Tag:
+  case icSigHToS1Tag:
+  case icSigHToS2Tag:
+  case icSigHToS3Tag:
+    if (pTag->IsMBBType())
+      ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, m_Header.pcs);
+    break;
+
   case icSigGamutTag:
     if (pTag->IsMBBType())
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, icSigGamutData);

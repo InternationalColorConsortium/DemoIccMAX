@@ -4260,7 +4260,7 @@ static struct {
  *  sDescription - string to concatenate tag dump to
  *****************************************************************************
  */
-void CIccTagCicp::Describe(std::string& sDescription)
+void CIccTagCicp::Describe(std::string& sDescription, int nVerboseness)
 {
   icChar buf[256], code[128];
   sprintf(code, "%u-%u-%u-%u", m_nColorPrimaries, m_nTransferCharacteristics, m_nMatrixCoefficients, m_nVideoFullRangeFlag);
@@ -6971,27 +6971,23 @@ CIccLocalizedUnicode::~CIccLocalizedUnicode()
 
 /**
  ****************************************************************************
- * Name: CIccLocalizedUnicode::GetAnsiSize
+ * Name: CIccLocalizedUnicode::GetUtf8Size
  * 
  * Purpose: Returns the size of the ANSI data buffer
  *
  *****************************************************************************
  */
-icUInt32Number CIccLocalizedUnicode::GetAnsiSize()
+icUInt32Number CIccLocalizedUnicode::GetUtf8Size()
 {
-  icUInt32Number len;
-#ifdef USE_WINDOWS_MB_SUPPORT
-  len = WideCharToMultiByte(CP_ACP, 0x00000400, (LPCWSTR)m_pBuf, m_nLength,  NULL, 0, NULL, NULL);
-#else
-  len = m_nLength;   
-#endif
+  std::string str;
+  GetText(str);
 
-  return len;
+  return str.size()+1;
 }
 
 /**
  ****************************************************************************
- * Name: CIccLocalizedUnicode::GetAnsi
+ * Name: CIccLocalizedUnicode::GetUtf8
  * 
  * Purpose: Extracts the ANSI data buffer (from UTF-16BE)
  *
@@ -7003,30 +6999,20 @@ icUInt32Number CIccLocalizedUnicode::GetAnsiSize()
  *  Pointer to the ANSI data string
  *****************************************************************************
  */
-const icChar *CIccLocalizedUnicode::GetAnsi(icChar *szBuf, icUInt32Number nBufSize)
+const icChar *CIccLocalizedUnicode::GetUtf8(icChar *szBuf, icUInt32Number nBufSize)
 {
-  if (!szBuf)
+  if (!szBuf || !nBufSize)
     return NULL;
 
-  if (!m_nLength) {
-    *szBuf='\0';
+  std::string str;
+  GetText(str);
+
+  if (nBufSize - 1 < str.size()) {
+    memcpy(szBuf, str.c_str(), nBufSize - 1);
+    szBuf[nBufSize] = 0;
   }
   else {
-#ifdef USE_WINDOWS_MB_SUPPORT
-    int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)m_pBuf, m_nLength, szBuf, nBufSize, NULL, NULL);
-    szBuf[len]='\0';
-#else
-    icUInt32Number i;
-  
-    for (i=0; i<m_nLength; i++) {
-      if (isprint(m_pBuf[i])) {
-        szBuf[i] = (icChar)m_pBuf[i];
-      }
-      else {
-        szBuf[i] = '?';
-      }
-    }
-#endif
+    strcpy(szBuf, str.c_str());
   }
 
   return szBuf;
@@ -7036,25 +7022,57 @@ const icChar *CIccLocalizedUnicode::GetAnsi(icChar *szBuf, icUInt32Number nBufSi
 ****************************************************************************
 * Name: CIccLocalizedUnicode::GetText
 *
-* Purpose: Sets a standard string with the text
+* Purpose: Gets text as a UTF-8 string
 *
 * Args:
-*  nSize - length of the string
+*  sText - string to put results in
 *
 *****************************************************************************
 */
 bool CIccLocalizedUnicode::GetText(std::string &sText)
 {
-  icUInt32Number size = GetAnsiSize();
-  char *buf = (char*)malloc(size+1);
-  if (buf) {
-    GetAnsi(buf, size);
-    sText = buf;
-    free(buf);
-    return true;
+  sText.clear();
+
+  icUInt16Number* str = m_pBuf;
+  while (*str) {
+    icUInt32Number code32 = 0x0;
+
+    //UTF-16 to UTF-32
+
+    if (*str <= 0xD7FF) {
+      code32 = *str;
+      str++;
+    }
+    else if (*str <= 0xDBFF) {
+      icUInt16Number high = (*str - 0xD800) * 0x400;
+      icUInt16Number low = *(str + 1) - 0xDC00;
+      code32 = (low | high) + 0x10000;
+      str += 2;
+    }
+
+    //UTF-32 to UTF-8 -------
+
+    if (code32 <= 0x007F) {
+      sText += (unsigned char)code32;
+    }
+    else if (code32 <= 0x07FF) {
+      sText += (unsigned char)(((code32 >> 6) & 0x1F) | 0xC0);
+      sText += (unsigned char)((code32 & 0x3F) | 0x80);
+    }
+    else if (code32 <= 0xFFFF) {
+      sText += (unsigned char)(((code32 >> 12) & 0x0F) | 0xE0);
+      sText += (unsigned char)(((code32 >> 6) & 0x3F) | 0x80);
+      sText += (unsigned char)(((code32) & 0x3F) | 0x80);
+    }
+    else if (code32 <= 0x10FFFF) {
+      sText += (unsigned char)(((code32 >> 18) & 0x07) | 0xF0);
+      sText += (unsigned char)(((code32 >> 12) & 0x3F) | 0x80);
+      sText += (unsigned char)(((code32 >> 6) & 0x3F) | 0x80);
+      sText += (unsigned char)(((code32) & 0x3F) | 0x80);
+    }
   }
-  sText = "";
-  return false;
+
+  return true;
 }
 
 
@@ -7095,7 +7113,7 @@ bool CIccLocalizedUnicode::SetSize(icUInt32Number nSize)
  * Purpose: Allows text data associated with the tag to be set.
  * 
  * Args: 
- *  szText = zero terminated string to put in tag,
+ *  szText = zero terminated utf8 string to put in tag,
  *  nLanguageCode = the language code type as defined by icLanguageCode,
  *  nRegionCode = the region code type as defined by icCountryCode
  *****************************************************************************
@@ -7104,15 +7122,103 @@ bool CIccLocalizedUnicode::SetText(const icChar *szText,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
-  int len=(icInt32Number)strlen(szText), i;
+  //first convert utf8 to unicode
+  std::vector<unsigned long> unicode;
+  size_t i = 0;
+  while (szText[i])
+  {
+    unsigned long uni;
+    size_t todo;
+    bool error = false;
+    unsigned char ch = szText[i++];
+    if (ch <= 0x7F)
+    {
+      uni = ch;
+      todo = 0;
+    }
+    else if (ch <= 0xBF)
+    {
+      //not a UTF-8 string so use question mark
+      uni = '?';
+      todo = 0;
+    }
+    else if (ch <= 0xDF)
+    {
+      uni = ch & 0x1F;
+      todo = 1;
+    }
+    else if (ch <= 0xEF)
+    {
+      uni = ch & 0x0F;
+      todo = 2;
+    }
+    else if (ch <= 0xF7)
+    {
+      uni = ch & 0x07;
+      todo = 3;
+    }
+    else
+    {
+      //not a UTF-8 string so use question mark
+      uni = '?';
+      todo = 0;;
+    }
+    for (size_t j = 0; j < todo; ++j)
+    {
+      if (!szText[i]) {
+        uni = '?';
+        break;
+      }
+      else {
+        unsigned char ch = szText[i];
+        if (ch < 0x80 || ch > 0xBF) {
+          //not a UTF-8 string so use question mark
+          uni = '?';
+          break;
+        }
+        else {
+          uni <<= 6;
+          uni += ch & 0x3F;
+        }
+      }
+    }
+    if (uni >= 0xD800 && uni <= 0xDFFF) {
+      //not a UTF-8 string so use question mark
+      uni = '?';
+    }
+    else if (uni > 0x10FFFF) {
+      //not a UTF-8 string so use question mark
+      uni = '?';
+    }
+    unicode.push_back(uni);
+  }
+
+  //now convert unicode to utf16
+  std::vector<unsigned short> utf16;
+  for (i = 0; i < unicode.size(); ++i)
+  {
+    unsigned long uni = unicode[i];
+    if (uni <= 0xFFFF)
+    {
+      utf16.push_back((unsigned short)uni);
+    }
+    else
+    {
+      uni -= 0x10000;
+      utf16.push_back((unsigned short)((uni >> 10) + 0xD800));
+      utf16.push_back((unsigned short)((uni & 0x3FF) + 0xDC00));
+    }
+  }
+
   icUInt16Number *pBuf;
 
-  if (!SetSize(len))
+  size_t len = utf16.size();
+  if (!SetSize(len+1))
     return false;
   
   pBuf = m_pBuf;
   for (i=0; i<len; i++) {
-    *pBuf++ = *szText++;
+    *pBuf++ = utf16[i];
   }
   *pBuf = 0;
 
@@ -7428,14 +7534,10 @@ bool CIccTagMultiLocalizedUnicode::Write(CIccIO *pIO)
  */
 void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int nVerboseness)
 {
-  icChar *szBuf = (icChar*)malloc(128);
+  char szBuf[128];
+  std::string utf8;
   int nSize = 127, nAnsiSize;
   CIccMultiLocalizedUnicode::iterator i;
-
-  if (!szBuf) {
-    sDescription += "***Allocation Error***\n";
-    return;
-  }
 
   for (i=m_Strings->begin(); i!=m_Strings->end(); i++) {
     if (i!=m_Strings->begin())
@@ -7464,28 +7566,11 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int nVerb
     }
     sDescription += "\n";
 
-    nAnsiSize = i->GetAnsiSize();
-
-    if (nAnsiSize>nSize) {
-      szBuf = (icChar*)icRealloc(szBuf, nAnsiSize+1);
-
-      if (!szBuf)
-        nSize = 0;
-      else
-      nSize = nAnsiSize;
-    }
-    if (szBuf) {
-      i->GetAnsi(szBuf, nSize);
-      sDescription += "\"";
-      sDescription += szBuf;
-      sDescription += "\"\n";
-    }
-    else {
-      sDescription += "***Allocation Error***\n";
-    }
+    i->GetText(utf8);
+    sDescription += "\"";
+    sDescription += utf8;
+    sDescription += "\"\n";
   }
-  if (szBuf)
-    free(szBuf);
 }
 
 
@@ -11109,7 +11194,6 @@ icValidateStatus CIccTagSpectralViewingConditions::Validate(std::string sigPath,
   rv = icMaxStatus(rv, Info.CheckLuminance(sReport, m_surroundXYZ, sSigPathName + ":>surroundXYZ"));
 
   icSpectralRange range;
-  icFloatNumber *pSpec;
 
   if (getObserver(range)) {
     rv = icMaxStatus(rv, Info.CheckData(sReport, range, sSigPathName + ":>observerRange"));

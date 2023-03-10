@@ -388,6 +388,8 @@ public:
 
   bool IsMCS() const { return m_nMCS!=icNoMCS; }
 
+  bool IsExtendedPCS() const { return m_pProfile && (m_pProfile->m_Header.flags & icExtendedRangePCSTrue) != 0; }
+
   bool IsAbstract() const { return m_pProfile && m_pProfile->m_Header.deviceClass==icSigAbstractClass; }
     
   /// The following function is for Overridden create function
@@ -419,6 +421,8 @@ public:
   virtual IIccProfileConnectionConditions *GetConnectionConditions() const { return m_pConnectionConditions; }
 
   virtual IIccCmmEnvVarLookup *GetCmmEnvVarLookup() { return m_pCmmEnvVarLookup; }
+
+  void AttachCmmEnvVarLookup(IIccCmmEnvVarLookup* pCmmEnvVarLookup) { m_pCmmEnvVarLookup = pCmmEnvVarLookup; m_bDeleteEnvLooup = false; }
 
   void DetachAll();
 
@@ -455,6 +459,7 @@ protected:
 
   IIccProfileConnectionConditions *m_pConnectionConditions;
 
+  bool m_bDeleteEnvLooup = true;
   IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
 
@@ -1652,6 +1657,7 @@ public:
 protected:
   void SetLateBindingCC();
 
+  icStatusCMM CheckPCSRangeConversions();
   icStatusCMM CheckPCSConnections(bool bUsePCSConversions=false);
 
   CIccApplyCmm *m_pApply;

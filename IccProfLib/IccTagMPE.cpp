@@ -1607,6 +1607,29 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
 
         break;
       }
+    case icSigHToS0Tag:
+    case icSigHToS1Tag:
+    case icSigHToS2Tag:
+    case icSigHToS3Tag:
+      {
+        nInput = icGetSpaceSamples(pProfile->m_Header.pcs);
+        if (m_nInputChannels != nInput) {
+          sReport += icMsgValidateCriticalError;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of input channels.\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
+        if (m_nOutputChannels != nOutput) {
+          sReport += icMsgValidateCriticalError;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of output channels.\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        break;
+      }
     case icSigCustomToStandardPccTag:
     case icSigStandardToCustomPccTag:
       {

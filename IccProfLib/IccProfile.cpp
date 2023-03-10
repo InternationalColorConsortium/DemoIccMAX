@@ -1010,7 +1010,7 @@ bool CIccProfile::ReadProfileID(icProfileID &profileID)
 void CIccProfile::InitHeader()
 {
   m_Header.size = 0;
-  m_Header.cmmId = icSigSampleICC;
+  m_Header.cmmId = icSigDemoIccMAX;
   m_Header.version=icVersionNumberV4;
   m_Header.deviceClass = (icProfileClassSignature)0;
   m_Header.colorSpace = (icColorSpaceSignature)0;
@@ -1039,7 +1039,7 @@ void CIccProfile::InitHeader()
   m_Header.illuminant.X = icDtoF((icFloatNumber)0.9642);
   m_Header.illuminant.Y = icDtoF((icFloatNumber)1.0000);
   m_Header.illuminant.Z = icDtoF((icFloatNumber)0.8249);
-  m_Header.creator = icSigSampleICC;
+  m_Header.creator = icSigDemoIccMAX;
   m_Header.spectralPCS = icSigNoSpectralData;
   m_Header.spectralRange.start = 0;
   m_Header.spectralRange.end = 0;

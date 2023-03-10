@@ -3527,6 +3527,29 @@ icValidateStatus CIccMBB::Validate(std::string sigPath, std::string &sReport, co
 
       break;
     }
+  case icSigHToS0Tag:
+  case icSigHToS1Tag:
+  case icSigHToS2Tag:
+  case icSigHToS3Tag:
+  {
+    nInput = icGetSpaceSamples(pProfile->m_Header.pcs);
+    if (m_nInput != nInput) {
+      sReport += icMsgValidateCriticalError;
+      sReport += sSigPathName;
+      sReport += " - Incorrect number of input channels.\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+
+    nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
+    if (m_nOutput != nOutput) {
+      sReport += icMsgValidateCriticalError;
+      sReport += sSigPathName;
+      sReport += " - Incorrect number of output channels.\n";
+      rv = icMaxStatus(rv, icValidateCriticalError);
+    }
+
+    break;
+  }
   case icSigGamutTag:
     {
       nInput = 1;

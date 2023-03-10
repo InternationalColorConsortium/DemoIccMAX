@@ -18,12 +18,12 @@
   </Header>
   <Tags>
     <profileDescriptionTag> <multiLocalizedUnicodeType>
-      <LocalizedText LanguageCountry="enUS"><![CDATA[Rec. 2100 RGB with Hlg using no calc]]></LocalizedText>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[BT.2100 HLG Full RGB to/from Display Light]]></LocalizedText>
     </multiLocalizedUnicodeType> </profileDescriptionTag>
 	
 	<AToB1Tag> <multiProcessElementType>
 	  <MultiProcessElements InputChannels="3" OutputChannels="3">
-		  <!-- Apply OETF -->
+		  <!-- Apply Inverse OETF -->
 		  <CurveSetElement InputChannels="3" OutputChannels="3">
 			  <SegmentedCurve>
 				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
@@ -122,7 +122,7 @@
 				</ToneMapFunctions>
 			</ToneMapElement>
 			
-		  <!-- Apply inverse OETF -->
+		  <!-- Apply OETF -->
 		  <CurveSetElement InputChannels="3" OutputChannels="3">
 			  <SegmentedCurve>
 				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>

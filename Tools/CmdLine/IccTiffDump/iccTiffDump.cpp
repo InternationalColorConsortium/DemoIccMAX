@@ -201,8 +201,9 @@ int main(int argc, icChar* argv[])
         if (pStrs->m_Strings) {
           CIccMultiLocalizedUnicode::iterator text = pStrs->m_Strings->begin();
           if (text != pStrs->m_Strings->end()) {
-            char line[256];
-            printf(" Description:      %s\n", text->GetAnsi(line, sizeof(line)-1));
+            std::string line;
+            text->GetText(line);
+            printf(" Description:      %s\n", line.c_str());
           }
         }
       }

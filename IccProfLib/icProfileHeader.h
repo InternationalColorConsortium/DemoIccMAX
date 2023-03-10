@@ -223,6 +223,8 @@ authorization from SunSoft Inc.
 #define icUseWithEmbeddedDataOnly       0x00000002     /* Bit position 1 */
 #define icMCSNeedsSubsetFalse           0x00000000     /* Bit Position 2 */
 #define icMCSNeedsSubsetTrue            0x00000004     /* Bit Position 2 */
+#define icExtendedRangePCSFalse         0x00000000     /* Bit Position 4 */
+#define icExtendedRangePCSTrue          0x00000010     /* Bit Position 4 */
 
 /** 
  * Define used to indicate that this is a variable length array
@@ -412,6 +414,10 @@ typedef enum {
     icSigGamutBoundaryDescription1Tag      = 0x67626431,  /* 'gbd1' */
     icSigGamutBoundaryDescription2Tag      = 0x67626432,  /* 'gbd2' */
     icSigGamutBoundaryDescription3Tag      = 0x67626433,  /* 'gbd3' */
+    icSigHToS0Tag                          = 0x48325330,  /* 'H2S0' */
+    icSigHToS1Tag                          = 0x48325331,  /* 'H2S1' */
+    icSigHToS2Tag                          = 0x48325332,  /* 'H2S2' */
+    icSigHToS3Tag                          = 0x48325333,  /* 'H2S3' */
     icSigGrayTRCTag                        = 0x6b545243,  /* 'kTRC' */
     icSigGreenColorantTag                  = 0x6758595A,  /* 'gXYZ' */
     icSigGreenMatrixColumnTag              = 0x6758595A,  /* 'gXYZ' */

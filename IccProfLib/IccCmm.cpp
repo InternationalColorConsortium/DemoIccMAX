@@ -577,6 +577,7 @@ CIccXform::CIccXform()
   m_bSrcPcsConversion = true;
   m_bDstPcsConversion = true;
   m_pConnectionConditions = NULL;
+  m_bDeleteEnvLooup = true;
   m_pCmmEnvVarLookup = NULL;
   m_nTagIntent = icPerceptual;
   m_MediaXYZ = {};
@@ -604,7 +605,7 @@ CIccXform::~CIccXform()
 		delete m_pAdjustPCS;
 	}
 
-  if (m_pCmmEnvVarLookup) {
+  if (m_pCmmEnvVarLookup && m_bDeleteEnvLooup) {
     delete m_pCmmEnvVarLookup;
   }
 
@@ -8171,6 +8172,28 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
     xforms.push_back(*last);
 
     for (;next!=m_Xforms->end(); last=next, next++) {
+      //Add extended PCS to standard PCS conversion as needed
+      if (last->ptr->IsInput() && last->ptr->IsExtendedPCS() && IsSpaceColorimetricPCS(last->ptr->GetDstSpace()) &&
+          !next->ptr->IsExtendedPCS()) {
+        CIccProfile* pProfile = last->ptr->GetProfilePtr();
+        CIccTag* pTag = pProfile->FindTag(icSigHToS0Tag + last->ptr->GetIntent());
+        if (!pTag) {
+          pTag = pProfile->FindTag(icSigHToS0Tag);
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigHToS1Tag);
+          }
+        }
+        //If we find the HToSxTag then create a transform for it and inject it into the transform list
+        if (pTag) {
+          ptr.ptr = CIccXform::Create(pProfile, pTag, true, last->ptr->GetIntent(), last->ptr->GetInterp(),
+                                      last->ptr->GetConnectionConditions(), false);
+          if (ptr.ptr) {
+            ptr.ptr->AttachCmmEnvVarLookup(last->ptr->GetCmmEnvVarLookup());
+            xforms.push_back(ptr);
+          }
+        }
+      }
+
       if ((last->ptr->IsInput() && last->ptr->IsMCS() && next->ptr->IsMCS()) ||
           (IsSpaceSpectralPCS(last->ptr->GetDstSpace()) || IsSpaceSpectralPCS(next->ptr->GetSrcSpace())) ||
           (!bUsePCSConversions && 
@@ -8208,6 +8231,59 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
 
   return rv;
 }
+
+icStatusCMM CIccCmm::CheckPCSRangeConversions()
+{
+  icStatusCMM rv = icCmmStatOk;
+
+  CIccXformList::iterator last, next;
+  CIccXformList xforms;
+  CIccXformPtr ptr;
+  bool bUsesRangeConversion = false;
+
+  next = m_Xforms->begin();
+
+  if (next != m_Xforms->end()) {
+    last = next;
+    next++;
+
+    xforms.push_back(*last);
+
+    for (; next != m_Xforms->end(); last = next, next++) {
+      //Add extended PCS to standard PCS conversion as needed
+      if (last->ptr->IsInput() && last->ptr->IsExtendedPCS() && IsSpaceColorimetricPCS(last->ptr->GetDstSpace()) &&
+        !next->ptr->IsExtendedPCS()) {
+        CIccProfile* pProfile = last->ptr->GetProfilePtr();
+        CIccTag* pTag = pProfile->FindTag(icSigHToS0Tag + last->ptr->GetIntent());
+        if (!pTag) {
+          pTag = pProfile->FindTag(icSigHToS0Tag);
+          if (!pTag) {
+            pTag = pProfile->FindTag(icSigHToS1Tag);
+          }
+        }
+        //If we find the HToSxTag then create a transform for it and inject it into the transform list
+        if (pTag) {
+          ptr.ptr = CIccXform::Create(pProfile, pTag, true, last->ptr->GetIntent(), last->ptr->GetInterp(),
+            last->ptr->GetConnectionConditions(), false);
+          if (ptr.ptr) {
+            ptr.ptr->AttachCmmEnvVarLookup(last->ptr->GetCmmEnvVarLookup());
+            xforms.push_back(ptr);
+            bUsesRangeConversion = true;
+          }
+        }
+      }
+
+      xforms.push_back(*next);
+    }
+  }
+  
+  if (bUsesRangeConversion) {
+    *m_Xforms = xforms;
+  }
+
+  return rv;
+}
+
 
 /**
 **************************************************************************
@@ -8300,6 +8376,7 @@ icStatusCMM CIccCmm::Begin(bool bAllocApplyCmm/*=true*/, bool bUsePCSConversions
     return icCmmStatBadSpaceLink;
   }
 
+  CheckPCSRangeConversions();
   SetLateBindingCC();
 
   icStatusCMM rv;
@@ -10221,6 +10298,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
     }
   }
 
+  CheckPCSRangeConversions();
   SetLateBindingCC();
 
   icStatusCMM rv;

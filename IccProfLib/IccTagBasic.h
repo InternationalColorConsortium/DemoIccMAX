@@ -754,7 +754,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigCicpType; }
   virtual const icChar* GetClassName() const { return "CIccTagCicp"; }
 
-  virtual void Describe(std::string& sDescription);
+  virtual void Describe(std::string& sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO* pIO);
   virtual bool Write(CIccIO* pIO);
@@ -1176,8 +1176,8 @@ public: //member functions
   icUInt32Number GetLength() const { return m_nLength; }
   icUInt16Number *GetBuf() const { return m_pBuf; }
 
-  icUInt32Number GetAnsiSize();
-  const icChar *GetAnsi(icChar *szBuf, icUInt32Number nBufSize);
+  icUInt32Number GetUtf8Size();
+  const icChar *GetUtf8(icChar *szBuf, icUInt32Number nBufSize);
 
   bool GetText(std::string &text);
   
