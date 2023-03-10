@@ -1,3 +1,9 @@
+2023-03-10 Max Derhak
+* Add support for HToS tags
+* Add iccFromCube tool
+* Update utf8 handling of text
+* Various bug fixes
+
 2021-09 to 2021-10 Peter Wyatt
 * Fixed MSVC Solution files for MSVC v19 due to name change to DemoIccMAX
 * Fixed various compiler errors for newer versions of LLVM and CLANG
