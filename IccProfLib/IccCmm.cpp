@@ -567,6 +567,7 @@ IIccCreateXformHint* CIccCreateXformHintManager::GetHint(const char* hintName)
 CIccXform::CIccXform() 
 {
   m_pProfile = NULL;
+  m_bOwnsProfile = true;
   m_bInput = true;
   m_nIntent = icUnknownIntent;
   m_pAdjustPCS = NULL;
@@ -598,7 +599,7 @@ CIccXform::CIccXform()
  */
 CIccXform::~CIccXform()
 {
-  if (m_pProfile)
+  if (m_pProfile && m_bOwnsProfile)
     delete m_pProfile;
 
 	if (m_pAdjustPCS) {
@@ -615,6 +616,7 @@ CIccXform::~CIccXform()
 void CIccXform::DetachAll()
 {
   m_pProfile = NULL;
+  m_bOwnsProfile = true;
   m_pConnectionConditions = NULL;
 }
 
@@ -7786,7 +7788,7 @@ icStatusCMM CIccCmm::AddXform(icUInt8Number *pProfileMem,
  *  Adds a profile at the end of the Xform list 
  * 
  * Args: 
- *  pProfile = pointer to the CIccProfile object to be added,
+ *  pProfile = pointer to the CIccProfile object to be added (profile will be owned by the CMM's added xform),
  *  nIntent = rendering intent to be used with the profile,
  *  nInterp = type of interpolation to be used with the profile,
  *  nLutType = selection of which transform lut to use
@@ -8172,28 +8174,6 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
     xforms.push_back(*last);
 
     for (;next!=m_Xforms->end(); last=next, next++) {
-      //Add extended PCS to standard PCS conversion as needed
-      if (last->ptr->IsInput() && last->ptr->IsExtendedPCS() && IsSpaceColorimetricPCS(last->ptr->GetDstSpace()) &&
-          !next->ptr->IsExtendedPCS()) {
-        CIccProfile* pProfile = last->ptr->GetProfilePtr();
-        CIccTag* pTag = pProfile->FindTag(icSigHToS0Tag + last->ptr->GetIntent());
-        if (!pTag) {
-          pTag = pProfile->FindTag(icSigHToS0Tag);
-          if (!pTag) {
-            pTag = pProfile->FindTag(icSigHToS1Tag);
-          }
-        }
-        //If we find the HToSxTag then create a transform for it and inject it into the transform list
-        if (pTag) {
-          ptr.ptr = CIccXform::Create(pProfile, pTag, true, last->ptr->GetIntent(), last->ptr->GetInterp(),
-                                      last->ptr->GetConnectionConditions(), false);
-          if (ptr.ptr) {
-            ptr.ptr->AttachCmmEnvVarLookup(last->ptr->GetCmmEnvVarLookup());
-            xforms.push_back(ptr);
-          }
-        }
-      }
-
       if ((last->ptr->IsInput() && last->ptr->IsMCS() && next->ptr->IsMCS()) ||
           (IsSpaceSpectralPCS(last->ptr->GetDstSpace()) || IsSpaceSpectralPCS(next->ptr->GetSrcSpace())) ||
           (!bUsePCSConversions && 
@@ -8264,8 +8244,10 @@ icStatusCMM CIccCmm::CheckPCSRangeConversions()
         //If we find the HToSxTag then create a transform for it and inject it into the transform list
         if (pTag) {
           ptr.ptr = CIccXform::Create(pProfile, pTag, true, last->ptr->GetIntent(), last->ptr->GetInterp(),
-            last->ptr->GetConnectionConditions(), false);
+                                      last->ptr->GetConnectionConditions(), false);
           if (ptr.ptr) {
+            ptr.ptr->ShareProfile(); //Indicate that profile is shared (so it won't be deleted)
+            ptr.ptr->SetPcsAdjustXform(); // Indicates that transform should be treated as abstract
             ptr.ptr->AttachCmmEnvVarLookup(last->ptr->GetCmmEnvVarLookup());
             xforms.push_back(ptr);
             bUsesRangeConversion = true;
@@ -9252,6 +9234,23 @@ icFloatColorEncoding CIccCmm::GetFloatColorEncoding(const icChar* val)
 icUInt32Number CIccCmm::GetNumXforms() const
 {
   return (icUInt32Number)m_Xforms->size();
+}
+
+
+/**
+ **************************************************************************
+ * Name: CIccCmm::IterateXforms
+ *
+ * Purpose:
+ *  Get information from xform in the list
+ *
+ **************************************************************************
+ */
+void CIccCmm::IterateXforms( IXformIterator* pIterater) const
+{
+  for (auto x = m_Xforms->begin(); x != m_Xforms->end(); x++) {
+    pIterater->iterate(x->ptr);
+  }
 }
 
 

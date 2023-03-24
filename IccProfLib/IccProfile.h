@@ -163,6 +163,7 @@ public:
   TagEntryList *m_Tags;
 
   CIccTag* FindTag(icSignature sig);
+  const CIccTag* FindTagConst(icSignature sig) const;
   CIccTag* FindTagOfType(icSignature tagSig, icTagTypeSignature typeSig);
 
   bool AttachTag(icSignature sig, CIccTag *pTag);

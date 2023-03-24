@@ -1485,6 +1485,10 @@ const icChar *CIccInfo::GetProfileFlagsName(icUInt32Number val, bool bCheckMCS/*
       strcpy(m_szStr+l, " | MCSConnectAny");
   }
 
+  if (val & icExtendedRangePCS)
+    strcpy(m_szStr + l, " | ExtendedRangePCS");
+
+
   return m_szStr;
 }
 

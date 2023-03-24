@@ -1477,13 +1477,17 @@ const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS)
 	  sprintf(line, "<ProfileFlags EmbeddedInFile=\"false\"");	
 	xml += line;
 
-	if (flags & icUseWithEmbeddedDataOnly)
+  if (flags & icUseWithEmbeddedDataOnly)
 		sprintf(line, " UseWithEmbeddedDataOnly=\"true\"");
 	else
 		sprintf(line, " UseWithEmbeddedDataOnly=\"false\"");
 	xml += line;
 
-  icUInt32Number otherFlags = ~(icEmbeddedProfileTrue|icUseWithEmbeddedDataOnly);
+  if (flags & icExtendedRangePCS)
+    sprintf(line, " ExtendedRangePCS=\"true\"");
+  xml += line;
+
+  icUInt32Number otherFlags = ~(icEmbeddedProfileTrue | icUseWithEmbeddedDataOnly | icExtendedRangePCS);
 
   if (bUsesMCS) {
     if (flags & icMCSNeedsSubsetTrue)
@@ -1494,7 +1498,6 @@ const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS)
 
     otherFlags &= ~icMCSNeedsSubsetTrue;
   }
-
 
   if (flags & otherFlags) {
     sprintf(line, " VendorFlags=\"%08x\"", flags & otherFlags);

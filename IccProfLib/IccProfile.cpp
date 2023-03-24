@@ -381,6 +381,32 @@ CIccTag* CIccProfile::FindTag(icSignature sig)
 
 /**
  ******************************************************************************
+ * Name: CIccProfile::FindTagConst
+ *
+ * Purpose: Finds the loaded tag object associated with the directory entry
+ *  with the given signature.  
+ *
+ * Args:
+ *  sig - tag signature to find in profile
+ *
+ * Return:
+ *  The desired tag object, or NULL if unable to find the loaded tag.
+ *******************************************************************************
+ */
+const CIccTag* CIccProfile::FindTagConst (icSignature sig) const
+{
+  IccTagEntry* pEntry = GetTag(sig);
+
+  if (pEntry) {
+    return pEntry->pTag;
+  }
+
+  return NULL;
+}
+
+
+/**
+ ******************************************************************************
  * Name: CIccProfile::FindTagOfType
  * 
  * Purpose: Finds the tag object associated with the directory entry with the
@@ -1572,11 +1598,22 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     }
 
     // Report on various bits of profile flags as per Table 21 in v4.3.0
-    if(m_Header.flags & 0x0000FFFC) {
+    if(m_Header.version<icVersionNumberV5 && m_Header.flags & 0x0000FFFC) {
         sReport += icMsgValidateNonCompliant;
         sReport += "Reserved profile flags (bits 2-15) are non-zero.\n";
         rv = icMaxStatus(rv, icValidateNonCompliant);
     }
+    else if (m_Header.version == icVersionNumberV5 && m_Header.flags & 0x0000FFF8) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += "Reserved profile flags (bits 3-15) are non-zero.\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+    else if (m_Header.flags & 0x0000FFF0) {
+      sReport += icMsgValidateNonCompliant;
+      sReport += "Reserved profile flags (bits 4-15) are non-zero.\n";
+      rv = icMaxStatus(rv, icValidateNonCompliant);
+    }
+
     if(m_Header.flags & 0xFFFF0000) {
         sReport += icMsgValidateWarning;
         sReport += "Vendor-specific profile flags (bits 16-32) are non-zero.\n";

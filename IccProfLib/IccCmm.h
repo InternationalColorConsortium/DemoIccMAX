@@ -357,6 +357,10 @@ public:
                            bool bUseSpectralPCS = false,
                            CIccCreateXformHintManager *pHintManager = NULL);
 
+  //ShareProfile should only be called when the profile is shared between transforms 
+  void ShareProfile() { m_bOwnsProfile = false; } 
+  void SetPcsAdjustXform() { m_bPcsAdjustXform = true; }
+
   virtual icStatusCMM Begin();
 
   virtual CIccApplyXform *GetNewApply(icStatusCMM &status);
@@ -388,9 +392,9 @@ public:
 
   bool IsMCS() const { return m_nMCS!=icNoMCS; }
 
-  bool IsExtendedPCS() const { return m_pProfile && (m_pProfile->m_Header.flags & icExtendedRangePCSTrue) != 0; }
+  bool IsExtendedPCS() const { return m_pProfile && (m_pProfile->m_Header.flags & icExtendedRangePCS) != 0; }
 
-  bool IsAbstract() const { return m_pProfile && m_pProfile->m_Header.deviceClass==icSigAbstractClass; }
+  bool IsAbstract() const { return m_bPcsAdjustXform || (m_pProfile && m_pProfile->m_Header.deviceClass==icSigAbstractClass); }
     
   /// The following function is for Overridden create function
   void SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent nIntent, icRenderingIntent nTagIntet,
@@ -436,6 +440,8 @@ protected:
   virtual bool HasPerceptualHandling() { return true; }
 
   CIccProfile *m_pProfile;
+  bool m_bOwnsProfile = true;
+  bool m_bPcsAdjustXform = false;
   bool m_bInput;
   icRenderingIntent m_nIntent;
   icRenderingIntent m_nTagIntent;
@@ -1527,6 +1533,15 @@ protected:
   icFloatNumber *m_Pixel2;
 };
 
+class IXformIterator
+{
+public:
+  IXformIterator() {}
+  virtual ~IXformIterator() {}
+
+  virtual void iterate(const CIccXform* pxform) = 0;
+};
+
 /**
  **************************************************************************
  * Type: Class 
@@ -1602,6 +1617,8 @@ public:
 
   ///Returns the number of profiles/transforms added 
   virtual icUInt32Number GetNumXforms() const;
+
+  virtual void IterateXforms(IXformIterator* pIterater) const;
 
   ///Returns the source color space
   icColorSpaceSignature GetSourceSpace() const { return m_nSrcSpace; }

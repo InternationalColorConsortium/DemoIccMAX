@@ -6982,7 +6982,7 @@ icUInt32Number CIccLocalizedUnicode::GetUtf8Size()
   std::string str;
   GetText(str);
 
-  return str.size()+1;
+  return (icUInt32Number)str.size()+1;
 }
 
 /**
@@ -7213,7 +7213,7 @@ bool CIccLocalizedUnicode::SetText(const icChar *szText,
   icUInt16Number *pBuf;
 
   size_t len = utf16.size();
-  if (!SetSize(len+1))
+  if (!SetSize((icUInt32Number)len+1))
     return false;
   
   pBuf = m_pBuf;
@@ -7536,7 +7536,7 @@ void CIccTagMultiLocalizedUnicode::Describe(std::string &sDescription, int nVerb
 {
   char szBuf[128];
   std::string utf8;
-  int nSize = 127, nAnsiSize;
+  int nSize = 127;
   CIccMultiLocalizedUnicode::iterator i;
 
   for (i=m_Strings->begin(); i!=m_Strings->end(); i++) {
@@ -11547,7 +11547,7 @@ bool CIccTagSpectralViewingConditions::setObserver(icStandardObserver observerId
 }
 
 
-bool icGetTagText(CIccTag *pTag, std::string &text)
+bool icGetTagText(const CIccTag *pTag, std::string &text)
 {
   if (!pTag) {
     text = "";

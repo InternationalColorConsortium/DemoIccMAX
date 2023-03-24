@@ -602,7 +602,7 @@ static icFloatNumber clipPow(double v, double g)
 {
   if (v <= 0)
     return 0;
-  return pow(v, g);
+  return (icFloatNumber)pow(v, g);
 }
 
 /**

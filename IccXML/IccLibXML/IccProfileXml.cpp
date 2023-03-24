@@ -438,6 +438,11 @@ bool CIccProfileXml::ParseBasic(xmlNode *pNode, std::string &parseStr)
 					m_Header.flags |= icUseWithEmbeddedDataOnly;
 			}
 
+      attr = icXmlFindAttr(pNode, "ExtendedRangePCS");
+      if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
+        m_Header.flags |= icExtendedRangePCS;
+      }
+
       attr = icXmlFindAttr(pNode, "MCSNeedsSubset");
       if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
         m_Header.flags |= icMCSNeedsSubsetTrue;
