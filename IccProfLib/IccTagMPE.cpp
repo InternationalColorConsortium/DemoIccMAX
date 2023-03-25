@@ -1412,6 +1412,20 @@ CIccApplyTagMpe *CIccTagMultiProcessElement::GetNewApply()
   return pApply;
 }
 
+//#define DEBUG_MPE_APPLY
+
+#ifdef DEBUG_MPE_APPLY
+static void DumpMpeApplyPixe(int nCount, const icFloatNumber* pPixel, icUInt16Number nSamples)
+{
+  printf("Mpe%d:", nCount);
+  for (icUInt16Number i = 0; i < nSamples; i++) {
+    if (i)
+      printf(",");
+    printf(" %.3f", pPixel[i]);
+  }
+  printf("\n");
+}
+#endif
 
 /**
  ******************************************************************************
@@ -1430,6 +1444,12 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
     return;
   }
 
+#ifdef DEBUG_MPE_APPLY
+  int nCount = 0;
+  printf("Start of MPE APPLY\n");
+  DumpMpeApplyPixe(nCount++, pSrcPixel, m_nInputChannels);
+#endif
+
   CIccDblPixelBuffer *pApplyBuf = pApply->GetBuf();
   CIccApplyMpeIter i = pApply->begin();
   CIccApplyMpeIter next;
@@ -1446,9 +1466,17 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
     else {
       i->ptr->Apply(pDestPixel, pSrcPixel);
     }
+#ifdef DEBUG_MPE_APPLY
+    DumpMpeApplyPixe(nCount++, pSrcPixel, m_nInputChannels);
+#endif
   }
   else {
     i->ptr->Apply(pApplyBuf->GetDstBuf(), pSrcPixel);
+
+#ifdef DEBUG_MPE_APPLY
+    DumpMpeApplyPixe(nCount++, pApplyBuf->GetDstBuf(), m_nInputChannels);
+#endif
+
     i++;
     next++;
     pApplyBuf->Switch();
@@ -1458,6 +1486,11 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
 
       if (!pElem->IsAcs()) {
         i->ptr->Apply(pApplyBuf->GetDstBuf(), pApplyBuf->GetSrcBuf());
+
+#ifdef DEBUG_MPE_APPLY
+        DumpMpeApplyPixe(nCount++, pApplyBuf->GetDstBuf(), m_nInputChannels);
+#endif
+
         pApplyBuf->Switch();
       }
 
@@ -1466,7 +1499,17 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
     }
 
     i->ptr->Apply(pDestPixel, pApplyBuf->GetSrcBuf());
+
+#ifdef DEBUG_MPE_APPLY
+    DumpMpeApplyPixe(nCount++, pDestPixel, m_nInputChannels);
+#endif
+
   }
+
+#ifdef DEBUG_MPE_APPLY
+  printf("End MPE Apply\n\n");
+#endif
+
 }
 
 

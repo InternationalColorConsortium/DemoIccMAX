@@ -1755,15 +1755,19 @@ icColorSpaceSignature CIccXform::GetSrcSpace() const
   icProfileClassSignature deviceClass = m_pProfile->m_Header.deviceClass;
 
   if (m_bInput) {
-    rv = m_pProfile->m_Header.colorSpace;
+    if (m_bPcsAdjustXform)
+      rv = m_pProfile->m_Header.pcs;
+    else {
+      rv = m_pProfile->m_Header.colorSpace;
 
-    if (deviceClass != icSigAbstractClass) {
-      //convert signature to device colorspace signature (avoid confusion about encoding).
-      if (rv==icSigXYZData) {
-        rv = icSigDevXYZData;
-      }
-      else if (rv==icSigLabData) {
-        rv = icSigDevLabData;
+      if (deviceClass != icSigAbstractClass) {
+        //convert signature to device colorspace signature (avoid confusion about encoding).
+        if (rv == icSigXYZData) {
+          rv = icSigDevXYZData;
+        }
+        else if (rv == icSigLabData) {
+          rv = icSigDevLabData;
+        }
       }
     }
   }
@@ -7288,14 +7292,14 @@ void CIccXformMpe::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, const 
 {
   const CIccTagMultiProcessElement *pTag = m_pTag;
 
-  if (!m_bInput) { //PCS comming in?
+  icFloatNumber temp[3];
+  if (!m_bInput || m_bPcsAdjustXform) { //PCS comming in?
     if (m_nIntent != icAbsoluteColorimetric || m_nIntent != m_nTagIntent) {  //B2D3 tags don't need abs conversion
       SrcPixel = CheckSrcAbs(pApply, SrcPixel);
     }
 
     //Since MPE tags use "real" values for PCS we need to convert from 
     //internal encoding used by IccProfLib
-    icFloatNumber temp[3];
     switch (GetSrcSpace()) {
       case icSigXYZData:
         memcpy(&temp[0], SrcPixel, 3*sizeof(icFloatNumber));
@@ -7444,6 +7448,21 @@ bool CIccApplyCmm::InitPixel()
   return true;
 }
 
+//#define DEBUG_CMM_APPLY
+
+#ifdef DEBUG_CMM_APPLY
+static void DumpCmmApplyPixel(int nCount, const icFloatNumber* pPixel, icUInt16Number nSamples)
+{
+  printf("Xfm%d:", nCount);
+  for (icUInt16Number i = 0; i < nSamples; i++) {
+    if (i)
+      printf(",");
+    printf(" %.3f", pPixel[i]);
+  }
+  printf("\n");
+
+}
+#endif
 
 /**
 **************************************************************************
@@ -7478,10 +7497,21 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
   pSrc = SrcPixel;
   pDst = m_Pixel;
 
+#ifdef DEBUG_CMM_APPLY
+  int nCount = 0;
+  printf("Start ApplyCmm\n");
+  DumpCmmApplyPixel(nCount++, pSrc, icGetSpaceSamples(m_pCmm->m_nSrcSpace));
+#endif
+
   if (n>1) {
     for (j=0, i=m_Xforms->begin(); j<n-1 && i!=m_Xforms->end(); i++, j++) {
 
       i->ptr->Apply(pDst, m_pPCS->Check(pSrc, i->ptr->GetXform()));
+
+#ifdef DEBUG_CMM_APPLY
+      DumpCmmApplyPixel(nCount++, pDst, i->ptr->GetXform()->GetNumDstSamples());
+#endif
+
       pTmp = (icFloatNumber*)pSrc;
       pSrc = pDst;
       if (pTmp == SrcPixel)
@@ -7499,6 +7529,11 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
 
     pLastXform = i->ptr->GetXform();
     i->ptr->Apply(DstPixel, m_pPCS->Check(SrcPixel, pLastXform));
+
+#ifdef DEBUG_CMM_APPLY
+    DumpCmmApplyPixel(nCount++, pDst, i->ptr->GetXform()->GetNumDstSamples());
+#endif
+
     bNoClip = pLastXform->NoClipPCS();
   }
   else {
@@ -7506,6 +7541,11 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
   }
 
   m_pPCS->CheckLast(DstPixel, m_pCmm->m_nDestSpace, bNoClip);
+
+#ifdef DEBUG_CMM_APPLY
+  DumpCmmApplyPixel(nCount, DstPixel, icGetSpaceSamples(m_pCmm->m_nDestSpace));
+  printf("End ApplyCmm\n\n");
+#endif
 
   return icCmmStatOk;
 }
@@ -9358,6 +9398,13 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
   pSrc = SrcPixel;
   pDst = m_Pixel;
 
+#ifdef DEBUG_CMM_APPLY
+  int nCount = 0;
+  printf("Start ApplyNamedCmm\n");
+  DumpCmmApplyPixel(nCount++, pSrc, icGetSpaceSamples(m_pCmm->GetSourceSpace()));
+#endif
+
+
   if (n>1) {
     for (j=0, i=m_Xforms->begin(); j<n-1 && i!=m_Xforms->end(); i++, j++) {
 
@@ -9369,10 +9416,16 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
         switch(pXform->GetInterface()) {
         case icApplyPixel2Pixel:
           pXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+#ifdef DEBUG_CMM_APPLY
+          DumpCmmApplyPixel(nCount++, pDst, pXform->GetNumDstSamples());
+#endif
           break;
 
         case icApplyPixel2Named:
           pXform->Apply(pApply, NamedColor, m_pPCS->Check(pSrc, pXform));
+#ifdef DEBUG_CMM_APPLY
+          printf("Xfm%d: \"%s\"\n", nCount++, NamedColor);
+#endif
           break;
 
         case icApplyNamed2Pixel:
@@ -9381,6 +9434,9 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
           }
 
           rv = pXform->Apply(pApply, pDst, NamedColor);
+#ifdef DEBUG_CMM_APPLY
+          DumpCmmApplyPixel(nCount++, pDst, pXform->GetNumDstSamples());
+#endif
 
           if (rv) {
             return rv;
@@ -9393,6 +9449,9 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
       }
       else {
         pApplyXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pApplyXform));
+#ifdef DEBUG_CMM_APPLY
+        DumpCmmApplyPixel(nCount++, pDst, pApplyXform->GetNumDstSamples());
+#endif
       }
       pTmp = (icFloatNumber*)pSrc;
       pSrc = pDst;
@@ -9410,6 +9469,9 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
       switch(pXform->GetInterface()) {
       case icApplyPixel2Pixel:
         pXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pXform));
+#ifdef DEBUG_CMM_APPLY
+        DumpCmmApplyPixel(nCount++, DstPixel, pXform->GetNumDstSamples());
+#endif
         break;
 
       case icApplyPixel2Named:
@@ -9419,6 +9481,9 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
 
       case icApplyNamed2Pixel:
         rv = pXform->Apply(pApply, DstPixel, NamedColor);
+#ifdef DEBUG_CMM_APPLY
+        DumpCmmApplyPixel(nCount++, DstPixel, pXform->GetNumDstSamples());
+#endif
         if (rv) {
           return rv;
         }
@@ -9428,6 +9493,9 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
     }
     else {
       pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+#ifdef DEBUG_CMM_APPLY
+      DumpCmmApplyPixel(nCount++, DstPixel, pApplyXform->GetNumDstSamples());
+#endif
     }
 
   }
@@ -9441,9 +9509,16 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
     }
 
     pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+#ifdef DEBUG_CMM_APPLY
+    DumpCmmApplyPixel(nCount++, DstPixel, pApplyXform->GetNumDstSamples());
+#endif
   }
 
   m_pPCS->CheckLast(DstPixel, m_pCmm->GetDestSpace(), true);
+#ifdef DEBUG_CMM_APPLY
+  DumpCmmApplyPixel(nCount++, DstPixel, icGetSpaceSamples(m_pCmm->GetDestSpace()));
+  printf("End ApplyNamedCmm\n\n");
+#endif
 
   return icCmmStatOk;
 }
