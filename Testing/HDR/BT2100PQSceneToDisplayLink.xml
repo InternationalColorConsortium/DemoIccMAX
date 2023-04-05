@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.10</ProfileVersion>
+    <ProfileDeviceClass>link</ProfileDeviceClass>
+    <DataColourSpace>RGB </DataColourSpace>
+    <PCS>RGB </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.9504222269" Y="1.0000000000" Z="1.0884541014"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+  </Header>
+  <Tags>
+    <profileDescriptionTag> <multiLocalizedUnicodeType>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[BT.2100 PQ Camera RGB (scene) to Display RGB Link]]></LocalizedText>
+    </multiLocalizedUnicodeType> </profileDescriptionTag>
+	
+	<AToB0Tag> <multiProcessElementType>
+	  <MultiProcessElements InputChannels="3" OutputChannels="3">
+      <!-- Normalized Camera (scene) RGB Here -->
+			
+			 <!-- Apply PQ OOTF -->
+		  <CurveSetElement InputChannels="3" OutputChannels="3">
+			  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0" End="0.0003024" FunctionType="0">1 267.84 0 0</FormulaSegment>
+				  <FormulaSegment Start="0.0003024" End="+infinity" FunctionType="3">0.45 1.099 59.5208 0 -0.099 </FormulaSegment>
+				</SegmentedCurve>
+			  <DuplicateCurve Index="0"/>
+			  <DuplicateCurve Index="0"/>
+			</CurveSetElement>
+			
+		  <!-- Apply Inverse PQ EOTF (Part 1 - divide input by 10000) -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData>
+				  0.0001 0 0
+          0 0.0001 0
+          0 0 0.0001
+				</MatrixData>
+			</MatrixElement>
+			
+		  <!-- Apply Inverse PQ EOTF (Part 2) -->
+		  <CurveSetElement InputChannels="3" OutputChannels="3">
+			  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0.08333333333333333" End="+infinity" FunctionType="7">78.84375 0.1593017578125 0.8359375 18.8515625 18.6875 1.0</FormulaSegment>
+				</SegmentedCurve>
+			  <DuplicateCurve Index="0"/>
+			  <DuplicateCurve Index="0"/>
+			</CurveSetElement>
+
+      <!-- HLG Full RGB Here -->
+
+		  <!-- Apply PQ EOTF -->
+		  <CurveSetElement InputChannels="3" OutputChannels="3">
+			  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0" End="+infinity" FunctionType="6">0.1593017578125 0.01268331351565597 0.8359375 18.8515625 18.6875 10000 1.0</FormulaSegment>
+				</SegmentedCurve>
+			  <DuplicateCurve Index="0"/>
+			  <DuplicateCurve Index="0"/>
+			</CurveSetElement>
+
+		  <!-- Normalize to display range [0.0, 1.0] -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData>
+				  0.0001 0 0
+          0 0.0001 0
+          0 0 0.0001
+				</MatrixData>
+			</MatrixElement>
+			
+      <!-- Normalized Display RGB Here -->
+	  </MultiProcessElements>
+	</multiProcessElementType> </AToB0Tag>
+	
+  <copyrightTag> <multiLocalizedUnicodeType>
+	  <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2022 International Color Consortium]]></LocalizedText>
+	</multiLocalizedUnicodeType> </copyrightTag>
+
+  </Tags>
+</IccProfile>
