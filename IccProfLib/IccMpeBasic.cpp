@@ -203,7 +203,7 @@ CIccFormulaCurveSegment::~CIccFormulaCurveSegment()
  ******************************************************************************/
 void CIccFormulaCurveSegment::Describe(std::string &sDescription, int nVerboseness)
 {
-  icChar buf[128];
+  icChar buf[256];
 
   sDescription += "Segment [";
   if (m_startPoint==icMinFloat32Number)
