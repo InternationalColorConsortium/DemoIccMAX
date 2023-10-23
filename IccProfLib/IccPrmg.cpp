@@ -120,7 +120,6 @@ static icFloatNumber icPRMG_Chroma[37][20] = {
   {0, 11, 26, 39, 52, 64, 74, 83, 91, 92, 91, 87, 82, 75, 67, 57, 47, 37, 25, 13},
 };
 
-// PATCH by @h02332 to address a stack-buffer-overflow == ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ff7bbad7d20 at pc 0x000104d2a619 bp 0x7ff7bbad7b70 sp 0x7ff7bbad7b68 WRITE of size 1 at 0x7ff7bbad7d20 thread T0
 CIccPRMG::CIccPRMG()
 {
   m_nTotal = m_nDE1 = m_nDE2 = m_nDE3 = m_nDE5 = m_nDE10 = 0;
