@@ -147,20 +147,20 @@ public:
         m_sizeLut3D = atoi(line.c_str() + 12);
       }
       else if (line.substr(0, 19) == "LUT_3D_INPUT_RANGE ") {
-        m_fMinInput[0] = m_fMinInput[1] = m_fMinInput[2] = atof(line.c_str() + 19);
+        m_fMinInput[0] = m_fMinInput[1] = m_fMinInput[2] = (icFloatNumber)atof(line.c_str() + 19);
         const char* next = getNext(line.c_str() + 19);
         if (next) {
-          m_fMaxInput[0] = m_fMaxInput[1] = m_fMaxInput[2] = atof(next);
+          m_fMaxInput[0] = m_fMaxInput[1] = m_fMaxInput[2] = (icFloatNumber)atof(next);
         }
       }
       else if (line.substr(0, 11) == "DOMAIN_MIN ") {
-        m_fMinInput[0] = atof(line.c_str() + 11);
+        m_fMinInput[0] = (icFloatNumber)atof(line.c_str() + 11);
         const char* next = getNext(line.c_str());
         if (next) {
-          m_fMinInput[1] = atof(next);
+          m_fMinInput[1] = (icFloatNumber)atof(next);
           next = getNext(next);
           if (next) {
-            m_fMinInput[2] = atof(next);
+            m_fMinInput[2] = (icFloatNumber)atof(next);
           }
           else
             m_fMinInput[2] = m_fMinInput[1];
@@ -170,13 +170,13 @@ public:
         }
       }
       else if (line.substr(0, 11) == "DOMAIN_MAX ") {
-        m_fMaxInput[0] = atof(line.c_str() + 11);
+        m_fMaxInput[0] = (icFloatNumber)atof(line.c_str() + 11);
         const char* next = getNext(line.c_str());
         if (next) {
-          m_fMaxInput[1] = atof(next);
+          m_fMaxInput[1] = (icFloatNumber)atof(next);
           next = getNext(next);
           if (next) {
-            m_fMaxInput[2] = atof(next);
+            m_fMaxInput[2] = (icFloatNumber)atof(next);
           }
           else
             m_fMaxInput[2] = m_fMaxInput[1];
@@ -222,25 +222,25 @@ public:
       return false;
 
     const char* next;
-    for (auto n = 0; n < num && !isEOF();) {
+    for (auto n = 0u; n < num && !isEOF();) {
       std::string line = getNextLine();
 
       //Skip empty and commented lines
       if (line[0] == '#' || line.size() == 0)
         continue;
-      *toLut++ = atof(line.c_str());
+      *toLut++ = (icFloatNumber)atof(line.c_str());
       next = getNext(line.c_str());
       if (!next) {
         printf("Invalid 3DLUT entry\n");
         return false;
       }
-      *toLut++ = atof(next);
+      *toLut++ = (icFloatNumber)atof(next);
       next = getNext(next);
       if (!next) {
         printf("Invalid 3DLUT entry\n");
         return false;
       }
-      *toLut++ = atof(next);
+      *toLut++ = (icFloatNumber)atof(next);
 
       n++;
     }
@@ -336,7 +336,6 @@ int main(int argc, char* argv[])
   long int verbosity = 100; // default is maximum verbosity (old behaviour)
 
   if (argc <= 2) {
-print_usage:
     printf("Usage: iccFromCube cube_file output_icc_file\n");
     printf("Built with IccProfLib version " ICCPROFLIBVER "\n");
 

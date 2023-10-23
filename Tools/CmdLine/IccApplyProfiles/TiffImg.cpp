@@ -200,7 +200,7 @@ bool CTiffImg::Create(const char *szFname, unsigned int nWidth, unsigned int nHe
     }
     m_nBytesPerSample = m_nBitsPerSample / 8;
 
-    m_nStripSize = TIFFStripSize(m_hTif);
+    m_nStripSize = (unsigned int)TIFFStripSize(m_hTif);
     m_nBytesPerStripLine = m_nWidth * m_nBytesPerSample;
 
     if (m_nStripSize!=m_nBytesPerStripLine) {
@@ -218,7 +218,7 @@ bool CTiffImg::Create(const char *szFname, unsigned int nWidth, unsigned int nHe
     m_nStripsPerSample = m_nHeight / m_nRowsPerStrip;
   }
   else {
-    m_nBytesPerLine = m_nStripSize = TIFFStripSize(m_hTif);
+    m_nBytesPerLine = m_nStripSize = (unsigned int)TIFFStripSize(m_hTif);
     m_nStripSamples = 1;
   }
 
@@ -264,7 +264,7 @@ bool CTiffImg::Open(const char *szFname)
   m_nCurStrip=(unsigned int)-1;
   m_nCurLine = 0;
 
-  m_nStripSize = TIFFStripSize(m_hTif);
+  m_nStripSize = (unsigned int)TIFFStripSize(m_hTif);
 
   if (m_nSamples>1 && m_nPlanar==PLANARCONFIG_SEPARATE) {
     m_nStripSamples = m_nSamples;

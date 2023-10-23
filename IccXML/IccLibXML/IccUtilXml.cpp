@@ -1483,9 +1483,10 @@ const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS)
 		sprintf(line, " UseWithEmbeddedDataOnly=\"false\"");
 	xml += line;
 
-  if (flags & icExtendedRangePCS)
+  if (flags & icExtendedRangePCS) {
     sprintf(line, " ExtendedRangePCS=\"true\"");
-  xml += line;
+    xml += line;
+  }
 
   icUInt32Number otherFlags = ~(icEmbeddedProfileTrue | icUseWithEmbeddedDataOnly | icExtendedRangePCS);
 
