@@ -73,6 +73,8 @@
 #include <cstring> /* C strings strcpy, memcpy ... */
 #include <set>
 #include <map>
+#include <sstream>  // Make sure to include this header
+#include <iomanip>  // Include this header for setw and setfill
 
 typedef  std::map<icUInt32Number, icTagSignature> IccOffsetTagSigMap;
 
@@ -331,43 +333,48 @@ bool CIccTagXmlUtf16Text::ParseXml(xmlNode *pNode, std::string &parseStr)
   return false;
 }
 
-
 bool CIccTagXmlTextDescription::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
-  char fix[256];
-  char buf[256];
-  char data[256];
-  std::string datastr;
+    std::string fix;
+    std::string buf;
+    char data[256];  // Adjust the size as needed
+    std::string datastr;
 
-  icXmlDumpTextData(xml, blanks, m_szText);
+    icXmlDumpTextData(xml, blanks, m_szText);
 
-  // added support for <![CData[Insert Text here]]> for Unicode 
+    // Added support for <![CData[Insert Text here]]> for Unicode
+    if (m_uzUnicodeText[0]) {
+        if (m_nUnicodeLanguageCode == 0)
+            buf = "<Unicode>";
+        else {
+            icGetSigStr(data, m_nUnicodeLanguageCode);
+            icFixXml(fix, data);
+            buf = "<Unicode LanguageCode=\"" + fix + "\">";
+        }
+        xml += blanks + buf;
 
-  if (m_uzUnicodeText[0]) {
-    if (m_nUnicodeLanguageCode == 0)
-      sprintf(buf, "<Unicode>");
-    else
-      sprintf(buf, "<Unicode LanguageCode=\"%s\">", icFixXml(fix, icGetSigStr(data, m_nUnicodeLanguageCode)));    
-    xml += blanks + buf;
-
-    sprintf(buf, "<![CDATA[%s]]></Unicode>\n", icFixXml(fix, icUtf16ToUtf8(datastr, m_uzUnicodeText)));
-    xml += buf;
-
-  }
-
-  if (m_nScriptSize) {
-    sprintf(buf, "<MacScript ScriptCode=\"%04x\">", m_nScriptCode);
-    xml += blanks + buf;
-
-    int i;
-    for (i=0; i<m_nScriptSize; i++) {
-      sprintf(buf + i*2, "%02X", (unsigned char)m_szScriptText[i]);
+        icUtf16ToUtf8(datastr, m_uzUnicodeText);
+        icFixXml(fix, datastr.c_str());
+        buf = "<![CDATA[" + fix + "]]></Unicode>\n";
+        xml += buf;
     }
-    xml += buf;
-    xml += "</MacScript>\n";
-  }
 
-  return true;
+    if (m_nScriptSize) {
+        buf = "<MacScript ScriptCode=\"" + std::to_string(m_nScriptCode) + "\">";
+        xml += blanks + buf;
+
+        std::stringstream ss;
+        for (int i = 0; i < m_nScriptSize; i++) {
+            ss << std::hex << std::uppercase << std::setw(2) << std::setfill('0')
+               << static_cast<int>(static_cast<unsigned char>(m_szScriptText[i]));
+        }
+        buf = ss.str();
+
+        xml += buf;
+        xml += "</MacScript>\n";
+    }
+
+    return true;
 }
 
 
