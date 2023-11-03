@@ -120,6 +120,15 @@ static icFloatNumber icPRMG_Chroma[37][20] = {
   {0, 11, 26, 39, 52, 64, 74, 83, 91, 92, 91, 87, 82, 75, 67, 57, 47, 37, 25, 13},
 };
 
+static int icClamp(int val, int minVal, int maxVal)
+{
+  if (val < minVal)
+    return minVal;
+  else if (val > maxVal)
+    return maxVal;
+  return val;
+}
+
 CIccPRMG::CIccPRMG()
 {
   m_nTotal = m_nDE1 = m_nDE2 = m_nDE3 = m_nDE5 = m_nDE10 = 0;
@@ -159,8 +168,8 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
   const int maxLIndex = sizeof(icPRMG_Chroma[0]) / sizeof(icPRMG_Chroma[0][0]) - 1;
 
     // Clamp indices to prevent out-of-bounds access
-    nHIndex = std::clamp(nHIndex, 0, maxHIndex - 1);
-    nLIndex = std::clamp(nLIndex, 0, maxLIndex - 1);
+  nHIndex = icClamp(nHIndex, 0, maxHIndex - 1);
+  nLIndex = icClamp(nLIndex, 0, maxLIndex - 1);
 
   icFloatNumber dInvLFraction = 1.0 - dLFraction;
 
