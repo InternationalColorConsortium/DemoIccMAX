@@ -1,13 +1,16 @@
 /** @file
     File:       icProfileHeader.h
 
-    Contains:   ICC profile definitions and structures including Version 4 extensions
+    Contains:   ICC profile definitions and structures 
 
     Copyright:  (c) see ICC Software License
 
  * <b>
  * This version of the header file corresponds to the profile
- * specification version 4.2 as defined in ICC Specificion ICC.1:2004-04.
+ * specification version 5.1 as defined in ICC Specificion ICC.1:2004-04.
+ *
+ * This version of the header file corresponds to the profile
+ * specification version 4.3 as defined in ICC Specificion ICC.1:2010.
  *
  * Some definitions only provided by version 2.x profiles are also included.
  *
@@ -185,8 +188,10 @@ authorization from SunSoft Inc.
 #define icVersionNumberV2_1             0x02100000     /* 2.1, BCD */
 #define icVersionNumberV4               0x04000000     /* 4.0, BCD */
 #define icVersionNumberV4_2             0x04200000     /* 4.2, BCD */
-#define icVersionNumberV4_3             0x04300000     /* 4.2, BCD */
+#define icVersionNumberV4_3             0x04300000     /* 4.3, BCD */
+#define icVersionNumberV4_4             0x04400000     /* 4.3, BCD */
 #define icVersionNumberV5               0x05000000     /* 5.0, BCD */
+#define icVersionNumberV5_1             0x05100000     /* 5.1, BCD */
 
 /** Screening Encodings */
 #define icPrtrDefaultScreensFalse       0x00000000     /* Bit position 0 */
@@ -218,6 +223,8 @@ authorization from SunSoft Inc.
 #define icUseWithEmbeddedDataOnly       0x00000002     /* Bit position 1 */
 #define icMCSNeedsSubsetFalse           0x00000000     /* Bit Position 2 */
 #define icMCSNeedsSubsetTrue            0x00000004     /* Bit Position 2 */
+#define icStandardRangePCS              0x00000000     /* Bit Position 3 */
+#define icExtendedRangePCS              0x00000008     /* Bit Position 3 */
 
 /** 
  * Define used to indicate that this is a variable length array
@@ -372,6 +379,7 @@ typedef enum {
     icSigCharTargetTag                     = 0x74617267,  /* 'targ' */ 
     icSigChromaticAdaptationTag            = 0x63686164,  /* 'chad' */
     icSigChromaticityTag                   = 0x6368726D,  /* 'chrm' */
+    icSigCicpTag                           = 0x63696370,  /* 'cicp' */
     icSigColorEncodingParamsTag            = 0x63657074,  /* 'cept' */
     icSigColorSpaceNameTag                 = 0x63736e6d,  /* 'csnm' */
     icSigColorantInfoTag                   = 0x636c696e,  /* 'clin' */
@@ -387,7 +395,9 @@ typedef enum {
     icSigCxFTag                            = 0x43784620,  /* 'CxF ' */
     icSigDataTag                           = 0x64617461,  /* 'data' Removed in V4 */
     icSigDateTimeTag                       = 0x6474696D,  /* 'dtim' Removed in V4 */
+#if 0 // not documented!
     icSigDeviceMediaWhitePointTag          = 0x646d7770,  /* 'dmwp' */
+#endif
     icSigDeviceMfgDescTag                  = 0x646D6E64,  /* 'dmnd' */
     icSigDeviceModelDescTag                = 0x646D6464,  /* 'dmdd' */
     icSigDeviceSettingsTag                 = 0x64657673,  /* 'devs' Removed in V4 */
@@ -404,6 +414,10 @@ typedef enum {
     icSigGamutBoundaryDescription1Tag      = 0x67626431,  /* 'gbd1' */
     icSigGamutBoundaryDescription2Tag      = 0x67626432,  /* 'gbd2' */
     icSigGamutBoundaryDescription3Tag      = 0x67626433,  /* 'gbd3' */
+    icSigHToS0Tag                          = 0x48325330,  /* 'H2S0' */
+    icSigHToS1Tag                          = 0x48325331,  /* 'H2S1' */
+    icSigHToS2Tag                          = 0x48325332,  /* 'H2S2' */
+    icSigHToS3Tag                          = 0x48325333,  /* 'H2S3' */
     icSigGrayTRCTag                        = 0x6b545243,  /* 'kTRC' */
     icSigGreenColorantTag                  = 0x6758595A,  /* 'gXYZ' */
     icSigGreenMatrixColumnTag              = 0x6758595A,  /* 'gXYZ' */
@@ -512,6 +526,7 @@ typedef enum {
 typedef enum {
     icSigUndefinedType                  = 0x00000000,
     icSigChromaticityType               = 0x6368726D,  /* 'chrm' */
+    icSigCicpType                       = 0x63696370,  /* 'cicp' */
     icSigColorantOrderType              = 0x636C726F,  /* 'clro' */
     icSigColorantTableType              = 0x636C7274,  /* 'clrt' */
     icSigCrdInfoType                    = 0x63726469,  /* 'crdi' Removed in V4 */
@@ -561,7 +576,10 @@ typedef enum {
     icSigXYZType                        = 0x58595A20,  /* 'XYZ ' */
     icSigXYZArrayType                   = 0x58595A20,  /* 'XYZ ' */
     icSigZipUtf8TextType                = 0x7a757438,  /* 'zut8' */
-    icSigZipXmlType                     = 0x5a584d4c,  /* 'ZXML' */
+#if defined(XRITE_ADDITIONS)
+    icSigZipXmlType_XRITE               = 0x5a584d4c,  /* 'ZXML' - X-Rite's uppercase version of 'zxml' */
+#endif
+    icSigZipXmlType                     = 0x7a786d6c,  /* 'zxml' */
 
 /*Private tag types*/
     icSigEmbeddedProfileType            = 0x49434370,  /* 'ICCp' */
@@ -634,6 +652,9 @@ typedef enum {
     icSigSparseMatrixElemType         = 0x736d6574,  /* 'smet' */
     icSigTintArrayElemType            = 0x74696e74,  /* 'tint' */
 
+    // V5.1 elements
+    icSigToneMapElemType              = 0x746d6170,  /* 'tmap' */
+
     // V5 spectral elements
     icSigEmissionMatrixElemType       = 0x656d7478,  /* 'emtx' */
     icSigInvEmissionMatrixElemType    = 0x69656d78,  /* 'iemx' */
@@ -676,7 +697,7 @@ typedef enum {
   icSigBrdfTypeCookTorranceColor2Lobe = 0x43543231  /* 'CT21' */,
   icSigBrdfTypeCookTorranceColor3Lobe = 0x43543331  /* 'CT31' */,
   icSigBrdfTypeWardMono               = 0x57617230  /* 'War0' */,
-  icSigBrdfTypeWardColor              = 0x57617230  /* 'War1' */,
+  icSigBrdfTypeWardColor              = 0x57617231  /* 'War1' */,
   icSigBrdfTypeLafortuneMono1Lobe     = 0x4c613130  /* 'La10' */,
   icSigBrdfTypeLafortuneMono2Lobe     = 0x4c613230  /* 'La20' */,
   icSigBrdfTypeLafortuneMono3Lobe     = 0x4c613330  /* 'La30' */,
@@ -689,7 +710,7 @@ typedef enum {
  * BRDF function signatures
  */
 typedef enum {
-  icSigBRDFFunctionMonochrome                = 0x6d6f6e63,   /* 'monc' */
+  icSigBRDFFunctionMonochrome                = 0x6d6f6e6f,   /* 'mono' */
   icSigBRDFFunctionColor                     = 0x636f6c72    /* 'colr' */
 } icSigBRDFFunction;
 
@@ -761,7 +782,7 @@ typedef enum {
 */
 typedef enum {
   icSigNmclBrdfColorimetricMbr       = 0x62636f6c,  /* 'bcol' */
-  icSigNmclBrdfColorimetricParamsMbr = 0x62636f6c,  /* 'bcpr' */
+  icSigNmclBrdfColorimetricParamsMbr = 0x62637072,  /* 'bcpr' */
   icSigNmclBrdfSpectralMbr           = 0x62737063,  /* 'bspc' */
   icSigNmclBrdfSpectralParamsMbr     = 0x62737072,  /* 'bspr' */
   icSigNmclDeviceDataMbr             = 0x64657620,  /* 'dev ' */
@@ -1034,6 +1055,7 @@ typedef enum {
 typedef enum {
     icSigSegmentedCurve               = 0x63757266,  /* 'curf' */
     icSigSingleSampledCurve           = 0x736e6766,  /* 'sngf' */
+    icSigSampledCalculatorCurve       = 0x636c6366,  /* 'clcf' */
 } icCurveElemSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
@@ -1046,6 +1068,17 @@ typedef enum {
 } icSingleSampledCurveType;
 
 #define icMaxSingleSampledCurveType icExtendSingleSampledCurve
+
+/**
+ * MPE Tone Map Function signature
+ */
+typedef enum {
+  icSigToneMapFunction = 0x6d617066,  /* 'mapf' */
+} icToneFunctionSignature;
+
+/** Convenience Enum Definition - Not defined in ICC specification*/
+#define icMaxCurveElemSignature ((icCurveElemSignature 0xFFFFFFFF)
+
 
 /** Enum to identify single segment curve / clut2 element storage type **/ 
 typedef enum {
@@ -1189,7 +1222,12 @@ typedef enum {
 
 
 
-/** A not so exhaustive list of language codes */
+/** 
+ * A not so exhaustive list of ISO 369 Language Codes 
+ * Convenience definition - Not defined in ICC specification 
+ * ICC.1 constrains to 16 bit (2 characters)
+ * See https://www.iso.org/iso-639-language-codes.html
+ */
 typedef enum {
   icLanguageCodeEnglish                = 0x656E, /* 'en' */
   icLanguageCodeGerman                 = 0x6465, /* 'de' */
@@ -1208,14 +1246,12 @@ typedef enum {
 } icEnumLanguageCode;
 typedef icUInt16Number icLanguageCode;
 
-/** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumLanguageCode ((icEnumLanguageCode) 0xFFFF)
-
-
-
 /**
-* A not so exhaustive list of country codes.
- * Helpful website: http://dev.krook.org  ld.html */
+ * A not so exhaustive list of ISO 3166 country codes.
+ * Convenience definition - Not defined in ICC specification 
+ * ICC.1 constrains to 16 bit (2 characters)
+ * See https://www.iso.org/iso-3166-country-codes.html 
+ */
 typedef enum {
   icCountryCodeUSA                      = 0x5553, /* 'US' */
   icCountryCodeUnitedKingdom            = 0x554B, /* 'UK' */
@@ -1234,10 +1270,6 @@ typedef enum {
   icCountryCodeFrance                   = 0x4652, /* 'FR' */
 } icEnumCountryCode;
 typedef icUInt16Number icCountryCode;
-
-/** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumCountryCode ((icEnumCountryCode) 0xFFFF)
-
 
 
 /** Measurement Unit Signatures used in ResponseCurveSet16Type */
@@ -1435,6 +1467,12 @@ typedef struct {
   icFloat16Number end;
   icUInt16Number steps;
 } icSpectralRange;
+
+/** Useful spectral range numbers */
+#define icRange380nm  0x5df0
+#define icRange400nm  0x5e40
+#define icRange700nm  0x6178
+#define icRange780nm  0x6218
 
 /** observer matrix */
 typedef struct {

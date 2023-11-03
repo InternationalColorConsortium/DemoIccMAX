@@ -104,7 +104,7 @@ public:
 
   virtual bool Write(CIccIO *pIO);
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile = NULL) const;
 

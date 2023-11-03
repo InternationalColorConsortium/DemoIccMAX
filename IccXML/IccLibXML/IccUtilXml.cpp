@@ -142,12 +142,13 @@ bool CIccUTF16String::Resize(size_t len)
   if (len>m_alloc) {
     size_t nAlloc = AllocSize(len);
 
-    m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
+    m_str = (icUInt16Number*)icRealloc(m_str, nAlloc*sizeof(icUInt16Number));
 
     if (!m_str) {
       m_len = 0;
       return false;
     }
+    m_alloc = nAlloc;
   }
 
   if (len>m_len) {
@@ -169,7 +170,7 @@ size_t CIccUTF16String::WStrlen(const icUInt16Number *uzStr)
 CIccUTF16String& CIccUTF16String::operator=(const CIccUTF16String &wstr)
 {
   if (m_alloc<=wstr.m_alloc) {
-    m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
+    m_str = (icUInt16Number*)icRealloc(m_str, wstr.m_alloc *sizeof(icUInt16Number));
     if (m_str)
       m_alloc = wstr.m_alloc;
     else
@@ -200,7 +201,7 @@ CIccUTF16String& CIccUTF16String::operator=(const icUInt16Number *uzStr)
   size_t nAlloc = AllocSize(n);
 
   if (m_alloc<=nAlloc) {
-    m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
+    m_str = (icUInt16Number*)icRealloc(m_str, nAlloc*sizeof(icUInt16Number));
     if (m_str)
       m_alloc = nAlloc;
     else
@@ -227,10 +228,11 @@ bool CIccUTF16String::FromUtf8(const char *szStr, size_t sizeSrc)
   if (sizeSrc) {
     size_t nAlloc = AllocSize(sizeSrc*2);
     if (m_alloc<=nAlloc) {
-      m_str = (icUInt16Number*)icRealloc(m_str, m_alloc*sizeof(icUInt16Number));
+      m_str = (icUInt16Number*)icRealloc(m_str, nAlloc *sizeof(icUInt16Number));
       m_alloc = nAlloc;
     }
     if (m_str) {
+      memset(m_str, 0, m_alloc * sizeof(icUInt16Number));
       UTF16 *szDest = m_str;
       icConvertUTF8toUTF16((const UTF8 **)&szStr, (const UTF8 *)&szStr[sizeSrc], &szDest, &szDest[m_alloc], lenientConversion);
       if (m_str[0]==0xfeff) {
@@ -752,7 +754,7 @@ CIccXmlArrayType<T, Tsig>::~CIccXmlArrayType()
 template <class T, icTagTypeSignature Tsig>
 bool CIccXmlArrayType<T, Tsig>::ParseArray(xmlNode *pNode)
 {
-  char scanType[2];
+  char scanType[2] = {0};
   scanType[0] = (Tsig == icSigFloatArrayType ? 'f' : 'n');
   scanType[1] = 0;
 
@@ -844,7 +846,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
             break;
 
           case icConvertFloat:
-            sprintf(str, "%.8f", (icFloatNumber)buf[i] / 255.0);
+            sprintf(str, icXmlFloatFmt, (icFloatNumber)buf[i] / 255.0);
             break;
         }
         break;
@@ -861,7 +863,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
             break;
 
           case icConvertFloat:
-            sprintf(str, "%.8f", (icFloatNumber)buf[i] / 65535.0);
+            sprintf(str, icXmlFloatFmt, (icFloatNumber)buf[i] / 65535.0);
             break;
         }
         break;
@@ -888,7 +890,7 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
 
           case icConvertFloat:
           default:
-            sprintf(str, "%.8f", (icFloatNumber)buf[i]);
+            sprintf(str, icXmlFloatFmt, (icFloatNumber)buf[i]);
         }
         break;
     }
@@ -988,7 +990,7 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSiz
 {	
   icUInt32Number n = 0, b = 0;
   bool bInNum = false;
-  char num[256];
+  char num[256] = {0};
 
   while (*szText && n<nSize) {	  
 	  if (icIsNumChar(*szText)) {
@@ -1122,7 +1124,7 @@ template class CIccXmlArrayType<icFloat32Number, icSigFloat32ArrayType>;
 template class CIccXmlArrayType<icFloat64Number, icSigFloat64ArrayType>;
 
 
-const icRenderingIntent icGetRenderingIntentValue (icChar *szRenderingIntent)
+icRenderingIntent icGetRenderingIntentValue (const icChar *szRenderingIntent)
 {
   if (!strcmp(szRenderingIntent, "Perceptual"))
 	  return icPerceptual;
@@ -1175,10 +1177,10 @@ icStandardObserver icGetNamedStandardObserverValue(const icChar* str)
   if (!strcmp(str, "Unknown observer"))
 	  return icStdObsUnknown;
 
-  if (!strcmp(str, "CIE 1931 standard colorimetric observer"))
+  if (!strcmp(str, "CIE 1931 (two degree) standard observer"))
 	  return icStdObs1931TwoDegrees;
 
-  if (!strcmp(str, "CIE 1964 standard colorimetric observer"))
+  if (!strcmp(str, "CIE 1964 (ten degree) standard observer"))
 	  return icStdObs1964TenDegrees;   
 
   return icStdObsCustom;
@@ -1310,7 +1312,7 @@ const icChar* icGetStandardObserverName(icStandardObserver str)
 icDateTimeNumber icGetDateTimeValue(const icChar* str)
 {
 	unsigned int day=0, month=0, year=0, hours=0, minutes=0, seconds=0;
-	icDateTimeNumber dateTime;	
+	icDateTimeNumber dateTime = {};	
 
   if (!stricmp(str, "now")) {
     time_t rawtime;
@@ -1365,11 +1367,7 @@ icUInt64Number icGetDeviceAttrValue(xmlNode *pNode)
   attr = icXmlFindAttr(pNode, "VendorSpecific");
   if (attr) {
     icUInt64Number vendor;
-#if defined(__APPLE__)
     sscanf(icXmlAttrValue(attr), "%llx", &vendor);
-#else
-    sscanf(icXmlAttrValue(attr), "%I64x", &vendor);
-#endif
     devAttr |= vendor;
   }
 
@@ -1459,11 +1457,7 @@ const std::string icGetDeviceAttrName(icUInt64Number devAttr)
   icUInt64Number otherAttr = ~((icUInt64Number)icTransparency|icMatte|icMediaNegative|icMediaBlackAndWhite);
 
   if (devAttr & otherAttr) {
-#if defined(__APPLE__)
     sprintf(line, " VendorSpecific=\"%016llx\"", devAttr & otherAttr);
-#else
-    sprintf(line, " VendorSpecific=\"%016I64x\"", devAttr & otherAttr);
-#endif
     xml += line;
   }
 
@@ -1483,13 +1477,18 @@ const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS)
 	  sprintf(line, "<ProfileFlags EmbeddedInFile=\"false\"");	
 	xml += line;
 
-	if (flags & icUseWithEmbeddedDataOnly)
+  if (flags & icUseWithEmbeddedDataOnly)
 		sprintf(line, " UseWithEmbeddedDataOnly=\"true\"");
 	else
 		sprintf(line, " UseWithEmbeddedDataOnly=\"false\"");
 	xml += line;
 
-  icUInt32Number otherFlags = ~(icEmbeddedProfileTrue|icUseWithEmbeddedDataOnly);
+  if (flags & icExtendedRangePCS) {
+    sprintf(line, " ExtendedRangePCS=\"true\"");
+    xml += line;
+  }
+
+  icUInt32Number otherFlags = ~(icEmbeddedProfileTrue | icUseWithEmbeddedDataOnly | icExtendedRangePCS);
 
   if (bUsesMCS) {
     if (flags & icMCSNeedsSubsetTrue)
@@ -1500,7 +1499,6 @@ const std::string icGetHeaderFlagsName(icUInt32Number flags, bool bUsesMCS)
 
     otherFlags &= ~icMCSNeedsSubsetTrue;
   }
-
 
   if (flags & otherFlags) {
     sprintf(line, " VendorFlags=\"%08x\"", flags & otherFlags);

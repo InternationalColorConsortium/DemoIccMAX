@@ -76,6 +76,8 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include <codecvt>
+#include <locale>
 #include "IccTagDict.h"
 #include "IccUtil.h"
 #include "IccIO.h"
@@ -83,6 +85,9 @@
 
 //MSVC 6.0 doesn't support std::string correctly so we disable support in this case
 #ifndef ICC_UNSUPPORTED_TAG_DICT
+
+using convert_type = std::codecvt_utf8<wchar_t>;
+
 
 /*=============================================================================
 * CLASS CIccDictEntry
@@ -204,29 +209,32 @@ CIccDictEntry::~CIccDictEntry()
 * 
 * Return: 
 ******************************************************************************/
-void CIccDictEntry::Describe(std::string &sDescription)
+void CIccDictEntry::Describe(std::string &sDescription, int nVerboseness)
 {
-  std::string s;
+  std::wstring ws;
 
-  sDescription += "BEGIN DICT_ENTRY\r\nName=";
-  s.assign(m_sName->begin(), m_sName->end());
-  sDescription += s;
-  sDescription += "\r\nValue=";
-  s.assign(m_sValue->begin(), m_sValue->end());
-  sDescription += s;
-  sDescription += "\r\n";
+  //setup converter
+  std::wstring_convert<convert_type, wchar_t> converter;
+
+  sDescription += "BEGIN DICT_ENTRY\nName=";
+  ws.assign(m_sName->begin(), m_sName->end());
+  sDescription += converter.to_bytes(ws);
+  sDescription += "\nValue=";
+  ws.assign(m_sValue->begin(), m_sValue->end());
+  sDescription += converter.to_bytes(ws);
+  sDescription += "\n";
 
   if (m_pNameLocalized) {
-    sDescription += "BEGIN NAME_LOCALIZATION\r\n";
-    m_pNameLocalized->Describe(sDescription);
-    sDescription += "END NAME_LOCALIZATION\r\n";
+    sDescription += "BEGIN NAME_LOCALIZATION\n";
+    m_pNameLocalized->Describe(sDescription, nVerboseness);
+    sDescription += "END NAME_LOCALIZATION\n";
   }
   if (m_pValueLocalized) {
-    sDescription += "BEGIN VALUE_LOCALIZATION\r\n";
-    m_pValueLocalized->Describe(sDescription);
-    sDescription += "END VALUE_LOCALIZATION\r\n";
+    sDescription += "BEGIN VALUE_LOCALIZATION\n";
+    m_pValueLocalized->Describe(sDescription, nVerboseness);
+    sDescription += "END VALUE_LOCALIZATION\n";
   }
-  sDescription += "END DICT_ENTRY\r\n";
+  sDescription += "END DICT_ENTRY\n";
 }
 
 
@@ -328,7 +336,8 @@ bool CIccDictEntry::SetValueLocalized(CIccTagMultiLocalizedUnicode *pValueLocali
  ******************************************************************************/
 CIccTagDict::CIccTagDict()
 {
-  m_bBadAlignment = false;
+    m_tagSize = m_tagStart = 0;
+    m_bBadAlignment = false;
 
   m_Dict = new CIccNameValueDict;
 }
@@ -345,11 +354,12 @@ CIccTagDict::CIccTagDict()
  ******************************************************************************/
 CIccTagDict::CIccTagDict(const CIccTagDict &dict)
 {
+  m_tagSize = m_tagStart = 0;
   m_bBadAlignment = false;
   m_Dict = new CIccNameValueDict;
 
   CIccNameValueDict::iterator i;
-  CIccDictEntryPtr ptr;
+  CIccDictEntryPtr ptr = {};
 
   for (i=dict.m_Dict->begin(); i!=dict.m_Dict->end(); i++) {
     ptr.ptr = new CIccDictEntry(*i->ptr);
@@ -376,7 +386,7 @@ CIccTagDict &CIccTagDict::operator=(const CIccTagDict &dict)
   Cleanup();
 
   CIccNameValueDict::iterator i;
-  CIccDictEntryPtr ptr;
+  CIccDictEntryPtr ptr = {};
 
   for (i=dict.m_Dict->begin(); i!=dict.m_Dict->end(); i++) {
     ptr.ptr = new CIccDictEntry(*i->ptr);
@@ -441,21 +451,21 @@ icUInt32Number CIccTagDict::MaxPosRecSize()
  * 
  * Return: 
  ******************************************************************************/
-void CIccTagDict::Describe(std::string &sDescription)
+void CIccTagDict::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN DICT_TAG\r\n");
+  sprintf(buf, "BEGIN DICT_TAG\n");
   sDescription += buf;
 
   CIccNameValueDict::iterator i;
   for (i=m_Dict->begin(); i!=m_Dict->end(); i++) {
-    sDescription += "\r\n";
+    sDescription += "\n";
 
-    i->ptr->Describe(sDescription);
+    i->ptr->Describe(sDescription, nVerboseness);
   }
 
-  sprintf(buf, "\r\nEND DICT_TAG\r\n");
+  sprintf(buf, "\nEND DICT_TAG\n");
   sDescription += buf;
 }
 
@@ -558,7 +568,7 @@ bool CIccTagDict::Read(icUInt32Number size, CIccIO *pIO)
 
   icUInt32Number bufsize = 128, num;
   icUnicodeChar *buf = (icUnicodeChar*)malloc(bufsize);
-  CIccDictEntryPtr ptr;
+  CIccDictEntryPtr ptr = {};
   std::wstring str;
 
   for (i=0; i<count; i++) {
@@ -913,14 +923,14 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
   if (!AreNamesUnique()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There are duplicate names.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
   if (!AreNamesNonzero()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There zero-length names.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
@@ -928,7 +938,7 @@ icValidateStatus CIccTagDict::Validate(std::string sigPath, std::string &sReport
   if (m_bBadAlignment) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Some Data elements are not aligned correctly\r\n";
+    sReport += " - Some Data elements are not aligned correctly\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
@@ -1385,7 +1395,7 @@ bool CIccTagDict::Set(std::wstring sName, std::wstring sValue, bool bUnSet)
     de = new CIccDictEntry;
     de->GetName() = sName;
 
-    CIccDictEntryPtr ptr;
+    CIccDictEntryPtr ptr = {};
     ptr.ptr = de;
     m_Dict->push_back(ptr);
   }
@@ -1438,7 +1448,7 @@ bool CIccTagDict::SetNameLocalized(std::wstring sName, CIccTagMultiLocalizedUnic
     de = new CIccDictEntry;
     de->GetName() = sName;
 
-    CIccDictEntryPtr ptr;
+    CIccDictEntryPtr ptr = {};
     ptr.ptr = de;
     m_Dict->push_back(ptr);
   }
@@ -1472,7 +1482,7 @@ bool CIccTagDict::SetValueLocalized(std::wstring sName, CIccTagMultiLocalizedUni
     de = new CIccDictEntry;
     de->GetName() = sName;
 
-    CIccDictEntryPtr ptr;
+    CIccDictEntryPtr ptr = {};
     ptr.ptr = de;
     m_Dict->push_back(ptr);
   }

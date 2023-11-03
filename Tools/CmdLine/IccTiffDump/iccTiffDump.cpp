@@ -73,13 +73,14 @@
 #include "IccCmm.h"
 #include "IccUtil.h"
 #include "IccDefs.h"
+#include "IccProfLibVer.h"
 #include "IccApplyBPC.h"
 #include "TiffImg.h"
 
 
 typedef struct {
   unsigned long nId;
-  char *szName;
+  char const * const szName;
 } IdList;
 #define UNKNOWNID 0xffffffff
 
@@ -121,6 +122,8 @@ const char* GetId(unsigned long nId, IdList* pIdList)
 
 void Usage() 
 {
+  printf("iccTiffDump built with IccProfLib version " ICCPROFLIBVER "\n\n");
+
   printf("Usage: iccTiffDump tiff_file {exported_icc_file}\n\n");
 }
 
@@ -198,8 +201,9 @@ int main(int argc, icChar* argv[])
         if (pStrs->m_Strings) {
           CIccMultiLocalizedUnicode::iterator text = pStrs->m_Strings->begin();
           if (text != pStrs->m_Strings->end()) {
-            char line[256];
-            printf(" Description:      %s\n", text->GetAnsi(line, sizeof(line)-1));
+            std::string line;
+            text->GetText(line);
+            printf(" Description:      %s\n", line.c_str());
           }
         }
       }

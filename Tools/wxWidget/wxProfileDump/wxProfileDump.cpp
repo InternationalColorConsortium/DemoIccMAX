@@ -121,7 +121,7 @@ IMPLEMENT_APP(MyApp)
 // global variables
 // ---------------------------------------------------------------------------
 
-MyFrame *frame = (MyFrame *) NULL;
+MyFrame *my_frame = (MyFrame *) NULL;
 wxList my_children;
 
 // For drawing lines in a canvas
@@ -172,7 +172,7 @@ END_EVENT_TABLE()
 bool MyApp::OnInit()
 {
 	// Create the main frame window
-    frame = new MyFrame((wxFrame *)NULL, wxID_ANY, _T("ProfileDump"),
+    my_frame = new MyFrame((wxFrame *)NULL, wxID_ANY, _T("ProfileDump"),
                         wxDefaultPosition, wxSize(1024, 768),
                         wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
 
@@ -187,15 +187,15 @@ bool MyApp::OnInit()
     // Experimental: change the window menu
     wxMenu* windowMenu = new wxMenu;
     windowMenu->Append(5000, _T("My menu item!"));
-    frame->SetWindowMenu(windowMenu);
+    my_frame->SetWindowMenu(windowMenu);
 #endif
 #endif
 
     // Give it an icon
 #ifdef __WXMSW__
-    frame->SetIcon(wxIcon(_T("wxProfileDump_icn")));
+    my_frame->SetIcon(wxIcon(_T("wxProfileDump_icn")));
 #else
-    //frame->SetIcon(wxIcon( wxProfileDump_xpm ));
+    //my_frame->SetIcon(wxIcon( wxProfileDump_xpm ));
 #endif
 
     // Make a menubar
@@ -216,19 +216,19 @@ bool MyApp::OnInit()
     menu_bar->Append(help_menu, _T("&Help"));
 
     // Associate the menu bar with the frame
-    frame->SetMenuBar(menu_bar);
+    my_frame->SetMenuBar(menu_bar);
 
 #if wxUSE_STATUSBAR
-    frame->CreateStatusBar();
+    my_frame->CreateStatusBar();
 #endif // wxUSE_STATUSBAR
 
-    frame->Show(true);
-    frame->SetDropTarget(new MyDnDFile(frame));
+    my_frame->Show(true);
+    my_frame->SetDropTarget(new MyDnDFile(my_frame));
 
-    SetTopWindow(frame);
+    SetTopWindow(my_frame);
 
     if (argc>1) {
-      frame->OpenFile(argv[1]);
+        my_frame->OpenFile(argv[1]);
     }
 
     return true;
@@ -297,7 +297,7 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
     (void)wxMessageBox(_T("wxProfileDump\n")
-                       _T("Copyright (C) 2005-2019\n\n")
+                       _T("Copyright (C) 2005-2021\n\n")
                        _T("Using ICCProflib version ") ICCPROFLIBVER _T("\n"),
 											 _T("About wxProfileDump"));
 }
@@ -319,7 +319,7 @@ void MyFrame::OpenFile(wxString profilePath)
   wxGetApp().m_history.AddFileToHistory(profilePath);
 
   // Make another frame, containing a canvas
-  MyChild *subframe = new MyChild(frame, profileTitle, pIcc, profilePath);
+  MyChild *subframe = new MyChild(my_frame, profileTitle, pIcc, profilePath);
 
   subframe->SetTitle(profileTitle);
 
@@ -364,7 +364,7 @@ void MyFrame::OnOpenProfile(wxCommandEvent& event )
 	  if (dialog.ShowModal()!=wxID_OK)
 		  return;
 	  
-		profilePath = dialog.GetPath();
+	  profilePath = dialog.GetPath();
   }
   else {
     profilePath = wxGetApp().m_history.GetHistoryFile(event.GetId() - wxID_FILE1);
@@ -430,7 +430,7 @@ static bool IsRoundTripable(CIccProfile *pIcc)
   icHeader *pHdr = &pIcc->m_Header;
 
   if (pHdr->deviceClass == icSigLinkClass) {
-    return false;
+      return false;
   }
 
   if ((pIcc->FindTag(icSigAToB0Tag) && pIcc->FindTag(icSigBToA0Tag)) ||
@@ -451,174 +451,192 @@ static bool IsRoundTripable(CIccProfile *pIcc)
 // ---------------------------------------------------------------------------
 
 MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *pIcc, const wxString &profilePath)
-       : wxMDIChildFrame(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
+       : wxMDIChildFrame(parent, wxID_ANY, title, wxDefaultPosition, wxSize(750,900),
                          wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE)
 {
-	  m_pIcc = pIcc;
-		m_profilePath = profilePath;
+	m_pIcc = pIcc;
+	m_profilePath = profilePath;
+    icHeader* pHdr = &pIcc->m_Header;
 
     my_children.Append(this);
-		// this should work for MDI frames as well as for normal ones
-		SetSizeHints(100, 200);
+	// this should work for MDI frames as well as for normal ones
+	SetSizeHints(750, 900);
 
-		// create controls
-		m_panel = new wxPanel(this, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
+	// create controls
+	m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
 
-		wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
+	wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
+	wxSizer *sizerBox = new wxStaticBoxSizer(new wxStaticBox(m_panel, wxID_ANY, _T("&Profile Header")), wxVERTICAL);
 
-		wxSizer *sizerBox = new wxStaticBoxSizer(new wxStaticBox(m_panel, wxID_ANY, _T("&ProfileHeader")), wxVERTICAL);
-
-		sizerBox->Add(CreateSizerWithText(_("Size:"), &m_textSize), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Suggested CMM:"), &m_textCMM), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Version:"), &m_textVersion), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Profile Class:"), &m_textClass), wxSizerFlags().Expand().Border(wxALL, 0));
-    sizerBox->Add(CreateSizerWithText(_("Profile SubClass:"), &m_textSubClass), wxSizerFlags().Expand().Border(wxALL, 0));
-    if (m_pIcc && (m_pIcc->m_Header.version & 0x0000ffff)) {
-      sizerBox->Add(CreateSizerWithText(_("SubClass Version:"), &m_textSubClassVersion), wxSizerFlags().Expand().Border(wxALL, 0));
-    }
-    sizerBox->Add(CreateSizerWithText(_("Data Color Space:"), &m_textColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Creation Date:"), &m_textCreationDate), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Primary Platform:"), &m_textPlatform), wxSizerFlags().Expand().Border(wxALL, 0));
+    // Keep things consistent and in the same order as CLI "iccDumpProfile"
+    sizerBox->Add(CreateSizerWithText(_("Profile ID:"), &m_textProfileID), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Size:"), &m_textSize), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Attributes:"), &m_textAttribute), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Cmm:"), &m_textCMM), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Creation Date:"), &m_textCreationDate), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Creator:"), &m_textCreator), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Device Manufacturer:"), &m_textDeviceManufacturer), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Flags:"), &m_textFlags), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Attributes:"), &m_textAttribute), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Rendering Intent:"), &m_textRenderingIntent), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Illuminant:"), &m_textIlluminant), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Creator:"), &m_textCreator), wxSizerFlags().Expand().Border(wxALL, 0));
-		sizerBox->Add(CreateSizerWithText(_("Profile ID:"), &m_textProfileID), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Data Color Space:"), &m_textColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Flags:"), &m_textFlags), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Platform:"), &m_textPlatform), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Rendering Intent:"), &m_textRenderingIntent), wxSizerFlags().Expand().Border(wxALL, 0));
+	sizerBox->Add(CreateSizerWithText(_("Profile Class:"), &m_textClass), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Profile SubClass:"), &m_textSubClass), wxSizerFlags().Expand().Border(wxALL, 0));
+    sizerBox->Add(CreateSizerWithText(_("Version:"), &m_textVersion), wxSizerFlags().Expand().Border(wxALL, 0));
+    if (pHdr && (pHdr->version >= icVersionNumberV5) && pHdr->deviceSubClass) {
+        sizerBox->Add(CreateSizerWithText(_("SubClass Version:"), &m_textSubClassVersion), wxSizerFlags().Expand().Border(wxALL, 0));
+    }
+    sizerBox->Add(CreateSizerWithText(_("Illuminant:"), &m_textIlluminant), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Spectral PCS:"), &m_textSpectralPCS), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Spectral PCS Range:"), &m_textSpectralWavelengths), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("BiSpectral PCS Range:"), &m_textBiSpectralWavelengths), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("MCS Color Space:"), &m_textMaterialColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
 
+	sizerTop->Add(sizerBox, wxSizerFlags().Expand().Border(wxALL, 5));
 
-		sizerTop->Add(sizerBox, wxSizerFlags().Expand().Border(wxALL, 5));
-
-		wxSizer *sizerBtn = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *sizerBtn = new wxBoxSizer(wxHORIZONTAL);
     if (IsRoundTripable(pIcc)) {
   		sizerBtn->Add(new wxButton(m_panel, ID_ROUND_TRIP, _("&Round Trip Report")), wxSizerFlags().Border(wxRIGHT, 5));
     }
     sizerBtn->Add(new wxButton(m_panel, ID_VALIDATE_PROFILE, _("&Validate Profile")), wxSizerFlags().Border(wxRIGHT, 5));
 
-		sizerTop->Add(sizerBtn, wxSizerFlags().Right());
+	sizerTop->Add(sizerBtn, wxSizerFlags().Right());
 
-		wxSizer *sizerLabel = new wxBoxSizer(wxHORIZONTAL);
-		sizerLabel->Add(new wxStaticText(m_panel, wxID_ANY, _("Profile Tags")), wxSizerFlags().Border(wxLEFT, 5));
+	wxSizer *sizerLabel = new wxBoxSizer(wxHORIZONTAL);
+	sizerLabel->Add(new wxStaticText(m_panel, wxID_ANY, _("Profile Tags")), wxSizerFlags().Border(wxLEFT, 5));
 
-		sizerTop->Add(sizerLabel, wxSizerFlags().Left());
+	sizerTop->Add(sizerLabel, wxSizerFlags().Left());
 
-		m_tagsCtrl = new wxListCtrl(m_panel, ID_TAG_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
-		wxSizer *sizerTags = new wxBoxSizer(wxVERTICAL);
-		sizerTags->Add(m_tagsCtrl, wxSizerFlags(1).Expand().Border(wxALL, 0));
-		sizerTags->SetItemMinSize((size_t)0, 455, 175);
-		sizerTop->Add(sizerTags, wxSizerFlags(1).Expand().Border(wxALL, 5));
+	m_tagsCtrl = new wxListCtrl(m_panel, ID_TAG_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+	wxSizer *sizerTags = new wxBoxSizer(wxVERTICAL);
+	sizerTags->Add(m_tagsCtrl, wxSizerFlags(1).Expand().Border(wxALL, 0));
+	sizerTags->SetItemMinSize((size_t)0, 455, 175);
+	sizerTop->Add(sizerTags, wxSizerFlags(1).Expand().Border(wxALL, 5));
 
-		m_tagsCtrl->InsertColumn(0, _("Tag ID"), wxLIST_FORMAT_LEFT, 160);
-		m_tagsCtrl->InsertColumn(1, _("Tag Type"), wxLIST_FORMAT_LEFT, 160);
-		m_tagsCtrl->InsertColumn(2, _("Offset"), wxLIST_FORMAT_RIGHT, 60);
-		m_tagsCtrl->InsertColumn(3, _("Size"), wxLIST_FORMAT_RIGHT, 60);
+    m_tagsCtrl->InsertColumn(0, _("#"), wxLIST_FORMAT_RIGHT, 30);
+    m_tagsCtrl->InsertColumn(1, _("Tag ID"), wxLIST_FORMAT_LEFT, 210);
+	m_tagsCtrl->InsertColumn(2, _("Tag Type"), wxLIST_FORMAT_LEFT, 210);
+	m_tagsCtrl->InsertColumn(3, _("Offset"), wxLIST_FORMAT_RIGHT, 100);
+	m_tagsCtrl->InsertColumn(4, _("Size"), wxLIST_FORMAT_RIGHT, 100);
+    m_tagsCtrl->InsertColumn(5, _("Padding"), wxLIST_FORMAT_RIGHT, 100);
 
-		// don't allow frame to get smaller than what the sizers tell it and also set
-		// the initial size as calculated by the sizers
-		sizerTop->SetSizeHints( this );
+	// don't allow frame to get smaller than what the sizers tell it and also set
+	// the initial size as calculated by the sizers
+	sizerTop->SetSizeHints( this );
 
-		m_panel->SetSizer(sizerTop);
+	m_panel->SetSizer(sizerTop);
 
-		icHeader *pHdr = &pIcc->m_Header;
-		CIccInfo Fmt;
-		char buf[64];
-		int n;
+	CIccInfo Fmt;
+	char buf[64];
+	int n;
     wxString str;
 
-		m_textAttribute->SetLabel(wxT(Fmt.GetDeviceAttrName(pHdr->attributes)));
-    m_textCMM->SetLabel(wxT(Fmt.GetCmmSigName((icCmmSignature)pHdr->cmmId)));
-		m_textCreationDate->SetLabel(wxString::Format(wxT("%d/%d/%d  %02u:%02u:%02u"),
-			pHdr->date.month, pHdr->date.day, pHdr->date.year,
-			pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds));
-		m_textCreator->SetLabel(icGetSig(buf, pHdr->creator));
-		m_textColorSpace->SetLabel(Fmt.GetColorSpaceSigName(pHdr->colorSpace));
-		m_textFlags->SetLabel(Fmt.GetProfileFlagsName(pHdr->flags, pHdr->mcs!=0));
-    m_textDeviceManufacturer->SetLabel(icGetSig(buf, pHdr->deviceSubClass));
-		m_textPCS->SetLabel(Fmt.GetColorSpaceSigName(pHdr->pcs));
-		m_textPlatform->SetLabel(Fmt.GetPlatformSigName(pHdr->platform));
-		m_textRenderingIntent->SetLabel(Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
-		m_textSize->SetLabel(wxString::Format(_T("%d(0x%x) bytes"), pHdr->size, pHdr->size));
-		m_textClass->SetLabel(Fmt.GetProfileClassSigName(pHdr->deviceClass));
-    if (pHdr->deviceSubClass) 
-      m_textSubClass->SetLabel(icGetSig(buf, pHdr->deviceSubClass));
-    else
-      m_textSubClass->SetLabel(_T("Not Defined"));
+    if (pHdr) {
+        // Make things the same as CLI "iccDumpProfile" for easy comparison
+        str.Empty();
+        for (n = 0; n < 16; n++) {
+            sprintf(buf, "%02x", pHdr->profileID.ID8[n]);
+            if (n && !(n % 4))
+                str += " ";
+            str += buf;
+        }
+        m_textProfileID->SetLabel(str);
+        m_textSize->SetLabel(wxString::Format(_T("%d (0x%x) bytes"), pHdr->size, pHdr->size));
+        m_textAttribute->SetLabel(wxT(Fmt.GetDeviceAttrName(pHdr->attributes)));
+        m_textCMM->SetLabel(wxT(Fmt.GetCmmSigName((icCmmSignature)pHdr->cmmId)));
+	    m_textCreationDate->SetLabel(wxString::Format(wxT("%d/%d/%d (M/D/Y) %02u:%02u:%02u"),
+    	    pHdr->date.month, pHdr->date.day, pHdr->date.year,
+		    pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds));
+	    m_textCreator->SetLabel(icGetSig(buf, pHdr->creator));
+        m_textDeviceManufacturer->SetLabel(icGetSig(buf, pHdr->manufacturer));
+        m_textColorSpace->SetLabel(Fmt.GetColorSpaceSigName(pHdr->colorSpace));
+	    m_textFlags->SetLabel(Fmt.GetProfileFlagsName(pHdr->flags, pHdr->mcs!=0));
+	    m_textPCS->SetLabel(Fmt.GetColorSpaceSigName(pHdr->pcs));
+	    m_textPlatform->SetLabel(Fmt.GetPlatformSigName(pHdr->platform));
+	    m_textRenderingIntent->SetLabel(Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
+	    m_textClass->SetLabel(Fmt.GetProfileClassSigName(pHdr->deviceClass));
+        if (pHdr->deviceSubClass) 
+            m_textSubClass->SetLabel(icGetSig(buf, pHdr->deviceSubClass));
+        else
+            m_textSubClass->SetLabel(_T("Not Defined"));
 
-		m_textVersion->SetLabel(Fmt.GetVersionName(pHdr->version));
+	    m_textVersion->SetLabel(Fmt.GetVersionName(pHdr->version));
     
-    if (pHdr->version & 0x0000ffff)
-      m_textSubClassVersion->SetLabel(Fmt.GetSubClassVersionName(pHdr->version));
+        if (pHdr && (pHdr->version >= icVersionNumberV5) && pHdr->deviceSubClass)
+            m_textSubClassVersion->SetLabel(Fmt.GetSubClassVersionName(pHdr->version));
 
-		m_textIlluminant->SetLabel(wxString::Format(_T("X=%.4lf, Y=%.4lf, Z=%.4lf"),
-			icFtoD(pHdr->illuminant.X),
-			icFtoD(pHdr->illuminant.Y),
-			icFtoD(pHdr->illuminant.Z)));
-		str.Empty();
-		for (n=0; n<16; n++) {
-			sprintf(buf, "%02x", pHdr->profileID.ID8[n]);
-			if (n && !(n%4))
-				str += " ";
-			str += buf;
-		}
-		m_textProfileID->SetLabel(str);
-    m_textSpectralPCS->SetLabel(Fmt.GetSpectralColorSigName(pHdr->spectralPCS));
-    if (pHdr->spectralRange.start || pHdr->spectralRange.end || pHdr->spectralRange.steps) {
-      m_textSpectralWavelengths->SetLabel(wxString::Format(_T("start=%.1fnm, end=%.1fnm, steps=%d"),
-        icF16toF(pHdr->spectralRange.start),
-        icF16toF(pHdr->spectralRange.end),
-        pHdr->spectralRange.steps));
-    }
-    else {
-      m_textSpectralWavelengths->SetLabel(_T("Not Defined"));
-    }
-    if (pHdr->biSpectralRange.start || pHdr->biSpectralRange.end || pHdr->biSpectralRange.steps) {
-      m_textBiSpectralWavelengths->SetLabel(wxString::Format(_T("start=%.1fnm, end=%.1fnm, steps=%d"),
-        icF16toF(pHdr->biSpectralRange.start),
-        icF16toF(pHdr->biSpectralRange.end),
-        pHdr->biSpectralRange.steps));
-    }
-    else {
-      m_textBiSpectralWavelengths->SetLabel(_T("Not Defined"));
-    }
-    if (pHdr->mcs) {
-      m_textMaterialColorSpace->SetLabel(Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
-    }
-    else {
-      m_textMaterialColorSpace->SetLabel(_T("Not Defined"));
-    }
+        m_textIlluminant->SetLabel(wxString::Format(_T("X=%.4lf, Y=%.4lf, Z=%.4lf"),
+            icFtoD(pHdr->illuminant.X),
+            icFtoD(pHdr->illuminant.Y),
+            icFtoD(pHdr->illuminant.Z)));
+        m_textSpectralPCS->SetLabel(Fmt.GetSpectralColorSigName(pHdr->spectralPCS));
+        if (pHdr->spectralRange.start || pHdr->spectralRange.end || pHdr->spectralRange.steps) {
+            m_textSpectralWavelengths->SetLabel(wxString::Format(_T("start=%.1fnm, end=%.1fnm, steps=%d"),
+                icF16toF(pHdr->spectralRange.start),
+                icF16toF(pHdr->spectralRange.end),
+                pHdr->spectralRange.steps));
+        }
+        else {
+            m_textSpectralWavelengths->SetLabel(_T("Not Defined"));
+        }
 
-		int item;
-		TagEntryList::iterator i;
+        if (pHdr->biSpectralRange.start || pHdr->biSpectralRange.end || pHdr->biSpectralRange.steps) {
+            m_textBiSpectralWavelengths->SetLabel(wxString::Format(_T("start=%.1fnm, end=%.1fnm, steps=%d"),
+                icF16toF(pHdr->biSpectralRange.start),
+                icF16toF(pHdr->biSpectralRange.end),
+                pHdr->biSpectralRange.steps));
+        }
+        else {
+            m_textBiSpectralWavelengths->SetLabel(_T("Not Defined"));
+        }
 
-		for (n=0, i=pIcc->m_Tags->begin(); i!=pIcc->m_Tags->end(); i++, n++) {
-			item = m_tagsCtrl->InsertItem(n, Fmt.GetTagSigName(i->TagInfo.sig));
-      CIccTag *pTag = pIcc->FindTag(i->TagInfo.sig);
-      if (!pTag)
-        m_tagsCtrl->SetItem(item, 1, _T("***Invalid Tag!***"));
-      else
-			  m_tagsCtrl->SetItem(item, 1, Fmt.GetTagTypeSigName(pTag->GetType()));
+        if (pHdr->mcs) {
+            m_textMaterialColorSpace->SetLabel(Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
+        }
+        else {
+            m_textMaterialColorSpace->SetLabel(_T("Not Defined"));
+        }
 
-			m_tagsCtrl->SetItem(item, 2, wxString::Format("%d", i->TagInfo.offset));
+        int item, closest, pad;
+        TagEntryList::iterator i, j;
 
-			m_tagsCtrl->SetItem(item, 3, wxString::Format("%d", i->TagInfo.size));
+        for (n = 0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++) {
+            item = m_tagsCtrl->InsertItem(n, wxString::Format("%d", n));
 
-			m_tagsCtrl->SetItemData(item, (long)i->TagInfo.sig);
-		}
-		m_panel->Layout();
+            // Find closest tag after this tag, by scanning all offsets of other tags
+            closest = pHdr->size;
+            for (j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++) {
+                if ((i != j) && (j->TagInfo.offset >= i->TagInfo.offset + i->TagInfo.size) && ((int)j->TagInfo.offset <= closest)) {
+                    closest = j->TagInfo.offset;
+                }
+            }
+            // Number of actual padding bytes between this tag and closest neighbour (or EOF)
+            // Should be 0-3 if compliant. Negative number if tags overlap!
+            pad = closest - i->TagInfo.offset - i->TagInfo.size;
+
+            m_tagsCtrl->SetItem(item, 1, Fmt.GetTagSigName(i->TagInfo.sig));
+            CIccTag* pTag = pIcc->FindTag(i->TagInfo.sig);
+            if (!pTag)
+                m_tagsCtrl->SetItem(item, 2, _T("***Invalid Tag!***"));
+            else
+                m_tagsCtrl->SetItem(item, 2, Fmt.GetTagTypeSigName(pTag->GetType()));
+
+            m_tagsCtrl->SetItem(item, 3, wxString::Format("%d", i->TagInfo.offset));
+            m_tagsCtrl->SetItem(item, 4, wxString::Format("%d", i->TagInfo.size));
+            m_tagsCtrl->SetItem(item, 5, wxString::Format("%d", pad));
+
+            m_tagsCtrl->SetItemData(item, (long)i->TagInfo.sig);
+        }
+    }
+	m_panel->Layout();
 }
 
 MyChild::~MyChild()
 {
     my_children.DeleteObject(this);
-		if (m_pIcc)
-			delete m_pIcc;
+	if (m_pIcc)
+		delete m_pIcc;
 }
 
 wxSizer *MyChild::CreateSizerWithText(const wxString &labelText, wxStaticText **ppText)
@@ -627,16 +645,16 @@ wxSizer *MyChild::CreateSizerWithText(const wxString &labelText, wxStaticText **
 
 	wxSize winSize = wxDefaultSize;
 
-	winSize.SetWidth(100);
+	winSize.SetWidth(210);
 	wxStaticText *label = new wxStaticText(m_panel, wxID_ANY, labelText, wxDefaultPosition, winSize, wxALIGN_RIGHT);
 
 	winSize.SetWidth(250);
 	wxStaticText *text = new wxStaticText(m_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize, wxSTATIC_BORDER|wxTE_RIGHT);
 
 	sizerRow->Add(label, 0, wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
-	sizerRow->Add(text, 1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+	sizerRow->Add(text,  1, wxLEFT  | wxALIGN_CENTRE_VERTICAL, 5);
 
-	if ( ppText )
+	if (ppText)
 		*ppText = text;
 
 	return sizerRow;
@@ -649,15 +667,15 @@ void MyChild::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyChild::SetFileMenu(wxMenu *file_menu)
 {
-  m_fileMenu = file_menu;
+    m_fileMenu = file_menu;
 }
 
 void MyChild::OnClose(wxCloseEvent& event)
 {
-  wxGetApp().m_history.RemoveMenu(m_fileMenu);
+    wxGetApp().m_history.RemoveMenu(m_fileMenu);
 	gs_nFrames--;
 
-	event.Skip();
+    event.Skip();
 }
 
 void MyChild::OnValidate(wxCommandEvent& WXUNUSED(event))
@@ -669,94 +687,202 @@ void MyChild::OnValidate(wxCommandEvent& WXUNUSED(event))
 
 void MyChild::OnRoundTrip(wxCommandEvent& WXUNUSED(event))
 {
-  MyRoundTripDialog dialog(this, _T("Round Trip Report"), m_profilePath, m_pIcc);
+    MyRoundTripDialog dialog(this, _T("Round Trip Report"), m_profilePath, m_pIcc);
 
-  dialog.ShowModal();
+    dialog.ShowModal();
 }
 
 void MyChild::OnTagClicked(wxListEvent& event)
 {
-  icTagSignature tagSig = (icTagSignature)event.GetData();
+    icTagSignature tagSig = (icTagSignature)event.GetData();
 	CIccTag *pTag = m_pIcc->FindTag(tagSig);
 
-  MyTagDialog dialog(this, m_pIcc, tagSig, pTag);
+    MyTagDialog dialog(this, m_pIcc, tagSig, pTag);
 
-  dialog.ShowModal();
+    dialog.ShowModal();
 }
 
 MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePath) : 
   wxDialog(pParent, wxID_ANY, title,wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
-  wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  wxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+    wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    wxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 
-  wxSize winSize = wxDefaultSize;
+    wxSize winSize = wxDefaultSize;
 
-  winSize.SetWidth(100);
-  wxStaticText *labelSttus = new wxStaticText(this, wxID_ANY, _T("Validation Status:"), wxDefaultPosition, winSize, wxALIGN_RIGHT);
+    winSize.SetWidth(100);
+    wxStaticText *labelSttus = new wxStaticText(this, wxID_ANY, _T("Validation Status:"), wxDefaultPosition, winSize, wxALIGN_RIGHT);
 
-  winSize.SetWidth(400);
-  wxStaticText *textStatus = new wxStaticText(this, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize, wxSTATIC_BORDER|wxTE_RIGHT);
+    winSize.SetWidth(500);
+    wxStaticText *textStatus = new wxStaticText(this, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize, 
+                    wxSTATIC_BORDER | wxTE_LEFT | wxST_ELLIPSIZE_END);
 
-  sizerRow->Add(labelSttus, 0, wxALL | wxALIGN_CENTRE_VERTICAL, 5);
-  sizerRow->Add(textStatus, 1, wxALL | wxALIGN_CENTRE_VERTICAL, 5);
+    sizerRow->Add(labelSttus, 0, wxALL | wxALIGN_CENTRE_VERTICAL, 5);
+    sizerRow->Add(textStatus, 1, wxALL | wxALIGN_CENTRE_VERTICAL, 5);
 
-  sizer->Add(sizerRow, wxSizerFlags().Expand());
+    sizer->Add(sizerRow, wxSizerFlags().Expand());
 
-  winSize = wxSize(500, 400);
-  wxTextCtrl *textReport = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize,
-	                                       wxTE_MULTILINE |wxTE_READONLY | wxTE_RICH);
+    winSize = wxSize(500, 400);
+    wxTextCtrl *textReport = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize,
+	                wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_BESTWRAP);
 
-  sizer->Add(textReport, wxSizerFlags(1).Expand()); 
+    sizer->Add(textReport, wxSizerFlags(1).Expand()); 
 
-  icValidateStatus nStat;
-  wxString theReport, theValidateStatus;
+    icValidateStatus nStat;
+    wxString theReport, theValidateStatus;
 
-	if (profilePath.IsEmpty()) {
-		theReport = "Invalid Profile Path\r\n";
+    std::string ver_str;
+
+    if (profilePath.IsEmpty()) {
+		theReport = "Invalid Profile Path!\n";
 		nStat = (icValidateStatus)-1;
 	}
 	else {
 		std::string sReport;
 		wxBeginBusyCursor();
-    char * pPath = strdup( profilePath.mb_str() );
+        char * pPath = strdup( profilePath.mb_str() );
 		CIccProfile *pIcc = ValidateIccProfile(pPath, sReport, nStat);
-		if (pIcc)
-			delete pIcc;
+        if (pIcc) {
+            int m, n;
+            TagEntryList::iterator i, j;
+            CIccInfo Fmt;
+            char str[256];
+
+            icHeader* pHdr = &pIcc->m_Header;
+            ver_str = " for version ";
+            ver_str += Fmt.GetVersionName(pHdr->version);
+
+            // Report all duplicated tags in the tag index
+            // Both ICC.1 and ICC.2 are silent on what should happen for this but report as a warning!!!
+            for (n = 0, i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++, n++)
+                for (m = 0, j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++, m++)
+                    if ((i != j) && (i->TagInfo.sig == j->TagInfo.sig)) {
+                        sprintf(str, "%28s is duplicated at positions %d and %d!\n", Fmt.GetTagSigName(i->TagInfo.sig), n, m);
+                        sReport += str;
+                        nStat = icMaxStatus(nStat, icValidateWarning);
+                    }
+
+            // Check additional details if doing detailed validation:
+            // - First tag data offset is immediately after the Tag Table
+            // - Tag data offsets are all 4-byte aligned
+            // - Tag data should be tightly abutted with adjacent tags (or the end of the Tag Table)
+            //   (note that tag data can be reused by multiple tags and tags do NOT have to be order)
+            // - Last tag also has to be padded and thus file size is always a multiple of 4. See clause
+            //   7.2.1, bullet (c) of ICC.1:2010 and ICC.2:2019 specs.
+            // - Tag offset + Tag Size should never go beyond EOF
+            // - Multiple tags can reuse data and this is NOT reported as it is perfectly valid and
+            //   occurs in real-world ICC profiles
+            // - Tags with overlapping tag data are considered highly suspect (but officially valid)
+            // - 1-3 padding bytes after each tag's data need to be all zero *** NOT DONE - TODO ***
+            int  closest, pad, rndup, smallest_offset = pHdr->size;
+
+            // File size is required to be a multiple of 4 bytes according to clause 7.2.1 bullet (c):
+            // "all tagged element data, including the last, shall be padded by no more than three
+            //  following pad bytes to reach a 4 - byte boundary"
+            if ((pHdr->version >= icVersionNumberV4_2) && (pHdr->size % 4 != 0)) {
+                sReport += icMsgValidateNonCompliant;
+                sReport += "File size is not a multiple of 4 bytes (last tag needs padding?).\n";
+                nStat = icMaxStatus(nStat, icValidateNonCompliant);
+            }
+
+            for (i = pIcc->m_Tags->begin(); i != pIcc->m_Tags->end(); i++) {
+                rndup = 4 * ((i->TagInfo.size + 3) / 4); // Round up to a 4-byte aligned size as per ICC spec
+                pad = rndup - i->TagInfo.size;           // Optimal smallest number of bytes of padding for this tag (0-3)
+
+                // Is the Tag offset + Tag Size beyond EOF?
+                if (i->TagInfo.offset + i->TagInfo.size > pHdr->size) {
+                    sReport += icMsgValidateNonCompliant;
+                    sprintf(str, "Tag %s (offset %d, size %d) ends beyond EOF.\n",
+                        Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size);
+                    sReport += str;
+                    nStat = icMaxStatus(nStat, icValidateNonCompliant);
+                }
+
+                // Is it the first tag data in the file?
+                if ((int)i->TagInfo.offset < smallest_offset) {
+                    smallest_offset = (int)i->TagInfo.offset;
+                }
+
+                // Find closest tag after this tag, by scanning all other tag offsets
+                closest = pHdr->size;
+                for (j = pIcc->m_Tags->begin(); j != pIcc->m_Tags->end(); j++) {
+                    if ((i != j) && (j->TagInfo.offset > i->TagInfo.offset) && ((int)j->TagInfo.offset <= closest)) {
+                        closest = j->TagInfo.offset;
+                    }
+                }
+
+                // Check if closest tag after this tag is less than offset+size - in which case it overlaps! Ignore last tag.
+                if ((closest < (int)i->TagInfo.offset + (int)i->TagInfo.size) && (closest < (int)pHdr->size)) {
+                    sReport += icMsgValidateWarning;
+                    sprintf(str, "Tag %s (offset %d, size %d) overlaps with following tag data starting at offset %d.\n",
+                        Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.offset, i->TagInfo.size, closest);
+                    sReport += str;
+                    nStat = icMaxStatus(nStat, icValidateWarning);
+                }
+
+                // Check for gaps between tag data (accounting for 4-byte alignment)
+                if (closest > (int)i->TagInfo.offset + rndup) {
+                    sReport += icMsgValidateWarning;
+                    sprintf(str, "Tag %s (size %d) is followed by %d unnecessary additional bytes (from offset %d).\n",
+                        Fmt.GetTagSigName(i->TagInfo.sig), i->TagInfo.size, closest - (i->TagInfo.offset + rndup), (i->TagInfo.offset + rndup));
+                    sReport += str;
+                    nStat = icMaxStatus(nStat, icValidateWarning);
+                }
+            }
+
+            // Clause 7.2.1, bullet (b): "the first set of tagged element data shall immediately follow the tag table"
+            // 1st tag offset should be = Header (128) + Tag Count (4) + Tag Table (n*12)
+            if ((n > 0) && (smallest_offset > 128 + 4 + (n * 12))) {
+                sReport += icMsgValidateNonCompliant;
+                sprintf(str, "First tag data is at offset %d rather than immediately after tag table (offset %d).\n",
+                    smallest_offset, 128 + 4 + (n * 12));
+                sReport += str;
+                nStat = icMaxStatus(nStat, icValidateNonCompliant);
+            }
+            delete pIcc;
+        }
 		wxEndBusyCursor();
 
 		if (sReport.empty())
-			sReport = "There is nothing to report\r\n";
+			sReport = "There is nothing to report.\n";
 
 		theReport = sReport.c_str();
 	}
 
+    wxColour status_color = *wxBLACK;
 	switch(nStat) {
 		case icValidateOK:
-			theValidateStatus = "Valid Profile";
-			break;
+            status_color = wxColour("DARK GREEN");
+            ver_str = "Valid Profile" + ver_str;
+            break;
 
 		case icValidateWarning:
-			theValidateStatus = "Validation Warning(s)";
+            status_color = wxColour("ORANGE RED");
+            ver_str = "Validation Warning(s)" + ver_str;
 			break;
 
 		case icValidateNonCompliant:
-			theValidateStatus = "Profile violates ICC Specification";
+            status_color = *wxRED;
+            ver_str = "Profile violates ICC Specification" + ver_str;
 			break;
 
 		case icValidateCriticalError:
-			theValidateStatus = "Critical Error - Profile Violates ICC Specification";
+            status_color = *wxRED;
+            ver_str = "Critical Error - Profile Violates ICC Specification" + ver_str;
 			break;
 
 		default:
-			theValidateStatus = "Unknown Validation Status";
+            status_color = *wxRED;
+            ver_str = "Unknown Validation Status";
 			break;
 	}
+    theValidateStatus = ver_str.c_str();
 
+    textStatus->SetForegroundColour(status_color);
 	textStatus->SetLabel(theValidateStatus);
-	textReport->SetLabel(theReport);
+	*textReport << theReport;
 
-  SetSizer(sizer);
+    SetSizer(sizer);
 	sizer->Fit(this);
 }
 
@@ -917,7 +1043,7 @@ MyRoundTripDialog::MyRoundTripDialog(wxWindow *pParent, const wxString& title, w
   wxString theReport;
 
   if (profilePath.IsEmpty()) {
-    theReport = "Invalid Profile Path\r\n";
+    theReport = "Invalid Profile Path\n";
   }
   else {
     bool bRelative = false;
@@ -969,7 +1095,7 @@ MyRoundTripDialog::MyRoundTripDialog(wxWindow *pParent, const wxString& title, w
     wxEndBusyCursor();
 
     if (theReport.IsEmpty())
-      theReport = "There is nothing to report\r\n";
+      theReport = "There is nothing to report\n";
   }
 
   textReport->SetLabel(theReport);
@@ -989,40 +1115,40 @@ wxDialog(pParent, wxID_ANY, _T("View Tag"), wxDefaultPosition, wxDefaultSize, wx
 
 	wxString sTagSignature = Fmt.GetTagSigName(sig);
 	wxString sTagType;
-  std::string desc;
+    std::string desc;
 
-  if (pTag) {
-	  if (pTag->IsArrayType()) {
-		  sTagType = _T("Array of ");
-	  }
-	  else {
-		  sTagType.Empty();
-	  }
-	  sTagType += Fmt.GetTagTypeSigName(pTag->GetType());
+    if (pTag) {
+	    if (pTag->IsArrayType()) {
+		    sTagType = _T("Array of ");
+	    }
+	    else {
+		    sTagType.Empty();
+	    }
+	    sTagType += Fmt.GetTagTypeSigName(pTag->GetType());
 
-	  wxBeginBusyCursor();
-	  pTag->Describe(desc);
-	  wxEndBusyCursor();
-  }
-  else if (pIcc) {
-    CIccMemIO *pIO = pIcc->GetTagIO(sig);
-    sTagType = "***Invalid Tag!***";
+	    wxBeginBusyCursor();
+	    pTag->Describe(desc, 100);
+	    wxEndBusyCursor();
+    }
+    else if (pIcc) {
+        CIccMemIO *pIO = pIcc->GetTagIO(sig);
+        sTagType = "***Invalid Tag!***";
 
-    if (pIO) {
-      std::string dump;
-      icMemDump(dump, pIO->GetData(), pIO->GetLength());
-      delete pIO;
-      desc = "Data contents of tag:\r\n\r\n";
-      desc += dump;
+        if (pIO) {
+            std::string dump;
+            icMemDump(dump, pIO->GetData(), pIO->GetLength());
+            delete pIO;
+            desc = "Data contents of tag:\n\n";
+            desc += dump;
+        }
+        else {
+            desc = "Invalid Tag Directory Entry!\n";
+        }
     }
     else {
-      desc = "Invalid Tag Directory Entry!\r\n";
+        desc = "Invalid Tag Entry!\n";
+        sTagType = "***Invalid Tag***";
     }
-  }
-  else {
-    desc = "Invalid Tag Entry!\r\n";
-    sTagType = "***Invalid Tag***";
-  }
 	
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -1062,5 +1188,4 @@ wxDialog(pParent, wxID_ANY, _T("View Tag"), wxDefaultPosition, wxDefaultSize, wx
 
 	SetSizer(sizer);
 	sizer->Fit(this);
-
 }

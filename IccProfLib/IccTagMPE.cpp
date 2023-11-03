@@ -99,6 +99,7 @@ namespace refIccMAX {
 CIccApplyMpe::CIccApplyMpe(CIccMultiProcessElement *pElem)
 {
   m_pElem = pElem;
+  m_pApplyTag = NULL;
 }
 
 
@@ -187,7 +188,8 @@ CIccMpeUnknown::CIccMpeUnknown(const CIccMpeUnknown &elem)
    m_nSize = elem.m_nSize;
    if (m_nSize) {
      m_pData = (icUInt8Number*)malloc(m_nSize);
-     memcpy(m_pData, elem.m_pData, m_nSize);
+     if (m_pData)
+       memcpy(m_pData, elem.m_pData, m_nSize);
    }
    else
      m_pData = NULL;
@@ -215,7 +217,8 @@ CIccMpeUnknown &CIccMpeUnknown::operator=(const CIccMpeUnknown &elem)
    m_nSize = elem.m_nSize;
    if (m_nSize) {
      m_pData = (icUInt8Number*)malloc(m_nSize);
-     memcpy(m_pData, elem.m_pData, m_nSize);
+     if (m_pData)
+       memcpy(m_pData, elem.m_pData, m_nSize);
    }
    else
      m_pData = NULL;
@@ -280,7 +283,7 @@ void CIccMpeUnknown::SetChannels(icUInt16Number nInputChannels, icUInt16Number n
  * 
  * Return: 
  ******************************************************************************/
-void CIccMpeUnknown::Describe(std::string &sDescription)
+void CIccMpeUnknown::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128], sigbuf[40];
 
@@ -288,10 +291,11 @@ void CIccMpeUnknown::Describe(std::string &sDescription)
           icGetSig(sigbuf, m_sig), m_nSize);
   sDescription += buf;
 
-  sDescription += "\r\n\r\nData Follows:\r\n";
+  if (nVerboseness > 50) {
+    sDescription += "\n\nData Follows:\n";
 
-  icMemDump(sDescription, m_pData, m_nSize);
-
+    icMemDump(sDescription, m_pData, m_nSize);
+  }
 }
 
 /**
@@ -420,7 +424,7 @@ bool CIccMpeUnknown::Write(CIccIO *pIO)
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccMpeUnknown::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeUnknown::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   CIccInfo Info;
   icChar buf[40];
@@ -431,7 +435,7 @@ icValidateStatus CIccMpeUnknown::Validate(std::string sigPath, std::string &sRep
   sReport += " - Contains unknown processing element type (";
   icGetSig(buf, m_sig, true);
   sReport += buf;
-  sReport += ").\r\n";
+  sReport += ").\n";
 
   return icValidateCriticalError;
 }
@@ -447,7 +451,7 @@ icValidateStatus CIccMpeUnknown::Validate(std::string sigPath, std::string &sRep
  * 
  * Return: 
  ******************************************************************************/
-icValidateStatus CIccMultiProcessElement::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMultiProcessElement::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
   icValidateStatus rv = icValidateOK;
 
@@ -456,7 +460,7 @@ icValidateStatus CIccMultiProcessElement::Validate(std::string sigPath, std::str
   if (m_nReserved!=0) {
     sReport += icMsgValidateNonCompliant;
     sReport += sSigPathName;
-    sReport += " - Reserved Value must be zero.\r\n";
+    sReport += " - Reserved Value must be zero.\n";
 
     rv = icValidateNonCompliant;
   }
@@ -496,6 +500,7 @@ CIccDblPixelBuffer::CIccDblPixelBuffer()
  ******************************************************************************/
 CIccDblPixelBuffer::CIccDblPixelBuffer(const CIccDblPixelBuffer &buf)
 {
+  m_nLastNumChannels = 0;
   m_nMaxChannels = buf.m_nMaxChannels;
   if (m_nMaxChannels) {
     m_pixelBuf1 = (icFloatNumber*)malloc(m_nMaxChannels*sizeof(icFloatNumber));
@@ -693,6 +698,7 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(icUInt16Number nInputChan
   m_list = NULL;
   m_nProcElements = 0;
   m_position = NULL;
+  m_nBufChannels = 0;
 
   m_nInputChannels = nInputChannels;
   m_nOutputChannels = nOutputChannels;
@@ -715,10 +721,11 @@ CIccTagMultiProcessElement::CIccTagMultiProcessElement(icUInt16Number nInputChan
  ******************************************************************************/
 CIccTagMultiProcessElement::CIccTagMultiProcessElement(const CIccTagMultiProcessElement &lut)
 {
-    m_position = NULL;
-    m_list = NULL;
+  m_position = NULL;
+  m_list = NULL;
+  m_nProcElements = 0;
     
-    m_nReserved = lut.m_nReserved;
+  m_nReserved = lut.m_nReserved;
 
   if (lut.m_list) {
     m_list = new CIccMultiProcessElementList();
@@ -882,24 +889,24 @@ bool CIccTagMultiProcessElement::IsSupported()
  * 
  * Return: 
  ******************************************************************************/
-void CIccTagMultiProcessElement::Describe(std::string &sDescription)
+void CIccTagMultiProcessElement::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN MULTI_PROCESS_ELEMENT_TAG %d %d\r\n", m_nInputChannels, m_nOutputChannels);
+  sprintf(buf, "BEGIN MULTI_PROCESS_ELEMENT_TAG %d %d\n", m_nInputChannels, m_nOutputChannels);
   sDescription += buf;
-  sDescription += "\r\n";
+  sDescription += "\n";
 
   CIccMultiProcessElementList::iterator i;
   int j;
 
   for (j=0, i=m_list->begin(); i!=m_list->end(); j++, i++) {
-    sprintf(buf, "PROCESS_ELEMENT #%d\r\n", j+1);
+    sprintf(buf, "PROCESS_ELEMENT #%d\n", j+1);
     sDescription += buf;
-    i->ptr->Describe(sDescription);
-    sDescription += "\r\n";
+    i->ptr->Describe(sDescription, nVerboseness);
+    sDescription += "\n";
   }
-  sDescription += "END MULTI_PROCESS_ELEMENT_TAG\r\n";
+  sDescription += "END MULTI_PROCESS_ELEMENT_TAG\n";
 }
 
 /**
@@ -1309,11 +1316,13 @@ bool CIccTagMultiProcessElement::Begin(icElemInterp nInterp /*=icElemInterpLinea
     }
     last = i->ptr;
 
-    if (m_nBufChannels<last->NumOutputChannels())
-      m_nBufChannels = last->NumOutputChannels();
+    if (last) {
+      if (m_nBufChannels < last->NumOutputChannels())
+        m_nBufChannels = last->NumOutputChannels();
 
-    if (!last->Begin(nInterp, this))
-      return false;
+      if (!last->Begin(nInterp, this))
+        return false;
+    }
   }
 
   //The output channels must match
@@ -1403,6 +1412,20 @@ CIccApplyTagMpe *CIccTagMultiProcessElement::GetNewApply()
   return pApply;
 }
 
+//#define DEBUG_MPE_APPLY
+
+#ifdef DEBUG_MPE_APPLY
+static void DumpMpeApplyPixe(int nCount, const icFloatNumber* pPixel, icUInt16Number nSamples)
+{
+  printf("Mpe%d:", nCount);
+  for (icUInt16Number i = 0; i < nSamples; i++) {
+    if (i)
+      printf(",");
+    printf(" %.3f", pPixel[i]);
+  }
+  printf("\n");
+}
+#endif
 
 /**
  ******************************************************************************
@@ -1421,6 +1444,12 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
     return;
   }
 
+#ifdef DEBUG_MPE_APPLY
+  int nCount = 0;
+  printf("Start of MPE APPLY\n");
+  DumpMpeApplyPixe(nCount++, pSrcPixel, m_nInputChannels);
+#endif
+
   CIccDblPixelBuffer *pApplyBuf = pApply->GetBuf();
   CIccApplyMpeIter i = pApply->begin();
   CIccApplyMpeIter next;
@@ -1437,9 +1466,17 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
     else {
       i->ptr->Apply(pDestPixel, pSrcPixel);
     }
+#ifdef DEBUG_MPE_APPLY
+    DumpMpeApplyPixe(nCount++, pSrcPixel, m_nInputChannels);
+#endif
   }
   else {
     i->ptr->Apply(pApplyBuf->GetDstBuf(), pSrcPixel);
+
+#ifdef DEBUG_MPE_APPLY
+    DumpMpeApplyPixe(nCount++, pApplyBuf->GetDstBuf(), m_nInputChannels);
+#endif
+
     i++;
     next++;
     pApplyBuf->Switch();
@@ -1449,6 +1486,11 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
 
       if (!pElem->IsAcs()) {
         i->ptr->Apply(pApplyBuf->GetDstBuf(), pApplyBuf->GetSrcBuf());
+
+#ifdef DEBUG_MPE_APPLY
+        DumpMpeApplyPixe(nCount++, pApplyBuf->GetDstBuf(), m_nInputChannels);
+#endif
+
         pApplyBuf->Switch();
       }
 
@@ -1457,7 +1499,17 @@ void CIccTagMultiProcessElement::Apply(CIccApplyTagMpe *pApply, icFloatNumber *p
     }
 
     i->ptr->Apply(pDestPixel, pApplyBuf->GetSrcBuf());
+
+#ifdef DEBUG_MPE_APPLY
+    DumpMpeApplyPixe(nCount++, pDestPixel, m_nInputChannels);
+#endif
+
   }
+
+#ifdef DEBUG_MPE_APPLY
+  printf("End MPE Apply\n\n");
+#endif
+
 }
 
 
@@ -1484,13 +1536,13 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
     if (m_nInputChannels != m_nOutputChannels) {
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " No processing elements and input and output channels do not match!\r\n";
+      sReport += " No processing elements and input and output channels do not match!\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     else {
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " No processing elements.\r\n";
+      sReport += " No processing elements.\n";
       rv = icMaxStatus(rv, icValidateWarning);
     }
   }
@@ -1498,7 +1550,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
   if (!pProfile) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\r\n";
+    sReport += " - Tag validation incomplete: Pointer to profile unavailable.\n";
     rv = icMaxStatus(rv, icValidateWarning);
     return rv;
   }
@@ -1515,7 +1567,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1523,7 +1575,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels != nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1538,7 +1590,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels!=nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1546,7 +1598,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels!=nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1561,7 +1613,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1569,7 +1621,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels != nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1584,7 +1636,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels!=nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1592,7 +1644,30 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels!=nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        break;
+      }
+    case icSigHToS0Tag:
+    case icSigHToS1Tag:
+    case icSigHToS2Tag:
+    case icSigHToS3Tag:
+      {
+        nInput = icGetSpaceSamples(pProfile->m_Header.pcs);
+        if (m_nInputChannels != nInput) {
+          sReport += icMsgValidateCriticalError;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of input channels.\n";
+          rv = icMaxStatus(rv, icValidateCriticalError);
+        }
+
+        nOutput = icGetSpaceSamples(pProfile->m_Header.pcs);
+        if (m_nOutputChannels != nOutput) {
+          sReport += icMsgValidateCriticalError;
+          sReport += sSigPathName;
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1604,14 +1679,14 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != 3) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
         if (m_nOutputChannels != 3) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1676,7 +1751,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1684,7 +1759,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels != nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1697,7 +1772,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1705,7 +1780,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels != nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1721,7 +1796,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1729,7 +1804,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels != nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1745,7 +1820,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nInputChannels != nInput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of input channels.\r\n";
+          sReport += " - Incorrect number of input channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1753,7 +1828,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         if (m_nOutputChannels != nOutput) {
           sReport += icMsgValidateCriticalError;
           sReport += sSigPathName;
-          sReport += " - Incorrect number of output channels.\r\n";
+          sReport += " - Incorrect number of output channels.\n";
           rv = icMaxStatus(rv, icValidateCriticalError);
         }
 
@@ -1763,7 +1838,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
     default:
       sReport += icMsgValidateWarning;
       sReport += sSigPathName;
-      sReport += " - Unknown tag - Cannot validate input and output channels!\r\n";
+      sReport += " - Unknown tag - Cannot validate input and output channels!\n";
       rv = icMaxStatus(rv, icValidateWarning);
       bMatchChannels = false;
       break;
@@ -1779,7 +1854,7 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
   if (bMatchChannels && i->ptr->NumInputChannels() != m_nInputChannels) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += "Mis-matching number of input channels in first process element!\r\n";
+    sReport += "Mis-matching number of input channels in first process element!\n";
     return icValidateCriticalError;
   }
 
@@ -1794,19 +1869,20 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
         sReport += "->";
         sReport += i->ptr->GetClassName();
 
-        sReport += " Mis-matching number of channels in last process element!\r\n";
+        sReport += " Mis-matching number of channels in last process element!\n";
         return icValidateCriticalError;
       }
     }
     last = i->ptr;
 
-    rv = icMaxStatus(rv, last->Validate(sigPath+icGetSigPath(GetType()), sReport, this));
+    if (last)
+        rv = icMaxStatus(rv, last->Validate(sigPath+icGetSigPath(GetType()), sReport, this));
   }
 
   if (bMatchChannels && last && last->NumOutputChannels() != m_nOutputChannels) {
     sReport += icMsgValidateCriticalError;
     sReport += sSigPathName;
-    sReport += " Mis-matching number of output channels!\r\n";
+    sReport += " Mis-matching number of output channels!\n";
     return icValidateCriticalError;
   }
 

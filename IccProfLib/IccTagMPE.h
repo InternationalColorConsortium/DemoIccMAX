@@ -120,8 +120,6 @@ public:
 typedef std::list<CIccMultiProcessElementPtr> CIccMultiProcessElementList;
 typedef CIccMultiProcessElementList::iterator CIccMultiProcessElementIter;
 
-#define icSigMpeLevel0 ((icSignature)0x6D706530)  /* 'mpe0' */
-
 class CIccApplyMpePtr
 {
 public:
@@ -147,9 +145,9 @@ public:
 class ICCPROFLIB_API CIccMultiProcessElement
 {
 public:
-  CIccMultiProcessElement() {}
+  CIccMultiProcessElement() { m_nReserved = 0; m_nInputChannels = 0; m_nOutputChannels = 0; }
 
-  virtual ~CIccMultiProcessElement() {}
+  virtual ~CIccMultiProcessElement() { }
   
   static CIccMultiProcessElement* Create(icElemTypeSignature sig);
 
@@ -163,7 +161,7 @@ public:
 
   virtual bool IsSupported() { return true; }
 
-  virtual void Describe(std::string &sDescription) = 0;
+  virtual void Describe(std::string &sDescription, int nVerboseness) = 0;
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO) = 0;
   virtual bool Write(CIccIO *pIO) = 0;
@@ -173,7 +171,7 @@ public:
   virtual CIccApplyMpe* GetNewApply(CIccApplyTagMpe *pApplyTag);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, const icFloatNumber *pSrcPixel) const = 0;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const = 0;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const = 0;
 
   //Future Acs Expansion Element Accessors
   virtual bool IsAcs() { return false; }
@@ -242,7 +240,7 @@ public:
 
   virtual bool IsSupported() { return false; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   void SetType(icElemTypeSignature sig);
   void SetChannels(icUInt16Number nInputChannels, icUInt16Number nOutputChannels);
@@ -257,7 +255,7 @@ public:
   virtual CIccApplyMpe *GetNewApply() { return NULL; }
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, const icFloatNumber *pSrcPixel) const {}
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   icElemTypeSignature m_sig;
@@ -370,7 +368,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigMultiProcessElementType; }
   virtual const icChar *GetClassName() const { return "CIccTagMultiProcessElement"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);

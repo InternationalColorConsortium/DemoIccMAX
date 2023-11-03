@@ -83,33 +83,28 @@
 #include "IccStructFactory.h"
 #include "IccArrayFactory.h"
 
-bool IIccStruct::Describe(std::string &sDescription) const
+void IIccStruct::Describe(std::string &sDescription, int nVerboseness) const
 {
-  if (!m_pTagStruct) {
-    return false;
-  }
-  else {
+  if (m_pTagStruct) {
     char buf[256];
     CIccInfo info;
 
     sprintf(buf, "BEGIN UNKNOWN_TAG_STRUCT ");
     sDescription += buf;
     sDescription += info.GetStructSigName(m_pTagStruct->GetTagStructType());
-    sDescription += "\r\n\r\n";
+    sDescription += "\n\n";
 
     TagEntryList::iterator i;
     TagEntryList *pList = m_pTagStruct->GetElemList();
     for (i=pList->begin(); i!=pList->end(); i++) {
-      i->pTag->Describe(sDescription);
+      i->pTag->Describe(sDescription, nVerboseness);
     }
 
-    sDescription += "\r\n";
-    sprintf(buf, "END TAG_STRUCT\r\n");
+    sDescription += "\n";
+    sprintf(buf, "END TAG_STRUCT\n");
     sDescription += buf;
-    sDescription += "\r\n";
+    sDescription += "\n";
   }
-
-  return true;
 }
 
 TagEntryList* IIccStruct::getTagEntries() const
@@ -253,6 +248,27 @@ CIccTagStruct::~CIccTagStruct()
 
 /**
  ******************************************************************************
+ * Name: CIccTagStruct::SetTagStructType
+ *
+ * Purpose:
+ *
+ * Args:
+ *
+ * Return:
+ ******************************************************************************/
+bool CIccTagStruct::SetTagStructType(icStructSignature sig)
+{
+  if (m_pStruct)
+    delete m_pStruct;
+
+  m_sigStructType = sig;
+  m_pStruct = CIccStructCreator::CreateStruct(m_sigStructType, this);
+
+  return m_pStruct != NULL;
+}
+
+/**
+ ******************************************************************************
  * Name: CIccTagStruct::ParseMem
  * 
  * Purpose: 
@@ -289,31 +305,31 @@ CIccTagStruct* CIccTagStruct::ParseMem(icUInt8Number *pMem, icUInt32Number size)
  * 
  * Return: 
  ******************************************************************************/
-void CIccTagStruct::Describe(std::string &sDescription)
+void CIccTagStruct::Describe(std::string &sDescription, int nVerboseness)
 {
   std::string name;
   CIccStructCreator::GetStructSigName(name, m_sigStructType);
 
   sDescription += "BEGIN STRUCT \"";
-  sDescription += name + "\"\r\n";
+  sDescription += name + "\"\n";
 
   if (m_pStruct) {
-    m_pStruct->Describe(sDescription);
+    m_pStruct->Describe(sDescription, nVerboseness);
   }
   else {
     IIccStruct *pStruct = CIccStructCreator::CreateStruct(m_sigStructType, this);
     if (pStruct) {
-      pStruct->Describe(sDescription);
+      pStruct->Describe(sDescription, nVerboseness);
       delete pStruct;
     }
     else {
       CIccStructUnknown structHandler(this);
 
-      structHandler.Describe(sDescription);
+      structHandler.Describe(sDescription, nVerboseness);
     }
   }
   sDescription += "END STRUCT \"";
-  sDescription += name + "\"\r\n";
+  sDescription += name + "\"\n";
 }
 
 
@@ -355,8 +371,12 @@ bool CIccTagStruct::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&m_nReserved))
     return false;
 
-  if (!pIO->Read32(&m_sigStructType))
+  icStructSignature sigStructType;
+
+  if (!pIO->Read32(&sigStructType))
     return false;
+
+  SetTagStructType(sigStructType);
 
   icUInt32Number count, i;
   IccTagEntry TagEntry;
@@ -508,7 +528,7 @@ icValidateStatus CIccTagStruct::Validate(std::string sigPath, std::string &sRepo
   if (!AreElemsUnique()) {
     sReport += icMsgValidateWarning;
     sReport += sSigPathName;
-    sReport += " - There are duplicate tags.\r\n";
+    sReport += " - There are duplicate elements.\n";
     rv =icMaxStatus(rv, icValidateWarning);
   }
 
@@ -550,6 +570,7 @@ void CIccTagStruct::Cleanup()
   if (m_pStruct)
     delete m_pStruct;
   m_pStruct = NULL;
+  m_sigStructType = icSigUndefinedStruct;
 }
 
 /**
@@ -973,8 +994,8 @@ CIccTagArray::CIccTagArray()
 {
   m_TagVals = NULL;
   m_nSize = 0;
-  m_sigArrayType = icSigUnknownArray;
   m_pArray = NULL;
+  m_sigArrayType = icSigUnknownArray;
 }
 
 /**
@@ -991,8 +1012,9 @@ CIccTagArray::CIccTagArray(icArraySignature sigArrayType/* =icSigUndefinedArray 
 {
   m_TagVals = NULL;
   m_nSize = 0;
-  m_sigArrayType = sigArrayType;
+
   m_pArray = NULL;
+  SetTagArrayType(sigArrayType);
 }
 
 /**
@@ -1056,6 +1078,7 @@ CIccTagArray &CIccTagArray::operator=(const CIccTagArray &tagAry)
     }
     m_nSize = tagAry.m_nSize;
   }
+
   m_sigArrayType = tagAry.m_sigArrayType;
 
   if (tagAry.m_pArray)
@@ -1081,6 +1104,31 @@ CIccTagArray::~CIccTagArray()
   Cleanup();
 }
 
+
+/**
+******************************************************************************
+* Name: CIccTagArray::~SetTagArrayType
+*
+* Purpose:
+*   Set the signature of the tag array type.  This also sets the m_pArray
+*   to allow array type specific handling to be utilized.
+*
+* Args:
+*   sig - signature of array type
+*
+* Return:
+*   true if sig is a recognized array type, false otherwise
+******************************************************************************/
+bool CIccTagArray::SetTagArrayType(icArraySignature sig)
+{
+  if (m_pArray)
+    delete m_pArray;
+
+  m_sigArrayType = sig;
+  m_pArray = CIccArrayCreator::CreateArray(m_sigArrayType, this);
+
+  return (m_pArray != NULL) || (m_sigArrayType == icSigUtf8TextTypeArray);
+}
 
 
 /**
@@ -1117,7 +1165,7 @@ bool CIccTagArray::AreAllOfType(icTagTypeSignature sigTagType)
 * 
 * Return: 
 ******************************************************************************/
-void CIccTagArray::Describe(std::string &sDescription)
+void CIccTagArray::Describe(std::string &sDescription, int nVerboseness)
 {
   std::string name;
   icChar buf[128];
@@ -1128,27 +1176,27 @@ void CIccTagArray::Describe(std::string &sDescription)
 
   sDescription += "BEGIN TAG_ARRAY \"";
   sDescription += name;
-  sDescription += "\"\r\n\r\n";
+  sDescription += "\"\n\n";
 
   icUInt32Number i;
 
   for (i=0; i<m_nSize; i++) {
     if (i)
-      sDescription += "\r\n";
-    sprintf(buf, "BEGIN INDEX[%d]\r\n", i);
+      sDescription += "\n";
+    sprintf(buf, "BEGIN INDEX[%d]\n", i);
     sDescription +=  buf;
     
     if (m_TagVals[i].ptr) {
-      m_TagVals[i].ptr->Describe(sDescription);
+      m_TagVals[i].ptr->Describe(sDescription, nVerboseness);
     }
-    sprintf(buf, "END INDEX[%d]\r\n", i);
+    sprintf(buf, "END INDEX[%d]\n", i);
     sDescription += buf;
   }
 
-  sDescription += "\r\n";
+  sDescription += "\n";
   sDescription += "END TAG_ARRAY \"";
   sDescription += name;
-  sDescription += "\"\r\n";
+  sDescription += "\"\n";
 }
 
 
@@ -1186,9 +1234,13 @@ bool CIccTagArray::Read(icUInt32Number size, CIccIO *pIO)
   if (!pIO->Read32(&sig))
     return false;
 
+  icArraySignature sigArrayType;
+
   if (!pIO->Read32(&m_nReserved) ||
-      !pIO->Read32(&m_sigArrayType))
+      !pIO->Read32(&sigArrayType))
     return false;
+
+  SetTagArrayType(sigArrayType);
 
   icUInt32Number count, i, j;
   IccTagEntry TagEntry;
@@ -1419,7 +1471,7 @@ icValidateStatus CIccTagArray::Validate(std::string sigPath, std::string &sRepor
 
       sReport += icMsgValidateCriticalError;
       sReport += sSigPathName;
-      sReport += " - Number of material channel names does not match MCS in header.\r\n";
+      sReport += " - Number of material channel names does not match MCS in header.\n";
       rv = icMaxStatus(rv, icValidateCriticalError);
     }
     icUInt32Number i;
@@ -1470,6 +1522,7 @@ void CIccTagArray::Cleanup()
     delete m_pArray;
 
   m_pArray = NULL;
+  m_sigArrayType = icSigUndefinedArray;
 }
 
 /**

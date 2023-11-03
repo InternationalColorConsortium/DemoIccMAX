@@ -78,9 +78,6 @@ namespace refIccMAX {
 //Include the standard icProfileHeader definition file
 #include "icProfileHeader.h"
 
-// Define signature for SampleICC's use
-#define icSigSampleICC ((icSignature)0x53494343) /* 'SICC' */
-
 //Definitions used for conversion of fixed floating point numbers
 typedef icUInt16Number icU1Fixed15Number;
 typedef icUInt16Number icU8Fixed8Number;

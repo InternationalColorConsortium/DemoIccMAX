@@ -184,7 +184,7 @@ const icChar* icGetTagSigTypeName(icTagTypeSignature tagTypeSig);
 icTagTypeSignature icGetTypeNameTagSig(const icChar *szTagType);
 const icChar* icGetTagSigName(icTagSignature tagSig);
 icTagSignature icGetTagNameSig(const icChar *szTagName);
-const icRenderingIntent icGetRenderingIntentValue (const icChar *szRenderingIntent);
+icRenderingIntent icGetRenderingIntentValue (const icChar *szRenderingIntent);
 icStandardObserver icGetNamedStandardObserverValue(const icChar *str);
 icMeasurementGeometry icGeNamedtMeasurementGeometryValue(const icChar *str);
 icMeasurementFlare icGetNamedMeasurementFlareValue(const icChar *str);

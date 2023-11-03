@@ -92,7 +92,7 @@ class CIccMpeAcs : public CIccMultiProcessElement
 {
 public:
   virtual ~CIccMpeAcs();
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -100,7 +100,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   virtual bool IsAcs() { return true; }
 

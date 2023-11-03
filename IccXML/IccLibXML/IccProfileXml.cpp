@@ -148,7 +148,7 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
 
   sprintf(line, "    <RenderingIntent>%s</RenderingIntent>\n", info.GetRenderingIntentName((icRenderingIntent)m_Header.renderingIntent, m_Header.version>=icVersionNumberV5));
   xml += blanks + line;
-  sprintf(line, "    <PCSIlluminant>\n%s      <XYZNumber X=\"%.8f\" Y=\"%.8f\" Z=\"%.8f\"/>\n%s    </PCSIlluminant>\n", blanks.c_str(),
+  sprintf(line, "    <PCSIlluminant>\n%s      <XYZNumber X=\"" icXmlFloatFmt "\" Y=\"" icXmlFloatFmt "\" Z=\"" icXmlFloatFmt "\"/>\n%s    </PCSIlluminant>\n", blanks.c_str(),
                                                              (float)icFtoD(m_Header.illuminant.X),
                                                              (float)icFtoD(m_Header.illuminant.Y),
                                                              (float)icFtoD(m_Header.illuminant.Z),
@@ -178,14 +178,14 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
 
     if (m_Header.spectralRange.steps) {
       xml += blanks + "    <SpectralRange>\n";
-      sprintf(line, "     <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n", 
+      sprintf(line, "     <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n",
               icF16toF(m_Header.spectralRange.start), icF16toF(m_Header.spectralRange.end), m_Header.spectralRange.steps);
       xml += blanks + line;
       xml += blanks + "    </SpectralRange>\n";
     }
     if (m_Header.biSpectralRange.steps) {
       xml += blanks + "    <BiSpectralRange>\n";
-      sprintf(line, "     <Wavelengths start=\"%.8f\" end=\"%.8f\" steps=\"%d\"/>\n)", 
+      sprintf(line, "     <Wavelengths start=\"" icXmlHalfFmt "\" end=\"" icXmlHalfFmt "\" steps=\"%d\"/>\n)",
               icF16toF(m_Header.biSpectralRange.start), icF16toF(m_Header.biSpectralRange.end), m_Header.biSpectralRange.steps);
       xml += blanks + line;
       xml += blanks + "    </BiSpectralRange>\n";
@@ -343,26 +343,32 @@ bool CIccProfileXml::ParseBasic(xmlNode *pNode, std::string &parseStr)
       unsigned long verMajor=0, verMinor=0, verClassMajor=0, verClassMinor=0;
 
       for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
-        ver = *szVer;
+        ver += *szVer;
       }
       verMajor = parseVersion(ver.c_str());
       ver.clear();
+      if (*szVer)
+        szVer++;
 
-      if (szVer) {
+      if (*szVer) {
         for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
-          ver = *szVer;
+          ver += *szVer;
         }
         verMinor = parseVersion(ver.c_str());
         ver.clear();
+        if (*szVer)
+          szVer++;
 
-        if (szVer) {
+        if (*szVer) {
           for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
             ver = *szVer;
           }
           verClassMajor = parseVersion(ver.c_str());
           ver.clear();
+          if (*szVer)
+            szVer++;
 
-          if (szVer) {
+          if (*szVer) {
             for (; *szVer && *szVer != '.' && *szVer != ','; szVer++) {
               ver = *szVer;
             }
@@ -431,6 +437,11 @@ bool CIccProfileXml::ParseBasic(xmlNode *pNode, std::string &parseStr)
       if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
 					m_Header.flags |= icUseWithEmbeddedDataOnly;
 			}
+
+      attr = icXmlFindAttr(pNode, "ExtendedRangePCS");
+      if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
+        m_Header.flags |= icExtendedRangePCS;
+      }
 
       attr = icXmlFindAttr(pNode, "MCSNeedsSubset");
       if (attr && !strcmp(icXmlAttrValue(attr), "true")) {
@@ -747,6 +758,14 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
   case icSigBToA3Tag:
     if (pTag->IsMBBType())
       ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, m_Header.colorSpace);
+    break;
+
+  case icSigHToS0Tag:
+  case icSigHToS1Tag:
+  case icSigHToS2Tag:
+  case icSigHToS3Tag:
+    if (pTag->IsMBBType())
+      ((CIccMBB*)pTag)->SetColorSpaces(m_Header.pcs, m_Header.pcs);
     break;
 
   case icSigGamutTag:

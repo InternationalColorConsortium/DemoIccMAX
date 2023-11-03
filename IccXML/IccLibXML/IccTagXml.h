@@ -252,6 +252,20 @@ public:
   virtual bool ParseXml(xmlNode *pNode, std::string &parseStr);
 };
 
+class CIccTagXmlCicp : public CIccTagCicp, public CIccTagXml
+{
+public:
+  virtual ~CIccTagXmlCicp() {}
+
+  virtual const char* GetClassName() const { return "CIccTagXmlCicp"; }
+
+  virtual IIccExtensionTag* GetExtension() { return this; }
+
+  virtual bool ToXml(std::string& xml, std::string blanks = "");
+  virtual bool ParseXml(xmlNode* pNode, std::string& parseStr);
+};
+
+
 class CIccTagXmlSparseMatrixArray : public CIccTagSparseMatrixArray, public CIccTagXml
 {
 public:

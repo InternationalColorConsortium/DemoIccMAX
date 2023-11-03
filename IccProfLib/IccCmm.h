@@ -357,6 +357,10 @@ public:
                            bool bUseSpectralPCS = false,
                            CIccCreateXformHintManager *pHintManager = NULL);
 
+  //ShareProfile should only be called when the profile is shared between transforms 
+  void ShareProfile() { m_bOwnsProfile = false; } 
+  void SetPcsAdjustXform() { m_bPcsAdjustXform = true; }
+
   virtual icStatusCMM Begin();
 
   virtual CIccApplyXform *GetNewApply(icStatusCMM &status);
@@ -388,7 +392,9 @@ public:
 
   bool IsMCS() const { return m_nMCS!=icNoMCS; }
 
-  bool IsAbstract() const { return m_pProfile && m_pProfile->m_Header.deviceClass==icSigAbstractClass; }
+  bool IsExtendedPCS() const { return m_pProfile && (m_pProfile->m_Header.flags & icExtendedRangePCS) != 0; }
+
+  bool IsAbstract() const { return m_bPcsAdjustXform || (m_pProfile && m_pProfile->m_Header.deviceClass==icSigAbstractClass); }
     
   /// The following function is for Overridden create function
   void SetParams(CIccProfile *pProfile, bool bInput, icRenderingIntent nIntent, icRenderingIntent nTagIntet,
@@ -399,7 +405,7 @@ public:
   virtual LPIccCurve* ExtractInputCurves()=0;
   virtual LPIccCurve* ExtractOutputCurves()=0;
 
-  virtual bool NoClipPCS() const { return false; }
+  virtual bool NoClipPCS() const { return true; }
 
 	/// Returns the profile pointer. Profile is still owned by the Xform.
 	const CIccProfile* GetProfile() const { return m_pProfile; }
@@ -420,6 +426,8 @@ public:
 
   virtual IIccCmmEnvVarLookup *GetCmmEnvVarLookup() { return m_pCmmEnvVarLookup; }
 
+  void AttachCmmEnvVarLookup(IIccCmmEnvVarLookup* pCmmEnvVarLookup) { m_pCmmEnvVarLookup = pCmmEnvVarLookup; m_bDeleteEnvLooup = false; }
+
   void DetachAll();
 
 protected:
@@ -432,6 +440,8 @@ protected:
   virtual bool HasPerceptualHandling() { return true; }
 
   CIccProfile *m_pProfile;
+  bool m_bOwnsProfile = true;
+  bool m_bPcsAdjustXform = false;
   bool m_bInput;
   icRenderingIntent m_nIntent;
   icRenderingIntent m_nTagIntent;
@@ -455,6 +465,7 @@ protected:
 
   IIccProfileConnectionConditions *m_pConnectionConditions;
 
+  bool m_bDeleteEnvLooup = true;
   IIccCmmEnvVarLookup *m_pCmmEnvVarLookup;
 };
 
@@ -593,7 +604,7 @@ public:
 protected:
   icPcsStepType m_stepType;
 
-  CIccApplyPcsStep(CIccPcsStep *pStep) { m_pStep = pStep; }
+  CIccApplyPcsStep(CIccPcsStep *pStep) { m_pStep = pStep; m_stepType = icPcsStepUnknown; }
 
   const CIccPcsStep *m_pStep;
 };
@@ -1522,6 +1533,15 @@ protected:
   icFloatNumber *m_Pixel2;
 };
 
+class IXformIterator
+{
+public:
+  IXformIterator() {}
+  virtual ~IXformIterator() {}
+
+  virtual void iterate(const CIccXform* pxform) = 0;
+};
+
 /**
  **************************************************************************
  * Type: Class 
@@ -1598,6 +1618,8 @@ public:
   ///Returns the number of profiles/transforms added 
   virtual icUInt32Number GetNumXforms() const;
 
+  virtual void IterateXforms(IXformIterator* pIterater) const;
+
   ///Returns the source color space
   icColorSpaceSignature GetSourceSpace() const { return m_nSrcSpace; }
   ///Returns the destination color space
@@ -1652,6 +1674,7 @@ public:
 protected:
   void SetLateBindingCC();
 
+  icStatusCMM CheckPCSRangeConversions();
   icStatusCMM CheckPCSConnections(bool bUsePCSConversions=false);
 
   CIccApplyCmm *m_pApply;

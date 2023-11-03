@@ -132,6 +132,7 @@ struct {
   {icSigCalibrationDateTimeTag, "calibrationDateTimeTag"},
   {icSigCharTargetTag, "charTargetTag"},
   {icSigChromaticityTag, "chromaticityTag"},
+  {icSigCicpTag, "cicpTag"},
   {icSigCopyrightTag, "copyrightTag"},
   {icSigCrdInfoTag, "crdInfoTag"},
   {icSigDataTag, "dataTag"},
@@ -151,6 +152,10 @@ struct {
   {icSigGrayTRCTag, "grayTRCTag"},
   {icSigGreenColorantTag, "greenColorantTag"},
   {icSigGreenTRCTag, "greenTRCTag"},
+  {icSigHToS0Tag, "HToS0Tag"},
+  {icSigHToS1Tag, "HToS1Tag"},
+  {icSigHToS2Tag, "HTSB2Tag"},
+  {icSigHToS3Tag, "HToS3Tag"},
   {icSigLuminanceTag, "luminanceTag"},
   {icSigMeasurementTag, "measurementTag"},
   {icSigMediaBlackPointTag, "mediaBlackPointTag"},
@@ -223,6 +228,7 @@ struct {
   const icChar *szName;
 } g_icTagTypeNameTable[] = {
   {icSigChromaticityType, "chromaticityType"},
+  {icSigCicpType, "cicpType"},
   {icSigColorantOrderType, "colorantOrderType"},
   {icSigColorantTableType, "colorantTableType"},
   {icSigCrdInfoType, "crdInfoType"},
@@ -308,6 +314,9 @@ CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
 
     case icSigXYZArrayType:
       return new CIccTagXYZ;
+
+    case icSigCicpType:
+      return new CIccTagCicp;
 
     case icSigUInt8ArrayType:
       return new CIccTagUInt8;

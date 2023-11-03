@@ -190,6 +190,7 @@ typedef enum {
   icSigLessThanOp                   = 0x6c742020,  /* 'lt  ' */
   icSigLessThanEqualOp              = 0x6c652020,  /* 'le  ' */
   icSigEqualOp                      = 0x65712020,  /* 'eq  ' */
+  icSigNotEqualOp                   = 0x6e657120,  /* 'neq ' */
   icSigNearOp                       = 0x6e656172,  /* 'near' */
   icSigGreaterThanEqualOp           = 0x67652020,  /* 'ge  ' */
   icSigGreaterThanOp                = 0x67742020,  /* 'gt  ' */
@@ -246,7 +247,7 @@ public:
   unsigned long extra;
   IIccOpDef *def;
 
-  void Describe(std::string &desc);
+  void Describe(std::string &desc, int nVerboseness=100);
   
   static bool IsValidOp(icSigCalcOp sig);
 
@@ -296,7 +297,7 @@ public:
   virtual int ArgsPushed(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return op.ArgsPushed(pCalc);}
   virtual int ArgsUsed(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return op.ArgsUsed(pCalc);}
 
-  virtual void Describe(SIccCalcOp &op, std::string &desc) {op.Describe(desc);}
+  virtual void Describe(SIccCalcOp &op, std::string &desc, int nVerboseness) {op.Describe(desc, nVerboseness);}
 
   virtual bool IsValid(CIccMpeCalculator *pCalc, SIccCalcOp &op) { return op.IsValidOp(pCalc); }
 
@@ -371,7 +372,7 @@ public:
   virtual icChannelFuncSignature GetType() const { return icSigChannelFunction; }
   virtual const icChar *GetClassName() const { return "CIccChannelFunction"; }
 
-  virtual void Describe(std::string &sDescription, int nBlanks=0);
+  virtual void Describe(std::string &sDescription, int nVerboseness=0, int nBlanks=0);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -379,7 +380,7 @@ public:
   virtual bool Begin(const CIccMpeCalculator *pChannelMux, CIccTagMultiProcessElement *pMPE);
   virtual bool Apply(CIccApplyMpeCalculator *pApply) const;
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport,
-                                    const CIccMpeCalculator* pChannelCalc=NULL) const;
+                                    const CIccMpeCalculator* pChannelCalc=NULL, const CIccProfile* pProfile = NULL) const;
 
   icFuncParseStatus SetFunction(const char *szFuncDef, std::string &sReport);
   icFuncParseStatus SetFunction(CIccCalcOpList &opList, std::string &sReport);
@@ -388,6 +389,7 @@ public:
   int CheckUnderflowOverflow(SIccCalcOp *op, icUInt32Number nOps, int nArgs, bool bCheckUnderflow, std::string &sReport) const;
   icFuncParseStatus DoesStackUnderflowOverflow(std::string &sReport) const;
   bool HasValidOperations(std::string &sReport) const;
+  bool HasUnsupportedOperations(std::string &sReport, const CIccProfile *pProfile) const;
   bool DoesOverflowInput(icUInt16Number nInputChannels) const;
   bool DoesOverflowOutput(icUInt16Number nOutputChannels) const;
   bool NeedTempReset(icUInt8Number *tempUsage, icUInt32Number nMaxTemp);
@@ -461,7 +463,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigCalculatorElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCalculator"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -469,7 +471,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual CIccApplyMpe *GetNewApply(CIccApplyTagMpe *pApplyTag);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *pDestPixel, const icFloatNumber *pSrcPixel) const;
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   CIccMultiProcessElement *GetElem(icSigCalcOp op, icUInt16Number index);
 

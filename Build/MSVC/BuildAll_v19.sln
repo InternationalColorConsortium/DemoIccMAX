@@ -43,7 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IccFromXml", "..\..\IccXML\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IccToXml", "..\..\IccXML\CmdLine\IccToXml\IccToXml_v19.vcxproj", "{7F7A836B-C5DC-4CF1-95E6-2D5F6212ABE8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RefIccMAXCmm", "..\..\Tools\Winnt\RefIccMAXCmm\RefIccMAXCmm_v19.vcxproj", "{62025065-8784-4EBD-A380-57763DDBD26D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DemoIccMAXCmm", "..\..\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm_v19.vcxproj", "{62025065-8784-4EBD-A380-57763DDBD26D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A6480823-31F6-41FE-AA64-D11B1AF8B3FF} = {A6480823-31F6-41FE-AA64-D11B1AF8B3FF}
 	EndProjectSection
@@ -69,6 +69,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iccSpecSepToTiff", "..\..\T
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IccProfLib_DLL", "..\..\IccProfLib\IccProfLib_DLL_v19.vcxproj", "{3CDD3DA6-70EA-4463-B4B6-46E7AC0243B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C76EC051-E5E3-4AE1-BF51-0F4CE927C004}"
+	ProjectSection(SolutionItems) = preProject
+		BuildDefs.props = BuildDefs.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -723,5 +728,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A53B9B9-1422-4051-9DBC-B349A0B47FCA}
 	EndGlobalSection
 EndGlobal

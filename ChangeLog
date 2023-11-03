@@ -1,4 +1,32 @@
-2022-02-23 Max Derhak
+2023-03-24 Max Derhak
+* Added iccApplyToLink tool that applies a sequence of profiles to create a device link profile or .cube file
+* Various bug fixes related to HToS tag support
+
+2023-03-10 Max Derhak
+* Add support for HToS tags
+* Add iccFromCube tool to convert .cube files to Device Link ICC profiles
+* Update utf8 handling of text
+* Various bug fixes
+
+2021-09 to 2021-10 Peter Wyatt
+* Fixed MSVC Solution files for MSVC v19 due to name change to DemoIccMAX
+* Fixed various compiler errors for newer versions of LLVM and CLANG
+* Validation will now explicitly report duplicate tags, names and elements with correct error text
+* The iccDumpProfile -v option now takes an optional integer argument which controls verbosity. Default is 100 where all data is verbosely dumped (old behaviour; 75 will dump everything except LUTs; 50 is no data dumping; etc.
+* Corrected hex value for 'War1'
+* Corrected hex value for 'bcpr'
+* Corrected for m_Header.illuminant.Z check in CIccProfile::CheckHeader()
+* Fleshed out some missing Describe() methods to get better reporting
+* Made line endings consistent and platform independent for easier post-processing from iccDumpProfile
+* More robust Unicode to UTF-8 support using <codecvt>
+* Added IccProfLib version to output from iccDumpProfile
+* Fix various compiler warnings
+* Fix comments and README.md
+* Replace 'ZXML' (X-Rite) with 'zxml' as per ICC.2 spec
+* Removed 'dwmp' as not documented
+* Corrected 'monc' to 'mono'
+
+2021-02-23 Max Derhak
 * Changed name of project from RefIccMAX to DemoIccMAX
 * 2.1.19 Release of IccProfLib and related tools
 * Fix bug related to parsing badly sized UTF8 text tag
@@ -102,7 +130,7 @@
 2017-12 Kai-Uwe Behrmann
 * Updated cmake build system for linux
 * Made changes for better platform/complier independence
-   
+
 2017-11-7 Max Derhak
  * 2.1.8 Release of IccProfLib and related tools
  * 2.1.8 Release of IccLibXML and related tools
@@ -116,17 +144,17 @@
  * IccApplyNamedCmm: Added option for precision in reporting and option
    for luminance matching
  * IccApplyProfiles: Added option for luminance matching
-  
+
 2017-2-21 Max Derhak
  * 2.1.7 Release of IccProfLib and related tools
  * 2.1.7 Release of IccLibXML and related tools
  * IccLibXML: Added extensions to CalcElement parsing to support
    Macros, named variables, named sub-lements, naming of input/output
    channels, and importing from IccCalcImport files
- * iccApplyProfiles: Fixed bug in TiffImg.cpp related to parsing 
+ * iccApplyProfiles: Fixed bug in TiffImg.cpp related to parsing
    Extra Sample count from tiff header
  * IccProfLib: modified CIccCmm::FromInternalEncoding to allow NC0004
    to be matched with CMYK color space
- * Modified IccProflib and profiles to support ColorEncoding Class 
+ * Modified IccProflib and profiles to support ColorEncoding Class
    signature 'cenc' instead of pre-release 'enc3'
-   
+

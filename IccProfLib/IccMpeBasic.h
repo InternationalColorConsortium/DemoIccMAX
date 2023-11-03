@@ -102,7 +102,7 @@ public:
   virtual icCurveSegSignature GetType() const = 0;
   virtual const icChar *GetClassName() const = 0;
 
-  virtual void Describe(std::string &sDescription)=0;
+  virtual void Describe(std::string &sDescription, int nVerboseness)=0;
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO)=0;
   virtual bool Write(CIccIO *pIO)=0;
@@ -110,7 +110,7 @@ public:
   virtual bool Begin(CIccCurveSegment *pPrevSeg) = 0;
   virtual icFloatNumber Apply(icFloatNumber v) const =0;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const = 0;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile=NULL) const = 0;
 
   icFloatNumber StartPoint() { return m_startPoint; }
   icFloatNumber EndPoint() { return m_endPoint;}
@@ -141,7 +141,7 @@ public:
   virtual icCurveSegSignature GetType() const { return icSigFormulaCurveSeg; }
   virtual const icChar *GetClassName() const { return "CIccFormulaCurveSegment"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   void SetFunction(icUInt16Number functionType, icUInt8Number num_parameters, icFloatNumber *parameters);
 
@@ -150,7 +150,7 @@ public:
 
   virtual bool Begin(CIccCurveSegment *pPrevSeg);
   virtual icFloatNumber Apply(icFloatNumber v) const;
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   icUInt16Number m_nReserved2;
@@ -185,14 +185,14 @@ public:
 
   virtual icFloatNumber *GetSamples() { return m_pSamples; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
   virtual bool Begin(CIccCurveSegment *pPrevSeg);
   virtual icFloatNumber Apply(icFloatNumber v) const;
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const ;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const ;
 
 protected:
   icUInt32Number m_nCount;   //number of samples used for interpolation
@@ -222,14 +222,14 @@ public:
   virtual icCurveElemSignature GetType() const = 0;
   virtual const icChar *GetClassName() const = 0;
 
-  virtual void Describe(std::string &sDescription) = 0;
+  virtual void Describe(std::string &sDescription, int nVerboseness=100) = 0;
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO) = 0;
   virtual bool Write(CIccIO *pIO) = 0;
 
-  virtual bool Begin() = 0;
+  virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE) = 0;
   virtual icFloatNumber Apply(icFloatNumber v) const = 0; 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const = 0;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const = 0;
 
 protected:
 };
@@ -257,7 +257,7 @@ public:
   virtual icCurveElemSignature GetType() const { return icSigSegmentedCurve; }
   virtual const icChar *GetClassName() const { return "CIccSegmentedCurve"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -265,9 +265,9 @@ public:
   void Reset();
   bool Insert(CIccCurveSegment *pCurveSegment);
 
-  virtual bool Begin();
+  virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual icFloatNumber Apply(icFloatNumber v) const;
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   CIccCurveSegmentList *m_list;
@@ -308,14 +308,14 @@ public:
 
   virtual icFloatNumber *GetSamples() { return m_pSamples; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual bool Begin();
+  virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual icFloatNumber Apply(icFloatNumber v) const;
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE = NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE = NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   icUInt32Number m_nReserved;
@@ -336,6 +336,81 @@ protected:
   icFloatNumber m_loIntercept;
   icFloatNumber m_hiSlope;
   icFloatNumber m_hiIntercept;
+};
+
+//forward class
+class CIccMpeCalculator;
+
+#define ICC_MAXCALCCURVESIZE 16384
+
+/**
+****************************************************************************
+* Class: CIccSampledCalculatorCurve
+*
+* Purpose: The sampled calculator curve class
+*****************************************************************************
+*/
+class CIccSampledCalculatorCurve : public CIccCurveSetCurve
+{
+public:
+  CIccSampledCalculatorCurve(icFloatNumber first = 0.0, icFloatNumber last = 1.0);
+  CIccSampledCalculatorCurve(const CIccSampledCalculatorCurve &ITPC);
+  CIccSampledCalculatorCurve &operator=(const CIccSampledCalculatorCurve &SampledCurve);
+  virtual CIccCurveSetCurve *NewCopy() const { return new CIccSampledCalculatorCurve(*this); }
+  virtual ~CIccSampledCalculatorCurve();
+
+  virtual icCurveElemSignature GetType() const { return icSigSampledCalculatorCurve; }
+  virtual const icChar *GetClassName() const { return "CIccSampledCalculatorCurve"; }
+
+  void SetRange(icFloatNumber first = 0.0f, icFloatNumber last = 1.0f);
+
+  bool SetCalculator(CIccMpeCalculator *pCalc);
+
+  virtual bool SetRecommendedSize(icUInt32Number nSize); //nSize must be >= 2
+  virtual icUInt32Number GetRecommendedSize() { return m_nDesiredSize; }
+
+  virtual bool SetSize(icUInt32Number nSize, bool bZeroAlloc = true); //nSize must be >= 2
+  virtual icUInt32Number GetSize() { return m_nCount; }
+
+  bool SetExtensionType(icUInt16Number nExtensionType);
+  icUInt16Number GetExtensionType() { return m_extensionType; }
+
+  virtual void Describe(std::string &sDescription, int nVerboseness=100);
+
+  virtual bool Read(icUInt32Number size, CIccIO *pIO);
+  virtual bool Write(CIccIO *pIO);
+
+  virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
+  virtual icFloatNumber Apply(icFloatNumber v) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE = NULL, const CIccProfile* pProfile = NULL) const;
+
+protected:
+  bool SetStorageType(icUInt16Number nStorateType) { return false; }
+  icUInt16Number GetStorageType() { return 0; }
+
+  icUInt32Number m_nReserved;
+  icUInt16Number m_nReserved2;
+
+  icUInt32Number m_nCount;   //number of samples used for interpolation
+  icFloatNumber *m_pSamples; //interpolation values
+
+  icUInt16Number m_storageType;
+  icUInt16Number m_extensionType;
+
+  icFloatNumber m_firstEntry;
+  icFloatNumber m_lastEntry;
+
+  icFloatNumber m_range;
+  icFloatNumber m_last;
+
+  icFloatNumber m_loSlope;
+  icFloatNumber m_loIntercept;
+  icFloatNumber m_hiSlope;
+  icFloatNumber m_hiIntercept;
+
+  CIccMpeCalculator *m_pCalc;
+
+  icUInt32Number m_nDesiredSize;   //Desired number of samples used for interpolation
 };
 
 
@@ -362,7 +437,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigCurveSetElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCurveSet"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -370,7 +445,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   icCurveSetCurvePtr *m_curve;
@@ -405,7 +480,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigTintArrayElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeTintArray"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness =0);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -413,12 +488,97 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   CIccTagNumArray *m_Array;
 };
 
+
+/**
+****************************************************************************
+* Class: CIccToneMapFunc
+*
+* Purpose: The parametric function to apply a tone map based on mapped luminance and channel value
+*****************************************************************************
+*/
+class CIccToneMapFunc
+{
+public:
+  CIccToneMapFunc();
+  virtual ~CIccToneMapFunc();
+  CIccToneMapFunc& operator=(const CIccToneMapFunc& toneMap);
+  virtual CIccToneMapFunc* NewCopy() const;
+
+  virtual icToneFunctionSignature GetType() const { return icSigToneMapFunction; }
+  virtual const char* GetClassName() const { return "CIccToneMapFunc"; }
+
+  bool SetFunction(icUInt16Number nFunc, icUInt8Number, icFloatNumber* pParams);
+
+  void Describe(std::string& sDescription, int nVerboseness = 0);
+
+  bool Read(icUInt32Number size, CIccIO* pIO);
+  bool Write(CIccIO* pIO);
+
+  bool Begin();
+  icFloatNumber Apply(icFloatNumber lumValue, icFloatNumber pixelValue) const;
+
+  icValidateStatus Validate(std::string& sFuncReport, int nVerboseness=0) const; //Sets sFuncReport String (doesn't concatenate)
+
+protected:
+  int NumArgs() const;
+
+  icUInt16Number m_nFunctionType;
+  icUInt8Number m_nParameters;
+  icFloatNumber* m_params;
+  icUInt32Number m_nReserved;
+  icUInt16Number m_nReserved2;
+};
+
+/**
+****************************************************************************
+* Class: CIccMpeToneMap
+*
+* Purpose: The curve set process element
+*****************************************************************************
+*/
+class CIccMpeToneMap : public CIccMultiProcessElement
+{
+public:
+  CIccMpeToneMap(icUInt16Number nOutputChannels = 1);
+  CIccMpeToneMap(const CIccMpeToneMap& toneMap);
+  CIccMpeToneMap& operator=(const CIccMpeToneMap& toneMap);
+  virtual CIccMultiProcessElement* NewCopy() const { return new CIccMpeToneMap(*this); }
+  virtual ~CIccMpeToneMap();
+
+  virtual icElemTypeSignature GetType() const { return icSigToneMapElemType; }
+  virtual const icChar* GetClassName() const { return "CIccMpeToneMap"; }
+
+  virtual CIccToneMapFunc* NewToneMapFunc() { return new CIccToneMapFunc(); }
+
+  void SetLumCurve(CIccCurveSetCurve* pLumCurve); //CIccMpeToneMap object assumes ownership of arg
+
+  void SetNumOutputChannels(icUInt16Number nOutputChannels); //This clears m_pToneFuncs
+  bool Insert(CIccToneMapFunc* pToneMapFunc); //CIccMpeToneMap object assumes ownership of arg
+
+  virtual void Describe(std::string& sDescription, int nVerboseness = 0);
+
+  virtual bool Read(icUInt32Number size, CIccIO* pIO);
+  virtual bool Write(CIccIO* pIO);
+
+  virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement* pMPE);
+  virtual void Apply(CIccApplyMpe* pApply, icFloatNumber* dstPixel, const icFloatNumber* srcPixel) const;
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string& sReport, const CIccTagMultiProcessElement* pMPE = NULL, const CIccProfile* pProfile = NULL) const;
+
+protected:
+  CIccToneMapFunc** CopyToneFuncs() const;
+  void ClearToneFuncs();
+
+  CIccCurveSetCurve* m_pLumCurve;
+  icUInt16Number m_nFunc;
+  CIccToneMapFunc** m_pToneFuncs;
+};
 
 
 typedef enum {
@@ -448,7 +608,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigMatrixElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeMatrix"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -462,7 +622,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
 protected:
   icFloatNumber *m_pMatrix;
@@ -504,7 +664,7 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigCLutElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeCLUT"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -512,7 +672,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   CIccCLUT *GetCLUT() { return m_pCLUT; }
   void SetCLUT(CIccCLUT *pCLUT);
@@ -540,12 +700,12 @@ public:
   virtual icElemTypeSignature GetType() const { return icSigExtCLutElemType; }
   virtual const icChar *GetClassName() const { return "CIccMpeExtCLUT"; }
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   bool SetStorageType(icUInt16Number nStorateType);
   icUInt16Number GetStorageType() { return m_storageType; }
@@ -574,7 +734,7 @@ public:
 
   virtual const icChar *GetXformName() const = 0;
 
-  virtual void Describe(std::string &sDescription);
+  virtual void Describe(std::string &sDescription, int nVerboseness);
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
@@ -582,7 +742,7 @@ public:
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const =0;
 
-  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL) const;
+  virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
 
   CIccCamConverter *GetCAM() { return m_pCAM; }
   void SetCAM(CIccCamConverter *pCAM);

@@ -87,23 +87,20 @@ CIccMultiProcessElement* CIccMpeXmlFactory::CreateElement(icElemTypeSignature el
     case icSigExtCLutElemType:
       return new CIccMpeXmlExtCLUT();
 
-    case icSigBAcsElemType:
-      return new CIccMpeXmlBAcs();
-
-    case icSigEAcsElemType:
-      return new CIccMpeXmlEAcs();
-
     case icSigCalculatorElemType:
       return new CIccMpeXmlCalculator();
+
+    case icSigTintArrayElemType:
+      return new CIccMpeXmlTintArray();
+
+    case icSigToneMapElemType:
+      return new CIccMpeXmlToneMap();
 
     case icSigXYZToJabElemType:
       return new CIccMpeXmlXYZToJab();
 
     case icSigJabToXYZElemType:
       return new CIccMpeXmlJabToXYZ();
-
-    case icSigTintArrayElemType:
-      return new CIccMpeXmlTintArray();
 
     case icSigEmissionMatrixElemType:
       return new CIccMpeXmlEmissionMatrix();
@@ -122,6 +119,12 @@ CIccMultiProcessElement* CIccMpeXmlFactory::CreateElement(icElemTypeSignature el
 
     case icSigReflectanceObserverElemType:
       return new CIccMpeXmlReflectanceObserver();
+
+    case icSigBAcsElemType:
+      return new CIccMpeXmlBAcs();
+
+    case icSigEAcsElemType:
+      return new CIccMpeXmlEAcs();
 
     default:
       return new CIccMpeXmlUnknown();

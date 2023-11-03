@@ -97,23 +97,20 @@ CIccMultiProcessElement* CIccBasicMpeFactory::CreateElement(icElemTypeSignature 
     case icSigExtCLutElemType:
       return new CIccMpeExtCLUT();
 
-    case icSigBAcsElemType:
-      return new CIccMpeBAcs();
-
-    case icSigEAcsElemType:
-      return new CIccMpeEAcs();
-
     case icSigCalculatorElemType:
       return new CIccMpeCalculator();
+
+    case icSigTintArrayElemType:
+      return new CIccMpeTintArray();
+
+    case icSigToneMapElemType:
+      return new CIccMpeToneMap();
 
     case icSigJabToXYZElemType:
       return new CIccMpeJabToXYZ();
 
     case icSigXYZToJabElemType:
       return new CIccMpeXYZToJab();
-
-    case icSigTintArrayElemType:
-      return new CIccMpeTintArray();
 
     case icSigEmissionMatrixElemType:
       return new CIccMpeEmissionMatrix();
@@ -132,6 +129,12 @@ CIccMultiProcessElement* CIccBasicMpeFactory::CreateElement(icElemTypeSignature 
 
     case icSigReflectanceObserverElemType:
       return new CIccMpeReflectanceObserver();
+
+    case icSigBAcsElemType:
+      return new CIccMpeBAcs();
+
+    case icSigEAcsElemType:
+      return new CIccMpeEAcs();
 
     default:
       return new CIccMpeUnknown();
@@ -157,16 +160,16 @@ bool CIccBasicMpeFactory::GetElementSigName(std::string &elemName, icElemTypeSig
       elemName = "Extended CLUT Element";
       break;
 
-    case icSigBAcsElemType:
-      elemName = "BACS Element";
-      break;
-
-    case icSigEAcsElemType:
-      elemName = "EACS Element";
-      break;
-
     case icSigCalculatorElemType:
       elemName = "Calculator Element";
+      break;
+
+    case icSigTintArrayElemType:
+      elemName = "Tint Array Element";
+      break;
+
+    case icSigToneMapElemType:
+      elemName = "Tone Mapping Element";
       break;
 
     case icSigJabToXYZElemType:
@@ -175,10 +178,6 @@ bool CIccBasicMpeFactory::GetElementSigName(std::string &elemName, icElemTypeSig
 
     case icSigXYZToJabElemType:
       elemName = "XYZToJab Element";
-      break;
-
-    case icSigTintArrayElemType:
-      elemName = "Tint Array Element";
       break;
 
     case icSigEmissionMatrixElemType:
@@ -203,6 +202,14 @@ bool CIccBasicMpeFactory::GetElementSigName(std::string &elemName, icElemTypeSig
 
     case icSigReflectanceObserverElemType:
       elemName = "Reflectance Observer Element";
+      break;
+
+    case icSigBAcsElemType:
+      elemName = "BACS Element";
+      break;
+
+    case icSigEAcsElemType:
+      elemName = "EACS Element";
       break;
 
     default:

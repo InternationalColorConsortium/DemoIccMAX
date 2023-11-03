@@ -89,7 +89,7 @@ class CIccMpeXmlUnknown : public CIccMpeUnknown, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlUnknown() {}
 
-  virtual const char *GetClassName() { return "CIccTagXmlUnknown"; }
+  virtual const char *GetClassName() const { return "CIccTagXmlUnknown"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -111,7 +111,7 @@ class CIccMpeXmlCurveSet : public CIccMpeCurveSet, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlCurveSet() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlCurveSet"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlCurveSet"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -127,7 +127,7 @@ class CIccMpeXmlTintArray : public CIccMpeTintArray, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlTintArray() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlTintArray"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlTintArray"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -135,12 +135,40 @@ public:
   virtual bool ParseXml(xmlNode *pNode, std::string &parseStr);
 };
 
+class CIccXmlToneMapFunc : public CIccToneMapFunc
+{
+public:
+  virtual ~CIccXmlToneMapFunc() {}
+
+  virtual CIccToneMapFunc* NewCopy();
+
+  virtual const char* GetClassName() const { return "CIccXmlToneMapFunc"; }
+
+  virtual bool ToXml(std::string& xml, std::string blanks = "");
+  virtual bool ParseXml(xmlNode* pNode, std::string& parseStr);
+};
+
+class CIccMpeXmlToneMap : public CIccMpeToneMap, public CIccMpeXml
+{
+public:
+  virtual ~CIccMpeXmlToneMap() {}
+
+  virtual const char* GetClassName() const { return "CIccMpeXmlToneMap"; }
+
+  virtual CIccToneMapFunc* NewToneMapFunc() { return new CIccXmlToneMapFunc(); }
+
+  virtual IIccExtensionMpe* GetExtension() { return this; }
+
+  virtual bool ToXml(std::string& xml, std::string blanks = "");
+  virtual bool ParseXml(xmlNode* pNode, std::string& parseStr);
+};
+
 class CIccMpeXmlMatrix : public CIccMpeMatrix, public CIccMpeXml
 {
 public:
   virtual ~CIccMpeXmlMatrix() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlMatrix"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlMatrix"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -153,7 +181,7 @@ class CIccMpeXmlCLUT : public CIccMpeCLUT, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlCLUT() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlCLUT"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlCLUT"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -166,7 +194,7 @@ class CIccMpeXmlExtCLUT : public CIccMpeExtCLUT, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlExtCLUT() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlExtCLUT"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlExtCLUT"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -179,7 +207,7 @@ class CIccMpeXmlBAcs : public CIccMpeBAcs, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlBAcs() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlBAcs"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlBAcs"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -192,7 +220,7 @@ class CIccMpeXmlEAcs : public CIccMpeEAcs, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlEAcs() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlEAcs"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlEAcs"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -205,7 +233,7 @@ class CIccMpeXmlJabToXYZ : public CIccMpeJabToXYZ, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlJabToXYZ() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlJabToXYZ"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlJabToXYZ"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -218,7 +246,7 @@ class CIccMpeXmlXYZToJab : public CIccMpeXYZToJab, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlXYZToJab() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlXYZToJab"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlXYZToJab"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -276,7 +304,7 @@ public:
   CIccMpeXmlCalculator() { m_sImport = "*"; }
   virtual ~CIccMpeXmlCalculator() {  clean(); }
 
-  virtual const char *GetClassName() { return "CIccMpeXmlCalculator"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlCalculator"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -317,7 +345,7 @@ class CIccMpeXmlEmissionMatrix : public CIccMpeEmissionMatrix, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlEmissionMatrix() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlEmissionMatrix"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlEmissionMatrix"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -330,7 +358,7 @@ class CIccMpeXmlInvEmissionMatrix : public CIccMpeInvEmissionMatrix, public CIcc
 public:
   virtual ~CIccMpeXmlInvEmissionMatrix() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlInvEmissionMatrix"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlInvEmissionMatrix"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -343,7 +371,7 @@ class CIccMpeXmlEmissionCLUT : public CIccMpeEmissionCLUT, public CIccMpeXml
 public:
   virtual ~CIccMpeXmlEmissionCLUT() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlEmissionCLUT"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlEmissionCLUT"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -356,7 +384,7 @@ class CIccMpeXmlReflectanceCLUT : public CIccMpeReflectanceCLUT, public CIccMpeX
 public:
   virtual ~CIccMpeXmlReflectanceCLUT() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlReflectanceCLUT"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlReflectanceCLUT"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -369,7 +397,7 @@ class CIccMpeXmlEmissionObserver : public CIccMpeEmissionObserver, public CIccMp
 public:
   virtual ~CIccMpeXmlEmissionObserver() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlEmissionObserver"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlEmissionObserver"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 
@@ -382,7 +410,7 @@ class CIccMpeXmlReflectanceObserver : public CIccMpeReflectanceObserver, public 
 public:
   virtual ~CIccMpeXmlReflectanceObserver() {}
 
-  virtual const char *GetClassName() { return "CIccMpeXmlReflectanceObserver"; }
+  virtual const char *GetClassName() const { return "CIccMpeXmlReflectanceObserver"; }
 
   virtual IIccExtensionMpe *GetExtension() { return this; }
 

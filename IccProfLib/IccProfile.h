@@ -156,13 +156,14 @@ public:
   virtual CIccProfile* NewProfile() const { return new CIccProfile(); }
   virtual ~CIccProfile();
 
-  virtual const char *GetClassName() { return "CIccProfile"; }
+  virtual const char *GetClassName() const { return "CIccProfile"; }
 
   icHeader m_Header;
 
   TagEntryList *m_Tags;
 
   CIccTag* FindTag(icSignature sig);
+  const CIccTag* FindTagConst(icSignature sig) const;
   CIccTag* FindTagOfType(icSignature tagSig, icTagTypeSignature typeSig);
 
   bool AttachTag(icSignature sig, CIccTag *pTag);

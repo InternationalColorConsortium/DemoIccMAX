@@ -226,11 +226,11 @@ CIccProfileIdDesc &CIccProfileIdDesc::operator=(const CIccProfileIdDesc &pid)
 *  void 
 *****************************************************************************
 */
-void CIccProfileIdDesc::Describe(std::string &sDescription)
+void CIccProfileIdDesc::Describe(std::string &sDescription, int nVerboseness)
 {
   std::string Dump;
 
-  sDescription += "ProfileID:\r\n";
+  sDescription += "ProfileID:\n";
 
   size_t i;
   char buf[20];
@@ -240,12 +240,12 @@ void CIccProfileIdDesc::Describe(std::string &sDescription)
     sprintf(buf, "%02x", m_profileID.ID8[i]);
     sDescription += buf;
   }
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  sDescription += "Description:\r\n";
-  m_desc.Describe(sDescription);
+  sDescription += "Description:\n";
+  m_desc.Describe(sDescription, nVerboseness);
 
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 
@@ -426,25 +426,25 @@ CIccTagProfileSequenceId* CIccTagProfileSequenceId::ParseMem(icUInt8Number *pMem
  * 
  * Return: 
  ******************************************************************************/
-void CIccTagProfileSequenceId::Describe(std::string &sDescription)
+void CIccTagProfileSequenceId::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar buf[128];
 
-  sprintf(buf, "BEGIN ProfileSequenceIdentification_TAG\r\n");
+  sprintf(buf, "BEGIN ProfileSequenceIdentification_TAG\n");
   sDescription += buf;
-  sDescription += "\r\n";
+  sDescription += "\n";
 
   int i;
   CIccProfileIdDescList::iterator j;
   for (i=0, j=m_list->begin(); j!=m_list->end(); i++, j++) {
-    sprintf(buf, "ProfileDescription_%d:\r\n", i+1);
+    sprintf(buf, "ProfileDescription_%d:\n", i+1);
     sDescription += buf;
-    j->Describe(sDescription);
+    j->Describe(sDescription, nVerboseness);
   }
 
-  sprintf(buf, "END ProfileSequenceIdentification_TAG\r\n");
+  sprintf(buf, "END ProfileSequenceIdentification_TAG\n");
   sDescription += buf;
-  sDescription += "\r\n";
+  sDescription += "\n";
 }
 
 

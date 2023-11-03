@@ -143,44 +143,44 @@ public:
     void OnUpdateRefresh(wxUpdateUIEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
-		void OnValidate(wxCommandEvent& event);
+	void OnValidate(wxCommandEvent& event);
     void OnRoundTrip(wxCommandEvent& event);
-		void OnTagClicked(wxListEvent& event);
+	void OnTagClicked(wxListEvent& event);
 
     void SetFileMenu(wxMenu *menu);
 
 protected:
     wxMenu *m_fileMenu;
 
-		CIccProfile *m_pIcc;
-		wxString m_profilePath;
+	CIccProfile *m_pIcc;
+	wxString m_profilePath;
 
-		wxPanel *m_panel;
-		wxListCtrl *m_tagsCtrl;
+	wxPanel *m_panel;
+	wxListCtrl *m_tagsCtrl;
 
-		wxStaticText *m_textAttribute;
+	wxStaticText *m_textAttribute;
     wxStaticText *m_textBiSpectralWavelengths;
-		wxStaticText *m_textCMM;
-		wxStaticText *m_textColorSpace;
-		wxStaticText *m_textCreationDate;
-		wxStaticText *m_textCreator;
-		wxStaticText *m_textFlags;
-		wxStaticText *m_textIlluminant;
-		wxStaticText *m_textPCS;
-		wxStaticText *m_textPlatform;
+	wxStaticText *m_textCMM;
+	wxStaticText *m_textColorSpace;
+	wxStaticText *m_textCreationDate;
+	wxStaticText *m_textCreator;
+	wxStaticText *m_textFlags;
+	wxStaticText *m_textIlluminant;
+	wxStaticText *m_textPCS;
+	wxStaticText *m_textPlatform;
     wxStaticText *m_textDeviceManufacturer;
-		wxStaticText *m_textProfileID;
-		wxStaticText *m_textRenderingIntent;
+	wxStaticText *m_textProfileID;
+	wxStaticText *m_textRenderingIntent;
     wxStaticText *m_textSpectralPCS;
     wxStaticText *m_textSpectralWavelengths;
     wxStaticText *m_textMaterialColorSpace;
-		wxStaticText *m_textSize;
-		wxStaticText *m_textClass;
+	wxStaticText *m_textSize;
+	wxStaticText *m_textClass;
     wxStaticText *m_textSubClass;
-		wxStaticText *m_textVersion;
+	wxStaticText *m_textVersion;
     wxStaticText *m_textSubClassVersion;
 
-		wxSizer *CreateSizerWithText(const wxString &labelText, wxStaticText **ppText);
+	wxSizer *CreateSizerWithText(const wxString &labelText, wxStaticText **ppText);
 
     DECLARE_EVENT_TABLE()
 };
@@ -211,8 +211,8 @@ public:
 	CIccTag *m_pTag;
 
 	wxFont m_FixedFont;
-
 };
+
 // menu items ids
 enum
 {

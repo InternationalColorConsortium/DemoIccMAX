@@ -97,7 +97,7 @@ CIccMpeAcs::CIccMpeAcs()
 {
   m_pData = NULL;
   m_nDataSize = 0;
-
+  m_signature = icSigAcsZero;
   m_nReserved = 0;
 }
 
@@ -124,22 +124,22 @@ CIccMpeAcs::~CIccMpeAcs()
 * 
 * Return: 
 ******************************************************************************/
-void CIccMpeAcs::Describe(std::string &sDescription)
+void CIccMpeAcs::Describe(std::string &sDescription, int nVerboseness)
 {
   icChar sigBuf[30];
 
   if (GetBAcsSig())
-    sDescription += "ELEM_bACS\r\n";
+    sDescription += "ELEM_bACS\n";
   else
-    sDescription += "ELEM_eACS\r\n";
+    sDescription += "ELEM_eACS\n";
 
   icGetSig(sigBuf, m_signature);
   sDescription += "  Signature = ";
   sDescription += sigBuf;
-  sDescription += "\r\n";
+  sDescription += "\n";
 
-  if (m_pData) {
-    sDescription += "\r\nData Follows:\r\n";
+  if ((m_pData) && (nVerboseness > 50)) {
+    sDescription += "\nData Follows:\n";
 
     icMemDump(sDescription, m_pData, m_nDataSize);
   }
@@ -283,9 +283,9 @@ void CIccMpeAcs::Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFl
 * 
 * Return: 
 ******************************************************************************/
-icValidateStatus CIccMpeAcs::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/) const
+icValidateStatus CIccMpeAcs::Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE/*=NULL*/, const CIccProfile *pProfile/*=NULL*/) const
 {
-  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE);
+  icValidateStatus rv = CIccMultiProcessElement::Validate(sigPath, sReport, pMPE, pProfile);
 
   return rv;
 }

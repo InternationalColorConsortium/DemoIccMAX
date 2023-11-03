@@ -81,7 +81,7 @@ public:
   virtual CIccProfile* NewProfile() const { return new CIccProfileXml(); }
   virtual ~CIccProfileXml() {}
 
-  virtual const char *GetClassName() { return "CIccProfileXml"; }
+  virtual const char *GetClassName() const { return "CIccProfileXml"; }
 
   bool ToXml(std::string &xmlString);
   bool ToXmlWithBlanks(std::string &xmlString, std::string blanks);

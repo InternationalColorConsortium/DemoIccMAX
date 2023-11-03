@@ -12,7 +12,7 @@
 int main(int argc, char* argv[])
 {
   if (argc<=2) {
-    printf("\nRefIccLabs IccProfLib Version " ICCPROFLIBVER ", ICCXML Version " ICCLIBXMLVER "\nUsage: IccToXml src_icc_profile dest_xml_file\n");
+    printf("IccToXml built with IccProfLib Version " ICCPROFLIBVER ", IccLibXML Version " ICCLIBXMLVER "\n\nUsage: IccToXml src_icc_profile dest_xml_file\n");
     return -1;
   }
   
