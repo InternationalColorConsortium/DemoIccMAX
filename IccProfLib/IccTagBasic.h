@@ -218,7 +218,7 @@ public:
   * sDescription - A string to put the tag's description into.
 * * verbosenss   - integer value. Default=0. The larger the value, the more verbose the output. 
   */
-  virtual void Describe(std::string &sDescription, int nVerboseness) { sDescription.clear(); }
+  virtual void Describe(std::string &sDescription, int nVerboseness=0) { sDescription.clear(); }
 
   /**
    ******************************************************************************

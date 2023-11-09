@@ -150,17 +150,17 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
     h -= 360.0;
 
   nHIndex = (int)(h / 10.0);
-  dHFraction = (h - nHIndex * 10.0) / 10.0;
+  dHFraction = (h - nHIndex * 10.0f) / 10.0f;
 
   if (L < 5) {
     nLIndex = 0;
-    dLFraction = (L - 3.5) / (5.0 - 3.5);
+    dLFraction = (L - 3.5f) / (5.0f - 3.5f);
   } else if (L == 100.0) {
     nLIndex = 19; // Assuming 19 is a safe index, adapt if necessary
     dLFraction = 1.0;
   } else {
     nLIndex = (int)((L - 5.0) / 5.0) + 1;
-    dLFraction = (L - nLIndex * 5.0) / 5.0;
+    dLFraction = (L - nLIndex * 5.0f) / 5.0f;
   }
 
   // Determine the bounds of the icPRMG_Chroma array (replace with actual bounds)
@@ -171,7 +171,7 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
   nHIndex = icClamp(nHIndex, 0, maxHIndex - 1);
   nLIndex = icClamp(nLIndex, 0, maxLIndex - 1);
 
-  icFloatNumber dInvLFraction = 1.0 - dLFraction;
+  icFloatNumber dInvLFraction = 1.0f - dLFraction;
 
   // Interpolate chroma values safely
   icFloatNumber ch1 = icPRMG_Chroma[nHIndex][nLIndex] * dInvLFraction
@@ -179,7 +179,7 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
   icFloatNumber ch2 = icPRMG_Chroma[nHIndex+1][nLIndex] * dInvLFraction
                     + icPRMG_Chroma[nHIndex+1][nLIndex+1] * dLFraction;
 
-  return ch1 * (1.0 - dHFraction) + ch2 * dHFraction;
+  return ch1 * (1.0f - dHFraction) + ch2 * dHFraction;
 }
 
 bool CIccPRMG::InGamut(icFloatNumber L, icFloatNumber c, icFloatNumber h)
