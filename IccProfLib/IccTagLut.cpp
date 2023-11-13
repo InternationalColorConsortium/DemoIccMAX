@@ -1794,6 +1794,12 @@ bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, i
       memset(m_GridPoints+m_nInput, 0, 16-m_nInput);
   }
 
+  // There should be at least 2 grid points for each input dimension for interpolation to work
+  for (int i = 0; i < m_nInput; i++) {
+    if (pGridPoints[i] < 2)
+      return false;
+  }
+
   if (m_pData) {
     delete [] m_pData;
     m_pData = NULL;
@@ -1925,7 +1931,8 @@ bool CIccCLUT::Read(icUInt32Number size, CIccIO *pIO)
       pIO->Read8(&m_nReserved2[0], 3)!=3)
     return false;
 
-  Init(m_GridPoints, size-20, m_nPrecision);
+  if (!Init(m_GridPoints, size - 20, m_nPrecision))
+    return false;
 
   return ReadData(size-20, pIO, m_nPrecision);
 }
@@ -2422,15 +2429,15 @@ void CIccCLUT::Interp2d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   if (ix==mx) {
     ix--;
-    u = 1.0;
+    u = 1.0f;
   }
   if (iy==my) {
     iy--;
-    t = 1.0;
+    t = 1.0f;
   }
 
-  icFloatNumber nt = (icFloatNumber)(1.0 - t);
-  icFloatNumber nu = (icFloatNumber)(1.0 - u);
+  icFloatNumber nt = 1.0f - t;
+  icFloatNumber nu = 1.0f - u;
 
   int i;
   icFloatNumber *p = &m_pData[ix*n001 + iy*n010];
@@ -2481,15 +2488,15 @@ void CIccCLUT::Interp3dTetra(icFloatNumber *destPixel, const icFloatNumber *srcP
 
   if (ix==mx) {
     ix--;
-    v = 1.0;
+    v = 1.0f;
   }
   if (iy==my) {
     iy--;
-    u = 1.0;
+    u = 1.0f;
   }
   if (iz==mz) {
     iz--;
-    t = 1.0;
+    t = 1.0f;
   }
 
   int i;
@@ -2567,20 +2574,20 @@ void CIccCLUT::Interp3d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   if (ix==mx) {
     ix--;
-    u = 1.0;
+    u = 1.0f;
   }
   if (iy==my) {
     iy--;
-    t = 1.0;
+    t = 1.0f;
   }
   if (iz==mz) {
     iz--;
-    s = 1.0;
+    s = 1.0f;
   }
 
-  icFloatNumber ns = (icFloatNumber)(1.0 - s);
-  icFloatNumber nt = (icFloatNumber)(1.0 - t);
-  icFloatNumber nu = (icFloatNumber)(1.0 - u);
+  icFloatNumber ns = 1.0f - s;
+  icFloatNumber nt = 1.0f - t;
+  icFloatNumber nu = 1.0f - u;
 
   int i;
   icFloatNumber *p = &m_pData[ix*n001 + iy*n010 + iz*n100];
@@ -2641,25 +2648,25 @@ void CIccCLUT::Interp4d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   if (iw==mw) {
     iw--;
-    v = 1.0;
+    v = 1.0f;
   }
   if (ix==mx) {
     ix--;
-    u = 1.0;
+    u = 1.0f;
   }
   if (iy==my) {
     iy--;
-    t = 1.0;
+    t = 1.0f;
   }
   if (iz==mz) {
     iz--;
-    s = 1.0;
+    s = 1.0f;
   }
 
-  icFloatNumber ns = (icFloatNumber)(1.0 - s);
-  icFloatNumber nt = (icFloatNumber)(1.0 - t);
-  icFloatNumber nu = (icFloatNumber)(1.0 - u);
-  icFloatNumber nv = (icFloatNumber)(1.0 - v);
+  icFloatNumber ns = 1.0f - s;
+  icFloatNumber nt = 1.0f - t;
+  icFloatNumber nu = 1.0f - u;
+  icFloatNumber nv = 1.0f - v;
 
   int i, j;
   icFloatNumber *p = &m_pData[iw*n001 + ix*n010 + iy*n100 + iz*n1000];
@@ -2731,30 +2738,30 @@ void CIccCLUT::Interp5d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   if (ig0==m0) {
     ig0--;
-    s4 = 1.0;
+    s4 = 1.0f;
   }
   if (ig1==m1) {
     ig1--;
-    s3 = 1.0;
+    s3 = 1.0f;
   }
   if (ig2==m2) {
     ig2--;
-    s2 = 1.0;
+    s2 = 1.0f;
   }
   if (ig3==m3) {
     ig3--;
-    s1 = 1.0;
+    s1 = 1.0f;
   }
   if (ig4==m4) {
     ig4--;
-    s0 = 1.0;
+    s0 = 1.0f;
   }
 
-  icFloatNumber ns0 = (icFloatNumber)(1.0 - s0);
-  icFloatNumber ns1 = (icFloatNumber)(1.0 - s1);
-  icFloatNumber ns2 = (icFloatNumber)(1.0 - s2);
-  icFloatNumber ns3 = (icFloatNumber)(1.0 - s3);
-  icFloatNumber ns4 = (icFloatNumber)(1.0 - s4);
+  icFloatNumber ns0 = 1.0f - s0;
+  icFloatNumber ns1 = 1.0f - s1;
+  icFloatNumber ns2 = 1.0f - s2;
+  icFloatNumber ns3 = 1.0f - s3;
+  icFloatNumber ns4 = 1.0f - s4;
 
   int i, j;
   icFloatNumber *p = &m_pData[ig0*n001 + ig1*n010 + ig2*n100 + ig3*n1000 + ig4*n10000];
@@ -2847,35 +2854,35 @@ void CIccCLUT::Interp6d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   if (ig0==m0) {
     ig0--;
-    s5 = 1.0;
+    s5 = 1.0f;
   }
   if (ig1==m1) {
     ig1--;
-    s4 = 1.0;
+    s4 = 1.0f;
   }
   if (ig2==m2) {
     ig2--;
-    s3 = 1.0;
+    s3 = 1.0f;
   }
   if (ig3==m3) {
     ig3--;
-    s2 = 1.0;
+    s2 = 1.0f;
   }
   if (ig4==m4) {
     ig4--;
-    s1 = 1.0;
+    s1 = 1.0f;
   }
   if (ig5==m5) {
     ig5--;
-    s0 = 1.0;
+    s0 = 1.0f;
   }
 
-  icFloatNumber ns0 = (icFloatNumber)(1.0 - s0);
-  icFloatNumber ns1 = (icFloatNumber)(1.0 - s1);
-  icFloatNumber ns2 = (icFloatNumber)(1.0 - s2);
-  icFloatNumber ns3 = (icFloatNumber)(1.0 - s3);
-  icFloatNumber ns4 = (icFloatNumber)(1.0 - s4);
-  icFloatNumber ns5 = (icFloatNumber)(1.0 - s5);
+  icFloatNumber ns0 = 1.0f - s0;
+  icFloatNumber ns1 = 1.0f - s1;
+  icFloatNumber ns2 = 1.0f - s2;
+  icFloatNumber ns3 = 1.0f - s3;
+  icFloatNumber ns4 = 1.0f - s4;
+  icFloatNumber ns5 = 1.0f - s5;
 
   int i, j;
   icFloatNumber *p = &m_pData[ig0*n001 + ig1*n010 + ig2*n100 + ig3*n1000 + ig4*n10000 + ig5*n100000];
@@ -2988,13 +2995,13 @@ void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   int nFlag = 0;
 
   for (i=0; i<m_nNodes; i++) {
-    m_df[i] = 1.0;
+    m_df[i] = 1.0f;
   }
 
 
   for (i=0; i<m_nInput; i++) {
-    temp[0] = (icFloatNumber)(1.0 - m_s[i]);
-    temp[1] = (icFloatNumber)(m_s[i]);
+    temp[0] = 1.0f - m_s[i];
+    temp[1] = m_s[i];
     index = m_nPower[i];
     for (j=0; j<m_nNodes; j++) {
       m_df[j] *= temp[nFlag];
@@ -4505,7 +4512,8 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
   if (m_CLUT == NULL)
     return false;
 
-  m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 1);
+  if (!m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 1))
+    return false;
 
   if (!m_CLUT->ReadData(nEnd - pIO->Tell(), pIO, 1))
     return false;
@@ -4953,7 +4961,8 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
   //CLUT
   m_CLUT = new CIccCLUT(m_nInput, m_nOutput);
 
-  m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 2);
+  if (!m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 2))
+    return false;
 
   if (!m_CLUT->ReadData(nEnd - pIO->Tell(), pIO, 2))
     return false;
