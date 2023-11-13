@@ -82,6 +82,9 @@
 #include "IccUtil.h"
 #include "IccProfile.h"
 #include "IccMpeBasic.h"
+#include <cstdio>
+#include <cstring>
+#include <cmath>
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {
@@ -2408,47 +2411,66 @@ void CIccCLUT::Interp1d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 */
 void CIccCLUT::Interp2d(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const
 {
-  icUInt8Number mx = m_MaxGridPoint[0];
-  icUInt8Number my = m_MaxGridPoint[1];
+    icUInt8Number mx = m_MaxGridPoint[0];
+    icUInt8Number my = m_MaxGridPoint[1];
 
-  icFloatNumber x = UnitClip(srcPixel[0]) * mx;
-  icFloatNumber y = UnitClip(srcPixel[1]) * my;
+    icFloatNumber x = UnitClip(srcPixel[0]) * mx;
+    icFloatNumber y = UnitClip(srcPixel[1]) * my;
 
-  icUInt32Number ix = (icUInt32Number)x;
-  icUInt32Number iy = (icUInt32Number)y;
+    icUInt32Number ix = static_cast<icUInt32Number>(x);
+    icUInt32Number iy = static_cast<icUInt32Number>(y);
 
-  icFloatNumber u = x - ix;
-  icFloatNumber t = y - iy;
+    icFloatNumber u = x - ix;
+    icFloatNumber t = y - iy;
 
-  if (ix==mx) {
-    ix--;
-    u = 1.0;
-  }
-  if (iy==my) {
-    iy--;
-    t = 1.0;
-  }
+    if (ix >= mx) {
+        ix = mx - 1;
+        u = 1.0;
+    }
+    if (iy >= my) {
+        iy = my - 1;
+        t = 1.0;
+    }
 
-  icFloatNumber nt = (icFloatNumber)(1.0 - t);
-  icFloatNumber nu = (icFloatNumber)(1.0 - u);
+    icFloatNumber nt = 1.0 - t;
+    icFloatNumber nu = 1.0 - u;
 
-  int i;
-  icFloatNumber *p = &m_pData[ix*n001 + iy*n010];
+    icFloatNumber dF0 = nt * nu;
+    icFloatNumber dF1 = nt * u;
+    icFloatNumber dF2 = t * nu;
+    icFloatNumber dF3 = t * u;
 
-  //Normalize grid units
-  icFloatNumber dF0, dF1, dF2, dF3, pv;
+    // Calculate indices for the interpolation
+    icUInt32Number n000Index = ix * n001 + iy * n010;
+    icUInt32Number n001Index = n000Index + n001;
+    icUInt32Number n010Index = n000Index + n010;
+    icUInt32Number n011Index = n010Index + n001;
 
-  dF0 = nt* nu;
-  dF1 = nt*  u;
-  dF2 =  t* nu;
-  dF3 =  t*  u;
+    // Check if any index is out of bounds
+    icUInt32Number maxValidIndex = m_nInput * m_nOutput - 1; // Assuming m_pData is a 1D array
+    if (n000Index > maxValidIndex || n001Index > maxValidIndex ||
+        n010Index > maxValidIndex || n011Index > maxValidIndex) {
+        // Handle the out-of-bounds situation
+        std::fill(destPixel, destPixel + m_nOutput, 0); // Fill with zeros or another default value
+        return; // Exit the function early
+    }
 
-  for (i=0; i<m_nOutput; i++, p++) {
-    pv = p[n000]*dF0 + p[n001]*dF1 + p[n010]*dF2 + p[n011]*dF3;
+    for (int i = 0; i < m_nOutput; i++) {
+        icFloatNumber pv = m_pData[n000Index] * dF0 +
+                           m_pData[n001Index] * dF1 +
+                           m_pData[n010Index] * dF2 +
+                           m_pData[n011Index] * dF3;
 
-    destPixel[i] = pv;
-  }
+        destPixel[i] = pv;
+
+        // Increment indices for the next channel
+        n000Index++;
+        n001Index++;
+        n010Index++;
+        n011Index++;
+    }
 }
+
 
 
 /**
@@ -2557,52 +2579,63 @@ void CIccCLUT::Interp3d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   icFloatNumber y = UnitClip(srcPixel[1]) * my;
   icFloatNumber z = UnitClip(srcPixel[2]) * mz;
 
-  icUInt32Number ix = (icUInt32Number)x;
-  icUInt32Number iy = (icUInt32Number)y;
-  icUInt32Number iz = (icUInt32Number)z;
+  icUInt32Number ix = static_cast<icUInt32Number>(x);
+  icUInt32Number iy = static_cast<icUInt32Number>(y);
+  icUInt32Number iz = static_cast<icUInt32Number>(z);
 
   icFloatNumber u = x - ix;
   icFloatNumber t = y - iy;
   icFloatNumber s = z - iz;
 
-  if (ix==mx) {
-    ix--;
+  if (ix >= mx) {
+    ix = mx - 1;
     u = 1.0;
   }
-  if (iy==my) {
-    iy--;
+  if (iy >= my) {
+    iy = my - 1;
     t = 1.0;
   }
-  if (iz==mz) {
-    iz--;
+  if (iz >= mz) {
+    iz = mz - 1;
     s = 1.0;
   }
 
-  icFloatNumber ns = (icFloatNumber)(1.0 - s);
-  icFloatNumber nt = (icFloatNumber)(1.0 - t);
-  icFloatNumber nu = (icFloatNumber)(1.0 - u);
+  icFloatNumber ns = 1.0 - s;
+  icFloatNumber nt = 1.0 - t;
+  icFloatNumber nu = 1.0 - u;
 
-  int i;
-  icFloatNumber *p = &m_pData[ix*n001 + iy*n010 + iz*n100];
+  // Calculate the maximum valid index
+  icUInt32Number maxValidIndex = (mx * my * mz) - 1;
 
-  //Normalize grid units
-  icFloatNumber dF0, dF1, dF2, dF3, dF4, dF5, dF6, dF7, pv;
+  icUInt32Number index = ix * n001 + iy * n010 + iz * n100;
 
-  dF0 = ns* nt* nu;
-  dF1 = ns* nt*  u;
-  dF2 = ns*  t* nu;
-  dF3 = ns*  t*  u;
-  dF4 =  s* nt* nu;
-  dF5 =  s* nt*  u;
-  dF6 =  s*  t* nu;
-  dF7 =  s*  t*  u;
+  icFloatNumber dF0 = ns * nt * nu;
+  icFloatNumber dF1 = ns * nt * u;
+  icFloatNumber dF2 = ns * t * nu;
+  icFloatNumber dF3 = ns * t * u;
+  icFloatNumber dF4 = s * nt * nu;
+  icFloatNumber dF5 = s * nt * u;
+  icFloatNumber dF6 = s * t * nu;
+  icFloatNumber dF7 = s * t * u;
 
-  for (i=0; i<m_nOutput; i++, p++) {
-    pv = p[n000]*dF0 + p[n001]*dF1 + p[n010]*dF2 + p[n011]*dF3 +
-         p[n100]*dF4 + p[n101]*dF5 + p[n110]*dF6 + p[n111]*dF7;
+    for (int i = 0; i < m_nOutput; i++) {
+        // Check if the index is within the expected range
+        if (index > maxValidIndex || (index + n111) > maxValidIndex) {
+            // Handle the out-of-bounds situation
+            std::fill(destPixel, destPixel + m_nOutput, 0); // Fill with zeros or another default value
+            return; // Exit the function early
+        }
 
-    destPixel[i] = pv;
-  }
+        icFloatNumber pv = m_pData[index] * dF0 + m_pData[index + n001] * dF1 +
+                           m_pData[index + n010] * dF2 + m_pData[index + n011] * dF3 +
+                           m_pData[index + n100] * dF4 + m_pData[index + n101] * dF5 +
+                           m_pData[index + n110] * dF6 + m_pData[index + n111] * dF7;
+
+        destPixel[i] = pv;
+
+        // Increment the index for the next channel
+        index++;
+    }
 }
 
 
