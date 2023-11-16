@@ -11,7 +11,7 @@
     <CreationDateTime>now</CreationDateTime>
     <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
     <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
-    <RenderingIntent>Absolute Coloriemtric</RenderingIntent>
+    <RenderingIntent>Absolute Colorimetric</RenderingIntent>
     <PCSIlluminant>
       <XYZNumber X="0.948117925171412" Y="1.00000000" Z="1.073241144203759"/>
     </PCSIlluminant>
