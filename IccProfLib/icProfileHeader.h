@@ -736,8 +736,8 @@ typedef enum {
   icSigCeptBluePrimaryXYZMbr                = 0x6258595a,  /* bXYZ' */
   icSigCeptGreenPrimaryXYZMbr	              = 0x6758595a,  /* gXYZ' */
   icSigCeptRedPrimaryXYZMbr                 = 0x7258595a,  /* rXYZ' */
-  icSigCeptTransferFunctionMbr              = 0x66756e63, /* func’ */
-  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifnc’ */
+  icSigCeptTransferFunctionMbr              = 0x66756e63, /* funcÃ­ */
+  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifncÃ­ */
   icSigCeptLumaChromaMatrixMbr              = 0x6c6d6174,  /* lmat' */
   icSigCeptWhitePointLuminanceMbr           = 0x776c756d,  /* wlum' */
   icSigCeptWhitePointChromaticityMbr        = 0x7758595a,  /* wXYZ' */
@@ -1112,15 +1112,14 @@ typedef icSignature icAcsSignature;
  * Other enums
  */
 
-/** Measurement Flare, used in the measurmentType tag */
 typedef enum {
-    icFlare0                            = 0x00000000,  /* 0% flare */
-    icFlare100                          = 0x00000001,  /* 100% flare */
+    icFlare0 = 0x00000000,  // 0% flare
+    icFlare100 = 0x00000001,  // 100% flare
+    icMaxEnumFlareValid = 0x00000002  // Max valid flare, used for bounds in arrays or loops
 } icMeasurementFlare;
 
-/** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumFlare ((icMeasurementFlare) 0xFFFFFFFF)
-#define icMaxFlare     ((icMeasurementFlare) 0xFFFFFFFF) /* as defined by earlier versions */
+#define icMaxEnumFlare ((icMeasurementFlare) 0xFFFFFFFF)  // For error handling or sentinel uses
+#define icMaxFlare     ((icMeasurementFlare) 0xFFFFFFFF)  // Same as above, ensure clarity in use
 
 
 
@@ -1503,7 +1502,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number  gamma;          /* xâˆžgamma                      */
                                         /* up to 7 values Y,a,b,c,d,e,f */
 } icParametricCurve;
 
@@ -1512,7 +1511,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number  gamma;          /* xâˆžgamma                      */
     icS15Fixed16Number  a;              /* a                            */
     icS15Fixed16Number  b;              /* b                            */
     icS15Fixed16Number  c;              /* c                            */
@@ -2116,7 +2115,3 @@ typedef struct {
 } icNamedColorType; */
 
 #endif /* icPROFILEHEADER_H */
-
-
-
-
