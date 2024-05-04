@@ -73,6 +73,7 @@
 
 #include "IccDefs.h"
 #include "IccProfLibConf.h"
+#include <iostream>
 #include <string>
 #include <limits>
 
@@ -374,17 +375,17 @@ protected:
 class ICCPROFLIB_API CIccPixelBuf
 {
 public:
-  CIccPixelBuf(int nChan=icDefaultPixelBufSize);
+  CIccPixelBuf(int nChan = icDefaultPixelBufSize);
   ~CIccPixelBuf();
   icFloatNumber &operator[](int nPos) { return m_pixel[nPos]; }
-  icFloatNumber *get() { return m_pixel;}
+  icFloatNumber *get() { return m_pixel; }
   
   operator icFloatNumber *() { return m_pixel; }
   operator void *() { return m_pixel; }
 
 protected:
-  icFloatNumber m_buf[icDefaultPixelBufSize];
-  icFloatNumber *m_pixel;
+  icFloatNumber m_buf[icDefaultPixelBufSize];  // Static buffer
+  icFloatNumber *m_pixel;  // Pointer to the buffer, either m_buf or dynamically allocated
 };
 
 
