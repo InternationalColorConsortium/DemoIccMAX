@@ -1403,8 +1403,7 @@ bool icSameSpectralRange(const icSpectralRange &rng1, const icSpectralRange &rng
           rng1.steps == rng2.steps);
 }
 
-CIccInfo::CIccInfo() : m_szStr{}, m_szSigStr{}
-{
+CIccInfo::CIccInfo() : m_szStr(""), m_szSigStr("") {
   m_str = new std::string;
 }
 
@@ -2054,17 +2053,19 @@ const icChar *CIccInfo::GetPathEntrySigName(icUInt32Number sig)
 
 const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 {
-  switch ((int)val) {
+  switch (val) { // Directly switch on the enum without casting to int
   case icFlare0:
-    return "Flare 0";
+    return "Flare 0"; // Properly handle the 0% flare
 
   case icFlare100:
-    return "Flare 100";
-
-  case icMaxEnumFlare:
-    return "Max Flare";
+    return "Flare 100"; // Properly handle the 100% flare
 
   default:
+    // Handle icMaxEnumFlare explicitly here if needed
+    if (val == icMaxEnumFlare) {
+      return "Max Flare"; // Special handling for the max sentinel value
+    }
+    // General default case for truly unexpected values
     sprintf(m_szStr, "Unknown Flare '%d'", (int)val);
     return m_szStr;
   }
@@ -2072,19 +2073,13 @@ const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 
 const icChar *CIccInfo::GetMeasurementGeometryName(icMeasurementGeometry val)
 {
-  switch ((int)val) {
+  switch (val) {  // Directly use enum type, casting is not needed
   case icGeometryUnknown:
     return "Geometry Unknown";
-
   case icGeometry045or450:
     return "Geometry 0-45 or 45-0";
-
   case icGeometry0dord0:
     return "Geometry 0-d or d-0";
-
-  case icMaxEnumGeometry:
-    return "Max Geometry";
-
   default:
     sprintf(m_szStr, "Unknown Geometry '%d'", (int)val);
     return m_szStr;
@@ -2596,20 +2591,20 @@ bool CIccInfo::IsValidSpectralSpace(icColorSpaceSignature sig)
   return rv;
 }
 
-CIccPixelBuf::CIccPixelBuf(int nChan/* =icDefaultPixelBufSize */) : m_buf{}
-{
-  if (nChan>icDefaultPixelBufSize) {
-    m_pixel = new icFloatNumber[nChan];
-  }
-  else {
-    m_pixel = m_buf;
+// Constructor with conditional memory allocation
+CIccPixelBuf::CIccPixelBuf(int nChan) : m_buf{} { // Initialize m_buf to zero if needed
+  if (nChan > icDefaultPixelBufSize) {
+    m_pixel = new icFloatNumber[nChan]; // Dynamically allocate memory if more is needed
+  } else {
+    m_pixel = m_buf; // Use the static buffer if sufficient
   }
 }
 
-CIccPixelBuf::~CIccPixelBuf()
-{
-  if (m_pixel && m_pixel!=m_buf)
-    delete [] m_pixel;
+// Destructor with safe memory deallocation
+CIccPixelBuf::~CIccPixelBuf() {
+  if (m_pixel != m_buf) { // Only delete if m_pixel points to dynamically allocated memory
+    delete[] m_pixel;
+  }
 }
 
 #ifdef USEREFICCMAXNAMESPACE
