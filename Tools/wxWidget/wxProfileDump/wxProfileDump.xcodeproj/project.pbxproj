@@ -208,7 +208,7 @@
 					../../../IccProfLib,
 					.,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -254,7 +254,7 @@
 					../../../IccProfLib,
 					.,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 			};
 			name = Release;
 		};
@@ -309,7 +309,7 @@
 					../../../Build/XCode/lib,
 					"$(WXWIN)/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-Wno-ctor-dtor-privacy";
@@ -369,7 +369,7 @@
 					../../../Build/XCode/lib,
 					"$(WXWIN)/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-Wno-ctor-dtor-privacy";
 				PRODUCT_BUNDLE_IDENTIFIER = "ICC.$(PRODUCT_NAME:rfc1034identifier)";
