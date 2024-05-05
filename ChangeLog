@@ -1,3 +1,6 @@
+2024-05-05 David Hoyt
+* Patches related to CVE-2022-26730, CVE-2023-46602, others
+
 2023-03-24 Max Derhak
 * Added iccApplyToLink tool that applies a sequence of profiles to create a device link profile or .cube file
 * Various bug fixes related to HToS tag support
