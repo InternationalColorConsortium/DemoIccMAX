@@ -12,7 +12,7 @@ Copyright:  (c) see ICC Software License
 * The ICC Software License, Version 0.2
 *
 *
-* Copyright (c) 2005 The International Color Consortium. All rights 
+* Copyright (c) 2005 The International Color Consortium. All rights
 * reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -20,7 +20,7 @@ Copyright:  (c) see ICC Software License
 * are met:
 *
 * 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer. 
+*    notice, this list of conditions and the following disclaimer.
 *
 * 2. Redistributions in binary form must reproduce the above copyright
 *    notice, this list of conditions and the following disclaimer in
@@ -48,17 +48,17 @@ Copyright:  (c) see ICC Software License
 * ====================================================================
 *
 * This software consists of voluntary contributions made by many
-* individuals on behalf of the The International Color Consortium. 
+* individuals on behalf of the The International Color Consortium.
 *
 *
 * Membership in the ICC is encouraged when this software is used for
-* commercial purposes. 
+* commercial purposes.
 *
-*  
+*
 * For more information on The International Color Consortium, please
 * see <http://www.color.org/>.
-*  
-* 
+*
+*
 */
 
 #include "IccPrmg.h"
@@ -73,10 +73,10 @@ namespace refIccMAX {
  *
  * The first dimension corresponds to hue values going from 0 to 360
  * degrees in ten degree intervals (with 360 duplicating 0 for
- * interpolation purposes.  
- * 
+ * interpolation purposes.
+ *
  * The second dimension corresponds to increasing lightness values. The
- * first entry is for 3.5 L*, succeeding entries are for L* values 
+ * first entry is for 3.5 L*, succeeding entries are for L* values
  * increasing by 5 L* from 5 to 100.  L* values below 3.5 or above 100
  * are considered to be out of gamut.
  */
@@ -120,15 +120,6 @@ static icFloatNumber icPRMG_Chroma[37][20] = {
   {0, 11, 26, 39, 52, 64, 74, 83, 91, 92, 91, 87, 82, 75, 67, 57, 47, 37, 25, 13},
 };
 
-static int icClamp(int val, int minVal, int maxVal)
-{
-  if (val < minVal)
-    return minVal;
-  else if (val > maxVal)
-    return maxVal;
-  return val;
-}
-
 CIccPRMG::CIccPRMG()
 {
   m_nTotal = m_nDE1 = m_nDE2 = m_nDE3 = m_nDE5 = m_nDE10 = 0;
@@ -150,17 +141,17 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
     h -= 360.0;
 
   nHIndex = (int)(h / 10.0);
-  dHFraction = (h - nHIndex * 10.0f) / 10.0f;
+  dHFraction = (h - nHIndex * 10.0) / 10.0;
 
   if (L < 5) {
     nLIndex = 0;
-    dLFraction = (L - 3.5f) / (5.0f - 3.5f);
+    dLFraction = (L - 3.5) / (5.0 - 3.5);
   } else if (L == 100.0) {
     nLIndex = 19; // Assuming 19 is a safe index, adapt if necessary
     dLFraction = 1.0;
   } else {
     nLIndex = (int)((L - 5.0) / 5.0) + 1;
-    dLFraction = (L - nLIndex * 5.0f) / 5.0f;
+    dLFraction = (L - nLIndex * 5.0) / 5.0;
   }
 
   // Determine the bounds of the icPRMG_Chroma array (replace with actual bounds)
@@ -168,10 +159,10 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
   const int maxLIndex = sizeof(icPRMG_Chroma[0]) / sizeof(icPRMG_Chroma[0][0]) - 1;
 
     // Clamp indices to prevent out-of-bounds access
-  nHIndex = icClamp(nHIndex, 0, maxHIndex - 1);
-  nLIndex = icClamp(nLIndex, 0, maxLIndex - 1);
+    nHIndex = std::clamp(nHIndex, 0, maxHIndex - 1);
+    nLIndex = std::clamp(nLIndex, 0, maxLIndex - 1);
 
-  icFloatNumber dInvLFraction = 1.0f - dLFraction;
+  icFloatNumber dInvLFraction = 1.0 - dLFraction;
 
   // Interpolate chroma values safely
   icFloatNumber ch1 = icPRMG_Chroma[nHIndex][nLIndex] * dInvLFraction
@@ -179,7 +170,7 @@ icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
   icFloatNumber ch2 = icPRMG_Chroma[nHIndex+1][nLIndex] * dInvLFraction
                     + icPRMG_Chroma[nHIndex+1][nLIndex+1] * dLFraction;
 
-  return ch1 * (1.0f - dHFraction) + ch2 * dHFraction;
+  return ch1 * (1.0 - dHFraction) + ch2 * dHFraction;
 }
 
 bool CIccPRMG::InGamut(icFloatNumber L, icFloatNumber c, icFloatNumber h)
@@ -217,7 +208,7 @@ icStatusCMM CIccPRMG::EvaluateProfile(CIccProfile *pProfile, icRenderingIntent n
   }
 
   m_bPrmgImplied = false;
-  if (nIntent==icPerceptual || nIntent==icSaturation) { 
+  if (nIntent==icPerceptual || nIntent==icSaturation) {
     icTagSignature rigSig = (icTagSignature)(icSigPerceptualRenderingIntentGamutTag + ((icUInt32Number)nIntent)%4);
     CIccTag *pSigTag = pProfile->FindTag(rigSig);
 
@@ -294,12 +285,12 @@ icStatusCMM CIccPRMG::EvaluateProfile(CIccProfile *pProfile, icRenderingIntent n
   return icCmmStatOk;
 }
 
-icStatusCMM CIccPRMG::EvaluateProfile(const icChar *szProfilePath, icRenderingIntent nIntent/* =icUnknownIntent */, 
+icStatusCMM CIccPRMG::EvaluateProfile(const icChar *szProfilePath, icRenderingIntent nIntent/* =icUnknownIntent */,
                                              icXformInterp nInterp/* =icInterpLinear */, bool buseMpeTags/* =true */)
 {
   CIccProfile *pProfile = ReadIccProfile(szProfilePath);
 
-  if (!pProfile) 
+  if (!pProfile)
     return icCmmStatCantOpenProfile;
 
   icStatusCMM result = EvaluateProfile(pProfile, nIntent, nInterp, buseMpeTags);
