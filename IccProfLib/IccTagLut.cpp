@@ -68,6 +68,8 @@
 //
 // -Moved LUT tags to separate file 4-30-2005
 //
+//
+// -Implemented Security Patched for Overflows by @xsscx | DHOYT | 05-MAY-2024
 //////////////////////////////////////////////////////////////////////
 
 #ifdef WIN32
@@ -82,9 +84,9 @@
 #include "IccUtil.h"
 #include "IccProfile.h"
 #include "IccMpeBasic.h"
-#include <cstdio>
+#include <iostream>
+#include <cassert>
 #include <cstring>
-#include <cmath>
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {
@@ -1797,6 +1799,12 @@ bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, i
       memset(m_GridPoints+m_nInput, 0, 16-m_nInput);
   }
 
+  // There should be at least 2 grid points for each input dimension for interpolation to work
+  for (int i = 0; i < m_nInput; i++) {
+    if (pGridPoints[i] < 2)
+      return false;
+  }
+
   if (m_pData) {
     delete [] m_pData;
     m_pData = NULL;
@@ -1928,7 +1936,8 @@ bool CIccCLUT::Read(icUInt32Number size, CIccIO *pIO)
       pIO->Read8(&m_nReserved2[0], 3)!=3)
     return false;
 
-  Init(m_GridPoints, size-20, m_nPrecision);
+  if (!Init(m_GridPoints, size - 20, m_nPrecision))
+    return false;
 
   return ReadData(size-20, pIO, m_nPrecision);
 }
@@ -2402,7 +2411,7 @@ void CIccCLUT::Interp1d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 /**
 ******************************************************************************
 * Name: CIccCLUT::Interp2d
-* 
+*
 * Purpose: Two dimensional interpolation function
 *
 * Args:
@@ -2470,7 +2479,6 @@ void CIccCLUT::Interp2d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
         n011Index++;
     }
 }
-
 
 
 /**
@@ -2562,7 +2570,7 @@ void CIccCLUT::Interp3dTetra(icFloatNumber *destPixel, const icFloatNumber *srcP
 /**
  ******************************************************************************
  * Name: CIccCLUT::Interp3d
- * 
+ *
  * Purpose: Three dimensional interpolation function
  *
  * Args:
@@ -2909,7 +2917,7 @@ void CIccCLUT::Interp6d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   icFloatNumber ns3 = (icFloatNumber)(1.0 - s3);
   icFloatNumber ns4 = (icFloatNumber)(1.0 - s4);
   icFloatNumber ns5 = (icFloatNumber)(1.0 - s5);
-
+    
   int i, j;
   icFloatNumber *p = &m_pData[ig0*n001 + ig1*n010 + ig2*n100 + ig3*n1000 + ig4*n10000 + ig5*n100000];
 
@@ -3026,8 +3034,8 @@ void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
 
   for (i=0; i<m_nInput; i++) {
-    temp[0] = (icFloatNumber)(1.0 - m_s[i]);
-    temp[1] = (icFloatNumber)(m_s[i]);
+    temp[0] = 1.0 - m_s[i];
+    temp[1] = m_s[i];
     index = m_nPower[i];
     for (j=0; j<m_nNodes; j++) {
       m_df[j] *= temp[nFlag];
@@ -3659,16 +3667,38 @@ LPIccCurve* CIccMBB::NewCurvesA()
  * Return: Pointer to the LPIccCurve object
  *****************************************************************************
  */
-LPIccCurve* CIccMBB::NewCurvesM()
-{
-  if (m_CurvesM)
-    return m_CurvesM;
+LPIccCurve* CIccMBB::NewCurvesM() {
+  if (m_CurvesM) {
+    delete[] m_CurvesM;
+    m_CurvesM = nullptr;
+  }
 
+  // Determine the number of curves to allocate based on input matrix
   icUInt8Number nCurves = IsInputMatrix() ? m_nInput : m_nOutput;
+  std::cerr << "Debug: Allocating " << static_cast<int>(nCurves) << " curves for m_CurvesM\n";
+
+  if (nCurves == 0) {
+    std::cerr << "Error: Number of curves cannot be zero.\n";
+    return nullptr;
+  }
 
   m_CurvesM = new LPIccCurve[nCurves];
+  if (!m_CurvesM) {
+    std::cerr << "Error: Failed to allocate memory for m_CurvesM\n";
+    return nullptr;
+  }
+
   memset(m_CurvesM, 0, nCurves * sizeof(LPIccCurve));
 
+  for (int i = 0; i < nCurves; ++i) {
+    assert(i < nCurves);
+    m_CurvesM[i] = nullptr;
+    std::cerr << "Debug: m_CurvesM[" << i << "] initialized to nullptr\n";
+  }
+
+  m_nCurvesM = static_cast<int>(nCurves);
+
+  std::cerr << "Debug: Successfully allocated and initialized " << m_nCurvesM << " curves.\n";
   return m_CurvesM;
 }
 
@@ -3870,13 +3900,18 @@ CIccTagLutAtoB::~CIccTagLutAtoB()
  *  true = successful, false = failure
  *****************************************************************************
  */
-bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO)
-{
+bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
+  if (!CIccMBB::Read(size, pIO)) {
+    std::cerr << "Error: Failed to read CIccMBB in CIccTagLutAtoB::Read\n";
+    return false;
+  }
+
   icTagTypeSignature sig;
   icUInt32Number Offset[5], nStart, nEnd, nPos;
   icUInt8Number nCurves, i;
 
-  if (size<8*sizeof(icUInt32Number) || !pIO) {
+  if (size < 8 * sizeof(icUInt32Number) || !pIO) {
+    std::cerr << "Error: Invalid size or null IO pointer in CIccTagLutAtoB::Read\n";
     return false;
   }
 
@@ -3888,91 +3923,132 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO)
       !pIO->Read8(&m_nInput) ||
       !pIO->Read8(&m_nOutput) ||
       !pIO->Read16(&m_nReservedWord) ||
-      pIO->Read32(Offset, 5)!=5)
+      pIO->Read32(Offset, 5) != 5) {
+    std::cerr << "Error: Failed to read header information in CIccTagLutAtoB::Read\n";
     return false;
+  }
 
-  if (sig!=GetType())
-    return false;
+  std::cerr << "Debug: CIccMBB header read successfully. Input channels: " << (int)m_nInput << ", Output channels: " << (int)m_nOutput << "\n";
 
-  //B Curves
-  if (Offset[0]) {
-    nCurves = IsInputB() ? m_nInput : m_nOutput;
-    LPIccCurve *pCurves = NewCurvesB();
 
-    if (pIO->Seek(nStart + Offset[0], icSeekSet)<0)
-      return false;
+    if (sig != GetType()) {
+       std::cerr << "Error: Signature mismatch in CIccTagLutAtoB::Read. Expected: " << GetType() << ", Got: " << sig << "\n";
+       return false;
+     }
 
-    for (i=0; i<nCurves; i++) {
-      nPos = pIO->Tell();
+  // B Curves
+    // B Curves
+    if (Offset[0]) {
+      nCurves = IsInputB() ? m_nInput : m_nOutput;
+      LPIccCurve *pCurves = NewCurvesB();
 
-      if (!pIO->Read32(&sig))
+      if (pIO->Seek(nStart + Offset[0], icSeekSet) < 0) {
+        std::cerr << "Error: Failed to seek to B Curves in CIccTagLutAtoB::Read\n";
         return false;
+      }
 
-      if (pIO->Seek(nPos, icSeekSet)<0)
+      for (i = 0; i < nCurves; ++i) {
+        nPos = pIO->Tell();
+
+        if (!pIO->Read32(&sig)) {
+          std::cerr << "Error: Failed to read B Curve signature in CIccTagLutAtoB::Read\n";
+          return false;
+        }
+
+        if (pIO->Seek(nPos, icSeekSet) < 0) {
+          std::cerr << "Error: Failed to seek back to B Curve in CIccTagLutAtoB::Read\n";
+          return false;
+        }
+
+        if (sig != icSigCurveType && sig != icSigParametricCurveType) {
+          std::cerr << "Error: Invalid B Curve type signature in CIccTagLutAtoB::Read\n";
+          return false;
+        }
+
+        pCurves[i] = (CIccCurve*)CIccTag::Create(sig);
+
+        if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO)) {
+          std::cerr << "Error: Failed to read B Curve in CIccTagLutAtoB::Read\n";
+          return false;
+        }
+
+        std::cerr << "Debug: B Curve [" << i << "] allocated at address " << static_cast<void*>(pCurves[i]) << "\n";
+
+      if (!pIO->Sync32(Offset[1])) {
+        std::cerr << "Error: Failed to sync B Curve offset\n";
         return false;
-
-      if (sig!=icSigCurveType &&
-          sig!=icSigParametricCurveType)
-        return false;
-
-      pCurves[i] = (CIccCurve*)CIccTag::Create(sig);
-
-      if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO))
-        return false;
-
-      if (!pIO->Sync32(Offset[1]))
-        return false;
+      }
     }
   }
 
-  //Matrix
+  // Matrix
   if (Offset[1]) {
     icS15Fixed16Number tmp;
 
-    if (Offset[1] + 12*sizeof(icS15Fixed16Number) >size)
+    if (Offset[1] + 12 * sizeof(icS15Fixed16Number) > size) {
+      std::cerr << "Error: Invalid matrix offset\n";
       return false;
+    }
 
     m_Matrix = new CIccMatrix();
 
-    if (pIO->Seek(nStart + Offset[1], icSeekSet)<0)
+    if (pIO->Seek(nStart + Offset[1], icSeekSet) < 0) {
+      std::cerr << "Error: Failed to seek to Matrix\n";
       return false;
+    }
 
-    for (i=0; i<12; i++) {
-       if (pIO->Read32(&tmp, 1)!=1)
+    for (i = 0; i < 12; ++i) {
+      if (pIO->Read32(&tmp, 1) != 1) {
+        std::cerr << "Error: Failed to read Matrix element\n";
         return false;
+      }
       m_Matrix->m_e[i] = icFtoD(tmp);
     }
+
+    std::cerr << "Debug: Successfully read Matrix\n";
   }
 
+    // M Curves
+      if (Offset[2]) {
+        nCurves = IsInputMatrix() ? m_nInput : m_nOutput;
+        LPIccCurve *pCurves = NewCurvesM();
 
-  //M Curves
-  if (Offset[2]) {
-    nCurves = IsInputMatrix() ? m_nInput : m_nOutput;
-    LPIccCurve *pCurves = NewCurvesM();
+        if (pIO->Seek(nStart + Offset[2], icSeekSet) < 0) {
+          std::cerr << "Error: Failed to seek to M Curves\n";
+          return false;
+        }
 
-    if (pIO->Seek(nStart + Offset[2], icSeekSet)<0)
-      return false;
+        for (i = 0; i < nCurves; ++i) {
+          nPos = pIO->Tell();
 
-    for (i=0; i<nCurves; i++) {
-      nPos = pIO->Tell();
+          if (!pIO->Read32(&sig)) {
+            std::cerr << "Error: Failed to read M Curve signature\n";
+            return false;
+          }
 
-      if (!pIO->Read32(&sig))
-        return false;
+          if (pIO->Seek(nPos, icSeekSet) < 0) {
+            std::cerr << "Error: Failed to seek back to M Curve\n";
+            return false;
+          }
 
-      if (pIO->Seek(nPos, icSeekSet)<0)
-        return false;
+          if (sig != icSigCurveType && sig != icSigParametricCurveType) {
+            std::cerr << "Error: Invalid M Curve type signature\n";
+            return false;
+          }
 
-      if (sig!=icSigCurveType &&
-          sig!=icSigParametricCurveType)
-        return false;
+          pCurves[i] = (CIccCurve*)CIccTag::Create(sig);
 
-      pCurves[i] = (CIccCurve*)CIccTag::Create(sig);
+          if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO)) {
+            std::cerr << "Error: Failed to read M Curve\n";
+            return false;
+          }
 
-      if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO))
-        return false;
+          std::cerr << "Debug: M Curve [" << i << "] allocated at address " << static_cast<void*>(pCurves[i]) << "\n";
 
-      if (!pIO->Sync32(Offset[2]))
-        return false;
+          if (!pIO->Sync32(Offset[2])) {
+            std::cerr << "Error: Failed to sync M Curve offset\n";
+            return false;
+      }
     }
   }
 
@@ -4538,7 +4614,8 @@ bool CIccTagLut8::Read(icUInt32Number size, CIccIO *pIO)
   if (m_CLUT == NULL)
     return false;
 
-  m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 1);
+  if (!m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 1))
+    return false;
 
   if (!m_CLUT->ReadData(nEnd - pIO->Tell(), pIO, 1))
     return false;
@@ -4986,7 +5063,8 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
   //CLUT
   m_CLUT = new CIccCLUT(m_nInput, m_nOutput);
 
-  m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 2);
+  if (!m_CLUT->Init(nGrid, nEnd - pIO->Tell(), 2))
+    return false;
 
   if (!m_CLUT->ReadData(nEnd - pIO->Tell(), pIO, 2))
     return false;
