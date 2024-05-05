@@ -2592,7 +2592,7 @@ bool CIccInfo::IsValidSpectralSpace(icColorSpaceSignature sig)
 }
 
 // Constructor with conditional memory allocation
-CIccPixelBuf::CIccPixelBuf(int nChan) : m_buf{} { // Initialize m_buf to zero if needed
+CIccPixelBuf::CIccPixelBuf(int nChan) : m_pixel(nullptr) {
   if (nChan > icDefaultPixelBufSize) {
     m_pixel = new icFloatNumber[nChan]; // Dynamically allocate memory if more is needed
   } else {
