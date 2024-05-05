@@ -12,7 +12,7 @@
  * The ICC Software License, Version 0.2
  *
  *
- * Copyright (c) 2003-2012 The International Color Consortium. All rights 
+ * Copyright (c) 2003-2012 The International Color Consortium. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,7 +20,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -48,17 +48,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Color Consortium. 
+ * individuals on behalf of the The International Color Consortium.
  *
  *
  * Membership in the ICC is encouraged when this software is used for
- * commercial purposes. 
+ * commercial purposes.
  *
- *  
+ *
  * For more information on The International Color Consortium, please
  * see <http://www.color.org/>.
- *  
- * 
+ *
+ *
  */
 
 #include "IccTagXml.h"
@@ -75,6 +75,9 @@
 #include <map>
 #include <sstream>  // Make sure to include this header
 #include <iomanip>  // Include this header for setw and setfill
+#include <cassert>  // Include to enable the use of the assert function
+#include <iostream> // Include if you are using std::cerr for error output
+#include <string>
 
 typedef  std::map<icUInt32Number, icTagSignature> IccOffsetTagSigMap;
 
@@ -83,7 +86,7 @@ namespace refIccMAX {
 #endif
 
 
-bool CIccTagXmlUnknown::ToXml(std::string &xml, std::string blanks/* = ""*/) 
+bool CIccTagXmlUnknown::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
   xml += blanks + "<UnknownData>\n";
   icXmlDumpHexData(xml, blanks+" ", m_pData, m_nSize);
@@ -137,7 +140,7 @@ static bool icXmlDumpTextData(std::string &xml, std::string blanks, const char *
       xml += icAnsiToUtf8(buf, szText);
     else
       xml += szText;
-    xml += "]]></TextData>\n"; 
+    xml += "]]></TextData>\n";
   }
 
   return true;
@@ -190,15 +193,15 @@ static std::string icXmlParseTextString(xmlNode *pNode, std::string &parseStr, b
           return str;
 
         str += (char*)buf.GetBuf();
-      }      
+      }
       else if (!icXmlStrCmp(pNode->name, "TextData") ) {
         std::string buf;
         const icChar *filename = icXmlAttrValue(pNode, "File");
 
         // file exists
-        if (filename[0]) {        
-          CIccIO *file = IccOpenFileIO(filename, "rb");        
-          if (!file){          
+        if (filename[0]) {
+          CIccIO *file = IccOpenFileIO(filename, "rb");
+          if (!file){
             parseStr += "Error! - File '";
             parseStr += filename;
             parseStr +="' not found.\n";
@@ -206,7 +209,7 @@ static std::string icXmlParseTextString(xmlNode *pNode, std::string &parseStr, b
             return str;
           }
 
-          icUInt32Number fileLength = file->GetLength();  
+          icUInt32Number fileLength = file->GetLength();
           char *ansiStr = (char *)malloc(fileLength+1);
 
           if (!ansiStr) {
@@ -223,9 +226,9 @@ static std::string icXmlParseTextString(xmlNode *pNode, std::string &parseStr, b
             parseStr += filename;
             parseStr += "'. Size read is not equal to file length. File may not be a valid text file.\n";
             free(ansiStr);
-            delete file;             
+            delete file;
             return str;
-          }   
+          }
           // convert utf8 (xml format) to ansi (icc format)
           if (bConvert)
             icUtf8ToAnsi(buf, ansiStr);
@@ -237,14 +240,14 @@ static std::string icXmlParseTextString(xmlNode *pNode, std::string &parseStr, b
         // file does not exist
         else if (pNode->children && pNode->children->content){
           if (bConvert)
-            icUtf8ToAnsi(buf, (const icChar*)pNode->children->content);      
+            icUtf8ToAnsi(buf, (const icChar*)pNode->children->content);
           else
             buf = (const icChar*)pNode->children->content;
-        }      
-        str += buf;      
-      } 
+        }
+        str += buf;
+      }
     }
-    pNode = pNode->next; 
+    pNode = pNode->next;
   }
 
   return str;
@@ -254,7 +257,7 @@ bool CIccTagXmlText::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   std::string str = icXmlParseTextString(pNode, parseStr);
 
-  if (!str.empty()){    
+  if (!str.empty()){
     SetText(str.c_str());
     return true;
   }
@@ -265,7 +268,7 @@ bool CIccTagXmlUtf8Text::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   std::string str = icXmlParseTextString(pNode, parseStr, false);
 
-  if (!str.empty()){    
+  if (!str.empty()){
     SetText(str.c_str());
     return true;
   }
@@ -287,9 +290,9 @@ bool CIccTagXmlZipUtf8Text::ParseXml(xmlNode *pNode, std::string &parseStr)
           memcpy(m_pZipBuf, buf.GetBuf(), m_nBufSize);
         }
         return true;
-      }      
+      }
     }
-    pNode = pNode->next; 
+    pNode = pNode->next;
   }
 
   std::string str = icXmlParseTextString(pNode, parseStr, false);
@@ -312,9 +315,9 @@ bool CIccTagXmlZipXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           memcpy(m_pZipBuf, buf.GetBuf(), m_nBufSize);
         }
         return true;
-      }      
+      }
     }
-    pNode = pNode->next; 
+    pNode = pNode->next;
   }
 
   std::string str = icXmlParseTextString(pNode, parseStr, false);
@@ -326,7 +329,7 @@ bool CIccTagXmlUtf16Text::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   std::string str = icXmlParseTextString(pNode, parseStr, false);
 
-  if (!str.empty()){    
+  if (!str.empty()){
     SetText(str.c_str());
     return true;
   }
@@ -402,7 +405,7 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
       return false;
     }
 
-    icUInt32Number fileLength = file->GetLength();  
+    icUInt32Number fileLength = file->GetLength();
     char *buf = (char *)malloc(fileLength);
 
     if (!buf) {
@@ -419,21 +422,21 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
       parseStr += filename;
       parseStr += "'. Size read is not equal to file length. File may not be a valid text file.\n";
       free(buf);
-      delete file;             
+      delete file;
       return false;
-    }   
+    }
 
     // set ANSII string
-    std::string ansiStr;    
+    std::string ansiStr;
     icUtf8ToAnsi(ansiStr, buf);
 
     icUInt32Number nStrSize = (icUInt32Number)ansiStr.size();
     GetBuffer(nStrSize);
     if (nStrSize) {
-      memcpy(m_szText, ansiStr.c_str(), nStrSize);  
+      memcpy(m_szText, ansiStr.c_str(), nStrSize);
       m_nASCIISize = nStrSize + 1;
     }
-    else 
+    else
       m_szText[0] = '\0';
 
     // set Unicode String
@@ -446,7 +449,7 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
       // assign each entry in wstr to m_uzUnicodeText
       for (int i=0; i < (int) nStrSize; i++) {
         m_uzUnicodeText[i] = wstr[i];
-      }  
+      }
 
       // include the null termintor in the string size.
       m_nUnicodeSize = nStrSize + 1;
@@ -456,7 +459,7 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
 
     // Set ScriptCode
     m_nScriptCode=0;
-    m_nScriptSize = (icUInt8Number) fileLength + 1;  
+    m_nScriptSize = (icUInt8Number) fileLength + 1;
     memcpy(m_szScriptText, buf, 67);
 
     delete file;
@@ -474,12 +477,12 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
       // include the null termintor in the string size.
       m_nASCIISize = nSize + 1;
     }
-    else 
+    else
       m_szText[0] = '\0';
 
     Release();
 
-    // support for automatically generating unicode and scriptcode tags if these do not 
+    // support for automatically generating unicode and scriptcode tags if these do not
     // exist in the XML file.
     bool unicodeExists = false;
     bool scriptcodeExists = false;
@@ -501,7 +504,7 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
               // assign each entry in wstr to m_uzUnicodeText
               for (int i=0; i < (int) nSize; i++) {
                 m_uzUnicodeText[i] = wstr[i];
-              }  
+              }
 
               // include the null termintor in the string size.
               m_nUnicodeSize = nSize + 1;
@@ -534,7 +537,7 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
     }
 #if 0
     // automatically generate unicode tag in the profile if it does not exist
-    if (!unicodeExists){    
+    if (!unicodeExists){
 
       m_uzUnicodeText = GetUnicodeBuffer(nSize);
 
@@ -542,7 +545,7 @@ bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
         // assign each entry in wstr to m_uzUnicodeText
         for (int i=0; i < (int) nSize; i++) {
           m_uzUnicodeText[i] = str[i];
-        }  
+        }
 
         // include the null termintor in the string size.
         m_nUnicodeSize = nSize + 1;
@@ -931,7 +934,7 @@ bool CIccTagXmlChromaticity::ToXml(std::string &xml, std::string blanks/* = ""*/
 
   CIccInfo info;
   sprintf(buf, "<Colorant>%s</Colorant>\n",info.GetColorantEncoding((icColorantEncoding)m_nColorantType));
-  xml += blanks + buf;    
+  xml += blanks + buf;
 
   for (i=0; i<(int)m_nChannels; i++) {
     sprintf(buf, "  <Channel x=\"" icXmlFloatFmt "f\" y=\"" icXmlFloatFmt "\"/>\n", (float)icUFtoD(m_xy[i].x),
@@ -948,11 +951,11 @@ bool CIccTagXmlChromaticity::ParseXml(xmlNode *pNode, std::string &parseStr)
 
   pNode = icXmlFindNode(pNode, "Colorant");
 
-  if (pNode)    
-    m_nColorantType = icGetColorantValue(pNode->children ? (const icChar*)pNode->children->content : ""); 
+  if (pNode)
+    m_nColorantType = icGetColorantValue(pNode->children ? (const icChar*)pNode->children->content : "");
 
 
-  icUInt16Number n = (icUInt16Number)icXmlNodeCount(pNode, "Channel");  
+  icUInt16Number n = (icUInt16Number)icXmlNodeCount(pNode, "Channel");
 
   if (n) {
     icUInt32Number i;
@@ -985,7 +988,7 @@ bool CIccTagXmlCicp::ToXml(std::string& xml, std::string blanks/* = ""*/)
   char buf[256];
 
   CIccInfo info;
-  sprintf(buf, "<cicpFields ColorPrimaries=\"%d\" TransferCharacteristics=\"%d\" MatrixCoefficients=\"%d\" VideoFullRangeFlag=\"%d\"/>\n", 
+  sprintf(buf, "<cicpFields ColorPrimaries=\"%d\" TransferCharacteristics=\"%d\" MatrixCoefficients=\"%d\" VideoFullRangeFlag=\"%d\"/>\n",
           m_nColorPrimaries, m_nTransferCharacteristics, m_nMatrixCoefficients, m_nVideoFullRangeFlag);
   xml += blanks + buf;
 
@@ -1033,7 +1036,7 @@ bool CIccTagXmlSparseMatrixArray::ToXml(std::string &xml, std::string blanks/* =
   int i, j, n;
 
   sprintf(buf, "<SparseMatrixArray outputChannels=\"%d\" matrixType=\"%d\">\n", m_nChannelsPerMatrix, m_nMatrixType);
-  xml += blanks + buf;    
+  xml += blanks + buf;
 
   CIccSparseMatrix mtx;
   icUInt32Number bytesPerMatrix = GetBytesPerMatrix();
@@ -1209,7 +1212,7 @@ const icChar* CIccTagXmlFixedNum<T, Tsig>::GetClassName() const
 {
   if (Tsig==icSigS15Fixed16ArrayType)
     return "CIccTagXmlS15Fixed16";
-  else 
+  else
     return "CIccTagXmlU16Fixed16";
 }
 
@@ -1270,11 +1273,11 @@ template <class T, icTagTypeSignature Tsig>
 bool CIccTagXmlFixedNum<T, Tsig>::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   pNode = icXmlFindNode(pNode, "Array");
-  pNode = pNode->children;  
+  pNode = pNode->children;
 
   CIccFloatArray a;
 
-  if (!a.ParseArray(pNode) || !a.GetSize()) {   
+  if (!a.ParseArray(pNode) || !a.GetSize()) {
     return false;
   }
 
@@ -1316,7 +1319,7 @@ const icChar *CIccTagXmlNum<T, A, Tsig>::GetClassName() const
 }
 
 // for multi-platform support
-// added "this->" modifier to data members.  
+// added "this->" modifier to data members.
 template <class T, class A, icTagTypeSignature Tsig>
 bool CIccTagXmlNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
@@ -1362,11 +1365,11 @@ bool CIccTagXmlNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parseStr)
     return false;
   }
 
-  pNode = pDataNode->children;  
+  pNode = pDataNode->children;
 
   A a;
 
-  if (!a.ParseArray(pNode) || !a.GetSize()) {   
+  if (!a.ParseArray(pNode) || !a.GetSize()) {
     return false;
   }
 
@@ -1403,7 +1406,7 @@ const icChar *CIccTagXmlFloatNum<T, A, Tsig>::GetClassName() const
 }
 
 // for multi-platform support
-// added "this->" modifier to data members.  
+// added "this->" modifier to data members.
 template <class T, class A, icTagTypeSignature Tsig>
 bool CIccTagXmlFloatNum<T, A, Tsig>::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
@@ -1559,9 +1562,9 @@ bool CIccTagXmlFloatNum<T, A, Tsig>::ParseXml(xmlNode *pNode, std::string &parse
     }
   }
   else {
-    pNode = pNode->children;  
+    pNode = pNode->children;
 
-    if (!a.ParseArray(pNode) || !a.GetSize()) {   
+    if (!a.ParseArray(pNode) || !a.GetSize()) {
       return false;
     }
   }
@@ -1588,7 +1591,7 @@ bool CIccTagXmlMeasurement::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
   char buf[256];
 
-  CIccInfo info;  
+  CIccInfo info;
 
   sprintf(buf,"<StandardObserver>%s</StandardObserver>\n",icGetStandardObserverName(m_Data.stdObserver));
   xml += blanks + buf;
@@ -1598,13 +1601,13 @@ bool CIccTagXmlMeasurement::ToXml(std::string &xml, std::string blanks/* = ""*/)
   xml += blanks + buf;
 
   sprintf(buf,"<Geometry>%s</Geometry>\n",info.GetMeasurementGeometryName(m_Data.geometry));
-  xml += blanks + buf;  
+  xml += blanks + buf;
 
   sprintf(buf,"<Flare>%s</Flare>\n",info.GetMeasurementFlareName(m_Data.flare));
   xml += blanks + buf;
 
   sprintf(buf,"<StandardIlluminant>%s</StandardIlluminant>\n",info.GetIlluminantName(m_Data.illuminant));
-  xml += blanks + buf;  
+  xml += blanks + buf;
   return true;
 }
 
@@ -1615,7 +1618,7 @@ bool CIccTagXmlMeasurement::ParseXml(xmlNode *pNode, std::string &parseStr)
 
   pNode = icXmlFindNode(pNode, "StandardObserver");
   if (pNode) {
-    m_Data.stdObserver = icGetNamedStandardObserverValue(pNode->children ? (icChar*)pNode->children->content: "");   
+    m_Data.stdObserver = icGetNamedStandardObserverValue(pNode->children ? (icChar*)pNode->children->content: "");
   }
 
 
@@ -1641,12 +1644,12 @@ bool CIccTagXmlMeasurement::ParseXml(xmlNode *pNode, std::string &parseStr)
 
   pNode = icXmlFindNode(pNode, "Geometry");
   if (pNode){
-    m_Data.geometry = icGeNamedtMeasurementGeometryValue(pNode->children ? (icChar*)pNode->children->content : "");     
+    m_Data.geometry = icGeNamedtMeasurementGeometryValue(pNode->children ? (icChar*)pNode->children->content : "");
   }
 
   pNode = icXmlFindNode(pNode, "Flare");
   if (pNode){
-    m_Data.flare = icGetNamedMeasurementFlareValue(pNode->children ? (icChar*)pNode->children->content : ""); 
+    m_Data.flare = icGetNamedMeasurementFlareValue(pNode->children ? (icChar*)pNode->children->content : "");
   }
 
   pNode = icXmlFindNode(pNode, "StandardIlluminant");
@@ -1654,7 +1657,7 @@ bool CIccTagXmlMeasurement::ParseXml(xmlNode *pNode, std::string &parseStr)
     m_Data.illuminant = icGetIlluminantValue(pNode->children ? (icChar*)pNode->children->content : "");
   }
 
-  return true; 
+  return true;
 }
 
 bool CIccTagXmlMultiLocalizedUnicode::ToXml(std::string &xml, std::string blanks/* = ""*/)
@@ -1683,7 +1686,7 @@ bool CIccTagXmlMultiLocalizedUnicode::ParseXml(xmlNode *pNode, std::string &pars
   xmlAttr *langCode;
   int n = 0;
 
-  for (pNode = icXmlFindNode(pNode, "LocalizedText"); pNode; pNode = icXmlFindNode(pNode->next, "LocalizedText")) {    
+  for (pNode = icXmlFindNode(pNode, "LocalizedText"); pNode; pNode = icXmlFindNode(pNode->next, "LocalizedText")) {
     if ((langCode = icXmlFindAttr(pNode, "LanguageCountry"))) {
       xmlNode *pText;
 
@@ -1704,14 +1707,14 @@ bool CIccTagXmlMultiLocalizedUnicode::ParseXml(xmlNode *pNode, std::string &pars
         n++;
       }
     }
-  }  
+  }
   return n>0;  //We succeed if we parsed at least one string
 }
 
 
 bool CIccTagXmlTagData::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
-  icUInt8Number *ptr = m_pData;  
+  icUInt8Number *ptr = m_pData;
   char buf[60];
   std::string szFlag("ASCII");
 
@@ -1730,7 +1733,7 @@ bool CIccTagXmlTagData::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
   pNode = icXmlFindNode(pNode, "Data");
   if (pNode && pNode->children && pNode->children->content) {
-    const icChar *szFlag = icXmlAttrValue(pNode, "Flag");    
+    const icChar *szFlag = icXmlAttrValue(pNode, "Flag");
     m_nDataFlag = icAsciiData;
     if (!strcmp(szFlag,"binary"))
       m_nDataFlag = icBinaryData;
@@ -1762,8 +1765,8 @@ bool CIccTagXmlDateTime::ParseXml(xmlNode *pNode, std::string &parseStr)
   memset(&m_DateTime, 0, sizeof(m_DateTime));
 
   pNode = icXmlFindNode(pNode, "DateTime");
-  if (pNode) {      
-    m_DateTime = icGetDateTimeValue(pNode->children ? (const char*)pNode->children->content : "");  
+  if (pNode) {
+    m_DateTime = icGetDateTimeValue(pNode->children ? (const char*)pNode->children->content : "");
     return true;
   }
   return false;
@@ -1787,7 +1790,7 @@ bool CIccTagXmlColorantOrder::ToXml(std::string &xml, std::string blanks/* = ""*
 }
 
 bool CIccTagXmlColorantOrder::ParseXml(xmlNode *pNode, std::string &parseStr)
-{  
+{
   pNode = icXmlFindNode(pNode, "ColorantOrder");
 
   if (pNode) {
@@ -1801,7 +1804,7 @@ bool CIccTagXmlColorantOrder::ParseXml(xmlNode *pNode, std::string &parseStr)
           return true;
       }
     }
-  }  
+  }
   return false;
 }
 
@@ -1846,7 +1849,7 @@ bool CIccTagXmlColorantTable::ParseXml(xmlNode *pNode, std::string &parseStr)
 
       for (i=0; pNode; pNode=pNode->next) {
         if (pNode->type == XML_ELEMENT_NODE &&
-          !icXmlStrCmp(pNode->name, "Colorant") && 
+          !icXmlStrCmp(pNode->name, "Colorant") &&
           i<n) {
             std::string str;
             const icChar *name = icXmlAttrValue(pNode, "Name");
@@ -2257,7 +2260,7 @@ bool icProfDescToXml(std::string &xml, CIccProfileDescStruct &p, std::string bla
 bool icXmlParseProfDesc(xmlNode *pNode, CIccProfileDescStruct &p, std::string &parseStr)
 {
   if (pNode->type==XML_ELEMENT_NODE && !icXmlStrCmp(pNode->name, "ProfileDesc")) {
-    xmlNode *pDescNode;  
+    xmlNode *pDescNode;
 
     for (pDescNode = pNode->children; pDescNode; pDescNode=pDescNode->next) {
       if (pDescNode->type == XML_ELEMENT_NODE) {
@@ -2268,24 +2271,24 @@ bool icXmlParseProfDesc(xmlNode *pNode, CIccProfileDescStruct &p, std::string &p
           p.m_deviceModel = icXmlStrToSig(pDescNode->children ? (const icChar*)pDescNode->children->content : "");
         }
         else if (!icXmlStrCmp(pDescNode->name, "DeviceAttributes")){
-          p.m_attributes = icGetDeviceAttrValue(pDescNode);      
+          p.m_attributes = icGetDeviceAttrValue(pDescNode);
         }
         else if (!icXmlStrCmp(pDescNode->name, "Technology")){
           p.m_technology = (icTechnologySignature)icXmlStrToSig(pDescNode->children ? (const icChar*)pDescNode->children->content : "");
         }
-        else if (!icXmlStrCmp(pDescNode->name, "DeviceManufacturer")) {  
+        else if (!icXmlStrCmp(pDescNode->name, "DeviceManufacturer")) {
           xmlNode *pDevManNode = icXmlFindNode(pDescNode->children, "multiLocalizedUnicodeType");
 
           if (!pDevManNode){
             pDevManNode = icXmlFindNode(pDescNode->children, "textDescriptionType");
-          }      
+          }
 
           if (pDevManNode){
             icTagTypeSignature tagSig = icGetTypeNameTagSig ((icChar*) pDevManNode->name);
 
             if (!p.m_deviceMfgDesc.SetType(tagSig)){
-              return false;         
-            }        
+              return false;
+            }
             CIccTag *pTag = p.m_deviceMfgDesc.GetTag();
 
             if (!pTag)
@@ -2297,7 +2300,7 @@ bool icXmlParseProfDesc(xmlNode *pNode, CIccProfileDescStruct &p, std::string &p
               return false;
 
             pExt->ParseXml(pDevManNode->children, parseStr);
-          }            
+          }
         }
         else if (!icXmlStrCmp(pDescNode->name, "DeviceModel")) {
           xmlNode *pDevModNode = icXmlFindNode(pDescNode->children, "multiLocalizedUnicodeType");
@@ -2341,7 +2344,7 @@ bool icXmlParseProfDesc(xmlNode *pNode, CIccProfileDescStruct &p, std::string &p
 bool CIccTagXmlProfileSeqDesc::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
   CIccProfileSeqDesc::iterator i;
-  if (!m_Descriptions) 
+  if (!m_Descriptions)
     return false;
 
   xml += blanks + "<ProfileSequence>\n";
@@ -2381,7 +2384,7 @@ bool CIccTagXmlProfileSeqDesc::ParseXml(xmlNode *pNode, std::string &parseStr)
 
 bool CIccTagXmlResponseCurveSet16::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
-  char line[80]; 
+  char line[80];
   int i;
 
   CIccInfo info;
@@ -2399,7 +2402,7 @@ bool CIccTagXmlResponseCurveSet16::ToXml(std::string &xml, std::string blanks/* 
       sprintf(line, "    <ChannelResponses X=\"" icXmlFloatFmt "\" Y=\"" icXmlFloatFmt "\" Z=\"" icXmlFloatFmt "\" >\n", icFtoD(pXYZ->X), icFtoD(pXYZ->Y), icFtoD(pXYZ->Z));
       xml += blanks + line;
 
-      CIccResponse16List::iterator j;    
+      CIccResponse16List::iterator j;
       for (j=pResponseList->begin(); j!=pResponseList->end(); j++) {
         sprintf(line, "      <Measurement DeviceCode=\"%d\" MeasValue=\"" icXmlFloatFmt "\"", j->deviceCode, icFtoD(j->measurementValue));
         xml += blanks + line;
@@ -2423,7 +2426,7 @@ bool CIccTagXmlResponseCurveSet16::ToXml(std::string &xml, std::string blanks/* 
 
 bool CIccTagXmlResponseCurveSet16::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
-  pNode = icXmlFindNode(pNode, "CountOfChannels"); 
+  pNode = icXmlFindNode(pNode, "CountOfChannels");
 
   if(!pNode)
     return false;
@@ -2515,13 +2518,13 @@ bool CIccTagXmlCurve::ToXml(std::string &xml, icConvertType nType, std::string b
     xml += "\"/>\n";
   }
   else if (nType==icConvert8Bit) {
-    xml += blanks + "<Curve>\n" + blanks;  
-    for (i=0; i<(int)m_nSize; i++) {  
+    xml += blanks + "<Curve>\n" + blanks;
+    for (i=0; i<(int)m_nSize; i++) {
       if ( i && !(i%16)) {
         xml += "\n";
-        xml += blanks;  
+        xml += blanks;
       }
-      sprintf(buf, " %3u", (int)(m_Curve[i] * 255.0 + 0.5));    
+      sprintf(buf, " %3u", (int)(m_Curve[i] * 255.0 + 0.5));
       xml += buf;
     }
     xml += "\n";
@@ -2570,7 +2573,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, std::string &parseStr )
 bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string &parseStr)
 {
   xmlNode *pCurveNode;
-  pCurveNode = icXmlFindNode(pNode, "Curve");  
+  pCurveNode = icXmlFindNode(pNode, "Curve");
 
   if(pCurveNode){
     const char *filename = icXmlAttrValue(pCurveNode, "File");
@@ -2593,7 +2596,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
         icUInt32Number num = file->GetLength();
         char *buf = (char *) new char[num];
 
-        if (!buf) {          
+        if (!buf) {
           perror("Memory Error");
           parseStr += "'";
           parseStr += filename;
@@ -2609,9 +2612,9 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           parseStr += filename;
           parseStr += "' may not be a valid text file.\n";
           free(buf);
-          delete file;             
+          delete file;
           return false;
-        }         
+        }
 
         // lut8type
         if (nType == icConvert8Bit) {
@@ -2634,21 +2637,21 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             icFloatNumber *dst = GetData(0);
 
             icUInt32Number i;
-            for (i=0; i<data.GetSize(); i++) {  
-              *dst = (icFloatNumber)(*src) / 255.0f;              
+            for (i=0; i<data.GetSize(); i++) {
+              *dst = (icFloatNumber)(*src) / 255.0f;
               dst++;
               src++;
             }
 
             //if (i!=256) {
-            //printf("Error! - Input/Output table does not have 256 entries.\n");                            
+            //printf("Error! - Input/Output table does not have 256 entries.\n");
             //SetSize(0);
             //return false;
             //}
             delete file;
             return true;
           }
-        } 
+        }
 
         //lut16type
         else if (nType == icConvert16Bit || nType == icConvertVariable) {
@@ -2673,7 +2676,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
 
             icUInt32Number i;
             for (i=0; i<data.GetSize(); i++) {
-              *dst = (icFloatNumber)(*src) / 65535.0f; 
+              *dst = (icFloatNumber)(*src) / 65535.0f;
               dst++;
               src++;
             }
@@ -2700,18 +2703,18 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           else {
             SetSize(data.GetSize());
             icFloatNumber *src = data.GetBuf();
-            icFloatNumber *dst = GetData(0);          
+            icFloatNumber *dst = GetData(0);
 
             icUInt32Number i;
             for (i=0; i<data.GetSize(); i++) {
-              *dst = *src; 
+              *dst = *src;
               dst++;
               src++;
             }
-          }  
+          }
           delete file;
           return true;
-        }        
+        }
         else {
           delete file;
           return false;
@@ -2720,7 +2723,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
       // format is binary
       else if (!strcmp(format, "binary")) {
         const char *order = icXmlAttrValue(pCurveNode, "Endian");
-        bool little_endian = !strcmp(order, "little");    
+        bool little_endian = !strcmp(order, "little");
 
         if (nType == icConvert8Bit){
           icUInt32Number num = file->GetLength();
@@ -2730,19 +2733,19 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           icFloatNumber *dst =  GetData(0);
           icUInt32Number i;
           for (i=0; i<num; i++) {
-            if (!file->Read8(&value)) { 
+            if (!file->Read8(&value)) {
               perror("Read-File Error");
               parseStr += "'";
               parseStr += filename;
               parseStr += "' may not be a valid binary file.\n";
               delete file;
               return false;
-            } 
+            }
             *dst++ = (icFloatNumber)value / 255.0f;
-          }         
+          }
           delete file;
           return true;
-        }        
+        }
         else if (nType == icConvert16Bit || nType == icConvertVariable){
           icUInt32Number num = file->GetLength() / sizeof(icUInt16Number);
           icUInt16Number value;
@@ -2757,7 +2760,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               parseStr += "'";
               parseStr += filename;
               parseStr += "' may not be a valid binary file.\n";
-              delete file;              
+              delete file;
               return false;
             }
 #ifdef ICC_BYTE_ORDER_LITTLE_ENDIAN
@@ -2802,24 +2805,24 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               tmp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = tmp;
             }
             *dst++ = value;
-          }        
+          }
           delete file;
           return true;
         }
-        else { //not 8bit/16bit/float        
+        else { //not 8bit/16bit/float
           delete file;
           return false;
-        } 
-      }       
+        }
+      }
       else {//not text/binary
         delete file;
         return false;
       }
-    }    
+    }
     // no file
     else{
       if (nType == icConvert8Bit){
-        CIccUInt8Array data;      
+        CIccUInt8Array data;
 
         if (!data.ParseArray(pCurveNode->children)) {
           const char *szSize = icXmlAttrValue(pCurveNode, "IdentitySize");
@@ -2832,7 +2835,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               icUInt32Number j;
               icFloatNumber *dst = GetData(0);
               for (j=0; j<nSize; j++) {
-                *dst = (icFloatNumber)(j) / (icFloatNumber)(nSize-1); 
+                *dst = (icFloatNumber)(j) / (icFloatNumber)(nSize-1);
                 dst++;
               }
             }
@@ -2850,13 +2853,13 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           icUInt8Number *src = data.GetBuf();
           icFloatNumber *dst = GetData(0);
           for (j=0; j<data.GetSize(); j++) {
-            *dst = (icFloatNumber)(*src) / 255.0f; 
+            *dst = (icFloatNumber)(*src) / 255.0f;
             dst++;
             src++;
-          }          
+          }
 
           //if (j!=256) {
-          //printf("Error! - Input/Output table does not have 256 entries.\n");                            
+          //printf("Error! - Input/Output table does not have 256 entries.\n");
           //SetSize(0);
           //return false;
           //}
@@ -2878,7 +2881,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               icUInt32Number j;
               icFloatNumber *dst = GetData(0);
               for (j=0; j<nSize; j++) {
-                *dst = (icFloatNumber)(j) / (icFloatNumber)(nSize-1); 
+                *dst = (icFloatNumber)(j) / (icFloatNumber)(nSize-1);
                 dst++;
               }
             }
@@ -2888,7 +2891,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           else { //Identity curve with size=0
             SetSize(0);
           }
-        }              
+        }
         else {
           SetSize(data.GetSize());
 
@@ -2896,13 +2899,13 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           icUInt16Number *src = data.GetBuf();
           icFloatNumber *dst = GetData(0);
           for (j=0; j<data.GetSize(); j++) {
-            *dst = (icFloatNumber)(*src) / 65535.0f; 
+            *dst = (icFloatNumber)(*src) / 65535.0f;
             dst++;
             src++;
           }
-        }              
+        }
         return true;
-      }      
+      }
       else if (nType == icConvertFloat){
         CIccFloatArray data;
 
@@ -2918,7 +2921,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               icUInt32Number j;
               icFloatNumber *dst = GetData(0);
               for (j=0; j<nSize; j++) {
-                *dst = (icFloatNumber)(j) / (icFloatNumber)(nSize-1); 
+                *dst = (icFloatNumber)(j) / (icFloatNumber)(nSize-1);
                 dst++;
               }
             }
@@ -2936,11 +2939,11 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           icFloatNumber *src = data.GetBuf();
           icFloatNumber *dst = GetData(0);
           for (j=0; j<data.GetSize(); j++) {
-            *dst = *src; 
+            *dst = *src;
             dst++;
             src++;
           }
-        }        
+        }
         return true;
       }
       // unsupported encoding
@@ -3000,7 +3003,7 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
         const char *functionType = icXmlAttrValue(pCurveNode, "FunctionType");
 
         if (!functionType)
-          return false;    
+          return false;
 
         if (!SetFunctionType(atoi(functionType))){
           return false;
@@ -3008,7 +3011,7 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
         CIccFloatArray data;
 
         if (!data.ParseArray(pCurveNode->children)){
-          return false;       
+          return false;
         }
 
         if (data.GetSize()!=GetNumParam()){
@@ -3019,7 +3022,7 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
         icFloatNumber *dParams = GetParams();
         icFloatNumber *dataBuf = data.GetBuf();
         for (j=0; j<data.GetSize(); j++) {
-          dParams[j] = dataBuf[j];   
+          dParams[j] = dataBuf[j];
         }
 
         xmlAttr *reserved2 = icXmlFindAttr(pCurveNode, "Reserved");
@@ -3033,28 +3036,60 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
   }
   return false;
 }
+      
+      bool icCurvesToXml(std::string &xml, const char *szName, CIccCurve **pCurves, int numCurve, icConvertType nType, std::string blanks) {
+        assert(pCurves != nullptr);
+        assert(numCurve > 0);
 
+        // Start of the XML tag
+        xml += blanks + "<" + szName + ">\n";
+        std::cerr << "Debug: Converting curves to XML - Total Curves: " << numCurve << "\n";
 
-bool icCurvesToXml(std::string &xml, const char *szName, CIccCurve **pCurves, int numCurve, icConvertType nType, std::string blanks)
-{
-  if (pCurves) {
-    int i;
+        for (int i = 0; i < numCurve; ++i) {
+          if (i >= numCurve || pCurves == nullptr || pCurves[i] == nullptr) {
+            std::cerr << "Warning: pCurves[" << i << "] is nullptr or out of range\n";
+            xml += blanks + "  <Curve>Invalid</Curve>\n";
+            continue;
+          }
 
-    xml += blanks + "<" + szName + ">\n";
-    for (i=0; i<numCurve; i++) {
-      IIccExtensionTag *pTag = pCurves[i]->GetExtension();
-      if (!pTag || strcmp(pTag->GetExtDerivedClassName(), "CIccCurveXml"))
-        return false;
+          std::cerr << "Debug: Allocating curve " << i << " for XML conversion.\n";
 
-      if (!((CIccCurveXml *)pTag)->ToXml(xml, nType, blanks + "  "))
-        return false;
-    }
-    xml += blanks + "</" + szName + ">\n";
-  }
-  return true;
-}
+          IIccExtensionTag *pTag = pCurves[i]->GetExtension();
+          if (pTag == nullptr) {
+            std::cerr << "Warning: pCurves[" << i << "] has no extension tag\n";
+            xml += blanks + "  <Curve>Invalid</Curve>\n";
+            continue;
+          }
 
+          const char *tagClassName = pTag->GetExtDerivedClassName();
+          std::cerr << "Debug: m_CurvesM[" << i << "] initialized to " << (tagClassName ? tagClassName : "Unknown") << "\n";
 
+          if (strcmp(tagClassName, "CIccCurveXml") != 0) {
+            std::cerr << "Error: Curve " << i << " does not have a CIccCurveXml extension\n";
+            xml += blanks + "  <Curve>Invalid</Curve>\n";
+            continue;
+          }
+
+          CIccCurveXml *curveXml = dynamic_cast<CIccCurveXml*>(pTag);
+          if (curveXml == nullptr) {
+            std::cerr << "Error: Failed to cast curve " << i << " to CIccCurveXml\n";
+            return false;
+          }
+
+          if (!curveXml->ToXml(xml, nType, blanks + "  ")) {
+            std::cerr << "Error: Failed to convert curve " << i << " to XML\n";
+            return false;
+          }
+
+          std::cerr << "Debug: Successfully converted curve " << i << " to XML.\n";
+        }
+
+        // End of the XML tag
+        xml += blanks + "</" + szName + ">\n";
+        std::cerr << "Debug: Finished converting curves to XML for tag '" << szName << "'\n";
+        return true;
+      }
+      
 bool CIccTagXmlSegmentedCurve::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
   if (m_pCurve)
@@ -3135,14 +3170,14 @@ bool icMBBToXml(std::string &xml, CIccMBB *pMBB, icConvertType nType, std::strin
   if (pMBB->IsInputMatrix()) {
     if (pMBB->SwapMBCurves()) {
       if (pMBB->GetMatrix()) {
-        // added if-statement 
+        // added if-statement
         if (!icMatrixToXml(xml, pMBB->GetMatrix(), blanks)) {
           return false;
         }
       }
 
       if (pMBB->GetCurvesB()) {
-        // added if-statement 
+        // added if-statement
         if (!icCurvesToXml(xml, "BCurves", pMBB->GetCurvesM(), pMBB->InputChannels(), nType, blanks)) {
           return false;
         }
@@ -3150,21 +3185,21 @@ bool icMBBToXml(std::string &xml, CIccMBB *pMBB, icConvertType nType, std::strin
     }
     else {
       if (pMBB->GetCurvesB()) {
-        // added if-statement 
+        // added if-statement
         if (!icCurvesToXml(xml, "BCurves", pMBB->GetCurvesB(), pMBB->InputChannels(), nType, blanks)) {
           return false;
         }
       }
 
       if (pMBB->GetMatrix()) {
-        // added if-statement 
+        // added if-statement
         if (!icMatrixToXml(xml, pMBB->GetMatrix(), blanks)) {
           return false;
         }
       }
 
       if (pMBB->GetCurvesM()) {
-        // added if-statement 
+        // added if-statement
         if (!icCurvesToXml(xml, "MCurves", pMBB->GetCurvesM(), 3, nType, blanks)){
           return false;
         }
@@ -3172,14 +3207,14 @@ bool icMBBToXml(std::string &xml, CIccMBB *pMBB, icConvertType nType, std::strin
     }
 
     if (pMBB->GetCLUT()) {
-      // added if-statement 
+      // added if-statement
       if (!icCLUTToXml(xml, pMBB->GetCLUT(), nType, blanks, bSaveGridPoints)){
         return false;
       }
     }
 
     if (pMBB->GetCurvesA()) {
-      // added if-statement 
+      // added if-statement
       if (!icCurvesToXml(xml, "ACurves", pMBB->GetCurvesA(), pMBB->OutputChannels(), nType, blanks)){
         return false;
       }
@@ -3187,35 +3222,35 @@ bool icMBBToXml(std::string &xml, CIccMBB *pMBB, icConvertType nType, std::strin
   }
   else {
     if (pMBB->GetCurvesA()) {
-      // added if-statement 
+      // added if-statement
       if (!icCurvesToXml(xml, "ACurves", pMBB->GetCurvesA(), pMBB->InputChannels(), nType, blanks)){
         return false;
       }
     }
 
     if (pMBB->GetCLUT()) {
-      // added if-statement 
+      // added if-statement
       if (!icCLUTToXml(xml, pMBB->GetCLUT(), nType, blanks, bSaveGridPoints)){
         return false;
       }
     }
 
     if (pMBB->GetCurvesM()) {
-      // added if-statement 
+      // added if-statement
       if (!icCurvesToXml(xml, "MCurves", pMBB->GetCurvesM(), 3, nType, blanks)){
         return false;
       }
     }
 
     if (pMBB->GetMatrix()) {
-      // added if-statement 
+      // added if-statement
       if (!icMatrixToXml(xml, pMBB->GetMatrix(), blanks)) {
         return false;
       }
     }
 
     if (pMBB->GetCurvesB()) {
-      // added if-statement 
+      // added if-statement
       if (!icCurvesToXml(xml, "BCurves", pMBB->GetCurvesB(), pMBB->OutputChannels(), nType, blanks)){
         return false;
       }
@@ -3318,7 +3353,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
 
   int nPrecision = 2;
   if (nType == icConvert8Bit)
-    nPrecision = 1;  
+    nPrecision = 1;
 
   icUInt8Number nInput = (icUInt8Number)nIn;
   icUInt16Number nOutput = (icUInt16Number)nOut;
@@ -3404,7 +3439,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         icUInt32Number num = file->GetLength();
         char *buf = (char *)malloc(num);
 
-        if (!buf) {  
+        if (!buf) {
           perror("Memory Error");
           parseStr += "'";
           parseStr += filename;
@@ -3429,7 +3464,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
           parseStr+= "\" - using default encoding\n";
         }
 
-        if (file->Read8(buf, num)!=num) { 
+        if (file->Read8(buf, num)!=num) {
           perror("Read-File Error");
           parseStr += "'";
           parseStr += filename;
@@ -3453,10 +3488,10 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
             return NULL;
           }
 
-          if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {     
+          if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
             parseStr += "Error! - Number of entries in file '";
             parseStr += filename;
-            parseStr += "'is not equal to the size of the CLUT Table.\n";  
+            parseStr += "'is not equal to the size of the CLUT Table.\n";
             parseStr += "    a. Check values of GridGranularity/GridPoints, InputChannel, or OutputChannels.\n";
             parseStr += "    b. File may not be a valid text file.\n";
             free(buf);
@@ -3478,7 +3513,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
           if (!data.ParseTextArrayNum(buf, num, parseStr)) {
             parseStr += "File '";
             parseStr += filename;
-            parseStr += "' is not a valid text file.\n";      
+            parseStr += "' is not a valid text file.\n";
             free(buf);
             delete file;
             delete pCLUT;
@@ -3488,7 +3523,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
           if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
             parseStr += "Error! - Number of entries in file '";
             parseStr += filename;
-            parseStr += "'is not equal to the size of the CLUT Table.\n";  
+            parseStr += "'is not equal to the size of the CLUT Table.\n";
             parseStr += "    a. Check values of GridGranularity/GridPoints, InputChannel, or OutputChannels.\n";
             parseStr += "    b. File may not be a valid text file.\n";
             free(buf);
@@ -3520,7 +3555,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
           if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
             parseStr += "Error! - Number of entries in file '";
             parseStr += filename;
-            parseStr += "'is not equal to the size of the CLUT Table.\n";  
+            parseStr += "'is not equal to the size of the CLUT Table.\n";
             parseStr += "    a. Check values of GridGranularity/GridPoints, InputChannel, or OutputChannels.\n";
             parseStr += "    b. File may not be a valid text file.\n";
             free(buf);
@@ -3572,12 +3607,12 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
 
         if (nType == icConvert8Bit){
           icUInt32Number num = file->GetLength();
-          icUInt8Number value;      
+          icUInt8Number value;
           // if number of entries in file is not equal to size of CLUT table, flag as error
           if (num!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
             parseStr += "Error! - Number of entries in file '";
             parseStr += filename;
-            parseStr += "'is not equal to the size of the CLUT Table.\n";  
+            parseStr += "'is not equal to the size of the CLUT Table.\n";
             parseStr += "    a. Check values of GridGranularity/GridPoints, InputChannel, or OutputChannels.\n";
             parseStr += "    b. File may not be a valid binary file.\n";
             delete file;
@@ -3595,7 +3630,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
               delete file;
               delete pCLUT;
               return NULL;
-            }      
+            }
             *dst++ = (icFloatNumber)value / 255.0f;
           }
         }
@@ -3647,7 +3682,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
           if (num<pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
             parseStr += "Error! - Number of entries in file '";
             parseStr += filename;
-            parseStr += "'is not equal to the size of the CLUT Table.\n";  
+            parseStr += "'is not equal to the size of the CLUT Table.\n";
             parseStr += "    a. Check values of GridGranularity/GridPoints, InputChannel, or OutputChannels.\n";
             parseStr += "    b. File may not be a valid binary file.\n";
             delete file;
@@ -3706,7 +3741,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         }
 
         if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
-          parseStr += "Error! - Number of entries is not equal to the size of the CLUT Table.\n";  
+          parseStr += "Error! - Number of entries is not equal to the size of the CLUT Table.\n";
           delete pCLUT;
           return NULL;
         }
@@ -3728,7 +3763,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         }
 
         if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
-          parseStr += "Error! - Number of entries is not equal to the size of the CLUT Table.\n";  
+          parseStr += "Error! - Number of entries is not equal to the size of the CLUT Table.\n";
           delete pCLUT;
           return NULL;
         }
@@ -3738,8 +3773,8 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         icUInt32Number i;
         for (i=0; i<data.GetSize(); i++) {
           *dst++ = (icFloatNumber)(*src++) / 65535.0f;
-        }    
-      }      
+        }
+      }
       else if (nType == icConvertFloat){
         CIccFloatArray data;
 
@@ -3750,7 +3785,7 @@ CIccCLUT *icCLutFromXml(xmlNode *pNode, int nIn, int nOut, icConvertType nType, 
         }
 
         if (data.GetSize()!=pCLUT->NumPoints()*pCLUT->GetOutputChannels()) {
-          parseStr += "Error! - Number of entries is not equal to the size of the CLUT Table.\n";  
+          parseStr += "Error! - Number of entries is not equal to the size of the CLUT Table.\n";
           delete pCLUT;
           return NULL;
         }
@@ -4467,15 +4502,15 @@ bool CIccTagXmlStruct::ToXml(std::string &xml, std::string blanks/* = ""*/)
 /**
 ******************************************************************************
 * Name: CIccTagXmlStruct::ParseTag
-* 
+*
 * Purpose: This will load from the indicated IO object and associate a tag
 *  object to a tag directory entry.  Nothing happens if tag directory entry
 *  is associated with a tag object.
-* 
-* Args: 
+*
+* Args:
 *  pNode - pointer to xmlNode object to parse from
-* 
-* Return: 
+*
+* Return:
 *  true - tag from node successfully parsed,
 *  false - failure
 *******************************************************************************
@@ -4746,11 +4781,11 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
 
         // PrivateType - a type that does not belong to the list in the icc specs - custom for vendor.
         if ( !strcmp("PrivateType", tagSig) )
-          sprintf(line, " <PrivateType type=\"%s\">\n",  icFixXml(fix, icGetSigStr(buf, pTag->GetType())));		
+          sprintf(line, " <PrivateType type=\"%s\">\n",  icFixXml(fix, icGetSigStr(buf, pTag->GetType())));
         else
           sprintf(line, " <%s>\n", tagSig); //parent node is the tag type
 
-        xml += blanks + arrayBlanks + line; 				
+        xml += blanks + arrayBlanks + line;
 
         //convert the rest of the tag to xml
         if (!pTagXml->ToXml(xml, blanks + arrayBlanks + " ")) {
@@ -4758,7 +4793,7 @@ bool CIccTagXmlArray::ToXml(std::string &xml, std::string blanks/* = ""*/)
           return false;
         }
         sprintf(line, " </%s>\n\n",  tagSig);
-        xml += blanks + arrayBlanks + line; 	
+        xml += blanks + arrayBlanks + line;
       }
       else {
         printf("Non XML tag in list with type %s!\n", icGetSigStr(buf, pTag->GetType()));
@@ -4826,7 +4861,7 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
   if (!SetSize(nMaxIndex))
     return false;
 
-  n=0; 
+  n=0;
   for (tagNode = indexNode->children; tagNode; tagNode = tagNode->next) {
     if (tagNode->type == XML_ELEMENT_NODE) {
       CIccTag *pTag = NULL;
@@ -4916,7 +4951,7 @@ bool CIccTagXmlGamutBoundaryDesc::ToXml(std::string &xml, std::string blanks/* =
 
     for (i=0; i<m_NumberOfTriangles; i++) {
       sprintf(line, " <T>%u %u %u</T>\n", m_Triangles[i].m_VertexNumbers[0], m_Triangles[i].m_VertexNumbers[1], m_Triangles[i].m_VertexNumbers[2]);
-      xml += blanks + line; 
+      xml += blanks + line;
     }
 
     xml += blanks + "</Triangles>\n";
@@ -5020,7 +5055,7 @@ bool CIccTagXmlGamutBoundaryDesc::ParseXml(xmlNode *pNode, std::string &parseStr
   m_NumberOfTriangles = nMaxIndex;
   m_Triangles = new icGamutBoundaryTriangle[m_NumberOfTriangles];
 
-  n=0; 
+  n=0;
   for (subNode = childNode->children; subNode && n<nMaxIndex; subNode = subNode->next) {
     if (subNode->type == XML_ELEMENT_NODE && !strcmp((icChar*)subNode->name, "T")) {
       CIccUInt32Array ids;
