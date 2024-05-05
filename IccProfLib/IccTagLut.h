@@ -405,11 +405,11 @@ class ICCPROFLIB_API CIccMBB : public CIccTag
   friend class ICCPROFLIB_API CIccXform4DLut;
   friend class ICCPROFLIB_API CIccXformNDLut;
 public:
-  CIccMBB();
-  CIccMBB(const CIccMBB &IMBB);
-  CIccMBB &operator=(const CIccMBB &IMBB);
-  virtual CIccTag* NewCopy() const {return new CIccMBB(*this);}
-  virtual ~CIccMBB();
+    CIccMBB();
+    CIccMBB(const CIccMBB &IMBB);
+    CIccMBB &operator=(const CIccMBB &IMBB);
+    virtual CIccTag* NewCopy() const override { return new CIccMBB(*this); }
+    virtual ~CIccMBB();
 
   virtual bool IsMBBType() { return true;}
 
@@ -462,6 +462,7 @@ protected:
   CIccCLUT  *m_CLUT;
   CIccMatrix *m_Matrix;
   LPIccCurve *m_CurvesM;
+    int m_nCurvesM;  // Size of the allocated array for M-curves
   LPIccCurve *m_CurvesB;
 
 };
