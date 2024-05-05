@@ -70,6 +70,7 @@ Copyright:  (c) see ICC Software License
 #include "IccXmlConfig.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <string>
 
 class CIccTagXml : public IIccExtensionTag
 {
