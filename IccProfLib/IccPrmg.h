@@ -67,12 +67,17 @@ Copyright:  (c) see ICC Software License
 // -Oct 27, 2007 
 // Initial implementation of class CIccPRMG
 //
+// -May 5, 2024
+// Add Security Fixes for Overflows | @xsscx | DHOYT | @h02332
 //////////////////////////////////////////////////////////////////////
 
 #ifndef _ICCPRMG_H
 #define _ICCPRMG_H
 
 #include "IccCmm.h"
+#include <algorithm> // Include this for std::clamp
+
+void ClampIndices(int& nHIndex, int& nLIndex, int maxHIndex, int maxLIndex);
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {
