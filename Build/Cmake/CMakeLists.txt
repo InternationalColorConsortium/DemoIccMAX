@@ -39,6 +39,31 @@ ELSE()
   SET(ENABLE_SHARED_LIBS OFF)
 ENDIF()
 
+# Enforce build type to be Debug if not specified to ensure symbols are included
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+endif()
+
+# Compiler flags for Debug and Release build types
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fsanitize=address -fno-omit-frame-pointer -Wall -O0")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+
+# Architecture determination
+if(APPLE)
+  execute_process(
+    COMMAND uname -m
+    COMMAND tr -d '\n'
+    OUTPUT_VARIABLE OSX_ARCHITECTURE
+  )
+  if("${OSX_ARCHITECTURE}" STREQUAL "arm64")
+    add_definitions(-DARM64)
+    message(STATUS "Configuring build for ARM64 architecture.")
+  elseif("${OSX_ARCHITECTURE}" STREQUAL "x86_64")
+    message(STATUS "Configuring build for X86_64 architecture.")
+  else()
+    message(FATAL_ERROR "Unsupported architecture: ${OSX_ARCHITECTURE}")
+  endif()
+endif()
 
 IF( CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]" )
   MESSAGE( "-- Info build \"${CMAKE_BUILD_TYPE}\"" )
