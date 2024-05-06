@@ -3675,16 +3675,13 @@ LPIccCurve* CIccMBB::NewCurvesM() {
 
   // Determine the number of curves to allocate based on input matrix
   icUInt8Number nCurves = IsInputMatrix() ? m_nInput : m_nOutput;
-  std::cerr << "Debug: Allocating " << static_cast<int>(nCurves) << " curves for m_CurvesM\n";
 
   if (nCurves == 0) {
-    std::cerr << "Error: Number of curves cannot be zero.\n";
     return nullptr;
   }
 
   m_CurvesM = new LPIccCurve[nCurves];
   if (!m_CurvesM) {
-    std::cerr << "Error: Failed to allocate memory for m_CurvesM\n";
     return nullptr;
   }
 
@@ -3693,12 +3690,10 @@ LPIccCurve* CIccMBB::NewCurvesM() {
   for (int i = 0; i < nCurves; ++i) {
     assert(i < nCurves);
     m_CurvesM[i] = nullptr;
-    std::cerr << "Debug: m_CurvesM[" << i << "] initialized to nullptr\n";
   }
 
   m_nCurvesM = static_cast<int>(nCurves);
 
-  std::cerr << "Debug: Successfully allocated and initialized " << m_nCurvesM << " curves.\n";
   return m_CurvesM;
 }
 
@@ -3902,7 +3897,6 @@ CIccTagLutAtoB::~CIccTagLutAtoB()
  */
 bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
   if (!CIccMBB::Read(size, pIO)) {
-    std::cerr << "Error: Failed to read CIccMBB in CIccTagLutAtoB::Read\n";
     return false;
   }
 
@@ -3911,7 +3905,6 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
   icUInt8Number nCurves, i;
 
   if (size < 8 * sizeof(icUInt32Number) || !pIO) {
-    std::cerr << "Error: Invalid size or null IO pointer in CIccTagLutAtoB::Read\n";
     return false;
   }
 
@@ -3924,26 +3917,21 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
       !pIO->Read8(&m_nOutput) ||
       !pIO->Read16(&m_nReservedWord) ||
       pIO->Read32(Offset, 5) != 5) {
-    std::cerr << "Error: Failed to read header information in CIccTagLutAtoB::Read\n";
     return false;
   }
 
-  std::cerr << "Debug: CIccMBB header read successfully. Input channels: " << (int)m_nInput << ", Output channels: " << (int)m_nOutput << "\n";
 
 
     if (sig != GetType()) {
-       std::cerr << "Error: Signature mismatch in CIccTagLutAtoB::Read. Expected: " << GetType() << ", Got: " << sig << "\n";
        return false;
      }
 
-  // B Curves
     // B Curves
     if (Offset[0]) {
       nCurves = IsInputB() ? m_nInput : m_nOutput;
       LPIccCurve *pCurves = NewCurvesB();
 
       if (pIO->Seek(nStart + Offset[0], icSeekSet) < 0) {
-        std::cerr << "Error: Failed to seek to B Curves in CIccTagLutAtoB::Read\n";
         return false;
       }
 
@@ -3951,31 +3939,25 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
         nPos = pIO->Tell();
 
         if (!pIO->Read32(&sig)) {
-          std::cerr << "Error: Failed to read B Curve signature in CIccTagLutAtoB::Read\n";
           return false;
         }
 
         if (pIO->Seek(nPos, icSeekSet) < 0) {
-          std::cerr << "Error: Failed to seek back to B Curve in CIccTagLutAtoB::Read\n";
           return false;
         }
 
         if (sig != icSigCurveType && sig != icSigParametricCurveType) {
-          std::cerr << "Error: Invalid B Curve type signature in CIccTagLutAtoB::Read\n";
           return false;
         }
 
         pCurves[i] = (CIccCurve*)CIccTag::Create(sig);
 
         if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO)) {
-          std::cerr << "Error: Failed to read B Curve in CIccTagLutAtoB::Read\n";
           return false;
         }
 
-        std::cerr << "Debug: B Curve [" << i << "] allocated at address " << static_cast<void*>(pCurves[i]) << "\n";
 
       if (!pIO->Sync32(Offset[1])) {
-        std::cerr << "Error: Failed to sync B Curve offset\n";
         return false;
       }
     }
@@ -3986,26 +3968,22 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
     icS15Fixed16Number tmp;
 
     if (Offset[1] + 12 * sizeof(icS15Fixed16Number) > size) {
-      std::cerr << "Error: Invalid matrix offset\n";
       return false;
     }
 
     m_Matrix = new CIccMatrix();
 
     if (pIO->Seek(nStart + Offset[1], icSeekSet) < 0) {
-      std::cerr << "Error: Failed to seek to Matrix\n";
       return false;
     }
 
     for (i = 0; i < 12; ++i) {
       if (pIO->Read32(&tmp, 1) != 1) {
-        std::cerr << "Error: Failed to read Matrix element\n";
         return false;
       }
       m_Matrix->m_e[i] = icFtoD(tmp);
     }
 
-    std::cerr << "Debug: Successfully read Matrix\n";
   }
 
     // M Curves
@@ -4014,7 +3992,6 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
         LPIccCurve *pCurves = NewCurvesM();
 
         if (pIO->Seek(nStart + Offset[2], icSeekSet) < 0) {
-          std::cerr << "Error: Failed to seek to M Curves\n";
           return false;
         }
 
@@ -4022,31 +3999,25 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO) {
           nPos = pIO->Tell();
 
           if (!pIO->Read32(&sig)) {
-            std::cerr << "Error: Failed to read M Curve signature\n";
             return false;
           }
 
           if (pIO->Seek(nPos, icSeekSet) < 0) {
-            std::cerr << "Error: Failed to seek back to M Curve\n";
             return false;
           }
 
           if (sig != icSigCurveType && sig != icSigParametricCurveType) {
-            std::cerr << "Error: Invalid M Curve type signature\n";
             return false;
           }
 
           pCurves[i] = (CIccCurve*)CIccTag::Create(sig);
 
           if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO)) {
-            std::cerr << "Error: Failed to read M Curve\n";
             return false;
           }
 
-          std::cerr << "Debug: M Curve [" << i << "] allocated at address " << static_cast<void*>(pCurves[i]) << "\n";
 
           if (!pIO->Sync32(Offset[2])) {
-            std::cerr << "Error: Failed to sync M Curve offset\n";
             return false;
       }
     }
