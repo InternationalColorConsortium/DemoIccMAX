@@ -1007,8 +1007,7 @@ icUInt32Number CIccXmlArrayType<unsigned short, (icTagTypeSignature)1969828150>:
       } else {
         double value = atof(num);
         if (value < 0 || value > 65535) {
-          std::cerr << "Error: Parsed value out of range for unsigned short" << std::endl;
-          value = 0;
+          value = 0; // Handle out-of-range values silently
         }
         pBuf[n] = static_cast<unsigned short>(value);
       }
@@ -1027,8 +1026,7 @@ icUInt32Number CIccXmlArrayType<unsigned short, (icTagTypeSignature)1969828150>:
     } else {
       double value = atof(num);
       if (value < 0 || value > 65535) {
-        std::cerr << "Error: Parsed value out of range for unsigned short" << std::endl;
-        value = 0;
+        value = 0; // Handle out-of-range values silently
       }
       pBuf[n] = static_cast<unsigned short>(value);
     }
@@ -1043,16 +1041,11 @@ icUInt32Number CIccXmlArrayType<unsigned short, (icTagTypeSignature)1969828150>:
   return n;
 }
 
+
 template <class T, icTagTypeSignature Tsig>
 icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T *pBuf, icUInt32Number nSize, const char *szText) {
-  if (!szText) {
-    std::cerr << "Error: Null input string to ParseText\n";
-    return 0;
-  }
-
-  if (!pBuf) {
-    std::cerr << "Error: Null buffer passed to ParseText\n";
-    return 0;
+  if (!szText || !pBuf) {
+    return 0;  // Return 0 if the input string or buffer is null
   }
 
   icUInt32Number n = 0, b = 0;
@@ -1090,10 +1083,6 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T *pBuf, icUInt32Number nSiz
       pBuf[n] = static_cast<T>(atof(num));
     }
     n++;
-  }
-
-  if (*szText && n == nSize) {
-    std::cerr << "Warning: Not all input data could be parsed due to buffer size limit.\n";
   }
 
   return n;
@@ -1591,3 +1580,4 @@ const std::string icGetPadSpace(double value)
 
    return space;
 }
+
