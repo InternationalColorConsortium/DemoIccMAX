@@ -3035,33 +3035,45 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
   return false;
 }
       
-bool icCurvesToXml(std::string &xml, const char *szName, CIccCurve **pCurves, int numCurve, icConvertType nType, std::string blanks)
-{
-  if (pCurves) {
-    int i;
+bool icCurvesToXml(std::string &xml, const char *szName, CIccCurve **pCurves, int numCurve, icConvertType nType, std::string blanks) {
+//  assert(pCurves != nullptr);
+//  assert(numCurve > 0);
 
-    xml += blanks + "<" + szName + ">\n";
-    for (i=0; i<numCurve; i++) {
-      IIccExtensionTag *pTag = pCurves[i]->GetExtension();
-      if (!pTag || strcmp(pTag->GetExtDerivedClassName(), "CIccCurveXml"))
-        return false;
+  // Start of the XML tag
+  xml += blanks + "<" + szName + ">\n";
 
-      if (!((CIccCurveXml *)pTag)->ToXml(xml, nType, blanks + "  "))
-        return false;
+  for (int i = 0; i < numCurve; ++i) {
+    if (i >= numCurve || pCurves == nullptr || pCurves[i] == nullptr) {
+      xml += blanks + "  <Curve>Invalid</Curve>\n";
+      continue;
     }
-    xml += blanks + "</" + szName + ">\n";
+
+    IIccExtensionTag *pTag = pCurves[i]->GetExtension();
+    if (pTag == nullptr) {
+      xml += blanks + "  <Curve>Invalid</Curve>\n";
+      continue;
+    }
+
+    const char *tagClassName = pTag->GetExtDerivedClassName();
+    if (tagClassName == nullptr || strcmp(tagClassName, "CIccCurveXml") != 0) {
+      xml += blanks + "  <Curve>Invalid</Curve>\n";
+      continue;
+    }
+
+    CIccCurveXml *curveXml = dynamic_cast<CIccCurveXml*>(pTag);
+    if (curveXml == nullptr) {
+      return false; // Return false if casting fails
+    }
+
+    if (!curveXml->ToXml(xml, nType, blanks + "  ")) {
+      return false; // Return false if XML conversion fails
+    }
   }
+
+  // End of the XML tag
+  xml += blanks + "</" + szName + ">\n";
   return true;
 }
-      
-bool CIccTagXmlSegmentedCurve::ToXml(std::string &xml, std::string blanks/* = ""*/)
-{
-  if (m_pCurve)
-    return ((CIccSegmentedCurveXml*)m_pCurve)->ToXml(xml, blanks);
-
-  return true;
-}
-
 
 bool CIccTagXmlSegmentedCurve::ToXml(std::string &xml, icConvertType nType, std::string blanks/* = */)
 {
