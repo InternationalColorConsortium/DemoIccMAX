@@ -3035,47 +3035,24 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
   return false;
 }
       
-      bool icCurvesToXml(std::string &xml, const char *szName, CIccCurve **pCurves, int numCurve, icConvertType nType, std::string blanks) {
-        assert(pCurves != nullptr);
-        assert(numCurve > 0);
+bool icCurvesToXml(std::string &xml, const char *szName, CIccCurve **pCurves, int numCurve, icConvertType nType, std::string blanks)
+{
+  if (pCurves) {
+    int i;
 
-     // Start of the XML tag
-        xml += blanks + "<" + szName + ">\n";
+    xml += blanks + "<" + szName + ">\n";
+    for (i=0; i<numCurve; i++) {
+      IIccExtensionTag *pTag = pCurves[i]->GetExtension();
+      if (!pTag || strcmp(pTag->GetExtDerivedClassName(), "CIccCurveXml"))
+        return false;
 
-        for (int i = 0; i < numCurve; ++i) {
-          if (i >= numCurve || pCurves == nullptr || pCurves[i] == nullptr) {
-            xml += blanks + "  <Curve>Invalid</Curve>\n";
-            continue;
-          }
-
-          IIccExtensionTag *pTag = pCurves[i]->GetExtension();
-          if (pTag == nullptr) {
-            xml += blanks + "  <Curve>Invalid</Curve>\n";
-            continue;
-          }
-
-          const char *tagClassName = pTag->GetExtDerivedClassName();
-
-          if (strcmp(tagClassName, "CIccCurveXml") != 0) {
-            xml += blanks + "  <Curve>Invalid</Curve>\n";
-            continue;
-          }
-
-          CIccCurveXml *curveXml = dynamic_cast<CIccCurveXml*>(pTag);
-          if (curveXml == nullptr) {
-            return false;
-          }
-
-          if (!curveXml->ToXml(xml, nType, blanks + "  ")) {
-            return false;
-          }
-
-        }
-
-        // End of the XML tag
-        xml += blanks + "</" + szName + ">\n";
-        return true;
-      }
+      if (!((CIccCurveXml *)pTag)->ToXml(xml, nType, blanks + "  "))
+        return false;
+    }
+    xml += blanks + "</" + szName + ">\n";
+  }
+  return true;
+}
       
 bool CIccTagXmlSegmentedCurve::ToXml(std::string &xml, std::string blanks/* = ""*/)
 {
