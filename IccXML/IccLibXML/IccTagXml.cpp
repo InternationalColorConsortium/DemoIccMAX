@@ -76,7 +76,6 @@
 #include <sstream>  // Make sure to include this header
 #include <iomanip>  // Include this header for setw and setfill
 #include <cassert>  // Include to enable the use of the assert function
-#include <iostream> // Include if you are using std::cerr for error output
 #include <string>
 
 typedef  std::map<icUInt32Number, icTagSignature> IccOffsetTagSigMap;
@@ -379,7 +378,6 @@ bool CIccTagXmlTextDescription::ToXml(std::string &xml, std::string blanks/* = "
 
     return true;
 }
-
 
 bool CIccTagXmlTextDescription::ParseXml(xmlNode *pNode, std::string &parseStr)
 {
@@ -3041,52 +3039,41 @@ bool CIccTagXmlParametricCurve::ParseXml(xmlNode *pNode, std::string &parseStr)
         assert(pCurves != nullptr);
         assert(numCurve > 0);
 
-        // Start of the XML tag
+     // Start of the XML tag
         xml += blanks + "<" + szName + ">\n";
-        std::cerr << "Debug: Converting curves to XML - Total Curves: " << numCurve << "\n";
 
         for (int i = 0; i < numCurve; ++i) {
           if (i >= numCurve || pCurves == nullptr || pCurves[i] == nullptr) {
-            std::cerr << "Warning: pCurves[" << i << "] is nullptr or out of range\n";
             xml += blanks + "  <Curve>Invalid</Curve>\n";
             continue;
           }
 
-          std::cerr << "Debug: Allocating curve " << i << " for XML conversion.\n";
-
           IIccExtensionTag *pTag = pCurves[i]->GetExtension();
           if (pTag == nullptr) {
-            std::cerr << "Warning: pCurves[" << i << "] has no extension tag\n";
             xml += blanks + "  <Curve>Invalid</Curve>\n";
             continue;
           }
 
           const char *tagClassName = pTag->GetExtDerivedClassName();
-          std::cerr << "Debug: m_CurvesM[" << i << "] initialized to " << (tagClassName ? tagClassName : "Unknown") << "\n";
 
           if (strcmp(tagClassName, "CIccCurveXml") != 0) {
-            std::cerr << "Error: Curve " << i << " does not have a CIccCurveXml extension\n";
             xml += blanks + "  <Curve>Invalid</Curve>\n";
             continue;
           }
 
           CIccCurveXml *curveXml = dynamic_cast<CIccCurveXml*>(pTag);
           if (curveXml == nullptr) {
-            std::cerr << "Error: Failed to cast curve " << i << " to CIccCurveXml\n";
             return false;
           }
 
           if (!curveXml->ToXml(xml, nType, blanks + "  ")) {
-            std::cerr << "Error: Failed to convert curve " << i << " to XML\n";
             return false;
           }
 
-          std::cerr << "Debug: Successfully converted curve " << i << " to XML.\n";
         }
 
         // End of the XML tag
         xml += blanks + "</" + szName + ">\n";
-        std::cerr << "Debug: Finished converting curves to XML for tag '" << szName << "'\n";
         return true;
       }
       
