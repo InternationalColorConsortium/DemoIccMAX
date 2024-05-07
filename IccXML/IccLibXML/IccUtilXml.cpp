@@ -74,13 +74,8 @@
 #endif
 #include <cstring> /* C strings strcpy, memcpy ... */
 #include <math.h>  /* nanf */
-#include <cmath>  // For `nanf`
-#include <iostream>
-#include <cstring>
 
-bool icIsNumChar(char c) {
-  return (c >= '0' && c <= '9') || c == '.' || c == '-' || c == '+';
-}
+
 
 CIccUTF16String::CIccUTF16String()
 {
@@ -912,6 +907,15 @@ bool CIccXmlArrayType<T, Tsig>::DumpArray(std::string &xml, std::string blanks, 
   return true;
 }
 
+// for multi-platform support
+// replaced "_inline" with "inline"
+static inline bool icIsNumChar(char c)
+{
+  if ((c>='0' && c<='9') || c=='.' || c=='+' || c=='-' || c=='e' || c == 'n' || c == 'a')
+    return true;
+  return false;
+}
+
 // function used when checking contents of a file
 // count the number of entries.
 template <class T, icTagTypeSignature Tsig>
@@ -981,109 +985,47 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseTextCount(const char *szText)
   return n;
 }
 
-template <>
-icUInt32Number CIccXmlArrayType<unsigned short, (icTagTypeSignature)1969828150>::ParseText(unsigned short* pBuf, icUInt32Number nSize, const char* szText) {
-  icUInt32Number n = 0;
-  char num[32];
-  int b = 0;
-  bool bInNum = false;
-
-  // Loop while there are characters to process and enough space in `pBuf`
-  while (*szText && n < nSize) {
-    if (icIsNumChar(*szText)) {
-      if (!bInNum) {
-        bInNum = true;
-        b = 0;
-      }
-      // Ensure we don't write beyond the `num` buffer size
-      if (b < static_cast<int>(sizeof(num) - 1)) {
-        num[b++] = *szText;
-      }
-    } else if (bInNum) {
-      // Terminate the number and convert it
-      num[b] = '\0';
-      if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
-        pBuf[n] = static_cast<unsigned short>(nanf(num));
-      } else {
-        double value = atof(num);
-        if (value < 0 || value > 65535) {
-          value = 0; // Handle out-of-range values silently
-        }
-        pBuf[n] = static_cast<unsigned short>(value);
-      }
-      n++;
-      if (n >= nSize) break; // Prevent overflow
-      bInNum = false;
-    }
-    szText++;
-  }
-
-  // Handle the last number if we're still in progress
-  if (bInNum && n < nSize) {
-    num[b] = '\0';
-    if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
-      pBuf[n] = static_cast<unsigned short>(nanf(num));
-    } else {
-      double value = atof(num);
-      if (value < 0 || value > 65535) {
-        value = 0; // Handle out-of-range values silently
-      }
-      pBuf[n] = static_cast<unsigned short>(value);
-    }
-    n++;
-  }
-
-  // Zero out remaining buffer
-  while (n < nSize) {
-    pBuf[n++] = 0;
-  }
-
-  return n;
-}
-
-
 template <class T, icTagTypeSignature Tsig>
-icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T *pBuf, icUInt32Number nSize, const char *szText) {
-  if (!szText || !pBuf) {
-    return 0;  // Return 0 if the input string or buffer is null
-  }
-
+icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSize, const char *szText)
+{	
   icUInt32Number n = 0, b = 0;
   bool bInNum = false;
   char num[256] = {0};
 
-  while (*szText && n < nSize) {
-    if (icIsNumChar(*szText)) {
+  while (*szText && n<nSize) {	  
+	  if (icIsNumChar(*szText)) {
       if (!bInNum) {
         bInNum = true;
-        b = 0;
+        b=0;
       }
-      if (b + 1 < sizeof(num)) {
-        num[b] = *szText;
+      num[b] = *szText;
+ 
+      if (b+2<sizeof(num))
         b++;
-      }
-    } else if (bInNum) {
-      num[b] = '\0';
+    }
+    else if (bInNum) {
+      num[b] = 0;
       if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
-        pBuf[n] = static_cast<T>(nanf(num));
-      } else {
-        pBuf[n] = static_cast<T>(atof(num));
+        pBuf[n] = (T)nanf(num);
+      }
+      else {
+        pBuf[n] = (T)atof(num);
       }
       n++;
       bInNum = false;
     }
     szText++;
   }
-
-  if (bInNum && n < nSize) {
-    num[b] = '\0';
+  if (bInNum) {
+    num[b] = 0;
     if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
-      pBuf[n] = static_cast<T>(nanf(num));
-    } else {
-      pBuf[n] = static_cast<T>(atof(num));
+      pBuf[n] = (T)nanf(num);
+    }
+    else {
+      pBuf[n] = (T)atof(num);
     }
     n++;
-  }
+  } 
 
   return n;
 }
@@ -1580,4 +1522,3 @@ const std::string icGetPadSpace(double value)
 
    return space;
 }
-
