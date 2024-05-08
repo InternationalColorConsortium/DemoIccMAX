@@ -43,7 +43,7 @@ http://www.zlib.net/).
 Note: At this point the icc.XML schema used to represent ICC profiles
 has not been approved by the ICC.  This schema is currently subject to change,
 and has not undergone the process of formal standardization.  Additionally,
-the XML schema documentation and data representaiton should not be used
+the XML schema documentation and data representation should not be used
 as a replacement for the ICC profile specification provided by the ICC
 which does undergo a formal standardization process.
 
