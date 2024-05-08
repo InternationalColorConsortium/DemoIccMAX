@@ -1305,7 +1305,7 @@ typedef enum {
 /**
  * Note: The next three enum types are for DeviceSettingType structures 
  * supported by V2 profiles.  The DeviceSettingsType was removed in the
- * V4 specificaiton.*/
+ * V4 specification.*/
 
 /** DeviceSettingsType structure ID signatures for Microsoft 'msft' platform*/
 typedef enum {
