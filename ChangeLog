@@ -117,7 +117,7 @@
 * 2.1.10 Release of IccLibXml and related tools
 * IccXmlLib: fixed bug with parsing default rendering intent in
   header
-* IccXmlLib: Added vector based named channel specificaiton and
+* IccXmlLib: Added vector based named channel specification and
   parsing with CalculatorElement
 * Revised DecRefC, DecRefH, IncRefw profiles in SpecRef
 
