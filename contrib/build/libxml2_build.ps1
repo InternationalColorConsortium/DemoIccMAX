@@ -8,10 +8,63 @@ $BUILD_DIR = Join-Path $PROJECT_ROOT "Build"
 $LIBXML2_DIR = Join-Path $BUILD_DIR "libxml2-$LIBXML2_VERSION"
 $LIBXML2_BUILD_DIR = Join-Path $BUILD_DIR "libxml2-$LIBXML2_VERSION-build"
 $INSTALL_DIR = Join-Path $BUILD_DIR "libxml"
+$XCODE_LIBXML_DIR = Join-Path $BUILD_DIR "XCode\libxml"
+$RequiredHeaders = @(
+    "c14n.h"
+    "catalog.h"
+    "chvalid.h"
+    "debugXML.h"
+    "dict.h"
+    "DOCBparser.h"
+    "encoding.h"
+    "entities.h"
+    "globals.h"
+    "hash.h"
+    "HTMLparser.h"
+    "HTMLtree.h"
+    "list.h"
+    "nanoftp.h"
+    "nanohttp.h"
+    "parser.h"
+    "parserInternals.h"
+    "pattern.h"
+    "relaxng.h"
+    "SAX.h"
+    "SAX2.h"
+    "schemasInternals.h"
+    "threads.h"
+    "tree.h"
+    "uri.h"
+    "valid.h"
+    "xinclude.h"
+    "xlink.h"
+    "xmlautomata.h"
+    "xmlerror.h"
+    "xmlexports.h"
+    "xmlIO.h"
+    "xmlmemory.h"
+    "xmlmodule.h"
+    "xmlreader.h"
+    "xmlregexp.h"
+    "xmlsave.h"
+    "xmlschemas.h"
+    "xmlschemastypes.h"
+    "xmlstring.h"
+    "xmlunicode.h"
+    "xmlversion.h"
+    "xmlwin32version.h"
+    "xmlwriter.h"
+    "xpath.h"
+    "xpathInternals.h"
+    "xpointer.h"
+)
 
-# Ensure the Build directory exists
+# Ensure the Build and XCode/libxml directories exist
 if (-not (Test-Path $BUILD_DIR)) {
     New-Item -Path $BUILD_DIR -ItemType Directory
+}
+if (-not (Test-Path $XCODE_LIBXML_DIR)) {
+    New-Item -Path $XCODE_LIBXML_DIR -ItemType Directory
 }
 
 # Download the tarball if it doesn't exist or is corrupted
@@ -58,6 +111,17 @@ Start-Process -FilePath "cmake.exe" -ArgumentList "--install", "$LIBXML2_BUILD_D
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Installation failed."
     exit 1
+}
+
+# Copy the required header files to the XCode\libxml folder
+foreach ($header in $RequiredHeaders) {
+    $src = Join-Path "$INSTALL_DIR\include\libxml2\libxml" $header
+    if (Test-Path $src) {
+        Copy-Item -Path $src -Destination $XCODE_LIBXML_DIR -Force
+        Write-Output "Copied $header to $XCODE_LIBXML_DIR."
+    } else {
+        Write-Output "Missing header: $header"
+    }
 }
 
 # Report results
