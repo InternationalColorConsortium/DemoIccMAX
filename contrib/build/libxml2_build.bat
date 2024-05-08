@@ -9,9 +9,12 @@ set BUILD_DIR=%PROJECT_ROOT%\Build
 set LIBXML2_DIR=%BUILD_DIR%\libxml2-%LIBXML2_VERSION%
 set LIBXML2_BUILD_DIR=%BUILD_DIR%\libxml2-%LIBXML2_VERSION%-build
 set INSTALL_DIR=%BUILD_DIR%\libxml
+set XCODE_LIBXML_DIR=%BUILD_DIR%\XCode\libxml
+set REQUIRED_HEADERS=c14n.h catalog.h chvalid.h debugXML.h dict.h DOCBparser.h encoding.h entities.h globals.h hash.h HTMLparser.h HTMLtree.h list.h nanoftp.h nanohttp.h parser.h parserInternals.h pattern.h relaxng.h SAX.h SAX2.h schemasInternals.h threads.h tree.h uri.h valid.h xinclude.h xlink.h xmlautomata.h xmlerror.h xmlexports.h xmlIO.h xmlmemory.h xmlmodule.h xmlreader.h xmlregexp.h xmlsave.h xmlschemas.h xmlschemastypes.h xmlstring.h xmlunicode.h xmlversion.h xmlwin32version.h xmlwriter.h xpath.h xpathInternals.h xpointer.h
 
-REM Ensure the Build directory exists
+REM Ensure the Build directories exist
 if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
+if not exist "%XCODE_LIBXML_DIR%" mkdir "%XCODE_LIBXML_DIR%"
 
 REM Download the tarball if it doesn't exist or is corrupted
 if not exist "%BUILD_DIR%\%LIBXML2_TARBALL%" (
@@ -53,6 +56,16 @@ cmake --install "%LIBXML2_BUILD_DIR%"
 if %errorlevel% neq 0 (
     echo Installation failed.
     exit /b 1
+)
+
+REM Copy the required header files to the XCode\libxml folder
+for %%h in (%REQUIRED_HEADERS%) do (
+    if exist "%INSTALL_DIR%\include\libxml2\libxml\%%h" (
+        copy "%INSTALL_DIR%\include\libxml2\libxml\%%h" "%XCODE_LIBXML_DIR%\" /Y
+        echo Copied %%h to %XCODE_LIBXML_DIR%.
+    ) else (
+        echo Missing header: %%h
+    )
 )
 
 REM Report results
