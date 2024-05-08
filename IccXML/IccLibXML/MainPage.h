@@ -38,7 +38,7 @@
  * has not been approved by the ICC.  This schema is currently subject to change,
  * and has not undergone the process of any formal standardization.  Additionally,
  * the XML schema documentation and data representaiton should not be used
- * as a replacement for the ICC profile specificaiton provided by the ICC
+ * as a replacement for the ICC profile specification provided by the ICC
  * which does undergo a formal standardization process.
  * 
  * LICENSE
@@ -46,7 +46,7 @@
  * 
   * <b>The ICC Software License, Version 0.2</b>
  *
- * Copyright © 2003-2007 The International Color Consortium. All rights 
+ * Copyright Â© 2003-2007 The International Color Consortium. All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
