@@ -212,6 +212,8 @@ public:
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
 
+  virtual CIccApplyMpe* GetNewApply(CIccApplyTagMpe* pApplyTag);
+
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
@@ -240,6 +242,29 @@ protected:
 
   CIccCLUT *m_pApplyCLUT;
 };
+
+/**
+****************************************************************************
+*Class: CIccApplyMpeSpectralCLUT
+*
+*Purpose : The SpectralCLUT element apply data
+*****************************************************************************
+*/
+class CIccApplyMpeSpectralCLUT : public CIccApplyMpe
+{
+  friend class CIccMpeSpectralCLUT;
+public:
+  virtual ~CIccApplyMpeSpectralCLUT();
+
+  virtual icElemTypeSignature GetType() const { return m_pElem->GetType(); }
+  virtual const icChar* GetClassName() const { return "CIccApplyMpeSpectralCLUT"; }
+
+protected:
+  CIccApplyMpeSpectralCLUT(CIccMultiProcessElement* pElem, CIccApplyCLUT *pApply);
+
+  CIccApplyCLUT* m_pApply;
+};
+
 
 
 /**

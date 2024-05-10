@@ -1239,6 +1239,33 @@ bool CIccMpeSpectralCLUT::Write(CIccIO *pIO)
 }
 
 /**
+******************************************************************************
+* Name: CIccMpeSpectralCLUT::GetNewApply
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+CIccApplyMpe* CIccMpeSpectralCLUT::GetNewApply(CIccApplyTagMpe* pApplyTag)
+{
+  if (!m_pCLUT) {
+    return NULL;
+  }
+
+  CIccApplyCLUT* pApply = m_pCLUT->GetNewApply();
+  if (!pApply)
+    return NULL;
+
+  CIccApplyMpeSpectralCLUT* rv = new CIccApplyMpeSpectralCLUT(this, pApply);
+  if (!rv)
+    delete pApply;
+
+  return rv;
+}
+
+/**
  ******************************************************************************
  * Name: CIccMpeEmissionCLUT::Apply
  * 
@@ -1275,7 +1302,8 @@ void CIccMpeSpectralCLUT::Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, c
     pCLUT->Interp6d(dstPixel, srcPixel);
     break;
   case icNdInterp:
-    pCLUT->InterpND(dstPixel, srcPixel);
+    CIccApplyMpeSpectralCLUT* pClutApply = (CIccApplyMpeSpectralCLUT*)pApply;
+    pCLUT->InterpND(dstPixel, srcPixel, pClutApply->m_pApply);
     break;
   }
 }
@@ -1348,6 +1376,36 @@ icValidateStatus CIccMpeSpectralCLUT::Validate(std::string sigPath, std::string 
 
   return rv;
 }
+
+/**
+**************************************************************************
+* Name: CIccApplyMpeSpectralCLUT::CIccApplyMpeSpectralCLUT
+*
+* Purpose:
+*  Constructor
+**************************************************************************
+*/
+CIccApplyMpeSpectralCLUT::CIccApplyMpeSpectralCLUT(CIccMultiProcessElement* pElem, CIccApplyCLUT* pApply) : CIccApplyMpe(pElem)
+{
+  m_pApply = pApply;
+}
+
+
+/**
+**************************************************************************
+* Name: CIccApplyMpeSpectralCLUT::~CIccApplyMpeSpectralCLUT
+*
+* Purpose:
+*  Destructor
+**************************************************************************
+*/
+CIccApplyMpeSpectralCLUT::~CIccApplyMpeSpectralCLUT()
+{
+  if (m_pApply)
+    delete m_pApply;
+}
+
+
 
 
 /**

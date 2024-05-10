@@ -1902,13 +1902,42 @@ CIccApplyXform::CIccApplyXform(CIccXform *pXform) : m_AbsLab{}
 /**
 **************************************************************************
 * Name: CIccApplyXform::CIccApplyXform
-* 
-* Purpose: 
+*
+* Purpose:
 *  Destructor
 **************************************************************************
 */
 CIccApplyXform::~CIccApplyXform()
 {
+}
+
+
+/**
+**************************************************************************
+* Name: CIccApplyNDLutXform::CIccApplyNDLutXform
+*
+* Purpose:
+*  Constructor
+**************************************************************************
+*/
+CIccApplyNDLutXform::CIccApplyNDLutXform(CIccXformNDLut* pXform, CIccApplyCLUT *pApply) : CIccApplyXform(pXform)
+{
+  m_pApply = pApply;
+}
+
+
+/**
+**************************************************************************
+* Name: CIccApplyNDLutXform::~CIccApplyNDLutXform
+*
+* Purpose:
+*  Destructor
+**************************************************************************
+*/
+CIccApplyNDLutXform::~CIccApplyNDLutXform()
+{
+  if (m_pApply)
+    delete m_pApply;
 }
 
 
@@ -6249,6 +6278,46 @@ icStatusCMM CIccXformNDLut::Begin()
 
 /**
  **************************************************************************
+ * Name: CIccXformNDLut::GetNewApply
+ *
+ * Purpose:
+ *  Allocates a new apply object
+ *
+ * Args:
+ *  status = reference to status of creation of the apply object
+ **************************************************************************
+ */
+CIccApplyXform* CIccXformNDLut::GetNewApply(icStatusCMM& status)
+{
+  if (!m_pTag)
+    return NULL;
+
+  CIccCLUT* pCLUT = m_pTag->GetCLUT();
+  CIccApplyCLUT* pApply = NULL;
+
+  if (pCLUT && m_nNumInput > 6) {
+    pApply = pCLUT->GetNewApply();
+    if (!pApply) {
+      status = icCmmStatAllocErr;
+      return NULL;
+    }
+  }
+
+  CIccApplyNDLutXform* rv = new CIccApplyNDLutXform(this, pApply);
+  
+  if (!rv) {
+    if (pApply)
+      delete pApply;
+    status = icCmmStatAllocErr;
+    return NULL;
+  }
+
+  status = icCmmStatOk;
+  return rv;
+}
+
+/**
+ **************************************************************************
  * Name: CIccXformNDLut::Apply
  * 
  * Purpose: 
@@ -6284,8 +6353,11 @@ void CIccXformNDLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
         m_pTag->m_CLUT->Interp6d(Pixel, Pixel);
         break;
       default:
-        m_pTag->m_CLUT->InterpND(Pixel, Pixel);
-        break;
+        {
+          CIccApplyNDLutXform* pNDApply = (CIccApplyNDLutXform*)pApply;
+          m_pTag->m_CLUT->InterpND(Pixel, Pixel, pNDApply->m_pApply);
+          break;
+        }
       }
     }
 
@@ -6311,8 +6383,12 @@ void CIccXformNDLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
         m_pTag->m_CLUT->Interp6d(Pixel, Pixel);
         break;
       default:
-        m_pTag->m_CLUT->InterpND(Pixel, Pixel);
+      {
+        CIccApplyNDLutXform* pNDApply = (CIccApplyNDLutXform*)pApply;
+        m_pTag->m_CLUT->InterpND(Pixel, Pixel, pNDApply->m_pApply);
         break;
+      }
+      break;
       }
     }
 

@@ -5680,7 +5680,8 @@ void CIccMpeCLUT::Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icF
     pCLUT->Interp6d(dstPixel, srcPixel);
     break;
   case icNdInterp:
-    pCLUT->InterpND(dstPixel, srcPixel);
+    CIccApplyMpeCLUT* pApplyCLUT = (CIccApplyMpeCLUT*)pApply;
+    pCLUT->InterpND(dstPixel, srcPixel, pApplyCLUT->m_pApply);
     break;
   }
 }
@@ -5712,6 +5713,63 @@ icValidateStatus CIccMpeCLUT::Validate(std::string sigPath, std::string &sReport
 
   return rv;
 }
+
+
+/**
+******************************************************************************
+* Name: CIccMpeCLUT::Begin
+*
+* Purpose:
+*
+* Args:
+*
+* Return:
+******************************************************************************/
+CIccApplyMpe* CIccMpeCLUT::GetNewApply(CIccApplyTagMpe* pApplyTag)
+{
+  if (!m_pCLUT) {
+    return NULL;
+  }
+  
+  CIccApplyCLUT* pApply = m_pCLUT->GetNewApply();
+  if (!pApply)
+    return NULL;
+
+  CIccApplyMpeCLUT * rv = new CIccApplyMpeCLUT(this, pApply);
+  if (!rv)
+    delete pApply;
+
+  return rv;
+}
+
+/**
+**************************************************************************
+* Name: CIccApplyMpeCLUT::CIccApplyMpeCLUT
+*
+* Purpose:
+*  Constructor
+**************************************************************************
+*/
+CIccApplyMpeCLUT::CIccApplyMpeCLUT(CIccMultiProcessElement* pElem, CIccApplyCLUT *pApply) : CIccApplyMpe(pElem)
+{
+  m_pApply = pApply;
+}
+
+
+/**
+**************************************************************************
+* Name: CIccApplyMpeCLUT::~CIccApplyMpeCLUT
+*
+* Purpose:
+*  Destructor
+**************************************************************************
+*/
+CIccApplyMpeCLUT::~CIccApplyMpeCLUT()
+{
+  if (m_pApply)
+    delete m_pApply;
+}
+
 
 /**
 ******************************************************************************
