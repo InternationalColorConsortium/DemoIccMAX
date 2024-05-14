@@ -4199,7 +4199,7 @@ bool CIccTagXmlProfileSequenceId::ParseXml(xmlNode *pNode, std::string &parseStr
     m_list->push_back(desc);
   }
 
-  return false;
+  return true;
 }
 
 
