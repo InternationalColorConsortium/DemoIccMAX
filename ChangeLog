@@ -1,3 +1,8 @@
+2024-05-05 David Hoyt
+* Add Build Scripts for libXML and LibTIFF per Xcode Build Instructions
+* Fix most Xcode Project Files
+* Add Unit Test for CVE-2023-44062
+
 2023-03-24 Max Derhak
 * Added iccApplyToLink tool that applies a sequence of profiles to create a device link profile or .cube file
 * Various bug fixes related to HToS tag support
@@ -114,7 +119,7 @@
 * 2.1.10 Release of IccLibXml and related tools
 * IccXmlLib: fixed bug with parsing default rendering intent in
   header
-* IccXmlLib: Added vector based named channel specificaiton and
+* IccXmlLib: Added vector based named channel specification and
   parsing with CalculatorElement
 * Revised DecRefC, DecRefH, IncRefw profiles in SpecRef
 
