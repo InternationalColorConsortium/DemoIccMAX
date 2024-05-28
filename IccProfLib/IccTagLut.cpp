@@ -3468,7 +3468,7 @@ void CIccMBB::Describe(std::string &sDescription, int nVerboseness)
     }
 
     if (m_CLUT)
-      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, GetType()==icSigLut16Type, nVerboseness);
+      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, nVerboseness, GetType()==icSigLut16Type);
 
     if (m_CurvesA) {
       for (i=0; i<m_nOutput; i++) {
