@@ -254,6 +254,23 @@ public:
   virtual IIccCmmEnvVarLookup *GetNewCmmEnvVarLookup() const=0;
 };
 
+/**
+**************************************************************************
+* Type: Class
+*
+* Purpose:
+*  Hint for getting CMM environment variable values
+**************************************************************************
+*/
+class ICCPROFLIB_API CIccCreateCmmPccEnvVarXformHint : public IIccCreateXformHint
+{
+public:
+  virtual ~CIccCreateCmmPccEnvVarXformHint() {}
+
+  virtual const char* GetHintType() const { return "CIccCreateCmmPccEnvVarXformHint"; }
+  virtual IIccCmmEnvVarLookup* GetNewCmmEnvVarLookup() const = 0;
+};
+
 
 /**
 **************************************************************************
@@ -1222,6 +1239,17 @@ protected:
 };
 
 
+class ICCPROFLIB_API CIccApplyNDLutXform : public CIccApplyXform
+{
+  friend class CIccXformNDLut;
+public: 
+  CIccApplyNDLutXform(CIccXformNDLut* pXform, CIccApplyCLUT* pApply);
+  virtual ~CIccApplyNDLutXform();
+
+protected:
+  CIccApplyCLUT* m_pApply;
+};
+
 /**
  **************************************************************************
  * Type: Class
@@ -1239,6 +1267,9 @@ public:
   virtual icXformType GetXformType() const { return icXformTypeNDLut; }
 
   virtual icStatusCMM Begin();
+
+  virtual CIccApplyXform* GetNewApply(icStatusCMM& status);  //Must be called after Begin
+
   virtual void Apply(CIccApplyXform *pApplyXform, icFloatNumber *DstPixel, const icFloatNumber *SrcPixel) const;
 
   virtual bool UseLegacyPCS() const { return m_pTag->UseLegacyPCS(); }

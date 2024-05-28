@@ -78,66 +78,8 @@
 	  </MultiProcessElements>
 	</multiProcessElementType> </AToB1Tag>
 	
-	<BToA1Tag> <multiProcessElementType>
-      <MultiProcessElements InputChannels="3" OutputChannels="3">
-			<!-- Convert XYZ to RGB -->
-			<MatrixElement InputChannels="3" OutputChannels="3">
-			  <MatrixData InvertMatrix="true">
-				  0.63695805 0.14461690 0.16888098
-          0.26270021 0.67799807 0.05930172
-          0.00000000 0.02807269 1.06098506
-				</MatrixData>
-			</MatrixElement>
-
-      <!-- Invert scaling of 75% media white point -->
-			<MatrixElement InputChannels="3" OutputChannels="3">
-			  <MatrixData InvertMatrix="true">
-				  4.804804804804805 0 0
-          0 4.804804804804805 0
-          0 0 4.804804804804805
-				</MatrixData>
-			</MatrixElement>
-
-		  <!-- Apply inverse HLG OOTF -->
-			<MatrixElement InputChannels="3" OutputChannels="4">
-			  <MatrixData>
-				  1 0 0
-					0 1 0
-					0 0 1
-					0.2627 0.6780 0.0593
-				</MatrixData>
-			</MatrixElement>
-			
-			<ToneMapElement InputChannels="4" OutputChannels="3">
-			  <LuminanceCurve>
-				  <SegmentedCurve>
-				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
-				  <FormulaSegment Start="0" End="+infinity" FunctionType="3">-0.166666666666667 1 1.006289308176101 -0.00628930817610062927 0</FormulaSegment>
-					</SegmentedCurve>
-				</LuminanceCurve>
-				<ToneMapFunctions>
-				  <ToneMapFunction FunctionType="0">1.00628930817610062753 -0.00628930817610062927 0.0</ToneMapFunction>
-				  <DuplicateFunction Index="0"/>
-				  <DuplicateFunction Index="0"/>
-				</ToneMapFunctions>
-			</ToneMapElement>
-			
-		  <!-- Apply HLG OETF -->
-		  <CurveSetElement InputChannels="3" OutputChannels="3">
-			  <SegmentedCurve>
-				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
-				  <FormulaSegment Start="0" End="0.08333333333333333" FunctionType="0">0.5 3 0 0</FormulaSegment>
-				  <FormulaSegment Start="0.08333333333333333" End="+infinity" FunctionType="4">1 0.17883277 0.284668920000000 0.559910729529562 12</FormulaSegment>
-				</SegmentedCurve>
-			  <DuplicateCurve Index="0"/>
-			  <DuplicateCurve Index="0"/>
-			</CurveSetElement>
-			
-    </MultiProcessElements>
-  </multiProcessElementType> </BToA1Tag>
-
 	<HToS1Tag> <multiProcessElementType>
-      <MultiProcessElements InputChannels="3" OutputChannels="3">
+    <MultiProcessElements InputChannels="3" OutputChannels="3">
 			<!-- Convert XYZ to RGB -->
 			<MatrixElement InputChannels="3" OutputChannels="3">
 			  <MatrixData InvertMatrix="true">
@@ -219,8 +161,66 @@
       </MultiProcessElements>
     </multiProcessElementType> </HToS1Tag>
 	
-	  <!-- D65 to D50 MAT -->
-    <customToStandardPccTag> <multiProcessElementType>
+	<BToA1Tag> <multiProcessElementType>
+      <MultiProcessElements InputChannels="3" OutputChannels="3">
+			<!-- Convert XYZ to RGB -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData InvertMatrix="true">
+				  0.63695805 0.14461690 0.16888098
+          0.26270021 0.67799807 0.05930172
+          0.00000000 0.02807269 1.06098506
+				</MatrixData>
+			</MatrixElement>
+
+      <!-- Invert scaling of 75% media white point -->
+			<MatrixElement InputChannels="3" OutputChannels="3">
+			  <MatrixData InvertMatrix="true">
+				  4.804804804804805 0 0
+          0 4.804804804804805 0
+          0 0 4.804804804804805
+				</MatrixData>
+			</MatrixElement>
+
+		  <!-- Apply inverse HLG OOTF -->
+			<MatrixElement InputChannels="3" OutputChannels="4">
+			  <MatrixData>
+				  1 0 0
+					0 1 0
+					0 0 1
+					0.2627 0.6780 0.0593
+				</MatrixData>
+			</MatrixElement>
+			
+			<ToneMapElement InputChannels="4" OutputChannels="3">
+			  <LuminanceCurve>
+				  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0" End="+infinity" FunctionType="3">-0.166666666666667 1 1.006289308176101 -0.00628930817610062927 0</FormulaSegment>
+					</SegmentedCurve>
+				</LuminanceCurve>
+				<ToneMapFunctions>
+				  <ToneMapFunction FunctionType="0">1.00628930817610062753 -0.00628930817610062927 0.0</ToneMapFunction>
+				  <DuplicateFunction Index="0"/>
+				  <DuplicateFunction Index="0"/>
+				</ToneMapFunctions>
+			</ToneMapElement>
+			
+		  <!-- Apply HLG OETF -->
+		  <CurveSetElement InputChannels="3" OutputChannels="3">
+			  <SegmentedCurve>
+				  <FormulaSegment Start="-infinity" End="0.0" FunctionType="0">1 0 0 0</FormulaSegment>
+				  <FormulaSegment Start="0" End="0.08333333333333333" FunctionType="0">0.5 3 0 0</FormulaSegment>
+				  <FormulaSegment Start="0.08333333333333333" End="+infinity" FunctionType="4">1 0.17883277 0.284668920000000 0.559910729529562 12</FormulaSegment>
+				</SegmentedCurve>
+			  <DuplicateCurve Index="0"/>
+			  <DuplicateCurve Index="0"/>
+			</CurveSetElement>
+			
+    </MultiProcessElements>
+  </multiProcessElementType> </BToA1Tag>
+
+	<!-- D65 to D50 MAT -->
+  <customToStandardPccTag> <multiProcessElementType>
 	  <MultiProcessElements InputChannels="3" OutputChannels="3">
 	    <MatrixElement InputChannels="3" OutputChannels="3">
 		  <MatrixData>
@@ -230,10 +230,10 @@
 		  </MatrixData>
 	    </MatrixElement>
 	  </MultiProcessElements>
-    </multiProcessElementType> </customToStandardPccTag>
+  </multiProcessElementType> </customToStandardPccTag>
 
-    <!-- D50 to D65 MAT -->
-    <standardToCustomPccTag> <multiProcessElementType>
+  <!-- D50 to D65 MAT -->
+  <standardToCustomPccTag> <multiProcessElementType>
 	  <MultiProcessElements InputChannels="3" OutputChannels="3">
 	    <MatrixElement InputChannels="3" OutputChannels="3">
 		  <MatrixData InvertMatrix="true">
@@ -243,7 +243,7 @@
 		  </MatrixData>
 	    </MatrixElement>
 	  </MultiProcessElements>
-    </multiProcessElementType> </standardToCustomPccTag>
+  </multiProcessElementType> </standardToCustomPccTag>
 	
 	<!-- Abreviated D65 spectral viewing conditions -->
 	<spectralViewingConditionsTag> <spectralViewingConditionsType>

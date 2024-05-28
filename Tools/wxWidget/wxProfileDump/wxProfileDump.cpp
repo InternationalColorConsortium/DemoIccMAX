@@ -12,7 +12,7 @@ Copyright:  (c) see ICC Software License
 * The ICC Software License, Version 0.2
 *
 *
-* Copyright (c) 2003-2019 The International Color Consortium. All rights 
+* Copyright (c) 2003-2023 The International Color Consortium. All rights 
 * reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -297,7 +297,7 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
     (void)wxMessageBox(_T("wxProfileDump\n")
-                       _T("Copyright (C) 2005-2021\n\n")
+                       _T("Copyright (C) 2005-2023\n\n")
                        _T("Using ICCProflib version ") ICCPROFLIBVER _T("\n"),
 											 _T("About wxProfileDump"));
 }

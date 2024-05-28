@@ -1,3 +1,10 @@
+2024-05-10 Max Derhak
+* Added JSON config file ultility code for use by applications (added new dependency on JSON for Modern C++ - see https://github.com/nlohmann/json_
+* Modified IccApplyNamedCmm and iccApplyProfiles to optionally use JSON configuraiton files to control behavior resulting in new features
+* Added limited support to read/write from CGATS IT8 files using iccApplyNamedProfiles
+* PCC processing elements can now have access to CMM environment variables
+* Modified N-Dimensional LUT interpolation to be thread safe (Moved modification of LUT object to apply LUT object)
+
 2023-03-24 Max Derhak
 * Added iccApplyToLink tool that applies a sequence of profiles to create a device link profile or .cube file
 * Various bug fixes related to HToS tag support

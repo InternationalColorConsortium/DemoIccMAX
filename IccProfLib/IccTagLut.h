@@ -293,6 +293,30 @@ typedef icFloatNumber (*icCLUTCLIPFUNC)(icFloatNumber v);
 
 /**
 ****************************************************************************
+* Class: CIccApplyCLUT
+*
+* Purpose: Apply storage for CLUT ND interpolation
+*****************************************************************************
+*/
+class ICCPROFLIB_API CIccApplyCLUT
+{
+  friend class CIccCLUT;
+public:
+  CIccApplyCLUT();
+  virtual ~CIccApplyCLUT();
+
+  bool Init(icUInt8Number nSrcChannels, icUInt32Number nNodes);
+
+protected:
+  icUInt16Number m_nSrcSamples;
+  // Temporary ND Interp Variables
+  icFloatNumber* m_g, * m_s, * m_df;
+  icUInt32Number* m_ig;
+};
+
+
+/**
+****************************************************************************
 * Class: CIccCLUT
 * 
 * Purpose: The base multidimensional color look-up table (CLUT) class
@@ -337,6 +361,9 @@ public:
 
 
   void Begin();
+
+  CIccApplyCLUT* GetNewApply();
+
   void Interp1d(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
   void Interp2d(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
   void Interp3dTetra(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
@@ -344,7 +371,7 @@ public:
   void Interp4d(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
   void Interp5d(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
   void Interp6d(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
-  void InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const;
+  void InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel, CIccApplyCLUT *pApply) const;
 
   void Iterate(IIccCLUTExec* pExec);
   icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL)  const;
@@ -384,11 +411,9 @@ protected:
 
   //ND Interpolation
   icUInt32Number *m_nOffset;
-  // Temporary ND Interp Variables
-  icFloatNumber *m_g, *m_s, *m_df;
-  icUInt32Number* m_ig;
   icUInt32Number m_nNodes, m_nPower[16];
 };
+
 
 
 /**
