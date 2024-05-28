@@ -120,49 +120,66 @@ static icFloatNumber icPRMG_Chroma[37][20] = {
   {0, 11, 26, 39, 52, 64, 74, 83, 91, 92, 91, 87, 82, 75, 67, 57, 47, 37, 25, 13},
 };
 
+static int icClamp(int val, int minVal, int maxVal)
+{
+  if (val < minVal)
+    return minVal;
+  else if (val > maxVal)
+    return maxVal;
+  return val;
+}
+
 CIccPRMG::CIccPRMG()
 {
   m_nTotal = m_nDE1 = m_nDE2 = m_nDE3 = m_nDE5 = m_nDE10 = 0;
-
   m_bPrmgImplied = false;
 }
 
 icFloatNumber CIccPRMG::GetChroma(icFloatNumber L, icFloatNumber h)
 {
-  if (L<3.5 || L>100.0)
+  if (L < 3.5 || L > 100.0)
     return -1;
 
   int nHIndex, nLIndex;
   icFloatNumber dHFraction, dLFraction;
 
-  while (h<0.0)
-    h+=360.0;
+  // Normalize h to the range [0, 360)
+  while (h < 0.0)
+    h += 360.0;
+  while (h >= 360.0)
+    h -= 360.0;
 
-  while (h>=360.0)
-    h-=360.0;
+  nHIndex = (int)(h / 10.0);
+  dHFraction = (h - nHIndex * 10.0f) / 10.0f;
 
-  nHIndex = (int)(h/10.0);
-  dHFraction = (icFloatNumber)((h - nHIndex*10.0)/10.0);
-
-  if (L<5) {
+  if (L < 5) {
     nLIndex = 0;
-    dLFraction = (icFloatNumber)((L-3.5) / (5.0-3.5));
-  }
-  else if (L==100.0) {
-    nLIndex = 19;
+    dLFraction = (L - 3.5f) / (5.0f - 3.5f);
+  } else if (L == 100.0) {
+    nLIndex = 19; // Assuming 19 is a safe index, adapt if necessary
     dLFraction = 1.0;
+  } else {
+    nLIndex = (int)((L - 5.0) / 5.0) + 1;
+    dLFraction = (L - nLIndex * 5.0f) / 5.0f;
   }
-  else {
-    nLIndex = (int)((L-5.0)/5.0) + 1;
-    dLFraction = (icFloatNumber)((L-nLIndex*5.0)/5.0);
-  }
 
-  icFloatNumber dInvLFraction = (icFloatNumber)(1.0 - dLFraction);
+  // Determine the bounds of the icPRMG_Chroma array (replace with actual bounds)
+  const int maxHIndex = sizeof(icPRMG_Chroma) / sizeof(icPRMG_Chroma[0]) - 1;
+  const int maxLIndex = sizeof(icPRMG_Chroma[0]) / sizeof(icPRMG_Chroma[0][0]) - 1;
 
-  icFloatNumber ch1 = icPRMG_Chroma[nHIndex][nLIndex]*dInvLFraction + icPRMG_Chroma[nHIndex][nLIndex+1]*dLFraction;
-  icFloatNumber ch2 = icPRMG_Chroma[nHIndex+1][nLIndex]*dInvLFraction + icPRMG_Chroma[nHIndex+1][nLIndex+1]*dLFraction;
+    // Clamp indices to prevent out-of-bounds access
+  nHIndex = icClamp(nHIndex, 0, maxHIndex - 1);
+  nLIndex = icClamp(nLIndex, 0, maxLIndex - 1);
 
-  return (icFloatNumber)(ch1*(1.0-dHFraction) + ch2 * 1.0*dHFraction);
+  icFloatNumber dInvLFraction = 1.0f - dLFraction;
+
+  // Interpolate chroma values safely
+  icFloatNumber ch1 = icPRMG_Chroma[nHIndex][nLIndex] * dInvLFraction
+                    + icPRMG_Chroma[nHIndex][nLIndex+1] * dLFraction;
+  icFloatNumber ch2 = icPRMG_Chroma[nHIndex+1][nLIndex] * dInvLFraction
+                    + icPRMG_Chroma[nHIndex+1][nLIndex+1] * dLFraction;
+
+  return ch1 * (1.0f - dHFraction) + ch2 * dHFraction;
 }
 
 bool CIccPRMG::InGamut(icFloatNumber L, icFloatNumber c, icFloatNumber h)

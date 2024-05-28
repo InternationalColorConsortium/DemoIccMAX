@@ -2054,39 +2054,36 @@ const icChar *CIccInfo::GetPathEntrySigName(icUInt32Number sig)
 
 const icChar *CIccInfo::GetMeasurementFlareName(icMeasurementFlare val)
 {
-  switch ((int)val) {
+  switch (val) { // Directly switch on the enum without casting to int
   case icFlare0:
-    return "Flare 0";
+    return "Flare 0"; // Properly handle the 0% flare
 
   case icFlare100:
-    return "Flare 100";
-
-  case icMaxEnumFlare:
-    return "Max Flare";
+    return "Flare 100"; // Properly handle the 100% flare
 
   default:
-    sprintf(m_szStr, "Unknown Flare '%d'", (int)val);
+    // Handle icMaxEnumFlare explicitly here if needed
+    if (val == icMaxEnumFlare) {
+      return "Max Flare"; // Special handling for the max sentinel value
+    }
+    // General default case for truly unexpected values
+          std::snprintf(m_szStr, sizeof(m_szStr), "Unknown Flare '%d'", (int)val);
     return m_szStr;
   }
 }
 
+
 const icChar *CIccInfo::GetMeasurementGeometryName(icMeasurementGeometry val)
 {
-  switch ((int)val) {
+  switch (val) {  // Directly use enum type, casting is not needed
   case icGeometryUnknown:
     return "Geometry Unknown";
-
   case icGeometry045or450:
     return "Geometry 0-45 or 45-0";
-
   case icGeometry0dord0:
     return "Geometry 0-d or d-0";
-
-  case icMaxEnumGeometry:
-    return "Max Geometry";
-
   default:
-    sprintf(m_szStr, "Unknown Geometry '%d'", (int)val);
+          std::snprintf(m_szStr, sizeof(m_szStr), "Unknown Geometry '%d'", (int)val);
     return m_szStr;
   }
 }

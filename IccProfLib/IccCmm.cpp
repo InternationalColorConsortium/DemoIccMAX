@@ -5281,7 +5281,7 @@ CIccCurve *CIccXformMatrixTRC::GetCurve(icSignature sig) const
 {
   CIccTag *pTag = m_pProfile->FindTag(sig);
 
-  if (pTag->GetType()==icSigCurveType || pTag->GetType()==icSigParametricCurveType) {
+  if (pTag && pTag->GetType()==icSigCurveType || pTag->GetType()==icSigParametricCurveType) {
     return (CIccCurve*)pTag;
   }
 
