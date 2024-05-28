@@ -76,6 +76,7 @@
 #include "IccDefs.h"
 #include "IccApplyBPC.h"
 #include "IccEnvVar.h"
+#include "..\IccCommon\IccCmmConfig.h"
 #include "TiffImg.h"
 #include "IccProfLibVer.h"
 
@@ -95,16 +96,12 @@ void Usage()
 {
   printf("iccApplyProfiles built with IccProfLib version " ICCPROFLIBVER "\n\n");
 
-  printf("Usage: iccApplyProfiles src_tiff_file dst_tiff_file dst_sample_encoding interpolation dst_compression dst_planar dst_embed_icc {{-ENV:sig value} profile_file_path rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Usage: iccApplyProfiles src_tiff_file dst_tiff_file dst_sample_encoding dst_compression dst_planar dst_embed_icc interpolation {{-ENV:sig value} profile_file_path rendering_intent {-PCC connection_conditions_path}}\n\n");
   printf("  For dst_sample_encoding:\n");
   printf("    0 - Same as src\n");
   printf("    1 - icEncode8Bit\n");
   printf("    2 - icEncode16Bit\n");
   printf("    4 - icEncodeFloat\n\n");
-
-  printf("  For interpolation:\n");
-  printf("    0 - Linear\n");
-  printf("    1 - Tetrahedral\n\n");
 
   printf("  For dst_compression:\n");
   printf("    0 - No compression\n");
@@ -117,6 +114,10 @@ void Usage()
   printf("  For dst_embed_icc:\n");
   printf("    0 - Do not Embed\n");
   printf("    1 - Embed Last ICC\n\n");
+
+  printf("  For interpolation:\n");
+  printf("    0 - Linear\n");
+  printf("    1 - Tetrahedral\n\n");
 
   printf("  For rendering_intent:\n");
   printf("    0 - Perceptual\n");
@@ -146,25 +147,54 @@ void Usage()
 
 //===================================================
 
-int main(int argc, icChar* argv[])
+int main(int argc, const char** argv)
 {
-  int minargs = 8; // minimum number of arguments
-  if(argc<minargs) {
+  int minargs = 2;
+  if (argc < minargs) {
     Usage();
     return -1;
   }
 
-  int nNumProfiles, temp;
-  temp = argc - minargs;
+  CIccCfgImageApply cfgApply;
+  CIccCfgProfileSequence cfgProfiles;
 
-  //remaining arguments must be in pairs
-  if(temp%2 != 0) {
-    printf("\nMissing arguments!\n");
-    Usage();
-    return -1;
+  if (argc > 2 && !stricmp(argv[1], "-cfg")) {
+    json cfg;
+    if (!loadJsonFrom(cfg, argv[2]) || !cfg.is_object()) {
+      printf("Unable to read configuration from '%s'\n", argv[2]);
+      return -1;
+    }
+
+    if (cfg.find("imageFiles") == cfg.end() || !cfgApply.fromJson(cfg["imageFiles"])) {
+      printf("Unable to parse imageFiles configuration from '%s'\n", argv[2]);
+      return -1;
+    }
+
+    if (cfg.find("profileSequence") == cfg.end() || !cfgProfiles.fromJson(cfg["profileSequence"])) {
+      printf("Unable to parse profileSequence configuration from '%s'\n", argv[2]);
+      return -1;
+    }
   }
+  else {
+    argv++;
+    argc--;
 
-  nNumProfiles = temp/2;
+    int nArg = cfgApply.fromArgs(&argv[0], argc);
+    if (!nArg) {
+      printf("Unable to parse configuration arguments\n");
+      Usage();
+      return -1;
+    }
+    argv += nArg;
+    argc -= nArg;
+
+    nArg = cfgProfiles.fromArgs(&argv[0], argc);
+    if (!nArg) {
+      printf("Unable to parse profile sequence arguments\n");
+      Usage();
+      return -1;
+    }
+  }
 
   int i, j, k;
   unsigned int sn, sphoto, photo, bps, dbps;
@@ -172,11 +202,11 @@ int main(int argc, icChar* argv[])
   unsigned char *sptr, *dptr;
   bool bSuccess = true;
   bool bConvert = false;
-  char *last_path = NULL;
+  const char *last_path = NULL;
 
   //Open source image file and get information from it
-  if (!SrcImg.Open(argv[1])) {
-    printf("\nFile [%s] cannot be opened.\n", argv[1]);
+  if (!SrcImg.Open(cfgApply.m_srcImgFile.c_str())) {
+    printf("\nFile [%s] cannot be opened.\n", cfgApply.m_srcImgFile.c_str());
     return false;
   }
   sn = SrcImg.GetSamples();
@@ -200,37 +230,36 @@ int main(int argc, icChar* argv[])
       return false;
   }
 
-  //Setup destination encoding based on command line argument
-  destEncoding = (icFloatColorEncoding)atoi(argv[3]);
-  switch(destEncoding) {
-    case 0:
-      destEncoding = srcEncoding;
-      dbps = bps;
-      break;
-    case 1:
-      destEncoding = icEncode8Bit;
-      dbps = 8;
-      break;
-    case 2:
-      destEncoding = icEncode16Bit;
-      dbps = 16;
-      break;
-    case 4:
-      destEncoding = icEncodeFloat;
-      dbps = 32;
-      break;
-    default:
-      printf("Source color data encoding not recognized.\n");
-      return false;
+  if (cfgApply.m_dstEncoding == icEncodeUnknown) {
+    destEncoding = srcEncoding;
+    dbps = bps;
   }
+  else {
+    destEncoding = cfgApply.m_dstEncoding;
+    switch (destEncoding) {
+      case icEncode8Bit:
+        dbps = 8;
+        break;
+      case icEncode16Bit:
+        dbps = 16;
+        break;
+      case icEncodeFloat:
+        dbps = 32;
+        break;
+      default:
+        printf("Source color data encoding not recognized.\n");
+        return false;
+    }
+  }
+  unsigned char* pSrcProfile;
+  unsigned int nSrcProfileLen;
+  bool bHasSrcProfile = SrcImg.GetIccProfile(pSrcProfile, nSrcProfileLen);
 
   //Retrieve command line arguments
-  icXformInterp nInterp = (icXformInterp)atoi(argv[4]);
-  bool bCompress = atoi(argv[5])!=0;
-  bool bSeparation = atoi(argv[6])!=0;
-  bool bEmbed = atoi(argv[7])!=0;
+  bool bCompress = cfgApply.m_dstCompression == icDstBoolFromSrc ? SrcImg.GetCompress() : (cfgApply.m_dstCompression != icDstBoolFalse);
+  bool bSeparation = cfgApply.m_dstPlanar == icDstBoolFromSrc ? SrcImg.GetPlanar() : (cfgApply.m_dstCompression != icDstBoolFalse);
+  bool bEmbed = cfgApply.m_dstEmbedIcc == icDstBoolFromSrc ? bHasSrcProfile : (cfgApply.m_dstEmbedIcc != icDstBoolFalse);
 
-  int nIntent, nType, nLuminance;
 
   //Allocate a CIccCmm to use to apply profiles. 
   //Let profiles determine starting and ending color spaces.
@@ -241,114 +270,86 @@ int main(int argc, icChar* argv[])
   //TheCmm doesn't own them so keep a list so they can be released when they aren't needed any more.
   IccProfilePtrList pccList;
 
-  int nCount;
-  bool bUseD2BxB2DxTags;
   icStatusCMM stat;       //status variable for CMM operations
-  icCmmEnvSigMap sigMap;  //Keep track of CMM Environment for each profile
-  bool bUseSubProfile;
 
   //Remaining arguments define a sequence of profiles to be applied.  
   //Add them to theCmm one at a time providing CMM environment variables and PCC overrides as provided.
-  for(i = 0, nCount=minargs; i<nNumProfiles; i++, nCount+=2) {
-#if defined(_WIN32) || defined(_WIN64)
-    if (!strnicmp(argv[nCount], "-ENV:", 5)) {  //check for -ENV: to allow for CMM Environment variables to be defined for next transform
-#else
-    if (!strncasecmp(argv[nCount], "-ENV:", 5)) {
-#endif
-      icSignature sig = icGetSigVal(argv[nCount]+5);
-      icFloatNumber val = (icFloatNumber)atof(argv[nCount+1]);
+  bool bFirst = true;
+  for (auto pProfIter = cfgProfiles.m_profiles.begin(); pProfIter != cfgProfiles.m_profiles.end(); bFirst=false, pProfIter++) {
+    CIccCfgProfile* pProfCfg = pProfIter->get();
 
-      sigMap[sig]=val;
+    if (!pProfCfg) {
+      printf("Invalid Profile configuration!\n");
+      return -1;
     }
-    else if (stricmp(argv[nCount], "-PCC")) { //Attach profile while ignoring -PCC (this are handled below as profiles are attached)
-      bUseD2BxB2DxTags = true;
-      nIntent = atoi(argv[nCount+1]);
-      bUseSubProfile = (nIntent / 1000) > 0;
-      nIntent = nIntent % 1000;
-      nLuminance = nIntent / 100;
-      nIntent = nIntent % 100;
-      nType = abs(nIntent) / 10;
-      nIntent = nIntent % 10;
-      CIccProfile *pPccProfile = NULL;
 
-      //Adjust type and hint information based on rendering intent
-      CIccCreateXformHintManager Hint;
-      switch(nType) {
-      case 1:
-        nType = 0;
-        bUseD2BxB2DxTags = false;
-        break;
-      case 4:
-        nType = 0;
-        Hint.AddHint(new CIccApplyBPCHint());
-        break;
+    CIccProfile* pPccProfile = NULL;
+
+    //Adjust type and hint information based on rendering intent
+    CIccCreateXformHintManager Hint;
+    if (pProfCfg->m_useBPC)
+      Hint.AddHint(new CIccApplyBPCHint());
+
+    if (pProfCfg->m_adjustPcsLuminance) {
+      Hint.AddHint(new CIccLuminanceMatchingHint());
+    }
+
+    if (pProfCfg->m_pccFile.size()) {
+      pPccProfile = OpenIccProfile(pProfCfg->m_pccFile.c_str());
+      if (!pPccProfile) {
+        printf("Unable to open Profile Connections Conditions from '%s'\n", pProfCfg->m_pccFile.c_str());
+        return -1;
+      }
+      //Keep track of pPccProfile for until after cmm.Begin is called
+      pccList.push_back(pPccProfile);
+    }
+
+    //CMM Environment variables are passed in as a Hint to the Xform associated with the profile
+    if (pProfCfg->m_iccEnvVars.size() > 0) {
+      Hint.AddHint(new CIccCmmEnvVarHint(pProfCfg->m_iccEnvVars));
+    }
+
+    if (pProfCfg->m_pccEnvVars.size() > 0) {
+      Hint.AddHint(new CIccCmmPccEnvVarHint(pProfCfg->m_pccEnvVars));
+    }
+
+    //Read profile from path and add it to namedCmm
+    if (bFirst && !pProfCfg->m_iccFile.size()) {
+      if (bHasSrcProfile) {
+        if (theCmm.AddXform(pSrcProfile, (icUInt32Number)nSrcProfileLen,
+          pProfCfg->m_intent < 0 ? icUnknownIntent : (icRenderingIntent)pProfCfg->m_intent,
+          pProfCfg->m_interpolation,
+          pPccProfile,
+          pProfCfg->m_transform,
+          pProfCfg->m_useD2BxB2Dx,
+          &Hint,
+          pProfCfg->m_useV5SubProfile)) {
+          printf("Invalid embedded profile in [%s]!\n", cfgApply.m_srcImgFile.c_str());
+          return -1;
+        }
+      }
+      else {
+        printf("Source image doesn't have embedded profile!\n");
+        return -1;
       }
 
-      if (nLuminance) {
-        Hint.AddHint(new CIccLuminanceMatchingHint());
-      }
-
-      // Use of following -PCC arg allows for profile connection conditions to be defined
-      if (i+1<nNumProfiles && !stricmp(argv[nCount+2], "-PCC")) {  
-        pPccProfile = OpenIccProfile(argv[nCount+3]);
-        if (!pPccProfile) {
-          printf("Unable to open Profile Connections Conditions from '%s'\n", argv[nCount+3]);
-          return -1;
-        }
-        //Keep track of pPccProfile for until after cmm.Begin is called
-        pccList.push_back(pPccProfile);
-      }
-
-      if (!i && !stricmp(argv[nCount], "-embedded")) {
-        unsigned int len=0;
-        icUInt8Number *pProfile=NULL;
-
-        if (!SrcImg.GetIccProfile(pProfile, len)) {
-          printf("Image [%s] does not have an embedded profile\n", argv[nCount]);
-          return -1;
-        }
-
-        //Read and validate profile from memory
-        CIccProfile *pImgProfile = OpenIccProfile(pProfile, len, bUseSubProfile);
-        if (!pImgProfile) {
-          printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
-          return -1;
-        }
-
-        //CMM Environment variables are passed in as a Hint to the Xform associated with the profile
-        if (sigMap.size()>0) {
-          Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
-        }
-
-        //Add embedded profile to theCmm (transferring ownership)
-        stat = theCmm.AddXform(pImgProfile, nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile,
-                               (icXformLutType)nType, bUseD2BxB2DxTags, &Hint);
-        if (stat) {
-          printf("Invalid Embedded profile in image [%s]\n", argv[nCount]);
-          return -1;
-        }
-        sigMap.clear();
-      }
-      else { //Non embedded profile case
-        //CMM Environment variables are passed in as a Hint to the Xform associated with the profile
-        if (sigMap.size()>0) {
-          Hint.AddHint(new CIccCmmEnvVarHint(sigMap));
-        }
-
-        //Remember last profile path so it can be embedded
-        last_path = &argv[nCount][0];
-
-        //Read profile from path and add it to theCmm
-        stat = theCmm.AddXform(argv[nCount], nIntent<0 ? icUnknownIntent : (icRenderingIntent)nIntent, nInterp, pPccProfile,
-                               (icXformLutType)nType, bUseD2BxB2DxTags, &Hint, bUseSubProfile);
-        if (stat) {
-          printf("Invalid Profile(%d):  %s\n", stat, argv[nCount]);
-          return -1;
-        }
-        sigMap.clear();
+    }
+    else {
+      last_path = pProfCfg->m_iccFile.c_str();
+      if (theCmm.AddXform(pProfCfg->m_iccFile.c_str(),
+        pProfCfg->m_intent < 0 ? icUnknownIntent : (icRenderingIntent)pProfCfg->m_intent,
+        pProfCfg->m_interpolation,
+        pPccProfile,
+        pProfCfg->m_transform,
+        pProfCfg->m_useD2BxB2Dx,
+        &Hint,
+        pProfCfg->m_useV5SubProfile)) {
+        printf("Invalid Profile:  %s\n", pProfCfg->m_iccFile.c_str());
+        return -1;
       }
     }
   }
+
 
   //All profiles have been added to CMM.  Tell CMM that we are ready to begin applying colors/pixels
   if((stat=theCmm.Begin())) {
@@ -369,7 +370,7 @@ int main(int argc, icChar* argv[])
   int nSrcSamples = icGetSpaceSamples(SrcspaceSig);
 
   if (nSrcSamples != (int)sn) {
-    printf("Number of samples %d in image[%s] doesn't match device samples %d in first profile\n", sn, argv[1], nSrcSamples);
+    printf("Number of samples %d in image[%s] doesn't match device samples %d in first profile\n", sn, cfgApply.m_srcImgFile.c_str(), nSrcSamples);
     return -1;
   }
 
@@ -409,13 +410,13 @@ int main(int argc, icChar* argv[])
   unsigned long dbpp = (nDestSamples * dbps  + 7)/ 8;
 
   //Open up output image using information from SrcImg and theCmm
-  if (!DstImg.Create(argv[2], SrcImg.GetWidth(), SrcImg.GetHeight(), dbps, photo, nDestSamples, SrcImg.GetXRes(), SrcImg.GetYRes(), bCompress, bSeparation)) {
-    printf("Unable to create Tiff file - '%s'\n", argv[2]);
+  if (!DstImg.Create(cfgApply.m_dstImgFile.c_str(), SrcImg.GetWidth(), SrcImg.GetHeight(), dbps, photo, nDestSamples, SrcImg.GetXRes(), SrcImg.GetYRes(), bCompress, bSeparation)) {
+    printf("Unable to create Tiff file - '%s'\n", cfgApply.m_dstImgFile.c_str());
     return false;
   }
 
   //Embed the last profile into output image as needed
-  if (bEmbed) {
+  if (bEmbed && last_path) {
     unsigned long length = 0;
     icUInt8Number *pDestProfile = NULL;
 

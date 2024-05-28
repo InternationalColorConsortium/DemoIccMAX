@@ -106,6 +106,18 @@ protected:
   icCmmEnvSigMap *m_map;
 };
 
+class ICCPROFLIB_API CIccCmmPccEnvVarHint : public CIccCreateCmmPccEnvVarXformHint
+{
+public:
+  CIccCmmPccEnvVarHint(icCmmEnvSigMap& map);
+  virtual ~CIccCmmPccEnvVarHint();
+
+  virtual IIccCmmEnvVarLookup* GetNewCmmEnvVarLookup() const { return new CIccCmmVarLookup(*m_map); }
+
+protected:
+  icCmmEnvSigMap* m_map;
+};
+
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX

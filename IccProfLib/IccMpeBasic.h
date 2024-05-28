@@ -670,6 +670,7 @@ public:
   virtual bool Write(CIccIO *pIO);
 
   virtual bool Begin(icElemInterp nInterp, CIccTagMultiProcessElement *pMPE);
+  virtual CIccApplyMpe* GetNewApply(CIccApplyTagMpe* pApplyTag);
   virtual void Apply(CIccApplyMpe *pApply, icFloatNumber *dstPixel, const icFloatNumber *srcPixel) const;
 
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccTagMultiProcessElement* pMPE=NULL, const CIccProfile* pProfile = NULL) const;
@@ -681,6 +682,33 @@ protected:
   CIccCLUT *m_pCLUT;
   icCLUTElemType m_interpType;
 };
+
+
+/**
+****************************************************************************
+* Class: CIccApplyMpeCLUT
+*
+* Purpose: The Calculator process element apply data
+*****************************************************************************
+*/
+class CIccApplyMpeCLUT : public CIccApplyMpe
+{
+  friend class CIccMpeCLUT;
+public:
+  virtual ~CIccApplyMpeCLUT();
+
+  virtual icElemTypeSignature GetType() const { return icSigCLutElemType; }
+  virtual const icChar* GetClassName() const { return "CIccApplyMpeCLUT"; }
+
+  bool Init(icUInt32Number nNodes);
+
+protected:
+  CIccApplyMpeCLUT(CIccMultiProcessElement* pElem, CIccApplyCLUT *pApply);
+
+  CIccApplyCLUT* m_pApply;
+ };
+
+
 
 /****************************************************************************
 * Class: CIccMpeExtCLUT

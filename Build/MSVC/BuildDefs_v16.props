@@ -5,7 +5,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <EIGEN>$(VendorTreeDir)\eigen\eigen-3.2.8</EIGEN>
-	<ICONV>$(VendorTreeDir)\iconv\iconv-1.9.2</ICONV>
+    <ICONV>$(VendorTreeDir)\iconv\iconv-1.9.2</ICONV>
+    <JSON_INCLUDE>$(VendorTreeDir)\json-develop\v3.10.5\single_include</JSON_INCLUDE>
     <LIBTIFF_DLIB>libtiff.lib</LIBTIFF_DLIB>
     <LIBTIFF_INCLUDE>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiff</LIBTIFF_INCLUDE>
     <LIBTIFF_INCLUDEx64>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_INCLUDEx64>
@@ -28,6 +29,9 @@
     </BuildMacro>
     <BuildMacro Include="ICONV">
       <Value>$(ICONV)</Value>
+    </BuildMacro>
+    <BuildMacro Include="JSON_INCLUDE">
+      <Value>$(JSON_INCLUDE)</Value>
     </BuildMacro>
     <BuildMacro Include="LIBTIFF_DLIB">
       <Value>$(LIBTIFF_DLIB)</Value>

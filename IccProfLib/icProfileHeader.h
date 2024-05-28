@@ -583,6 +583,7 @@ typedef enum {
 
 /*Private tag types*/
     icSigEmbeddedProfileType            = 0x49434370,  /* 'ICCp' */
+    icSigZipXMLType                     = 0x5a584d4c, /* 'ZXML' used by X-rite for CxF tags*/
 
 } icTagTypeSignature;
 

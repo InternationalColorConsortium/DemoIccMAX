@@ -1610,6 +1610,67 @@ static icFloatNumber ClutUnitClip(icFloatNumber v)
 }
 
 /**
+**************************************************************************
+* Name: CIccApplyCLUT::CIccApplyCLUT
+*
+* Purpose:
+*  Constructor
+**************************************************************************
+*/
+CIccApplyCLUT::CIccApplyCLUT()
+{
+  m_df = NULL;
+  m_s = NULL;
+  m_g = NULL;
+  m_ig = NULL;
+}
+
+
+/**
+**************************************************************************
+* Name: CIccApplyNDLutXform::~CIccApplyNDLutXform
+*
+* Purpose:
+*  Destructor
+**************************************************************************
+*/
+CIccApplyCLUT::~CIccApplyCLUT()
+{
+  if (m_df)
+    free(m_df);
+  if (m_s)
+    free(m_s);
+  if (m_g)
+    free(m_g);
+  if (m_ig)
+    free(m_ig);
+}
+
+
+/**
+**************************************************************************
+* Name: CIccApplyCLUT::Init
+*
+* Purpose:
+*  Initializer
+**************************************************************************
+*/
+bool CIccApplyCLUT::Init(icUInt8Number nSrcChannels, icUInt32Number nNodes)
+{
+  if (nSrcChannels > 6) {
+
+    m_df = (icFloatNumber*)malloc(nNodes * sizeof(icFloatNumber));
+    m_s = (icFloatNumber*)malloc(nSrcChannels * sizeof(icFloatNumber));
+    m_g = (icFloatNumber*)malloc(nSrcChannels * sizeof(icFloatNumber));
+    m_ig = (icUInt32Number*)malloc(nSrcChannels * sizeof(icUInt32Number));
+
+    if (!m_df || !m_s || !m_g || !m_ig)
+      return false;
+  }
+  return true;
+}
+
+/**
  ****************************************************************************
  * Name: CIccCLUT::CIccCLUT
  * 
@@ -1628,10 +1689,6 @@ CIccCLUT::CIccCLUT(icUInt8Number nInputChannels, icUInt16Number nOutputChannels,
   m_nPrecision = nPrecision;
   m_pData = NULL;
   m_nOffset = NULL;
-  m_g = NULL;
-  m_ig = NULL;
-  m_s = NULL;
-  m_df = NULL;
   memset(&m_nReserved2, 0 , sizeof(m_nReserved2));
 
   UnitClip = ClutUnitClip;
@@ -1652,10 +1709,6 @@ CIccCLUT::CIccCLUT(const CIccCLUT &ICLUT)
 {
   m_pData = NULL;
   m_nOffset = NULL;
-  m_g = NULL;
-  m_ig = NULL;
-  m_s = NULL;
-  m_df = NULL;
   m_nInput = ICLUT.m_nInput;
   m_nOutput = ICLUT.m_nOutput;
   m_nPrecision = ICLUT.m_nPrecision;
@@ -1735,17 +1788,6 @@ CIccCLUT::~CIccCLUT()
   if (m_nOffset)
     delete [] m_nOffset;
 
-  if (m_g)
-    delete [] m_g;
-
-  if (m_ig)
-    delete [] m_ig;
-
-  if (m_s)
-    delete [] m_s;
-
-  if (m_df)
-    delete [] m_df;
 }
 
 /**
@@ -2325,11 +2367,6 @@ void CIccCLUT::Begin()
     m_nOffset[63] = m_nOffset[32] + m_nOffset[31];
   }
   else {
-    //initialize ND interpolation variables
-    m_g = new icFloatNumber[m_nInput];
-    m_ig = new icUInt32Number[m_nInput];
-    m_s = new icFloatNumber[m_nInput];
-    m_df = new icFloatNumber[m_nNodes];
     
     m_nOffset[0] = 0;
     int count, nFlag;
@@ -2357,6 +2394,22 @@ void CIccCLUT::Begin()
       }
     }
   }
+}
+
+
+CIccApplyCLUT* CIccCLUT::GetNewApply()
+{
+  CIccApplyCLUT* rv = new CIccApplyCLUT();
+
+  if (!rv)
+    return NULL;
+
+  if (!rv->Init(m_nInput, m_nNodes)) {
+    delete rv;
+    return NULL;
+  }
+
+  return rv;
 }
 
 /**
@@ -2974,19 +3027,23 @@ void CIccCLUT::Interp6d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
  *  Pixel = Pixel value to be found in the CLUT. Also used to store the result.
  *******************************************************************************
  */
-void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const
+void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel, CIccApplyCLUT *pApply) const
 {
   icUInt32Number i,j, index = 0;
+  icFloatNumber* df = pApply->m_df;
+  icFloatNumber* g = pApply->m_g;
+  icFloatNumber* s = pApply->m_s;
+  icUInt32Number* ig = pApply->m_ig;
 
   for (i=0; i<m_nInput; i++) {
-    m_g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
-    m_ig[i] = (icUInt32Number)m_g[i];
-    m_s[m_nInput-1-i] = m_g[i] - m_ig[i];
-    if (m_ig[i]==m_MaxGridPoint[i]) {
-      m_ig[i]--;
-      m_s[m_nInput-1-i] = 1.0;      
+    g[i] = UnitClip(srcPixel[i]) * m_MaxGridPoint[i];
+    ig[i] = (icUInt32Number)g[i];
+    s[m_nInput-1-i] = g[i] - ig[i];
+    if (ig[i]==m_MaxGridPoint[i]) {
+      ig[i]--;
+      s[m_nInput-1-i] = 1.0;      
     }
-    index += m_ig[i]*m_DimSize[i];
+    index += ig[i]*m_DimSize[i];
   }
 
   icFloatNumber *p = &m_pData[index];
@@ -2995,16 +3052,16 @@ void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   int nFlag = 0;
 
   for (i=0; i<m_nNodes; i++) {
-    m_df[i] = 1.0f;
+    df[i] = 1.0f;
   }
 
 
   for (i=0; i<m_nInput; i++) {
-    temp[0] = 1.0f - m_s[i];
-    temp[1] = m_s[i];
+    temp[0] = 1.0f - s[i];
+    temp[1] = s[i];
     index = m_nPower[i];
     for (j=0; j<m_nNodes; j++) {
-      m_df[j] *= temp[nFlag];
+      df[j] *= temp[nFlag];
       if ((j+1)%index == 0)
         nFlag = !nFlag;
     }
@@ -3013,7 +3070,7 @@ void CIccCLUT::InterpND(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
 
   for (i=0; i<m_nOutput; i++, p++) {
     for (pv=0, j=0; j<m_nNodes; j++)
-      pv += p[m_nOffset[j]] * m_df[j];
+      pv += p[m_nOffset[j]] * df[j];
 
     destPixel[i] = pv;
   }
@@ -3411,7 +3468,7 @@ void CIccMBB::Describe(std::string &sDescription, int nVerboseness)
     }
 
     if (m_CLUT)
-      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, GetType()==icSigLut16Type, nVerboseness);
+      m_CLUT->DumpLut(sDescription, "CLUT", m_csInput, m_csOutput, nVerboseness, GetType()==icSigLut16Type);
 
     if (m_CurvesA) {
       for (i=0; i<m_nOutput; i++) {

@@ -272,6 +272,7 @@ struct {
   {icSigUtf8TextType, "utf8Type"},
   {icSigZipUtf8TextType, "utf8ZipType"},
   {icSigZipXmlType, "zipXmlType"},
+  {icSigZipXMLType, "ZIPXmlType"},
   {icSigUtf16TextType, "utf16Type"},
   {icSigTagArrayType, "tagArrayType"},
   {icSigTagStructType, "tagStructType"},
@@ -432,6 +433,7 @@ CIccTag* CIccSpecTagFactory::CreateTag(icTagTypeSignature tagSig)
       return new CIccTagZipUtf8Text;
 
     case icSigZipXmlType:
+    case icSigZipXMLType:
       return new CIccTagZipXml;
 
     case icSigUtf16TextType:
