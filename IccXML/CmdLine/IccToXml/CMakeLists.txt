@@ -38,6 +38,18 @@ target_link_libraries(IccToXml
     IccXML2.2
 )
 
+# Set RPATH to locate the dynamic libraries
+set_target_properties(IccToXml PROPERTIES
+    INSTALL_RPATH "${CMAKE_SOURCE_DIR}/../../../Build/IccProfLib;${CMAKE_SOURCE_DIR}/../../../Build/IccXML"
+    BUILD_WITH_INSTALL_RPATH TRUE
+)
+
+# Set the executable output directory for both Debug and Release configurations
+set_target_properties(IccToXml PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release"
+)
+
 # Verbose compiler output
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
