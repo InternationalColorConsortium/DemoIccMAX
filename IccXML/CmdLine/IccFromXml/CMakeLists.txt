@@ -26,7 +26,7 @@ link_directories(
 
 # Source files
 set(SOURCE_FILES
-    iccFromXml.cpp
+    IccFromXml.cpp
 )
 
 # Add executable target
