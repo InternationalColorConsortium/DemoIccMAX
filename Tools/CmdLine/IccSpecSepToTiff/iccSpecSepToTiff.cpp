@@ -71,6 +71,8 @@
 //////////////////////////////////////////////////////////////////////
 
 
+#include <iostream>
+#include <cstdlib>
 #include <stdio.h>
 #include "IccCmm.h"
 #include "IccUtil.h"
@@ -89,35 +91,34 @@ void Usage()
 
 //===================================================
 
-int main(int argc, icChar* argv[])
-{
-  int minargs = 7; // minimum number of arguments
-  if(argc<minargs) {
-    Usage();
-    return -1;
-  }
+int main(int argc, char* argv[]) {
+    int minargs = 8; // Minimum number of arguments should account for the optional ICC profile
+    if (argc < minargs) {
+        std::cerr << "Usage: SpecSep2Tiff output_file compress_flag sep_flag infile_fmt_file start_nm end_nm inc_nm [embedded_icc_profile_file]\n";
+        return -1;
+    }
 
-  CTiffImg infile[100], outfile;
-  char filename[_MAX_PATH];
-  int i, j, k;
-  long bpl, bps;
-  bool invert = false;
-  int start, end, step, n;
-  float xRes, yRes;
+    CTiffImg infile[100], outfile;
+    char filename[_MAX_PATH];
+    int i, j, k;
+    long bpl, bps;
+    bool invert = false;
+    int start, end, step, n;
+    float xRes, yRes;
 
-  if (argc<7) {
-    printf("Usage: SpecSep2Tiff output_file compress_flag sep_flag infile_fmt_file start_nm end_nm inc_nm {embedded_icc_profile_file}\n");
-    exit(-1);
-  }
+    bool bCompress = atoi(argv[2]) != 0;
+    bool bSep = atoi(argv[3]) != 0;
 
-  bool bCompress = atoi(argv[2])!=0;
-  bool bSep = atoi(argv[3])!=0;
+    start = atoi(argv[5]);
+    end = atoi(argv[6]);
+    step = atoi(argv[7]);
 
-  start = atoi(argv[5]);
-  end = atoi(argv[6]);
-  step = atoi(argv[7]);
+    if (step == 0) {
+        std::cerr << "Error: increment ('inc_nm') cannot be zero.\n";
+        return -1;  // Exit the program with an error code
+    }
 
-  n = (end-start)/step + 1;
+    n = (end - start) / step + 1;  // Safe to perform division now
 
   for (i=0; i<n; i++) {
     sprintf(filename, argv[4], i*step + start);
@@ -239,4 +240,3 @@ cleanup:
 
   return 0;
 }
-
