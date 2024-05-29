@@ -164,4 +164,3 @@
    to be matched with CMYK color space
  * Modified IccProflib and profiles to support ColorEncoding Class
    signature 'cenc' instead of pre-release 'enc3'
-
