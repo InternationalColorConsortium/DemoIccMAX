@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project setup
-project(IccToXml)
+project(IccToXML)
 
 # Set architecture and SDK path
 if(NOT CMAKE_OSX_ARCHITECTURES)
@@ -26,16 +26,16 @@ link_directories(
 
 # Source files
 set(SOURCE_FILES
-    iccToXml.cpp
+    IccToXml.cpp
 )
 
 # Add executable target
-add_executable(iccToXml ${SOURCE_FILES})
+add_executable(IccToXml ${SOURCE_FILES})
 
 # Link the necessary libraries
-target_link_libraries(iccToXml
-    IccProfLib2
-    IccXML2
+target_link_libraries(IccToXml
+    IccProfLib2.2
+    IccXML2.2
 )
 
 # Verbose compiler output
@@ -43,4 +43,5 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Add linker flags
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -v -Wl,-v")
+
 
