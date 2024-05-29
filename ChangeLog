@@ -1,8 +1,3 @@
-2024-05-20 David Hoyt
-* Add Build Scripts for libXML and LibTIFF per Xcode Build Instructions
-* Fix most Xcode Project Files, Add correct build_xnu.sh script
-* Add Unit Test for CVE-2023-44062
-
 2024-05-10 Max Derhak
 * Added JSON config file ultility code for use by applications (added new dependency on JSON for Modern C++ - see https://github.com/nlohmann/json_
 * Modified IccApplyNamedCmm and iccApplyProfiles to optionally use JSON configuraiton files to control behavior resulting in new features
