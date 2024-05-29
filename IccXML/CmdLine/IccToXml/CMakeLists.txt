@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project setup
-project(IccToXML)
+project(IccToXml)
 
 # Set architecture and SDK path
 if(NOT CMAKE_OSX_ARCHITECTURES)
@@ -14,7 +14,7 @@ set(CMAKE_OSX_SYSROOT "${SDK_PATH}")
 # Include directories
 include_directories(
     "${CMAKE_SOURCE_DIR}/../../../IccProfLib"
-    "${CMAKE_SOURCE_DIR}/../../"
+    "${CMAKE_SOURCE_DIR}/../.."
     "${CMAKE_SOURCE_DIR}/../../IccLibXML"
 )
 
@@ -43,5 +43,3 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Add linker flags
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -v -Wl,-v")
-
-
