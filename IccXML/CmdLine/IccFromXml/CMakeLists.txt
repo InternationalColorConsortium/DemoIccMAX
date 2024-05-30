@@ -34,13 +34,8 @@ add_executable(iccFromXml ${SOURCE_FILES})
 
 # Link the necessary libraries
 target_link_libraries(iccFromXml
-<<<<<<< HEAD
-    IccProfLib2
-    IccXML2
-=======
     IccProfLib2.2
     IccXML2.2
->>>>>>> InternationalColorConsortium/master
 )
 
 # Verbose compiler output
@@ -48,8 +43,5 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Add linker flags
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -v -Wl,-v")
-<<<<<<< HEAD
-=======
 
 
->>>>>>> InternationalColorConsortium/master
