@@ -2,7 +2,8 @@
 #define _ICCJSONUTIL_H
 
 #include <nlohmann/json.hpp>
-#include "..\..\..\IccProfLib\IccDefs.h"
+#include <list>
+#include "IccDefs.h"
 
 using namespace nlohmann;
 
