@@ -16,7 +16,7 @@ build:
   # install the necessary build tools when needed
   before_script:
     - apt-get update -qq
-    - apt-get install -y locales cmake pkg-config libxml2-dev libyajl-dev libdbus-1-dev wget
+    - apt-get install -y locales cmake pkg-config libxml2-dev
 
   script:
     - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
