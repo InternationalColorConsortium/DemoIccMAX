@@ -985,11 +985,10 @@ bool CIccCfgColorData::fromLegacy(const char* filename, bool bReset)
     return false;
   }
 
-  const icUInt32Number nTempBufSize = 20000;
-  icChar ColorSig[7], *tempBuf = new icChar[nTempBufSize];
+  icChar ColorSig[7], *tempBuf = new icChar[20000];
   if (!tempBuf)
     return false;
-  InputData.getline(tempBuf, nTempBufSize);
+  InputData.getline(tempBuf, sizeof(tempBuf));
 
   int i;
   for (i = 0; (i < 4 || tempBuf[i + 1] != '\'') && i < 6; i++) {
@@ -1008,7 +1007,7 @@ bool CIccCfgColorData::fromLegacy(const char* filename, bool bReset)
     }
   }
 
-  InputData.getline(tempBuf, nTempBufSize);
+  InputData.getline(tempBuf, sizeof(tempBuf));
   sscanf(tempBuf, "%s", tempBuf);
 
   //Setup source encoding
@@ -1026,7 +1025,7 @@ bool CIccCfgColorData::fromLegacy(const char* filename, bool bReset)
 
     //Are names coming is as an input?
     if (m_srcSpace == icSigNamedData) {
-      InputData.getline(tempBuf, nTempBufSize);
+      InputData.getline(tempBuf, sizeof(tempBuf));
       if (!ParseName(SrcNameBuf, tempBuf))
         continue;
 
@@ -1043,7 +1042,7 @@ bool CIccCfgColorData::fromLegacy(const char* filename, bool bReset)
     }
     else { //pixel sample data coming in as input
 
-      InputData.getline(tempBuf, nTempBufSize);
+      InputData.getline(tempBuf, sizeof(tempBuf));
       if (!ParseNumbers(Pixel, tempBuf, nSamples))
         continue;
 
