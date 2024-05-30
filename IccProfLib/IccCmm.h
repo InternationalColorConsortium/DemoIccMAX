@@ -1209,6 +1209,44 @@ protected:
  **************************************************************************
  * Type: Class
  * 
+ * Purpose: This is the general ND-LUT Xform
+ * 
+ **************************************************************************
+ */
+class ICCPROFLIB_API CIccXformNDLut : public CIccXform
+{
+public:
+  CIccXformNDLut(CIccTag *pTag);
+  virtual ~CIccXformNDLut();
+
+  virtual icXformType GetXformType() const { return icXformTypeNDLut; }
+
+  virtual icStatusCMM Begin();
+
+  virtual CIccApplyXform* GetNewApply(icStatusCMM& status);  //Must be called after Begin
+
+  virtual void Apply(CIccApplyXform *pApplyXform, icFloatNumber *DstPixel, const icFloatNumber *SrcPixel) const;
+
+  virtual bool UseLegacyPCS() const { return m_pTag->UseLegacyPCS(); }
+
+  virtual LPIccCurve* ExtractInputCurves();
+  virtual LPIccCurve* ExtractOutputCurves();
+protected:
+  const CIccMBB *m_pTag;
+  int m_nNumInput;
+
+  /// Pointers to data in m_pTag, used only for applying the xform
+  const LPIccCurve* m_ApplyCurvePtrA;
+  const LPIccCurve* m_ApplyCurvePtrB;
+  const LPIccCurve* m_ApplyCurvePtrM;
+  const CIccMatrix* m_ApplyMatrixPtr;
+};
+
+
+/**
+ **************************************************************************
+ * Type: Class
+ * 
  * Purpose: This is the general 4D-LUT Xform
  * 
  **************************************************************************
@@ -1249,44 +1287,6 @@ public:
 protected:
   CIccApplyCLUT* m_pApply;
 };
-
-/**
- **************************************************************************
- * Type: Class
- * 
- * Purpose: This is the general ND-LUT Xform
- * 
- **************************************************************************
- */
-class ICCPROFLIB_API CIccXformNDLut : public CIccXform
-{
-public:
-  CIccXformNDLut(CIccTag *pTag);
-  virtual ~CIccXformNDLut();
-
-  virtual icXformType GetXformType() const { return icXformTypeNDLut; }
-
-  virtual icStatusCMM Begin();
-
-  virtual CIccApplyXform* GetNewApply(icStatusCMM& status);  //Must be called after Begin
-
-  virtual void Apply(CIccApplyXform *pApplyXform, icFloatNumber *DstPixel, const icFloatNumber *SrcPixel) const;
-
-  virtual bool UseLegacyPCS() const { return m_pTag->UseLegacyPCS(); }
-
-  virtual LPIccCurve* ExtractInputCurves();
-  virtual LPIccCurve* ExtractOutputCurves();
-protected:
-  const CIccMBB *m_pTag;
-  int m_nNumInput;
-
-  /// Pointers to data in m_pTag, used only for applying the xform
-  const LPIccCurve* m_ApplyCurvePtrA;
-  const LPIccCurve* m_ApplyCurvePtrB;
-  const LPIccCurve* m_ApplyCurvePtrM;
-  const CIccMatrix* m_ApplyMatrixPtr;
-};
-
 
 
 /**
