@@ -7,22 +7,9 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		1A55A1DD914D4AED9FB40A86 /* ALL_BUILD */ = {
+		0D30941A617747D880E30805 /* ZERO_CHECK */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 4DF850511FB845AE82D3900C /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
-			buildPhases = (
-				250CBE123758CA9590BC499A /* Generate CMakeFiles/ALL_BUILD */,
-			);
-			dependencies = (
-				F5480FD0B0A84C77934A9037 /* PBXTargetDependency */,
-				8B7DFF8C11374DDA87445254 /* PBXTargetDependency */,
-			);
-			name = ALL_BUILD;
-			productName = ALL_BUILD;
-		};
-		3411FAD0C406493487491837 /* ZERO_CHECK */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 08D31A51151A4759A76AA676 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildConfigurationList = 7CC5BAD081BF4386875775B5 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
 			buildPhases = (
 				5CC6AF3ADA2C925AFFEB6253 /* Generate CMakeFiles/ZERO_CHECK */,
 			);
@@ -31,76 +18,88 @@
 			name = ZERO_CHECK;
 			productName = ZERO_CHECK;
 		};
+		92CEB7CB4D314135A05C7FE7 /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 4A29AAC750AE4860863B3A71 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				250CBE123758CA9590BC499A /* Generate CMakeFiles/ALL_BUILD */,
+			);
+			dependencies = (
+				CF2F4DC06D414985854724DD /* PBXTargetDependency */,
+				A374F09DBAE0449CAFD56C81 /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-	60493C99C20A488A9645C356 /* IccFromXml.cpp */ = {isa = PBXBuildFile; fileRef = A5A20E83F4C74D06BB9DB3B7 /* IccFromXml.cpp */; };
-	713F6E42ABF94FEBAA9DA4CC /* CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = C9FDB50EE9D54E689E8A51BF /* CMakeLists.txt */; };
+		0BCEEDD1600A4DD59A0D6F54 /* CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = 8465DD5D7FE64EA2BD808C00 /* CMakeLists.txt */; };
+		D865EEC9DC2E42058938EF14 /* IccFromXml.cpp */ = {isa = PBXBuildFile; fileRef = B59C30EF3E1C4821B2252F76 /* IccFromXml.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
-		4E651F165EDD4BEC9AC17500 /* Release */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Release;
-		};
-		9AEDED2F2422459ABDC7E33F /* Debug */ = {
+		694D7F66A6A54E9893DDDF78 /* Debug */ = {
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 			};
 			name = Debug;
 		};
-		F106AE83021243D2947F61BB /* MinSizeRel */ = {
+		871D081C97B54B9FA5DCBC87 /* MinSizeRel */ = {
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 			};
 			name = MinSizeRel;
 		};
-		FF0A7EF403A242D9AC607A0A /* RelWithDebInfo */ = {
+		9862084ADC7C4B789DE682EB /* RelWithDebInfo */ = {
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 			};
 			name = RelWithDebInfo;
 		};
+		BD5FB2D95CE34E638968145D /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Release;
+		};
 /* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
-		817CBE26E6D7417195CF8DED /* PBXContainerItemProxy */ = {
+		0DE149F9E918408691A6B419 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 971E2AB583DA413F945C8805 /* Project object */;
+			containerPortal = 293BC55142D54BEFB7266791 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3411FAD0C406493487491837;
+			remoteGlobalIDString = 0D30941A617747D880E30805;
 			remoteInfo = ZERO_CHECK;
 		};
-		D2788DC6B8A547C7A87C10F2 /* PBXContainerItemProxy */ = {
+		24310A7ACF0847CD8913993C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 971E2AB583DA413F945C8805 /* Project object */;
+			containerPortal = 293BC55142D54BEFB7266791 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3411FAD0C406493487491837;
+			remoteGlobalIDString = 0D30941A617747D880E30805;
 			remoteInfo = ZERO_CHECK;
 		};
-		EECA5200DD6F489494A5FE18 /* PBXContainerItemProxy */ = {
+		CABD9CE835F4447FA2119714 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 971E2AB583DA413F945C8805 /* Project object */;
+			containerPortal = 293BC55142D54BEFB7266791 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 0849225D50C7465FA3475BAB;
+			remoteGlobalIDString = 81F0E24F351B4D538BAFBD2B;
 			remoteInfo = iccFromXml;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A27CC4AEECD7422AB7C96F37 /* iccFromXml */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = iccFromXml; sourceTree = BUILT_PRODUCTS_DIR; };
-		A5A20E83F4C74D06BB9DB3B7 /* IccFromXml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = IccFromXml.cpp; path = IccFromXml.cpp; sourceTree = SOURCE_ROOT; };
-		C9FDB50EE9D54E689E8A51BF /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		8465DD5D7FE64EA2BD808C00 /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		B59C30EF3E1C4821B2252F76 /* IccFromXml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = IccFromXml.cpp; path = IccFromXml.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		72494E5A03644528AD44602E /* Frameworks */ = {
+		5397B6467F11453CB50466FF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -110,119 +109,119 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2802CDAFC8C04419AA6B39B4 /* Resources */ = {
+		27F71B4B76D2458E9C89DD9E = {
 			isa = PBXGroup;
 			children = (
+				DB11DF7A09E64DE9808E76F3 /* iccFromXml */,
+				A8061D193FE24C92AECA9326 /* ALL_BUILD */,
+				DED48722702F45AAB1BB531C /* Products */,
+				604BC972C63B4F56A8C88431 /* Frameworks */,
+				9CD67E4C35EC478EBA0E281C /* Resources */,
 			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
-		355600AF39424A1EBBE1F18E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A27CC4AEECD7422AB7C96F37 /* iccFromXml */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		3C7151C6DE4440EC87CC158F /* Source Files */ = {
-			isa = PBXGroup;
-			children = (
-				A5A20E83F4C74D06BB9DB3B7 /* IccFromXml.cpp */,
-			);
-			name = "Source Files";
-			sourceTree = "<group>";
-		};
-		3FC12FCAF8FB439D9EC19F19 /* Frameworks */ = {
+		604BC972C63B4F56A8C88431 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		43EC4EBC399C42D79CFEFDB4 /* iccFromXml */ = {
-			isa = PBXGroup;
-			children = (
-				3C7151C6DE4440EC87CC158F /* Source Files */,
-				C9FDB50EE9D54E689E8A51BF /* CMakeLists.txt */,
-			);
-			name = iccFromXml;
-			sourceTree = "<group>";
-		};
-		8F94EBF8105949008CA203D2 = {
-			isa = PBXGroup;
-			children = (
-				43EC4EBC399C42D79CFEFDB4 /* iccFromXml */,
-				F96B2AB09EC841B7B3EB073E /* ALL_BUILD */,
-				355600AF39424A1EBBE1F18E /* Products */,
-				3FC12FCAF8FB439D9EC19F19 /* Frameworks */,
-				2802CDAFC8C04419AA6B39B4 /* Resources */,
-			);
-			sourceTree = "<group>";
-		};
-		A5958533200D469E91CDE119 /* CMake Rules */ = {
+		6AA518DD69F649078F0F452E /* CMake Rules */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = "CMake Rules";
 			sourceTree = "<group>";
 		};
-		F96B2AB09EC841B7B3EB073E /* ALL_BUILD */ = {
+		9CD67E4C35EC478EBA0E281C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A5958533200D469E91CDE119 /* CMake Rules */,
-				CAA076C4D5824AC39CFB7463 /* CMakeLists.txt */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		A8061D193FE24C92AECA9326 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				6AA518DD69F649078F0F452E /* CMake Rules */,
+				DDF0ED107AA54D3AAF3E11B1 /* CMakeLists.txt */,
 			);
 			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		B785AD3E1CF34ACA8A1CD0C9 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				B59C30EF3E1C4821B2252F76 /* IccFromXml.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		DB11DF7A09E64DE9808E76F3 /* iccFromXml */ = {
+			isa = PBXGroup;
+			children = (
+				B785AD3E1CF34ACA8A1CD0C9 /* Source Files */,
+				8465DD5D7FE64EA2BD808C00 /* CMakeLists.txt */,
+			);
+			name = iccFromXml;
+			sourceTree = "<group>";
+		};
+		DED48722702F45AAB1BB531C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F01777EC56F24F42ACB9A80C /* iccFromXml */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0849225D50C7465FA3475BAB /* iccFromXml */ = {
+		81F0E24F351B4D538BAFBD2B /* iccFromXml */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C75C60013ED9483E8EB96EBA /* Build configuration list for PBXNativeTarget "iccFromXml" */;
+			buildConfigurationList = D6FAB04BCD75446DA4C0A42D /* Build configuration list for PBXNativeTarget "iccFromXml" */;
 			buildPhases = (
-				21DEDFAA4F1046CB95DC78A3 /* Sources */,
-				72494E5A03644528AD44602E /* Frameworks */,
+				0BB680BD982348ACA5B1BA6B /* Sources */,
+				5397B6467F11453CB50466FF /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				3D609FE3203A43EBB3EF0617 /* PBXTargetDependency */,
+				F77006585B8543AE95D3C514 /* PBXTargetDependency */,
 			);
 			name = iccFromXml;
 			productName = iccFromXml;
-			productReference = A27CC4AEECD7422AB7C96F37 /* iccFromXml */;
+			productReference = F01777EC56F24F42ACB9A80C /* iccFromXml */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		971E2AB583DA413F945C8805 /* Project object */ = {
+		293BC55142D54BEFB7266791 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1540;
 			};
-			buildConfigurationList = 2A3507C9BF344F9084431682 /* Build configuration list for PBXProject "IccFromXml" */;
+			buildConfigurationList = 2120915E7EA44E04999C2523 /* Build configuration list for PBXProject "IccFromXml" */;
 			buildSettings = {
 			};
 			buildStyles = (
-				9AEDED2F2422459ABDC7E33F /* Debug */,
-				4E651F165EDD4BEC9AC17500 /* Release */,
-				F106AE83021243D2947F61BB /* MinSizeRel */,
-				FF0A7EF403A242D9AC607A0A /* RelWithDebInfo */,
+				694D7F66A6A54E9893DDDF78 /* Debug */,
+				BD5FB2D95CE34E638968145D /* Release */,
+				871D081C97B54B9FA5DCBC87 /* MinSizeRel */,
+				9862084ADC7C4B789DE682EB /* RelWithDebInfo */,
 			);
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
-			mainGroup = 8F94EBF8105949008CA203D2;
+			mainGroup = 27F71B4B76D2458E9C89DD9E;
 			projectDirPath = .;
 			projectRoot = "";
 			targets = (
-				1A55A1DD914D4AED9FB40A86 /* ALL_BUILD */,
-				3411FAD0C406493487491837 /* ZERO_CHECK */,
-				0849225D50C7465FA3475BAB /* iccFromXml */,
+				92CEB7CB4D314135A05C7FE7 /* ALL_BUILD */,
+				0D30941A617747D880E30805 /* ZERO_CHECK */,
+				81F0E24F351B4D538BAFBD2B /* iccFromXml */,
 			);
 		};
 /* End PBXProject section */
@@ -238,27 +237,25 @@
 			);
 			name = "Generate CMakeFiles/ALL_BUILD";
 			outputPaths = (
-"$(SRCROOT)/IccXML/CmdLine/IccFromXml/CMakeFiles/ALL_BUILD"
-			);
+"IccFromXml/CMakeFiles/ALL_BUILD"			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e
-SRCROOT=$(pwd)
-if [ \"$CONFIGURATION\" = \"Debug\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd IccXML/CmdLine/IccFromXml
+  echo Build\\ all\\ projects
 fi
-if [ \"$CONFIGURATION\" = \"Release\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd IccXML/CmdLine/IccFromXml
+  echo Build\\ all\\ projects
 fi
-if [ \"$CONFIGURATION\" = \"MinSizeRel\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd IccXML/CmdLine/IccFromXml
+  echo Build\\ all\\ projects
 fi
-if [ \"$CONFIGURATION\" = \"RelWithDebInfo\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd IccXML/CmdLine/IccFromXml
+  echo Build\\ all\\ projects
 fi
 ";
 			showEnvVarsInLog = 0;
@@ -278,8 +275,7 @@ fi
 exit 0";
 			showEnvVarsInLog = 0;
 		};
-/* Begin PBXShellScriptBuildPhase section */
-		250CBE123758CA9590BC499A /* Generate CMakeFiles/ALL_BUILD */ = {
+		5CC6AF3ADA2C925AFFEB6253 /* Generate CMakeFiles/ZERO_CHECK */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -287,29 +283,27 @@ exit 0";
 			);
 			inputPaths = (
 			);
-			name = "Generate CMakeFiles/ALL_BUILD";
+			name = "Generate CMakeFiles/ZERO_CHECK";
 			outputPaths = (
-"$(SRCROOT)/IccXML/CmdLine/IccFromXml/CMakeFiles/ALL_BUILD"
-			);
+"IccFromXml/CMakeFiles/ZERO_CHECK"			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e
-SRCROOT=$(pwd)
-if [ \"$CONFIGURATION\" = \"Debug\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd IccXML/CmdLine/IccFromXml
+  make -f /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml/CMakeScripts/ReRunCMake.make
 fi
-if [ \"$CONFIGURATION\" = \"Release\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml
+  make -f /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml/CMakeScripts/ReRunCMake.make
 fi
-if [ \"$CONFIGURATION\" = \"MinSizeRel\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml
+  make -f /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml/CMakeScripts/ReRunCMake.make
 fi
-if [ \"$CONFIGURATION\" = \"RelWithDebInfo\" ]; then
-  cd \"${SRCROOT}/IccXML/CmdLine/IccFromXml\"
-  echo Build all projects
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml
+  make -f /Users/xss/dmax/DemoIccMAX-master/IccXML/CmdLine/IccFromXml/CMakeScripts/ReRunCMake.make
 fi
 ";
 			showEnvVarsInLog = 0;
@@ -332,42 +326,102 @@ exit 0";
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		21DEDFAA4F1046CB95DC78A3 /* Sources */ = {
+		0BB680BD982348ACA5B1BA6B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-60493C99C20A488A9645C356 /* ../IccXML/CmdLine/IccFromXml/IccFromXml.cpp */,
+				D865EEC9DC2E42058938EF14 /* ../../../IccXML/CmdLine/IccFromXml/IccFromXml.cpp */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3D609FE3203A43EBB3EF0617 /* PBXTargetDependency */ = {
+		A374F09DBAE0449CAFD56C81 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3411FAD0C406493487491837 /* ZERO_CHECK */;
-			targetProxy = 817CBE26E6D7417195CF8DED /* PBXContainerItemProxy */;
+			target = 0D30941A617747D880E30805 /* ZERO_CHECK */;
+			targetProxy = 24310A7ACF0847CD8913993C /* PBXContainerItemProxy */;
 		};
-		8B7DFF8C11374DDA87445254 /* PBXTargetDependency */ = {
+		CF2F4DC06D414985854724DD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0849225D50C7465FA3475BAB /* iccFromXml */;
-			targetProxy = EECA5200DD6F489494A5FE18 /* PBXContainerItemProxy */;
+			target = 81F0E24F351B4D538BAFBD2B /* iccFromXml */;
+			targetProxy = CABD9CE835F4447FA2119714 /* PBXContainerItemProxy */;
 		};
-		F5480FD0B0A84C77934A9037 /* PBXTargetDependency */ = {
+		F77006585B8543AE95D3C514 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3411FAD0C406493487491837 /* ZERO_CHECK */;
-			targetProxy = D2788DC6B8A547C7A87C10F2 /* PBXContainerItemProxy */;
+			target = 0D30941A617747D880E30805 /* ZERO_CHECK */;
+			targetProxy = 0DE149F9E918408691A6B419 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		006A88015E504B0E83FD58DE /* RelWithDebInfo */ = {
+		10E80300465A4CB89C34F00F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		12631C86EB844B549A40D704 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		12C72A5F061741A38B3B0274 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		1A1B3CDF37FB42F99FDE63A8 /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = x86_64;
 				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/IccXML/CmdLine/IccFromXml/RelWithDebInfo";
+				CONFIGURATION_BUILD_DIR = "build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				EXECUTABLE_PREFIX = "";
 				EXECUTABLE_SUFFIX = "";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -375,83 +429,63 @@ exit 0";
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = ("$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../IccProfLib","$(SRCROOT)/IccXML/CmdLine/IccFromXml/../..","$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../IccLibXML","$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../ ../../../IccXML/CmdLine/IccFromXml/../../IccLibXML","$(inherited)");
 				INSTALL_PATH = "";
-				LD_RUNPATH_SEARCH_PATHS = ("$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib","$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
-				LIBRARY_SEARCH_PATHS = ("$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib","$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","$(SRCROOT)/IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				LD_RUNPATH_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				LIBRARY_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = "       -DNDEBUG ";
 				OTHER_LDFLAGS = (" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lIccProfLib2.2","-lIccXML2.2","$(inherited)");
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = iccFromXml;
 				SECTORDER_FLAGS = "";
-				TARGET_TEMP_DIR = "$(SRCROOT)/IccXML/CmdLine/IccFromXml/build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				TARGET_TEMP_DIR = "build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
 			};
 			name = RelWithDebInfo;
 		};
-		0905BB31542547E1BD5EA790 /* RelWithDebInfo */ = {
+		1FFE68545D9C4E83A70412ED /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
 				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				CONFIGURATION_BUILD_DIR = "build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../ ../../../IccXML/CmdLine/IccFromXml/../../IccLibXML","$(inherited)");
 				INSTALL_PATH = "";
-				OTHER_LDFLAGS = ("","$(inherited)");
+				LD_RUNPATH_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				LIBRARY_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG ";
+				OTHER_LDFLAGS = (" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lIccProfLib2.2","-lIccXML2.2","$(inherited)");
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ZERO_CHECK;
+				PRODUCT_NAME = iccFromXml;
 				SECTORDER_FLAGS = "";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = RelWithDebInfo;
-		};
-		15BBFE118EE545D5A94D2295 /* RelWithDebInfo */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				OTHER_LDFLAGS = ("","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ALL_BUILD;
-				SECTORDER_FLAGS = "";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = RelWithDebInfo;
-		};
-		24AF7FAFD05F43FA87387EB3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				OTHER_LDFLAGS = ("","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ZERO_CHECK;
-				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
 			};
 			name = Release;
 		};
-		2D7E84543EB34209BA26C2A4 /* MinSizeRel */ = {
+		2E6FB1A37EBE402B98CE55E2 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = "../../../IccXML/CmdLine/IccFromXml/build";
+			};
+			name = RelWithDebInfo;
+		};
+		43FB2D46B01845D5AA84C94D /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -468,37 +502,26 @@ exit 0";
 				SECTORDER_FLAGS = "";
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		4B157568EAD3438EB51C9270 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = "../../../IccXML/CmdLine/IccFromXml/build";
 			};
 			name = MinSizeRel;
 		};
-		3AFA782460FF42EBAD7FDE09 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = x86_64;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SYMROOT = "$(PROJECT_DIR)/IccXML/CmdLine/IccFromXml/build";
-			};
-			name = Release;
-		};
-		49E5E4FEB8574ED5B515EE4D /* RelWithDebInfo */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = x86_64;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SYMROOT = "$(PROJECT_DIR)/IccXML/CmdLine/IccFromXml/build";
-			};
-			name = RelWithDebInfo;
-		};
-/* Begin XCBuildConfiguration section */
-		50EA0E9AD6554940822C6F5D /* Debug */ = {
+		5460E0E70C5046B3AC3CB6E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = x86_64;
 				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/IccXML/CmdLine/IccFromXml/Debug";
+				CONFIGURATION_BUILD_DIR = "build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				EXECUTABLE_PREFIX = "";
 				EXECUTABLE_SUFFIX = "";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -506,75 +529,32 @@ exit 0";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../../IccProfLib",
-					"$(PROJECT_DIR)/../..",
-					"$(PROJECT_DIR)/../../IccLibXML",
-					"$(inherited)"
-				);
+				HEADER_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../ ../../../IccXML/CmdLine/IccFromXml/../../IccLibXML","$(inherited)");
 				INSTALL_PATH = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../../IccProfLib",
-					"$(PROJECT_DIR)/../..",
-					"$(PROJECT_DIR)/../../IccLibXML",
-					"$(inherited)"
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(PROJECT_DIR)/../../../Build/IccProfLib",
-					"$(PROJECT_DIR)/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"$(PROJECT_DIR)/../../../Build/IccXML",
-					"$(inherited)"
-				);
+				LD_RUNPATH_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				LIBRARY_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = "   ";
-				OTHER_LDFLAGS = (
-					" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names",
-					"-lIccProfLib2.2",
-					"-lIccXML2.2",
-					"$(inherited)"
-				);
+				OTHER_LDFLAGS = (" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lIccProfLib2.2","-lIccXML2.2","$(inherited)");
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = iccFromXml;
 				SECTORDER_FLAGS = "";
-				TARGET_TEMP_DIR = "$(PROJECT_DIR)/IccXML/CmdLine/IccFromXml/build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				TARGET_TEMP_DIR = "build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
 			};
 			name = Debug;
 		};
-/* End XCBuildConfiguration section */
-83073211A6EE44CFB2DA3A3F /* MinSizeRel */ = {
-	isa = XCBuildConfiguration;
-	buildSettings = {
-		ALWAYS_SEARCH_USER_PATHS = NO;
-		ARCHS = x86_64;
-		COMBINE_HIDPI_IMAGES = YES;
-		CONFIGURATION_BUILD_DIR = "MinSizeRel";
-		EXECUTABLE_PREFIX = "";
-		EXECUTABLE_SUFFIX = "";
-		GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-		GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-		GCC_OPTIMIZATION_LEVEL = s;
-		GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-		GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-		HEADER_SEARCH_PATHS = ("$(PROJECT_DIR)/../../../IccProfLib", "$(PROJECT_DIR)/../..", "$(PROJECT_DIR)/../../IccLibXML", "$(inherited)");
-		INSTALL_PATH = "";
-		LD_RUNPATH_SEARCH_PATHS = ("$(PROJECT_DIR)/../../../Build/IccProfLib", "$(PROJECT_DIR)/../../../Build/IccXML", "$(inherited)");
-		LIBRARY_SEARCH_PATHS = ("$(PROJECT_DIR)/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)", "$(PROJECT_DIR)/../../../Build/IccProfLib", "$(PROJECT_DIR)/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)", "$(PROJECT_DIR)/../../../Build/IccXML", "$(inherited)");
-		ONLY_ACTIVE_ARCH = NO;
-		OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG ";
-		OTHER_LDFLAGS = (" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lIccProfLib2.2","-lIccXML2.2","$(inherited)");
-		OTHER_REZFLAGS = "";
-		PRODUCT_NAME = iccFromXml;
-		SECTORDER_FLAGS = "";
-		TARGET_TEMP_DIR = "$(PROJECT_DIR)/build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
-		USE_HEADERMAP = NO;
-		WARNING_CFLAGS = ("$(inherited)");
-	};
-	name = MinSizeRel;
-};
-		6FCFA22C8A6D4F458736BAF6 /* MinSizeRel */ = {
+		5BC485B57BBE486289E23E95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
+				SYMROOT = "../../../IccXML/CmdLine/IccFromXml/build";
+			};
+			name = Debug;
+		};
+		63399F3ED95E41D8A80DB29F /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -594,16 +574,37 @@ exit 0";
 			};
 			name = MinSizeRel;
 		};
-		75805ECF690B472E804707F7 /* Debug */ = {
+		6C975839112748EB9192C424 /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = x86_64;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
-				SYMROOT = "$(PROJECT_DIR)/build";
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../ ../../../IccXML/CmdLine/IccFromXml/../../IccLibXML","$(inherited)");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				LIBRARY_SEARCH_PATHS = ("../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) ../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccProfLib","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","../../../IccXML/CmdLine/IccFromXml/../../../Build/IccXML","$(inherited)");
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG ";
+				OTHER_LDFLAGS = (" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lIccProfLib2.2","-lIccXML2.2","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = iccFromXml;
+				SECTORDER_FLAGS = "";
+				TARGET_TEMP_DIR = "build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
 			};
-			name = Debug;
+			name = MinSizeRel;
 		};
-		794243A7B31541E08DC890FB /* Release */ = {
+		81D58E4FF631462E8C9FEBB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -616,14 +617,44 @@ exit 0";
 				INSTALL_PATH = "";
 				OTHER_LDFLAGS = ("","$(inherited)");
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ALL_BUILD;
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		999BF21F6C204CF5AC691CEB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
 				SECTORDER_FLAGS = "";
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
 			};
 			name = Release;
 		};
-		C5AB712B1F4847769A717E3F /* Debug */ = {
+		A1254BECCBAF46028448E18B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = "../../../IccXML/CmdLine/IccFromXml/build";
+			};
+			name = Release;
+		};
+		F1B60928605347BDA1BC6293 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -643,134 +674,54 @@ exit 0";
 			};
 			name = Debug;
 		};
-		DB4D0FBC109F4DCF8958010E /* MinSizeRel */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = x86_64;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SYMROOT = "$(PROJECT_DIR)/build";
-			};
-			name = MinSizeRel;
-		};
-		E4BCD06E442943BDBA6E5671 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				OTHER_LDFLAGS = ("","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ZERO_CHECK;
-				SECTORDER_FLAGS = "";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = Debug;
-		};
-E9B85C98251F448AA762F198 /* Release */ = {
-	isa = XCBuildConfiguration;
-	buildSettings = {
-		ALWAYS_SEARCH_USER_PATHS = NO;
-		ARCHS = x86_64;
-		COMBINE_HIDPI_IMAGES = YES;
-		CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/IccXML/CmdLine/IccFromXml/Release";
-		EXECUTABLE_PREFIX = "";
-		EXECUTABLE_SUFFIX = "";
-		GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-		GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-		GCC_OPTIMIZATION_LEVEL = 3;
-		GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-		GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-		HEADER_SEARCH_PATHS = (
-			"$(PROJECT_DIR)/../../../IccProfLib",
-			"$(PROJECT_DIR)/../..",
-			"$(PROJECT_DIR)/../../IccLibXML",
-			"$(inherited)"
-		);
-		INSTALL_PATH = "";
-		LD_RUNPATH_SEARCH_PATHS = (
-			"$(PROJECT_DIR)/../../../Build/IccProfLib",
-			"$(PROJECT_DIR)/../../../Build/IccXML",
-			"$(inherited)"
-		);
-		LIBRARY_SEARCH_PATHS = (
-			"$(PROJECT_DIR)/../../../Build/IccProfLib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-			"$(PROJECT_DIR)/../../../Build/IccProfLib",
-			"$(PROJECT_DIR)/../../../Build/IccXML/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-			"$(PROJECT_DIR)/../../../Build/IccXML",
-			"$(inherited)"
-		);
-		ONLY_ACTIVE_ARCH = NO;
-		OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG ";
-		OTHER_LDFLAGS = (
-			" -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names",
-			"-lIccProfLib2.2",
-			"-lIccXML2.2",
-			"$(inherited)"
-		);
-		OTHER_REZFLAGS = "";
-		PRODUCT_NAME = iccFromXml;
-		SECTORDER_FLAGS = "";
-		TARGET_TEMP_DIR = "$(PROJECT_DIR)/IccXML/CmdLine/IccFromXml/build/iccFromXml.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
-		USE_HEADERMAP = NO;
-		WARNING_CFLAGS = ("$(inherited)");
-	};
-	name = Release;
-};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		08D31A51151A4759A76AA676 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+		2120915E7EA44E04999C2523 /* Build configuration list for PBXProject "IccFromXml" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E4BCD06E442943BDBA6E5671 /* Debug */,
-				24AF7FAFD05F43FA87387EB3 /* Release */,
-				6FCFA22C8A6D4F458736BAF6 /* MinSizeRel */,
-				0905BB31542547E1BD5EA790 /* RelWithDebInfo */,
+				5BC485B57BBE486289E23E95 /* Debug */,
+				A1254BECCBAF46028448E18B /* Release */,
+				4B157568EAD3438EB51C9270 /* MinSizeRel */,
+				2E6FB1A37EBE402B98CE55E2 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		2A3507C9BF344F9084431682 /* Build configuration list for PBXProject "IccFromXml" */ = {
+		4A29AAC750AE4860863B3A71 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				75805ECF690B472E804707F7 /* Debug */,
-				3AFA782460FF42EBAD7FDE09 /* Release */,
-				DB4D0FBC109F4DCF8958010E /* MinSizeRel */,
-				49E5E4FEB8574ED5B515EE4D /* RelWithDebInfo */,
+				F1B60928605347BDA1BC6293 /* Debug */,
+				10E80300465A4CB89C34F00F /* Release */,
+				12C72A5F061741A38B3B0274 /* MinSizeRel */,
+				43FB2D46B01845D5AA84C94D /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		4DF850511FB845AE82D3900C /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+		7CC5BAD081BF4386875775B5 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C5AB712B1F4847769A717E3F /* Debug */,
-				794243A7B31541E08DC890FB /* Release */,
-				2D7E84543EB34209BA26C2A4 /* MinSizeRel */,
-				15BBFE118EE545D5A94D2295 /* RelWithDebInfo */,
+				81D58E4FF631462E8C9FEBB3 /* Debug */,
+				999BF21F6C204CF5AC691CEB /* Release */,
+				63399F3ED95E41D8A80DB29F /* MinSizeRel */,
+				12631C86EB844B549A40D704 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		C75C60013ED9483E8EB96EBA /* Build configuration list for PBXNativeTarget "iccFromXml" */ = {
+		D6FAB04BCD75446DA4C0A42D /* Build configuration list for PBXNativeTarget "iccFromXml" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				50EA0E9AD6554940822C6F5D /* Debug */,
-				E9B85C98251F448AA762F198 /* Release */,
-				6573C4FE7C584052A79F126E /* MinSizeRel */,
-				006A88015E504B0E83FD58DE /* RelWithDebInfo */,
+				5460E0E70C5046B3AC3CB6E6 /* Debug */,
+				1FFE68545D9C4E83A70412ED /* Release */,
+				6C975839112748EB9192C424 /* MinSizeRel */,
+				1A1B3CDF37FB42F99FDE63A8 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 971E2AB583DA413F945C8805 /* Project object */;
+	rootObject = 293BC55142D54BEFB7266791 /* Project object */;
 }
