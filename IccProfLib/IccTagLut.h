@@ -136,7 +136,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigCurveType; }
   virtual const icChar *GetClassName() const { return "CIccTagCurve"; }
 
-  virtual void Describe(std::string &sDescription, int nVerboseness);
+  virtual void Describe(std::string &sDescription, int nVerboseness=0);
   virtual void DumpLut(std::string &sDescription, const icChar *szName, 
     icColorSpaceSignature csSig, int nIndex, int nVerboseness);
 
@@ -179,7 +179,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigParametricCurveType; }
   virtual const icChar *GetClassName() const { return "CIccTagParametricCurve"; }
 
-  virtual void Describe(std::string &sDescription, int nVerboseness);
+  virtual void Describe(std::string &sDescription, int nVerboseness=0);
   virtual void DumpLut(std::string &sDescription, const icChar *szName,
     icColorSpaceSignature csSig, int nIndex, int nVerboseness);
 
@@ -229,7 +229,7 @@ public:
   virtual icTagTypeSignature GetType() const { return icSigSegmentedCurveType; }
   virtual const icChar *GetClassName() const { return "CIccTagSegmentedCurve"; }
 
-  virtual void Describe(std::string &sDescription, int nVerboseness);
+  virtual void Describe(std::string &sDescription, int nVerboseness=0);
   virtual void DumpLut(std::string &sDescription, const icChar *szName, 
     icColorSpaceSignature csSig, int nIndex, int nVerboseness);
 
@@ -451,7 +451,7 @@ public:
   icUInt8Number InputChannels() const { return m_nInput; }
   icUInt8Number OutputChannels() const { return m_nOutput; }
 
-  virtual void Describe(std::string &sDescription, int nVerboseness);
+  virtual void Describe(std::string &sDescription, int nVerboseness=0);
 
   virtual void SetColorSpaces(icColorSpaceSignature csInput, icColorSpaceSignature csOutput);
   virtual icValidateStatus Validate(std::string sigPath, std::string &sReport, const CIccProfile* pProfile=NULL);
@@ -623,7 +623,7 @@ public:
 
   virtual bool Read(icUInt32Number size, CIccIO *pIO);
   virtual bool Write(CIccIO *pIO);
-  virtual void Describe(std::string &sDescription, int nVerboseness);
+  virtual void Describe(std::string &sDescription, int nVerboseness=0);
 
   bool	setVertex(icInt32Number vertexNumber,icFloatNumber* pcsCoords,icFloatNumber* deviceCoords = NULL);
   icFloatNumber*	getVertexPCSCoord(icInt32Number vertexNumber);
