@@ -44,10 +44,6 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# Compiler flags for Debug and Release build types
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fsanitize=address -fno-omit-frame-pointer -Wall -O0")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
-
 # Architecture determination
 if(APPLE)
   execute_process(
@@ -65,10 +61,16 @@ if(APPLE)
   endif()
 endif()
 
+# Compiler flags for Debug and Release build types
 IF( CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]" )
   MESSAGE( "-- Info build \"${CMAKE_BUILD_TYPE}\"" )
   SET( DEBUG 1 )
   add_definitions( -D_DEBUG )
+  IF( NOT CMAKE_CXX_FLAGS_DEBUG )
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fsanitize=address -fno-omit-frame-pointer -Wall -O0")
+  ENDIF()
+ELSEIF()
+  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 ENDIF()
 
 #
