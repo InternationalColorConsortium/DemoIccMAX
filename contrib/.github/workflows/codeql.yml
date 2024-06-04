@@ -1,0 +1,40 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize the CodeQL tools
+        uses: github/codeql-action/init@v1
+        with:
+          languages: cpp, python
+
+      - name: Build with CMake
+        run: |
+          cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
+          make
+        working-directory: /home/runner/work/DemoIccMAX/DemoIccMAX/Build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
+      - name: Upload SARIF results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeql-sarif
+          path: /home/runner/work/DemoIccMAX/results/python.sarif
