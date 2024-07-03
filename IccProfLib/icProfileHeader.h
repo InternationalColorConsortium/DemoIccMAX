@@ -726,8 +726,8 @@ typedef enum {
   icSigCinfSpectralDataMbr = 0x73706563, /* 'spec' */
 } icColorantInfoMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigCinfUnknownMbr    ((icColorInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxCinfMbr           ((icColorInfoMemberSignature) 0xFFFFFFFF)
+#define icSigCinfUnknownMbr    ((icColorantInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxCinfMbr           ((icColorantInfoMemberSignature) 0xFFFFFFFF)
 
 
 /**
@@ -737,8 +737,8 @@ typedef enum {
   icSigCeptBluePrimaryXYZMbr                = 0x6258595a,  /* bXYZ' */
   icSigCeptGreenPrimaryXYZMbr	              = 0x6758595a,  /* gXYZ' */
   icSigCeptRedPrimaryXYZMbr                 = 0x7258595a,  /* rXYZ' */
-  icSigCeptTransferFunctionMbr              = 0x66756e63, /* func’ */
-  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifnc’ */
+  icSigCeptTransferFunctionMbr              = 0x66756e63, /* funcÂ’ */
+  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifncÂ’ */
   icSigCeptLumaChromaMatrixMbr              = 0x6c6d6174,  /* lmat' */
   icSigCeptWhitePointLuminanceMbr           = 0x776c756d,  /* wlum' */
   icSigCeptWhitePointChromaticityMbr        = 0x7758595a,  /* wXYZ' */
@@ -1504,7 +1504,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number  gamma;          /* xÂ°gamma                      */
                                         /* up to 7 values Y,a,b,c,d,e,f */
 } icParametricCurve;
 
@@ -1513,7 +1513,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number  gamma;          /* xÂ°gamma                      */
     icS15Fixed16Number  a;              /* a                            */
     icS15Fixed16Number  b;              /* b                            */
     icS15Fixed16Number  c;              /* c                            */
