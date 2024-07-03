@@ -726,8 +726,8 @@ typedef enum {
   icSigCinfSpectralDataMbr = 0x73706563, /* 'spec' */
 } icColorantInfoMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigCinfUnknownMbr    ((icColorInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxCinfMbr           ((icColorInfoMemberSignature) 0xFFFFFFFF)
+#define icSigCinfUnknownMbr    ((icColorantInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxCinfMbr           ((icColorantInfoMemberSignature) 0xFFFFFFFF)
 
 
 /**
@@ -737,8 +737,8 @@ typedef enum {
   icSigCeptBluePrimaryXYZMbr                = 0x6258595a,  /* bXYZ' */
   icSigCeptGreenPrimaryXYZMbr	              = 0x6758595a,  /* gXYZ' */
   icSigCeptRedPrimaryXYZMbr                 = 0x7258595a,  /* rXYZ' */
-  icSigCeptTransferFunctionMbr              = 0x66756e63, /* func’ */
-  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifnc’ */
+  icSigCeptTransferFunctionMbr              = 0x66756e63, /* funcÂ’ */
+  icSigCeptInverseTransferFunctionMbr       = 0x69666e63, /* ifncÂ’ */
   icSigCeptLumaChromaMatrixMbr              = 0x6c6d6174,  /* lmat' */
   icSigCeptWhitePointLuminanceMbr           = 0x776c756d,  /* wlum' */
   icSigCeptWhitePointChromaticityMbr        = 0x7758595a,  /* wXYZ' */
@@ -758,8 +758,8 @@ typedef enum {
   icSigCeptMediumBlackPointChromaticityMbr  = 0x6d627063,  /* mbpc' */
 } icColorEncodingParamsMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigCeptUnknownMbr    ((icCepsMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxCeptMbr           ((icCepsMemberSignature) 0xFFFFFFFF)
+#define icSigCeptUnknownMbr    ((icColorEncodingParamsMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxCeptMbr           ((icColorEncodingParamsMemberSignature) 0xFFFFFFFF)
 
 
 /**
@@ -774,8 +774,8 @@ typedef enum {
   icSigMeasModeMbr             = 0x6d6d6f64, /* 'mmod' */
 } icMeasurementInfoMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigMeasUnknownMbr    ((icMeasInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxMeasMbr           ((icMeasInfoMemberSignature) 0xFFFFFFFF)
+#define icSigMeasUnknownMbr    ((icMeasurementInfoMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxMeasMbr           ((icMeasurementInfoMemberSignature) 0xFFFFFFFF)
 
 
 /**
@@ -797,8 +797,8 @@ typedef enum {
   icSigNmclTintMbr                   = 0x74696e74,  /* 'tint' */
 } icNamedColorlMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigNmclUnknownMbr    ((icNmClrMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxNmclMbr           ((icNmClrMemberSignature) 0xFFFFFFFF)
+#define icSigNmclUnknownMbr    ((icNamedColorlMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxNmclMbr           ((icNamedColorlMemberSignature) 0xFFFFFFFF)
 
 
 /**
@@ -831,8 +831,8 @@ typedef enum {
   icSigTnt0SpectralOverGrayMbr  = 0x73706367,  /* 'spcg' */
 } icTintZeroMemberSignature;
 /** Convenience Enum Definitions - Not defined in proposal*/
-#define icSigTnt0UnknownMbr    ((icTntMemberSignature) 0x3f3f3f3f)  /* '????' */
-#define icMaxTnt0Mbr           ((icTnt0MemberSignature) 0xFFFFFFFF)
+#define icSigTnt0UnknownMbr    ((icTintZeroMemberSignature) 0x3f3f3f3f)  /* '????' */
+#define icMaxTnt0Mbr           ((icTintZeroMemberSignature) 0xFFFFFFFF)
 
 
 /** 
@@ -1504,7 +1504,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number  gamma;          /* xÂ°gamma                      */
                                         /* up to 7 values Y,a,b,c,d,e,f */
 } icParametricCurve;
 
@@ -1513,7 +1513,7 @@ typedef struct {
     icUInt16Number      funcType;       /* Function Type                */
                                         /* 0 = gamma only               */
     icUInt16Number      pad;            /* Padding for byte alignment   */
-    icS15Fixed16Number  gamma;          /* x°gamma                      */
+    icS15Fixed16Number  gamma;          /* xÂ°gamma                      */
     icS15Fixed16Number  a;              /* a                            */
     icS15Fixed16Number  b;              /* b                            */
     icS15Fixed16Number  c;              /* c                            */
