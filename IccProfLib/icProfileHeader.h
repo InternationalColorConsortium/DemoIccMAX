@@ -1023,7 +1023,7 @@ typedef enum {
 } icReferenceMediumGamutSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumReferenceMediumGamut ((icReferenceMediumGamutSignature 0xFFFFFFFF)
+#define icMaxEnumReferenceMediumGamut ((icReferenceMediumGamutSignature) 0xFFFFFFFF)
 
 
 /** Colorimetric Intent Image State Gamut Signatures */
@@ -1036,7 +1036,7 @@ typedef enum {
 } icColorimetricIntentImageStateSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxEnumColorimetricIntentImageState ((icColorimetricIntentImageStateSignature 0xFFFFFFFF)
+#define icMaxEnumColorimetricIntentImageState ((icColorimetricIntentImageStateSignature) 0xFFFFFFFF)
 
 
 /**
@@ -1048,7 +1048,7 @@ typedef enum {
 } icCurveSegSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxCurveSegSignature ((icCurveSegSignature 0xFFFFFFFF)
+#define icMaxCurveSegSignature ((icCurveSegSignature) 0xFFFFFFFF)
 
 /**
  * MPE Curve Set Curve signature
@@ -1060,7 +1060,7 @@ typedef enum {
 } icCurveElemSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxCurveElemSignature ((icCurveElemSignature 0xFFFFFFFF)
+#define icMaxCurveElemSignature ((icCurveElemSignature) 0xFFFFFFFF)
 
 /** Enum for defining type of Single Sampled Curve**/
 typedef enum {
@@ -1078,7 +1078,7 @@ typedef enum {
 } icToneFunctionSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/
-#define icMaxCurveElemSignature ((icCurveElemSignature 0xFFFFFFFF)
+#define icMaxToneFunctionSignature ((icCurveElemSignature) 0xFFFFFFFF)
 
 
 /** Enum to identify single segment curve / clut2 element storage type **/ 
