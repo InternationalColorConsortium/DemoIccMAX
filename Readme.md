@@ -339,8 +339,13 @@ be many `-Wsign-compare` warnings and a few `-Wenum-compare` and
 You may also need to set `LD_LIBRARY_PATH` to `CMAKE_INSTALLPREFIX`/lib so that
 `libIccProfLib2.so` and `libIccXML.so` shared libraries can be located at runtime.
 
+Depending on the Host:
 ```bash
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
+```
+or
+```bash
+export LD_LIBRARY_PATH=$HOME/.local/lib64:$LD_LIBRARY_PATH
 ```
 
 When running `iccDumpProfileGui` under X-Windows the following error messages
