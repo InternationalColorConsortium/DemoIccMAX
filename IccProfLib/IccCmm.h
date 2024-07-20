@@ -1238,6 +1238,7 @@ protected:
   const CIccMatrix* m_ApplyMatrixPtr;
 };
 
+class CIccXformNDLut;
 
 class ICCPROFLIB_API CIccApplyNDLutXform : public CIccApplyXform
 {
