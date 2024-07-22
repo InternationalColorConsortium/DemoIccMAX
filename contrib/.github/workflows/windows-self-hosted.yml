@@ -1,0 +1,175 @@
+name: Build and Sanitize
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download vswhere
+      run: |
+        $vswherePath = "${{ runner.workspace }}\vswhere.exe"
+        Invoke-WebRequest -Uri https://github.com/microsoft/vswhere/releases/download/2.8.4/vswhere.exe -OutFile $vswherePath
+        echo "VSWHERE_PATH=$vswherePath" >> $env:GITHUB_ENV
+      shell: powershell
+
+    - name: Setup vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        Invoke-WebRequest -Uri https://github.com/microsoft/vcpkg-tool/releases/download/2024-08-01/vcpkg.exe -OutFile ./vcpkg.exe
+        ./vcpkg.exe install libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libjpeg-turbo:x64-windows libpng:x64-windows zlib:x64-windows pcre2:x64-windows expat:x64-windows
+      shell: powershell
+
+    - name: Checkout DemoIccMAX repository
+      run: |
+        git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+        cd DemoIccMAX
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
+        git revert b90ac3933da99179df26351c39d8d9d706ac1cc6
+      shell: powershell
+
+    - name: Find MSBuild Path
+      id: msbuild
+      run: |
+        $msbuildPath = &"$env:VSWHERE_PATH" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+        echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+      shell: powershell
+
+    - name: Update platform toolset to v143
+      run: |
+        Get-ChildItem -Recurse -Filter *.vcxproj | ForEach-Object {
+          (Get-Content $_.FullName) -replace '<PlatformToolset>v142</PlatformToolset>', '<PlatformToolset>v143</PlatformToolset>' | Set-Content $_.FullName
+        }
+      shell: powershell
+
+    - name: Create symbolic links for missing libraries
+      run: |
+        $installedLibDir = "${{ runner.workspace }}\vcpkg\installed\x64-windows\lib"
+        $packagesDir = "${{ runner.workspace }}\vcpkg\packages"
+        $libMapping = @{
+            "wxjpegd.lib" = "libjpeg-turbo_x64-windows\lib\jpeg.lib"
+            "wxpngd.lib" = "libpng_x64-windows\lib\libpng16.lib"
+            "wxzlibd.lib" = "zlib_x64-windows\lib\zlib.lib"
+            "wxregexd.lib" = "pcre2_x64-windows\lib\pcre2-8.lib"
+            "wxexpatd.lib" = "expat_x64-windows\lib\libexpat.lib"
+        }
+        function Create-Symlink {
+            param (
+                [string]$linkName,
+                [string]$targetPath
+            )
+            $linkPath = Join-Path $installedLibDir $linkName
+            $targetFullPath = Join-Path $packagesDir $targetPath
+            if (Test-Path $targetFullPath) {
+                if (Test-Path $linkPath) {
+                    Remove-Item $linkPath
+                }
+                New-Item -ItemType SymbolicLink -Path $linkPath -Target $targetFullPath
+            }
+        }
+        foreach ($lib in $libMapping.GetEnumerator()) {
+            Create-Symlink -linkName $lib.Key -targetPath $lib.Value
+        }
+      shell: powershell
+
+    - name: Update project file paths and properties
+      run: |
+        function Update-ProjectFiles {
+            param (
+                [string]$projectPath
+            )
+            $xml = [xml](Get-Content $projectPath)
+            $propertyGroups = $xml.Project.PropertyGroup | Where-Object { $_.OutputFile -ne $null }
+            foreach ($propertyGroup in $propertyGroups) {
+                $outputFile = $propertyGroup.OutputFile
+                if ($outputFile) {
+                    $outputDir = [System.IO.Path]::GetDirectoryName($outputFile)
+                    $outputName = [System.IO.Path]::GetFileNameWithoutExtension($outputFile)
+                    $outputExt = [System.IO.Path]::GetExtension($outputFile)
+                    if ($propertyGroup.OutDir -eq $null) {
+                        $newOutDir = $xml.CreateElement("OutDir")
+                        $newOutDir.InnerText = "$outputDir\"
+                        $propertyGroup.AppendChild($newOutDir)
+                    } else {
+                        $propertyGroup.OutDir = "$outputDir\"
+                    }
+                    if ($propertyGroup.TargetName -eq $null) {
+                        $newTargetName = $xml.CreateElement("TargetName")
+                        $newTargetName.InnerText = $outputName
+                        $propertyGroup.AppendChild($newTargetName)
+                    } else {
+                        $propertyGroup.TargetName = $outputName
+                    }
+                    if ($propertyGroup.TargetExt -eq $null) {
+                        $newTargetExt = $xml.CreateElement("TargetExt")
+                        $newTargetExt.InnerText = $outputExt
+                        $propertyGroup.AppendChild($newTargetExt)
+                    } else {
+                        $propertyGroup.TargetExt = $outputExt
+                    }
+                }
+            }
+            $xml.Save($projectPath)
+        }
+        Get-ChildItem -Recurse -Filter *.vcxproj | ForEach-Object {
+            Update-ProjectFiles -projectPath $_.FullName
+        }
+      shell: powershell
+
+    - name: Build IccProfLib
+      run: |
+        $msbuild = $env:MSBUILD_PATH
+        & $msbuild .\DemoIccMAX\IccProfLib\IccProfLib_v19.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+      shell: powershell
+
+    - name: Build with MSBuild
+      run: |
+        $msbuild = $env:MSBUILD_PATH
+        & $msbuild .\DemoIccMAX\Build\MSVC\BuildAll_v19.sln /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+        & $msbuild .\DemoIccMAX\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+        & $msbuild .\DemoIccMAX\Tools\CmdLine\IccFromCube\iccFromCube_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+      shell: powershell
+
+    - name: Identify and list output files
+      run: |
+        $outputPackageDir = "${{ runner.workspace }}\DemoIccMAX\Package"
+        New-Item -ItemType Directory -Path $outputPackageDir -Force
+        $libFiles = @()
+        $dllFiles = @()
+        $exeFiles = @()
+        function Categorize-Files {
+            param (
+                [string]$filePath
+            )
+            $extension = [System.IO.Path]::GetExtension($filePath).ToLower()
+            switch ($extension) {
+                ".lib" { $global:libFiles += $filePath }
+                ".dll" { $global:dllFiles += $filePath }
+                ".exe" { $global:exeFiles += $filePath }
+            }
+        }
+        $allFiles = Get-ChildItem -Path $projectDir -Recurse -File
+        foreach ($file in $allFiles) {
+            Categorize-Files -filePath $file.FullName
+        }
+        Write-Output "Library (.lib) files:" | Out-File -FilePath "$outputPackageDir\file_list.txt" -Append
+        $libFiles | ForEach-Object { $_ | Out-File -FilePath "$outputPackageDir\file_list.txt" -Append }
+        Write-Output "`nDLL (.dll) files:" | Out-File -FilePath "$outputPackageDir\file_list.txt" -Append
+        $dllFiles | ForEach-Object { $_ | Out-File -FilePath "$outputPackageDir\file_list.txt" -Append }
+        Write-Output "`nExecutable (.exe) files:" | Out-File -FilePath "$outputPackageDir\file_list.txt" -Append
+        $exeFiles | ForEach-Object { $_ | Out-File -FilePath "$outputPackageDir\file_list.txt" -Append }
+        Write-Output "File list saved to $outputPackageDir\file_list.txt"
+      shell: powershell

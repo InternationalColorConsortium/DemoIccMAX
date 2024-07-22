@@ -266,7 +266,18 @@ For example:
 EIGEN=C:\DevLibs\eigen\eigen-3.2.8
 ```
 
-### MacOS-X
+#### Powershell Build
+See [contrib/HelperScripts/vs2022_build.ps1](contrib/HelperScripts/vs2022_build.ps1)
+
+#### Download Windows x86_64 Binaries
+```
+cd \tmp
+curl -L -o demoiccmax-windows11-x86_64.zip https://github.com/xsscx/PatchIccMAX/releases/download/windows-x86_64/demoiccmax-windows11-x86_64.zip
+tar -xf demoiccmax-windows11-x86_64.zip
+cd .\demoiccmax-windows11-x86_64\
+```
+
+### macOS
 
 XCODE projects can be found in each of the library and project folders that are
 presently supported for building on the MacOS-X platform. The file
@@ -286,6 +297,17 @@ libIccXML.a library binaries into the Build/XCode/lib folder. The libraries in
 Build/XCode/lib are then referenced by the rest of the projects in DemoIccMAX.
 Executables for the various tools will be placed into the Testing folder after a
 successful run of `BuildAll.sh`.
+
+### macOS Package
+#### Download + Install Reproduction
+```
+cd /tmp
+wget https://github.com/xsscx/PatchIccMAX/releases/download/macos-x86_64-arm64/DemoIccMAX-macos-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-arm64-x86_64.tar.gz
+tar -xvzf DemoIccMAX-macos-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-arm64-x86_64.tar.gz
+export DYLD_LIBRARY_PATH=$(pwd)/lib:$DYLD_LIBRARY_PATH
+chmod +x bin/*
+for binary in bin/*; do echo "Testing $binary"; "$binary"; done
+```
 
 ### CMake
 
@@ -329,11 +351,6 @@ be many `-Wsign-compare` warnings and a few `-Wenum-compare` and
 * `ENABLE_INSTALL_RIM` - install no files if build as subproject
 * `USE_SYSTEM_LIBXML2` - default is OFF
 
-
-### Linux Packages
-
-* Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libDemoIccMAX-devel)
-
 ### Linux Issues and Solutions
 
 You may also need to set `LD_LIBRARY_PATH` to `CMAKE_INSTALLPREFIX`/lib so that
@@ -370,6 +387,61 @@ Failed to load module: /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
 The above error messages appear to be harmless, but running
 `apt-cache policy libgnutls30` or `gntls-cli -v` will likely indicate a
 different (later) version of gnutls.
+
+### Linux Package
+#### Download + Install Reproduction
+```
+cd /tmp
+wget https://github.com/xsscx/PatchIccMAX/releases/download/ubuntu-x86_64/DemoIccMAX-ubuntu-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-x86_64.zip
+unzip DemoIccMAX-ubuntu-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-x86_64.zip
+export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
+chmod +x bin/*
+for binary in bin/*; do echo "Testing $binary"; output=$($binary 2>&1); if [[ $binary == *"iccSpecSepToTiff"* ]]; then echo "$output" | grep "Usage" && echo "$binary works!" || echo "$binary failed!"; else echo "$output" | grep "2.2.3" && echo "$binary works!" || echo "$binary failed!"; fi; done
+```
+
+## Submitting an Issue
+If you have questions or need help, please open an [Issue](https://github.com/InternationalColorConsortium/DemoIccMAX/issues) and include the following information.
+
+### Title
+Concise and descriptive title of the issue
+
+### Description
+Detailed description of the issue.
+
+### Environment
+- Operating System: macOS 12.5
+- Architecture: x86_64
+- DemoIccMAX version: 2.2.3
+- Xcode version: 13.4
+
+### Steps to Reproduce
+1. Step one
+2. Step two
+3. Step three
+
+### Expected Behavior
+Describe what you expected to happen.
+
+### Actual Behavior
+Describe what actually happened.
+
+### Logs and Screenshots
+- Logs: Attach logs or error messages.
+- Screenshots: Attach screenshots.
+
+### Additional Context
+Provide any additional information that might be helpful.
+
+### Severity and Impact
+- Severity: Major
+- Impact: Describe the impact of this issue on your work or project.
+
+### Workarounds
+Describe any workarounds you have tried.
+
+### Suggested Solution
+If you have an idea for a solution, describe it here.
+
 
 ## License
 
