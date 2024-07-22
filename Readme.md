@@ -266,7 +266,76 @@ For example:
 EIGEN=C:\DevLibs\eigen\eigen-3.2.8
 ```
 
-### MacOS-X
+
+#### Minimized VS2022 Instructions
+
+The following instructions detail the steps required to build the latest DemoIccMAX project on Windows 11 using Visual Studio 2022. These steps will guide you through setting up the necessary dependencies using vcpkg, cloning the DemoIccMAX repository, and building the project in both Debug and Release configurations, with additional steps for enabling AddressSanitizer as of August 4, 2024.
+```
+## Step 1: Set up vcpkg for dependency management
+
+## Change to the temporary directory
+cd \tmp
+
+## Clone the vcpkg repository from GitHub
+git clone https://github.com/microsoft/vcpkg.git
+
+## Change to the vcpkg directory
+cd vcpkg
+
+## Bootstrap vcpkg to set it up
+.\bootstrap-vcpkg.bat
+
+## Install necessary dependencies using vcpkg
+.\vcpkg.exe install libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows
+
+## Step 2: Clone the DemoIccMAX repository
+
+## Change back to the temporary directory
+cd \tmp
+
+## Clone the DemoIccMAX repository from GitHub
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+
+## Change to the DemoIccMAX directory
+cd DemoIccMAX
+
+## Revert a specific commit (b90ac3933da99179df26351c39d8d9d706ac1cc6) if necessary
+git revert b90ac3933da99179df26351c39d8d9d706ac1cc6
+
+## Step 3: Build the solution
+
+## Clean the build for the entire solution (BuildAll_v19.sln) for Debug configuration and x64 platform
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Build\MSVC\BuildAll_v19.sln /t:clean /p:Configuration=Debug /p:Platform=x64
+
+## Build the entire solution (BuildAll_v19.sln) for Debug configuration and x64 platform
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Build\MSVC\BuildAll_v19.sln /p:Configuration=Debug /p:Platform=x64
+
+## Step 4: Manually build IccApplyToLink with AddressSanitizer
+
+## Clean the IccApplyToLink project for Debug configuration and x64 platform with AddressSanitizer enabled
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj /t:clean /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+
+## Build the IccApplyToLink project for Debug configuration and x64 platform with AddressSanitizer enabled
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+
+## Step 5: Manually build IccFromCube with AddressSanitizer
+
+## Clean the IccFromCube project for Debug configuration and x64 platform with AddressSanitizer enabled
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccFromCube\iccFromCube_v16.vcxproj /t:clean /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+
+## Build the IccFromCube project for Debug configuration and x64 platform with AddressSanitizer enabled
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccFromCube\iccFromCube_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+```
+
+#### Download Windows x86_64 Binaries
+```
+cd \tmp
+curl -L -o demoiccmax-windows11-x86_64.zip https://github.com/xsscx/PatchIccMAX/releases/download/windows-x86_64/demoiccmax-windows11-x86_64.zip
+tar -xf demoiccmax-windows11-x86_64.zip
+cd .\demoiccmax-windows11-x86_64\
+```
+
+### macOS
 
 XCODE projects can be found in each of the library and project folders that are
 presently supported for building on the MacOS-X platform. The file
@@ -286,6 +355,17 @@ libIccXML.a library binaries into the Build/XCode/lib folder. The libraries in
 Build/XCode/lib are then referenced by the rest of the projects in DemoIccMAX.
 Executables for the various tools will be placed into the Testing folder after a
 successful run of `BuildAll.sh`.
+
+### macOS Package
+#### Download + Install Reproduction
+```
+cd /tmp
+wget https://github.com/xsscx/PatchIccMAX/releases/download/macos-x86_64-arm64/DemoIccMAX-macos-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-arm64-x86_64.tar.gz
+tar -xvzf DemoIccMAX-macos-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-arm64-x86_64.tar.gz
+export DYLD_LIBRARY_PATH=$(pwd)/lib:$DYLD_LIBRARY_PATH
+chmod +x bin/*
+for binary in bin/*; do echo "Testing $binary"; "$binary"; done
+```
 
 ### CMake
 
@@ -329,11 +409,6 @@ be many `-Wsign-compare` warnings and a few `-Wenum-compare` and
 * `ENABLE_INSTALL_RIM` - install no files if build as subproject
 * `USE_SYSTEM_LIBXML2` - default is OFF
 
-
-### Linux Packages
-
-* Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libDemoIccMAX-devel)
-
 ### Linux Issues and Solutions
 
 You may also need to set `LD_LIBRARY_PATH` to `CMAKE_INSTALLPREFIX`/lib so that
@@ -370,6 +445,61 @@ Failed to load module: /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
 The above error messages appear to be harmless, but running
 `apt-cache policy libgnutls30` or `gntls-cli -v` will likely indicate a
 different (later) version of gnutls.
+
+### Linux Package
+#### Download + Install Reproduction
+```
+cd /tmp
+wget https://github.com/xsscx/PatchIccMAX/releases/download/ubuntu-x86_64/DemoIccMAX-ubuntu-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-x86_64.zip
+unzip DemoIccMAX-ubuntu-commit-dc78afcfe9e8cf0dd027e8dd30e21bebf101ffaa-x86_64.zip
+export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
+chmod +x bin/*
+for binary in bin/*; do echo "Testing $binary"; output=$($binary 2>&1); if [[ $binary == *"iccSpecSepToTiff"* ]]; then echo "$output" | grep "Usage" && echo "$binary works!" || echo "$binary failed!"; else echo "$output" | grep "2.2.3" && echo "$binary works!" || echo "$binary failed!"; fi; done
+```
+
+## Submitting an Issue
+If you have questions or need help, please open an [Issue](https://github.com/InternationalColorConsortium/DemoIccMAX/issues) and include the following information.
+
+### Title
+Concise and descriptive title of the issue
+
+### Description
+Detailed description of the issue.
+
+### Environment
+- Operating System: macOS 12.5
+- Architecture: x86_64
+- DemoIccMAX version: 2.2.3
+- Xcode version: 13.4
+
+### Steps to Reproduce
+1. Step one
+2. Step two
+3. Step three
+
+### Expected Behavior
+Describe what you expected to happen.
+
+### Actual Behavior
+Describe what actually happened.
+
+### Logs and Screenshots
+- Logs: Attach logs or error messages.
+- Screenshots: Attach screenshots.
+
+### Additional Context
+Provide any additional information that might be helpful.
+
+### Severity and Impact
+- Severity: Major
+- Impact: Describe the impact of this issue on your work or project.
+
+### Workarounds
+Describe any workarounds you have tried.
+
+### Suggested Solution
+If you have an idea for a solution, describe it here.
+
 
 ## License
 

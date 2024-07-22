@@ -1,0 +1,70 @@
+name: Build and Sanitize
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download vswhere
+      run: |
+        $vswherePath = "${{ runner.workspace }}\vswhere.exe"
+        Invoke-WebRequest -Uri https://github.com/microsoft/vswhere/releases/download/2.8.4/vswhere.exe -OutFile $vswherePath
+        echo "VSWHERE_PATH=$vswherePath" >> $env:GITHUB_ENV
+      shell: powershell
+
+    - name: Setup vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        Invoke-WebRequest -Uri https://github.com/microsoft/vcpkg-tool/releases/download/2024-08-01/vcpkg.exe -OutFile ./vcpkg.exe
+        ./vcpkg.exe install libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows
+      shell: powershell
+
+    - name: Checkout DemoIccMAX repository
+      run: |
+        git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+        cd DemoIccMAX
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
+        git revert b90ac3933da99179df26351c39d8d9d706ac1cc6
+      shell: powershell
+
+    - name: Find MSBuild Path
+      id: msbuild
+      run: |
+        $msbuildPath = &"$env:VSWHERE_PATH" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+        echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+      shell: powershell
+
+    - name: Update platform toolset to v143
+      run: |
+        Get-ChildItem -Recurse -Filter *.vcxproj | ForEach-Object {
+          (Get-Content $_.FullName) -replace '<PlatformToolset>v142</PlatformToolset>', '<PlatformToolset>v143</PlatformToolset>' | Set-Content $_.FullName
+        }
+      shell: powershell
+
+    - name: Build IccProfLib
+      run: |
+        $msbuild = $env:MSBUILD_PATH
+        & $msbuild .\DemoIccMAX\IccProfLib\IccProfLib_v19.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+      shell: powershell
+
+    - name: Build with MSBuild
+      run: |
+        $msbuild = $env:MSBUILD_PATH
+        & $msbuild .\DemoIccMAX\Build\MSVC\BuildAll_v19.sln /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+        & $msbuild .\DemoIccMAX\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+        & $msbuild .\DemoIccMAX\Tools\CmdLine\IccFromCube\iccFromCube_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
+      shell: powershell
