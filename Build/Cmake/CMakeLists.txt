@@ -148,6 +148,7 @@ IF(ENABLE_ICCXML)
 ENDIF()
 
 IF(ENABLE_TOOLS)
+  ADD_SUBDIRECTORY( Tools/IccCommon )
   ADD_SUBDIRECTORY( Tools/IccApplyNamedCmm )
   ADD_SUBDIRECTORY( Tools/IccDumpProfile )
   ADD_SUBDIRECTORY( Tools/IccRoundTrip )
