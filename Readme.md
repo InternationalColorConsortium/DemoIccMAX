@@ -269,7 +269,7 @@ EIGEN=C:\DevLibs\eigen\eigen-3.2.8
 
 #### Minimized VS2022 Instructions
 
-The following instructions detail the steps required to build the latest DemoIccMAX project on Windows 11 using Visual Studio 2022. These steps will guide you through setting up the necessary dependencies using vcpkg, cloning the DemoIccMAX repository, and building the project in both Debug and Release configurations, with additional steps for enabling AddressSanitizer as of August 4, 2024.
+The following instructions detail the steps required to build the latest DemoIccMAX project on Windows 11 using Visual Studio 2022 and Powershell 7. These steps will guide you through setting up the necessary dependencies using vcpkg, cloning the DemoIccMAX repository, and building the project in both Debug and Release configurations, with additional steps for enabling AddressSanitizer as of August 4, 2024.
 ```
 ## Step 1: Set up vcpkg for dependency management
 
@@ -302,7 +302,12 @@ cd DemoIccMAX
 ## Revert a specific commit (b90ac3933da99179df26351c39d8d9d706ac1cc6) if necessary
 git revert b90ac3933da99179df26351c39d8d9d706ac1cc6
 
-## Step 3: Build the solution
+## Update platform toolset to v143
+Get-ChildItem -Recurse -Filter *.vcxproj | ForEach-Object {
+          (Get-Content $_.FullName) -replace '<PlatformToolset>v142</PlatformToolset>', '<PlatformToolset>v143</PlatformToolset>' | Set-Content $_.FullName
+        }
+
+## Step 4: Build the solution
 
 ## Clean the build for the entire solution (BuildAll_v19.sln) for Debug configuration and x64 platform
 "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Build\MSVC\BuildAll_v19.sln /t:clean /p:Configuration=Debug /p:Platform=x64
@@ -310,7 +315,7 @@ git revert b90ac3933da99179df26351c39d8d9d706ac1cc6
 ## Build the entire solution (BuildAll_v19.sln) for Debug configuration and x64 platform
 "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Build\MSVC\BuildAll_v19.sln /p:Configuration=Debug /p:Platform=x64
 
-## Step 4: Manually build IccApplyToLink with AddressSanitizer
+## Step 5: Manually build IccApplyToLink with AddressSanitizer
 
 ## Clean the IccApplyToLink project for Debug configuration and x64 platform with AddressSanitizer enabled
 "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj /t:clean /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
@@ -318,7 +323,7 @@ git revert b90ac3933da99179df26351c39d8d9d706ac1cc6
 ## Build the IccApplyToLink project for Debug configuration and x64 platform with AddressSanitizer enabled
 "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
 
-## Step 5: Manually build IccFromCube with AddressSanitizer
+## Step 6: Manually build IccFromCube with AddressSanitizer
 
 ## Clean the IccFromCube project for Debug configuration and x64 platform with AddressSanitizer enabled
 "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" .\Tools\CmdLine\IccFromCube\iccFromCube_v16.vcxproj /t:clean /p:Configuration=Debug /p:Platform=x64 /p:CLToolAdditionalOptions="/fsanitize=address" /p:LinkToolAdditionalOptions="/fsanitize=address"
