@@ -373,6 +373,7 @@ exit 0";
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
 			};
+<<<<<<< HEAD
 			name = Release;
 		};
 		12631C86EB844B549A40D704 /* RelWithDebInfo */ = {
