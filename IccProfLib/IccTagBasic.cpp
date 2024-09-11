@@ -10896,19 +10896,38 @@ CIccTagSpectralViewingConditions &CIccTagSpectralViewingConditions::operator=(co
 
 /**
  ****************************************************************************
- * Name: CIccTagSpectralViewingConditions::~CIccTagResponseCurveSet16
- * 
+ * Name: CIccTagSpectralViewingConditions::~CIccTagSpectralViewingConditions
+ *
  * Purpose: Destructor
- * 
+ *
+ *
+ * 10 Sep 2024 - David Hoyt - Modify Memory Management
+ *               FIX: alloc-dealloc-mismatch in m_observer
+ *
  *****************************************************************************
  */
 CIccTagSpectralViewingConditions::~CIccTagSpectralViewingConditions()
 {
-  if (m_observer)
-    delete [] m_observer;
 
-  if (m_illuminant)
-    delete [] m_illuminant;
+    if (m_observer) {
+        // m_observer is allocated with new[] causing alloc-dealloc-mismatch:
+        //delete m_observer;
+
+        // Release m_observer with free to resolve alloc-dealloc-mismatch:
+         free(m_observer);
+
+        m_observer = nullptr;  // Nullify the pointer for safety
+    }
+
+    if (m_illuminant) {
+        // m_illuminant is allocated with new[] causing alloc-dealloc-mismatch:
+        // delete[] m_illuminant;
+
+        // Release m_illuminant with free to resolve alloc-dealloc-mismatch:
+        free(m_illuminant);
+
+        m_illuminant = nullptr;  // Nullify the pointer for safety
+    }
 }
 
 
