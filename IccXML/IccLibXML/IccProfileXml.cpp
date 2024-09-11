@@ -125,7 +125,7 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
  //	  xml += line;
  // }
 
-  if (m_Header.platform != icSigUnkownPlatform){
+  if (m_Header.platform != icSigUnknownPlatform){
 	sprintf(line, "    <PrimaryPlatform>%s</PrimaryPlatform>\n", icFixXml(fix, icGetSigStr(buf, m_Header.platform)));
 	xml += blanks + line;
   }

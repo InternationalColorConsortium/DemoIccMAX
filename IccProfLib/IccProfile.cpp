@@ -1587,7 +1587,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     case icSigSolaris:
     case icSigSGI:
     case icSigTaligent:
-    case icSigUnkownPlatform:
+    case icSigUnknownPlatform:
       break;
     
     default:
