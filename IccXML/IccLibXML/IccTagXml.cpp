@@ -2588,65 +2588,52 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
 
       const char *format = icXmlAttrValue(pCurveNode, "Format");
 
-      // format is text
-      if (!strcmp(format, "text")) {
-        icUInt32Number num = file->GetLength();
-        char *buf = (char *) new char[num];
+   // If format is "text"
+        if (format && !strcmp(format, "text")) {
+            icUInt32Number num = file->GetLength();
+            char *buf = new(std::nothrow) char[num];  // Correctly using new[] for allocation
 
-        if (!buf) {          
-          perror("Memory Error");
-          parseStr += "'";
-          parseStr += filename;
-          parseStr += "' may not be a valid text file.\n";
-          free(buf);
-          delete file;
-          return false;
-        }
-
-        if (file->Read8(buf, num) !=num) {
-          perror("Read-File Error");
-          parseStr += "'";
-          parseStr += filename;
-          parseStr += "' may not be a valid text file.\n";
-          free(buf);
-          delete file;             
-          return false;
-        }         
-
-        // lut8type
-        if (nType == icConvert8Bit) {
-          CIccUInt8Array data;
-
-          //if (!data.ParseTextArray(buf)) {
-          if (!data.ParseTextArrayNum(buf, num, parseStr)){
-            parseStr += "File '";
-            parseStr += filename;
-            parseStr += "' is not a valid text file.\n";
-            SetSize(0);
-            free(buf);
-            delete file;
-            return false;
-          }
-
-          else {
-            SetSize(data.GetSize());
-            icUInt8Number *src = data.GetBuf();
-            icFloatNumber *dst = GetData(0);
-
-            icUInt32Number i;
-            for (i=0; i<data.GetSize(); i++) {  
-              *dst = (icFloatNumber)(*src) / 255.0f;              
-              dst++;
-              src++;
+            if (!buf) {
+                parseStr += "Memory Error: Failed to allocate memory for '";
+                parseStr += filename;
+                parseStr += "'.\n";
+                delete file;  // Cleanup the file resource
+                return false;
             }
 
-            //if (i!=256) {
-            //printf("Error! - Input/Output table does not have 256 entries.\n");                            
-            //SetSize(0);
-            //return false;
-            //}
-            delete file;
-            return true;
+            if (file->Read8(buf, num) != num) {
+                parseStr += "Read-File Error: Could not read file '";
+                parseStr += filename;
+                parseStr += "'. It may not be a valid text file.\n";
+                delete[] buf;  // Properly deallocate the buffer using delete[]
+                delete file;  // Cleanup the file resource             
+                return false;
+            }         
+
+            // Process as lut8type
+            if (nType == icConvert8Bit) {
+                CIccUInt8Array data;
+
+                if (!data.ParseTextArrayNum(buf, num, parseStr)) {
+                    parseStr += "File '";
+                    parseStr += filename;
+                    parseStr += "' is not a valid text file.\n";
+                    SetSize(0);
+                    delete[] buf;  // Properly deallocate the buffer using delete[]
+                    delete file;  // Cleanup the file resource
+                    return false;
+                } else {
+                    SetSize(data.GetSize());
+                    icUInt8Number *src = data.GetBuf();
+                    icFloatNumber *dst = GetData(0);
+
+                    for (icUInt32Number i = 0; i < data.GetSize(); i++) {
+                        *dst++ = static_cast<icFloatNumber>(*src++) / 255.0f;
+                    }
+
+                    delete[] buf;  // Properly deallocate the buffer using delete[]
+                    delete file;  // Cleanup the file resource
+                    return true;
           }
         } 
 
@@ -2660,7 +2647,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             parseStr += filename;
             parseStr += "' is not a valid text file.\n";
             SetSize(0);
-            free(buf);
+            delete[] (buf);
             delete file;
             return false;
           }
@@ -2692,7 +2679,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             parseStr += filename;
             parseStr += "' is not a valid text file.\n";
             SetSize(0);
-            free(buf);
+            delete[] (buf);
             delete file;
             return false;
           }
