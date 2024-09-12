@@ -1492,38 +1492,64 @@ icValidateStatus CIccTagArray::Validate(std::string sigPath, std::string &sRepor
   return rv;
 }
 
+
 /**
 ***************************************************************************
 * Name: CIccTagArray::Cleanup
-* 
+*
 * Purpose: Detach from a pending IO object
+*
+*
+* 10 Sep 2024 - David Hoyt - Modify Memory Management
+*               FIX: alloc-dealloc-mismatch in m_TagVals and m_pArray
+*
 ***************************************************************************
 */
 void CIccTagArray::Cleanup()
 {
-  icUInt32Number i, j;
-  CIccTag* pTag;
+  // Sanity check: Ensure valid array size and non-null pointer
+  if (m_nSize == 0 || !m_TagVals) {
+    return; // Nothing to clean up
+  }
 
-  for (i=0; i<m_nSize; i++) {
+  icUInt32Number i, j;
+  CIccTag* pTag = nullptr;
+
+  // Iterate over all tags in the array
+  for (i = 0; i < m_nSize; i++) {
     pTag = m_TagVals[i].ptr;
+
+    // Check if the current tag is valid
     if (pTag) {
-      for (j=i+1; j<m_nSize; j++) {
-        if (m_TagVals[i].ptr==pTag)
-          m_TagVals[i].ptr = NULL;
+      // Prevent double deletion by nullifying duplicate references
+      for (j = i + 1; j < m_nSize; j++) {
+        if (m_TagVals[j].ptr == pTag) {
+          m_TagVals[j].ptr = nullptr; // Avoid deleting the same object twice
+        }
       }
-      delete pTag;
-      m_TagVals[i].ptr = NULL;
+
+      // Securely delete the tag object and nullify the pointer
+      delete pTag; 
+      m_TagVals[i].ptr = nullptr;
     }
   }
 
-  delete [] m_TagVals;
+  // Free the array memory and set the pointer to null to avoid dangling pointers
+  if (m_TagVals) {
+    free(m_TagVals);  // Release m_TagVals with free to resolve alloc-dealloc-mismatch
+    m_TagVals = nullptr; // Prevent dangling pointer
+  }
 
-  if (m_pArray)
-    delete m_pArray;
+  // Deallocate m_pArray if it was allocated
+  if (m_pArray) {
+    delete[] m_pArray;  // Release m_pArray with delete[] to resolve alloc-dealloc-mismatch
+    m_pArray = nullptr; // Prevent dangling pointer
+  }
 
-  m_pArray = NULL;
+  // Reset the signature to indicate an undefined state
   m_sigArrayType = icSigUndefinedArray;
 }
+
 
 /**
 ****************************************************************************
