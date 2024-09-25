@@ -118,141 +118,6 @@ static __inline bool IsSpaceSpectralPCS(icUInt32Number sig)
 #define ICCPCSSTEPDUMPFMT ICCMTXSTEPDUMPFMT
 
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-/**
- **************************************************************************
- * Class CIccPCS Constructor
- * 
- * Purpose:
- *  This is a class constructor.
- * 
- **************************************************************************
- */
-CIccPCS::CIccPCS() : m_Convert{}
-{
-  m_bIsV2Lab = false;
-  m_Space = icSigUnknownData;
-  m_bLastPcsXform = false;
-}
-
-/**
-**************************************************************************
-* Name: CIccPCS::Reset
-* 
-* Purpose:
-*  This is called with the initial color space and a bool 
-*  argument which is true if the PCS is version 2.
-* 
-* Args: 
-*  Startpsace = Starting Colorspace
-*  bUseLegacyPCS = legacy PCS flag
-**************************************************************************
-*/
-void CIccPCS::Reset(icColorSpaceSignature StartSpace, bool bUseLegacyPCS)
-{
-  m_bIsV2Lab = IsSpacePCS(StartSpace) && bUseLegacyPCS;
-  m_Space = StartSpace;
-}
-
-/**
- **************************************************************************
- * Name: CIccPCS::Check
- * 
- * Purpose:
- *  This is called before the apply of each profile's xform to adjust the PCS
- *  to the xform's needed PCS.
- * 
- * Args: 
- *   SrcPixel = source pixel data (this may need adjusting),
- *   pXform = the xform that who's Apply function will shortly be called
- * 
- * Return: 
- *  SrcPixel or ptr to adjusted pixel data (we dont want to modify the source data).
- **************************************************************************
- */
-const icFloatNumber *CIccPCS::Check(const icFloatNumber *SrcPixel, const CIccXform *pXform)
-{
-  icColorSpaceSignature NextSpace = pXform->GetSrcSpace();
-  bool bIsV2 = pXform->UseLegacyPCS();
-  bool bIsNextV2Lab = bIsV2 && (NextSpace == icSigLabData);
-  const icFloatNumber *rv;
-  bool bNoClip = pXform->NoClipPCS();
-
-  if (m_bLastPcsXform) {
-    rv = SrcPixel;
-  }
-  else if (m_bIsV2Lab && !bIsNextV2Lab) {
-    Lab2ToLab4(m_Convert, SrcPixel, bNoClip);
-    if (NextSpace==icSigXYZData) {
-      LabToXyz(m_Convert, m_Convert, bNoClip);
-    }
-    rv = m_Convert;
-  }
-  else if (!m_bIsV2Lab && bIsNextV2Lab) {
-    if (m_Space==icSigXYZData) {
-      XyzToLab(m_Convert, SrcPixel, bNoClip);
-      SrcPixel = m_Convert;
-    }
-    Lab4ToLab2(m_Convert, SrcPixel);
-    rv = m_Convert;
-  }
-  else if (m_Space==NextSpace) {
-    rv = SrcPixel;
-  }
-  else if (m_Space==icSigXYZData && NextSpace==icSigLabData) {
-    XyzToLab(m_Convert, SrcPixel, bNoClip);
-    rv = m_Convert;
-  }
-  else if (m_Space==icSigLabData && NextSpace==icSigXYZData) {
-    LabToXyz(m_Convert, SrcPixel, bNoClip);
-    rv = m_Convert;
-  }
-  else {
-    rv = SrcPixel;
-  }
-
-  m_Space = pXform->GetDstSpace();
-  m_bIsV2Lab = bIsV2 && (m_Space == icSigLabData);
-  m_bLastPcsXform = (pXform->GetXformType()==icXformTypePCS);
-
-  return rv;
-}
-
-/**
- **************************************************************************
- * Name: CIccPCS::CheckLast
- * 
- * Purpose: 
- *   Called after all xforms are applied to adjust PCS to final space if needed
- *   Note: space will always be V4.
- * 
- * Args: 
- *  Pixel = Pixel data,
- *  DestSpace = destination color space
- *  bNoClip = indicates whether PCS should be clipped
- **************************************************************************
- */
-void CIccPCS::CheckLast(icFloatNumber *Pixel, icColorSpaceSignature DestSpace, bool bNoClip)
-{
-  if (m_bIsV2Lab) {
-    Lab2ToLab4(Pixel, Pixel, bNoClip);
-    if (DestSpace==icSigXYZData) {
-      LabToXyz(Pixel, Pixel, bNoClip);
-    }
-  }
-  else if (m_Space==DestSpace) {
-    return;
-  }
-  else if (m_Space==icSigXYZData) {
-    XyzToLab(Pixel, Pixel, bNoClip);
-  }
-  else if (m_Space==icSigLabData) {
-    LabToXyz(Pixel, Pixel, bNoClip);
-  }
-}
 
 /**
  **************************************************************************
@@ -262,7 +127,7 @@ void CIccPCS::CheckLast(icFloatNumber *Pixel, icColorSpaceSignature DestSpace, b
  *  Convert a double to an icUInt16Number with clipping
  **************************************************************************
  */
-icFloatNumber CIccPCS::UnitClip(icFloatNumber v)
+icFloatNumber CIccPCSUtil::UnitClip(icFloatNumber v)
 {
   if (v<0)
     v = 0;
@@ -280,7 +145,7 @@ icFloatNumber CIccPCS::UnitClip(icFloatNumber v)
  *  Convert a double to an icUInt16Number with clipping of negative numbers
  **************************************************************************
  */
-icFloatNumber CIccPCS::NegClip(icFloatNumber v)
+icFloatNumber CIccPCSUtil::NegClip(icFloatNumber v)
 {
   if (v<0)
     v=0;
@@ -296,7 +161,7 @@ icFloatNumber CIccPCS::NegClip(icFloatNumber v)
  *  Convert Lab to XYZ
  **************************************************************************
  */
-void CIccPCS::LabToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
+void CIccPCSUtil::LabToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
 {
   icFloatNumber Lab[3];
 
@@ -329,7 +194,7 @@ void CIccPCS::LabToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoCli
  *  Convert XYZ to Lab
  **************************************************************************
  */
-void CIccPCS::XyzToLab(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
+void CIccPCSUtil::XyzToLab(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
 {
   icFloatNumber XYZ[3];
 
@@ -372,7 +237,7 @@ void CIccPCS::XyzToLab(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoCli
  *  Convert version 2 Lab to XYZ
  **************************************************************************
  */
-void CIccPCS::Lab2ToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
+void CIccPCSUtil::Lab2ToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
 {
   Lab2ToLab4(Dst, Src, bNoClip);
   LabToXyz(Dst, Dst, bNoClip);
@@ -387,7 +252,7 @@ void CIccPCS::Lab2ToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoCl
  *  Convert XYZ to version 2 Lab
  **************************************************************************
  */
-void CIccPCS::XyzToLab2(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
+void CIccPCSUtil::XyzToLab2(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
 {
   XyzToLab(Dst, Src, bNoClip);
   Lab4ToLab2(Dst, Dst);
@@ -402,7 +267,7 @@ void CIccPCS::XyzToLab2(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoCl
  *  Convert version 2 Lab to version 4 Lab
  **************************************************************************
  */
-void CIccPCS::Lab2ToLab4(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
+void CIccPCSUtil::Lab2ToLab4(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip)
 {
   if (bNoClip) {
     Dst[0] = (icFloatNumber)(Src[0] * 65535.0f / 65280.0f);
@@ -424,12 +289,13 @@ void CIccPCS::Lab2ToLab4(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoC
  *  Convert version 4 Lab to version 2 Lab
  **************************************************************************
  */
-void CIccPCS::Lab4ToLab2(icFloatNumber *Dst, const icFloatNumber *Src)
+void CIccPCSUtil::Lab4ToLab2(icFloatNumber *Dst, const icFloatNumber *Src)
 {
   Dst[0] = (icFloatNumber)(Src[0] * 65280.0f / 65535.0f);
   Dst[1] = (icFloatNumber)(Src[1] * 65280.0f / 65535.0f);
   Dst[2] = (icFloatNumber)(Src[2] * 65280.0f / 65535.0f);
 }
+
 
 /**
 **************************************************************************
@@ -1656,10 +1522,10 @@ void CIccXform::AdjustPCS(icFloatNumber *DstPixel, const icFloatNumber *SrcPixel
 
   if (Space==icSigLabData) {
     if (UseLegacyPCS()) {
-    	CIccPCS::Lab2ToXyz(DstPixel, SrcPixel, true);
+    	CIccPCSUtil::Lab2ToXyz(DstPixel, SrcPixel, true);
     }
     else {
-      CIccPCS::LabToXyz(DstPixel, SrcPixel, true);
+      CIccPCSUtil::LabToXyz(DstPixel, SrcPixel, true);
     }
   }
   else {
@@ -1675,17 +1541,17 @@ void CIccXform::AdjustPCS(icFloatNumber *DstPixel, const icFloatNumber *SrcPixel
   if (Space==icSigLabData) {
     if (UseLegacyPCS()) {
 
-    	CIccPCS::XyzToLab2(DstPixel, DstPixel, true);
+    	CIccPCSUtil::XyzToLab2(DstPixel, DstPixel, true);
     }
     else {
-      CIccPCS::XyzToLab(DstPixel, DstPixel, true);
+      CIccPCSUtil::XyzToLab(DstPixel, DstPixel, true);
     }
   }
 #ifndef SAMPLEICC_NOCLIPLABTOXYZ
   else {
-    DstPixel[0] = CIccPCS::NegClip(DstPixel[0]);
-    DstPixel[1] = CIccPCS::NegClip(DstPixel[1]);
-    DstPixel[2] = CIccPCS::NegClip(DstPixel[2]);
+    DstPixel[0] = CIccPCSUtil::NegClip(DstPixel[0]);
+    DstPixel[1] = CIccPCSUtil::NegClip(DstPixel[1]);
+    DstPixel[2] = CIccPCSUtil::NegClip(DstPixel[2]);
   }
 #endif
 }
@@ -1708,7 +1574,7 @@ void CIccXform::AdjustPCS(icFloatNumber *DstPixel, const icFloatNumber *SrcPixel
  */
 const icFloatNumber *CIccXform::CheckSrcAbs(CIccApplyXform *pApply, const icFloatNumber *Pixel) const
 {
-	if (m_bAdjustPCS && !m_bInput && m_bSrcPcsConversion) {
+	if (m_bAdjustPCS && !m_bInput) {
     icFloatNumber *pAbsLab = pApply->m_AbsLab;
 		AdjustPCS(pAbsLab, Pixel);
     return pAbsLab;
@@ -1733,7 +1599,7 @@ const icFloatNumber *CIccXform::CheckSrcAbs(CIccApplyXform *pApply, const icFloa
  */
 void CIccXform::CheckDstAbs(icFloatNumber *Pixel) const
 {
-	if (m_bAdjustPCS && m_bInput && m_bDstPcsConversion) {
+	if (m_bAdjustPCS && m_bInput) {
 		AdjustPCS(Pixel, Pixel);
   }
 }
@@ -1978,9 +1844,9 @@ CIccApplyPcsXform::~CIccApplyPcsXform()
   }
 
   if (m_temp1)
-    delete m_temp1;
+    delete [] m_temp1;
   if (m_temp2)
-    delete m_temp2;
+    delete [] m_temp2;
 }
 
 /**
@@ -2436,6 +2302,107 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
 
   if (m_list->begin()==m_list->end())
     return icCmmStatIdentityXform;
+
+  return icCmmStatOk;
+}
+
+
+/**
+ **************************************************************************
+ * Name: CIccPcsXform::ConnectFirst
+ *
+ * Purpose:
+ *  Insert PCS transform operations to perform PCS processing going into
+ *  first transform
+ **************************************************************************
+ */
+icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignature srcSpace)
+{
+  if (!pToXform)
+    return icCmmStatBadXform;
+
+
+  if (srcSpace == icSigXYZData) {
+    pushXyzInToXyz();
+    if (pToXform->NeedAdjustPCS()) {
+      pushScale3(pToXform->m_PCSScale[0], pToXform->m_PCSScale[1], pToXform->m_PCSScale[2]);
+      pushOffset3(pToXform->m_PCSOffset[0], pToXform->m_PCSOffset[1], pToXform->m_PCSOffset[2]);
+    }
+
+    if (pToXform->GetSrcSpace() == icSigLabData) {
+      if (pToXform->UseLegacyPCS())
+        pushXyzToLab2(pToXform->m_pConnectionConditions);
+      else
+        pushXyzToLab(pToXform->m_pConnectionConditions);
+    }
+  }
+  else if (srcSpace == icSigLabData) {
+
+    if (pToXform->GetSrcSpace() == icSigXYZData) {
+      pushLabToXyz(pToXform->m_pConnectionConditions);
+      if (pToXform->NeedAdjustPCS()) {
+        pushScale3(pToXform->m_PCSScale[0], pToXform->m_PCSScale[1], pToXform->m_PCSScale[2]);
+        pushOffset3(pToXform->m_PCSOffset[0], pToXform->m_PCSOffset[1], pToXform->m_PCSOffset[2]);
+      }
+    }
+    else if (pToXform->NeedAdjustPCS()) {
+      pushLabToXyz(pToXform->m_pConnectionConditions);
+      pushScale3(pToXform->m_PCSScale[0], pToXform->m_PCSScale[1], pToXform->m_PCSScale[2]);
+      pushOffset3(pToXform->m_PCSOffset[0], pToXform->m_PCSOffset[1], pToXform->m_PCSOffset[2]);
+      if (pToXform->UseLegacyPCS())
+        pushXyzToLab2(pToXform->m_pConnectionConditions);
+      else
+        pushXyzToLab(pToXform->m_pConnectionConditions);
+    }
+  }
+
+  return icCmmStatOk;
+}
+
+
+/**
+ **************************************************************************
+ * Name: CIccPcsXform::ConnectLast
+ *
+ * Purpose:
+ *  Insert PCS transform operations to perform PCS processing coming out of 
+ *  last transform
+ **************************************************************************
+ */
+icStatusCMM CIccPcsXform::ConnectLast(CIccXform* pFromXform, icColorSpaceSignature dstSpace)
+{
+  if (!pFromXform)
+    return icCmmStatBadXform;
+  icColorSpaceSignature srcSpace = pFromXform->GetDstSpace();
+
+  if (pFromXform->NeedAdjustPCS() && IsSpaceColorimetricPCS(dstSpace)) {
+    if (srcSpace == icSigLabData) {
+      if (pFromXform->UseLegacyPCS())
+        pushLab2ToXyz(pFromXform->m_pConnectionConditions);
+      else
+        pushLabToXyz(pFromXform->m_pConnectionConditions);
+
+      pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
+      pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
+
+      srcSpace = icSigXYZData;
+    }
+  }
+
+  if (srcSpace == icSigXYZData && dstSpace == icSigLabData) {
+    pushXyzToLab(pFromXform->m_pConnectionConditions);
+  }
+  else if (srcSpace == icSigLabData && dstSpace == icSigXYZData) {
+    if (pFromXform->UseLegacyPCS())
+      pushLab2ToXyz(pFromXform->m_pConnectionConditions);
+    else
+      pushLabToXyz(pFromXform->m_pConnectionConditions);
+    if (pFromXform->IsInput())
+      pushXyzToXyzIn();
+  }
+  else if (pFromXform->IsInput() && srcSpace == icSigXYZData && dstSpace == icSigXYZData) {
+    pushXyzToXyzIn();
+  }
 
   return icCmmStatOk;
 }
@@ -3688,10 +3655,17 @@ void CIccPcsStepLabToXYZ::dump(std::string &str) const
 */
 CIccPcsStep *CIccPcsStepLabToXYZ::concat(CIccPcsStep *pNext) const
 {
-  if (pNext && pNext->GetType()==icPcsStepXYZToLab) {
-    CIccPcsLabStep *pStep = (CIccPcsLabStep *)pNext;
-    if (pStep->isSameWhite(m_xyzWhite))
-      return new CIccPcsStepIdentity(3);
+  if (pNext) {
+    if (pNext->GetType() == icPcsStepXYZToLab) {
+      CIccPcsLabStep* pStep = (CIccPcsLabStep*)pNext;
+      if (pStep->isSameWhite(m_xyzWhite))
+        return new CIccPcsStepIdentity(3);
+    }
+    else if (pNext->GetType() == icPcsStepXYZToLab2) {
+      CIccPcsLabStep* pStep = (CIccPcsLabStep*)pNext;
+      if (pStep->isSameWhite(m_xyzWhite))
+        return new CIccPcsStepLabToLab2();
+    }
   }
   return NULL;
 }
@@ -3835,11 +3809,19 @@ void CIccPcsStepLab2ToXYZ::dump(std::string &str) const
 */
 CIccPcsStep *CIccPcsStepLab2ToXYZ::concat(CIccPcsStep *pNext) const
 {
-  if (pNext && pNext->GetType()==icPcsStepXYZToLab2) {
-    CIccPcsLabStep *pStep = (CIccPcsLabStep *)pNext;
-    if (pStep->isSameWhite(m_xyzWhite))
-      return new CIccPcsStepIdentity(3);
+  if (pNext) {
+    if (pNext->GetType() == icPcsStepXYZToLab2) {
+      CIccPcsLabStep* pStep = (CIccPcsLabStep*)pNext;
+      if (pStep->isSameWhite(m_xyzWhite))
+        return new CIccPcsStepIdentity(3);
+    }
+    else if (pNext->GetType() == icPcsStepXYZToLab) {
+      CIccPcsLabStep* pStep = (CIccPcsLabStep*)pNext;
+      if (pStep->isSameWhite(m_xyzWhite))
+        return new CIccPcsStepLab2ToLab();
+    }
   }
+
   return NULL;
 }
 
@@ -3919,6 +3901,103 @@ CIccPcsStep *CIccPcsStepXYZToLab2::concat(CIccPcsStep *pNext) const
 
 /**
 **************************************************************************
+* Name: CIccPcsStepLabToLab2::Apply
+*
+* Purpose:
+*  Converts from V2 Internal Lab to actual XYZ
+**************************************************************************
+*/
+void CIccPcsStepLabToLab2::Apply(CIccApplyPcsStep* pApply, icFloatNumber* pDst, const icFloatNumber* pSrc) const
+{
+  pDst[0] = (icFloatNumber)(pSrc[0] * 65280.0f / 65535.0f);
+  pDst[1] = (icFloatNumber)(pSrc[1] * 65280.0f / 65535.0f);
+  pDst[2] = (icFloatNumber)(pSrc[2] * 65280.0f / 65535.0f);
+}
+
+
+/**
+**************************************************************************
+* Name: CIccPcsStepLabToLab2::dump
+*
+* Purpose:
+*  dumps the context of the step
+**************************************************************************
+*/
+void CIccPcsStepLabToLab2::dump(std::string& str) const
+{
+  str += "\nCIccPcsStepLabToLab2\n\n";
+}
+
+/**
+**************************************************************************
+* Name: CIccPcsStepLabToLab2::concat
+*
+* Purpose:
+*  Determines if this step can be combined with the next step.
+*  Checks if next step is an icPcsStepLab2ToLab step resulting in a combined
+*  identity transform.
+**************************************************************************
+*/
+CIccPcsStep* CIccPcsStepLabToLab2::concat(CIccPcsStep* pNext) const
+{
+  if (pNext && pNext->GetType() == icPcsStepLab2ToLab) {
+    return new CIccPcsStepIdentity(3);
+  }
+  return NULL;
+}
+
+
+/**
+**************************************************************************
+* Name: CIccPcsStepLab2ToLab::Apply
+*
+* Purpose:
+*  Converts from V2 Internal Lab to actual XYZ
+**************************************************************************
+*/
+void CIccPcsStepLab2ToLab::Apply(CIccApplyPcsStep* pApply, icFloatNumber* pDst, const icFloatNumber* pSrc) const
+{
+  pDst[0] = (icFloatNumber)(pSrc[0] * 65535.0f / 65280.0f);
+  pDst[1] = (icFloatNumber)(pSrc[1] * 65535.0f / 65280.0f);
+  pDst[2] = (icFloatNumber)(pSrc[2] * 65535.0f / 65280.0f);
+}
+
+
+/**
+**************************************************************************
+* Name: CIccPcsStepLab2ToLab::dump
+*
+* Purpose:
+*  dumps the context of the step
+**************************************************************************
+*/
+void CIccPcsStepLab2ToLab::dump(std::string& str) const
+{
+  str += "\nCIccPcsStepLab2ToLab\n\n";
+}
+
+
+/**
+**************************************************************************
+* Name: CIccPcsStepLab2ToLab::concat
+*
+* Purpose:
+*  Determines if this step can be combined with the next step.
+*  Checks if next step is an icPcsStepLab2ToLab step resulting in a combined
+*  identity transform.
+**************************************************************************
+*/
+CIccPcsStep* CIccPcsStepLab2ToLab::concat(CIccPcsStep* pNext) const
+{
+  if (pNext && pNext->GetType() == icPcsStepLabToLab2) {
+    return new CIccPcsStepIdentity(3);
+  }
+  return NULL;
+}
+
+
+/**
+**************************************************************************
 * Name: CIccPcsStepOffset::CIccPcsStepOffset
 * 
 * Purpose: 
@@ -3943,7 +4022,7 @@ CIccPcsStepOffset::CIccPcsStepOffset(icUInt16Number nChannels)
 CIccPcsStepOffset::~CIccPcsStepOffset()
 {
   if (m_vals)
-    delete m_vals;
+    delete [] m_vals;
 }
 
 
@@ -4082,7 +4161,7 @@ CIccPcsStepScale::CIccPcsStepScale(icUInt16Number nChannels)
 CIccPcsStepScale::~CIccPcsStepScale()
 {
   if (m_vals)
-    delete m_vals;
+    delete [] m_vals;
 }
 
 /**
@@ -4881,7 +4960,9 @@ icStatusCMM CIccXformMonochrome::Begin()
 void CIccXformMonochrome::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, const icFloatNumber *SrcPixel) const
 {
 	icFloatNumber Pixel[3];
-	SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+  
+  if (m_bSrcPcsConversion)
+	  SrcPixel = CheckSrcAbs(pApply, SrcPixel);
 
 	if (m_bInput) {
 		Pixel[0] = SrcPixel[0];
@@ -4898,10 +4979,10 @@ void CIccXformMonochrome::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel,
 
 		if (m_pProfile->m_Header.pcs==icSigLabData) {
 			if (UseLegacyPCS()) {
-				CIccPCS::XyzToLab2(DstPixel, DstPixel, true);
+				CIccPCSUtil::XyzToLab2(DstPixel, DstPixel, true);
 			}
 			else {
-				CIccPCS::XyzToLab(DstPixel, DstPixel, true);
+				CIccPCSUtil::XyzToLab(DstPixel, DstPixel, true);
 			}
 		}
 
@@ -4918,10 +4999,10 @@ void CIccXformMonochrome::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel,
 
 		if (m_pProfile->m_Header.pcs==icSigLabData) {
 			if (UseLegacyPCS()) {
-				CIccPCS::XyzToLab2(Pixel, Pixel, true);
+				CIccPCSUtil::XyzToLab2(Pixel, Pixel, true);
 			}
 			else {
-				CIccPCS::XyzToLab(Pixel, Pixel, true);
+				CIccPCSUtil::XyzToLab(Pixel, Pixel, true);
 			}
 			DstPixel[0] = SrcPixel[0]/Pixel[0];
 		}
@@ -4934,7 +5015,8 @@ void CIccXformMonochrome::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel,
 		}
 	}
 
-	CheckDstAbs(DstPixel);
+  if (m_bDstPcsConversion)
+	  CheckDstAbs(DstPixel);
 }
 
 /**
@@ -5220,7 +5302,9 @@ void CIccXformMatrixTRC::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, 
 {
   icFloatNumber Pixel[3];
 
-  SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+  if (m_bSrcPcsConversion)
+    SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+
   Pixel[0] = SrcPixel[0];
   Pixel[1] = SrcPixel[1];
   Pixel[2] = SrcPixel[2];
@@ -5260,7 +5344,8 @@ void CIccXformMatrixTRC::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, 
     }
   }
 
-  CheckDstAbs(DstPixel);
+  if (m_bDstPcsConversion)
+    CheckDstAbs(DstPixel);
 }
 
 /**
@@ -5608,7 +5693,9 @@ void CIccXform3DLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
   icFloatNumber Pixel[16];
   int i;
 
-  SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+  if (m_bSrcPcsConversion)
+    SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+
   Pixel[0] = SrcPixel[0];
   Pixel[1] = SrcPixel[1];
   Pixel[2] = SrcPixel[2];
@@ -5679,7 +5766,8 @@ void CIccXform3DLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
     DstPixel[i] = Pixel[i];
   }
 
-  CheckDstAbs(DstPixel);
+  if (m_bDstPcsConversion)
+    CheckDstAbs(DstPixel);
 }
 
 /**
@@ -5956,7 +6044,9 @@ void CIccXform4DLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
   icFloatNumber Pixel[16];
   int i;
 
-  SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+  if (m_bSrcPcsConversion)
+    SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+
   Pixel[0] = SrcPixel[0];
   Pixel[1] = SrcPixel[1];
   Pixel[2] = SrcPixel[2];
@@ -6014,7 +6104,8 @@ void CIccXform4DLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
     DstPixel[i] = Pixel[i];
   }
 
-  CheckDstAbs(DstPixel);
+  if (m_bDstPcsConversion)
+    (DstPixel);
 }
 
 /**
@@ -6334,7 +6425,9 @@ void CIccXformNDLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
   icFloatNumber Pixel[16] = {0};
   int i;
 
-  SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+  if (m_bSrcPcsConversion)
+    SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+
   for (i=0; i<m_nNumInput; i++)
     Pixel[i] = SrcPixel[i];
 
@@ -6413,7 +6506,8 @@ void CIccXformNDLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
     DstPixel[i] = Pixel[i];
   }
 
-  CheckDstAbs(DstPixel);
+  if (m_bDstPcsConversion)
+    CheckDstAbs(DstPixel);
 }
 
 /**
@@ -6642,7 +6736,9 @@ icStatusCMM CIccXformNamedColor::Apply(CIccApplyXform* pApply, icChar *DstColorN
           return icCmmStatColorNotFound;
       }
       else {
-        SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+        if (m_bSrcPcsConversion)
+          SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+
         icFloatNumber pix[3];
         memcpy(pix, SrcPixel, 3*sizeof(icFloatNumber));
 
@@ -6678,7 +6774,9 @@ icStatusCMM CIccXformNamedColor::Apply(CIccApplyXform* pApply, icChar *DstColorN
     icUInt32Number i, j;
 
     if (IsSrcPCS()) {
-      SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+      if (m_bSrcPcsConversion)
+        SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+
       for(i=0; i<3; i++)
         PCSPix[i] = SrcPixel[i];
 
@@ -6745,7 +6843,8 @@ icStatusCMM CIccXformNamedColor::Apply(CIccApplyXform* pApply, icFloatNumber *Ds
         else {
           icXyzToPcs(DstPixel);
         }
-        CheckDstAbs(DstPixel);
+        if (m_bDstPcsConversion)
+          CheckDstAbs(DstPixel);
       }
     }
     else {
@@ -6773,7 +6872,8 @@ icStatusCMM CIccXformNamedColor::Apply(CIccApplyXform* pApply, icFloatNumber *Ds
       else {
         memcpy(DstPixel, pTag->GetEntry(j)->pcsCoords, 3*sizeof(icFloatNumber));
       }
-      CheckDstAbs(DstPixel);
+      if (m_bDstPcsConversion)
+        CheckDstAbs(DstPixel);
     }
     else {
       j = pTag->FindColor(SrcColorName);
@@ -7371,7 +7471,8 @@ void CIccXformMpe::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, const 
   icFloatNumber temp[3];
   if (!m_bInput || m_bPcsAdjustXform) { //PCS comming in?
     if (m_nIntent != icAbsoluteColorimetric || m_nIntent != m_nTagIntent) {  //B2D3 tags don't need abs conversion
-      SrcPixel = CheckSrcAbs(pApply, SrcPixel);
+      if (m_bSrcPcsConversion)
+        SrcPixel = CheckSrcAbs(pApply, SrcPixel);
     }
 
     //Since MPE tags use "real" values for PCS we need to convert from 
@@ -7416,7 +7517,8 @@ void CIccXformMpe::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, const 
     }
 
     if (m_nIntent != icAbsoluteColorimetric || m_nIntent != m_nTagIntent) { //D2B3 tags don't need abs conversion
-      CheckDstAbs(DstPixel);
+      if (m_bDstPcsConversion)
+        CheckDstAbs(DstPixel);
     }
   }
 }
@@ -7461,7 +7563,7 @@ CIccApplyXformMpe::~CIccApplyXformMpe()
 CIccApplyCmm::CIccApplyCmm(CIccCmm *pCmm)
 {
   m_pCmm = pCmm;
-  m_pPCS = m_pCmm->GetPCS();
+  //m_pPCS = m_pCmm->GetPCS();
 
   m_Xforms = new CIccApplyXformList;
   m_Xforms->clear();
@@ -7491,8 +7593,8 @@ CIccApplyCmm::~CIccApplyCmm()
     delete m_Xforms;
   }
 
-  if (m_pPCS)
-    delete m_pPCS;
+//   if (m_pPCS)
+//     delete m_pPCS;
 
   if (m_Pixel)
     free(m_Pixel);
@@ -7568,8 +7670,6 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
     return icCmmStatAllocErr;
   }
 
-  m_pPCS->Reset(m_pCmm->m_nSrcSpace);
-
   pSrc = SrcPixel;
   pDst = m_Pixel;
 
@@ -7582,7 +7682,7 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
   if (n>1) {
     for (j=0, i=m_Xforms->begin(); j<n-1 && i!=m_Xforms->end(); i++, j++) {
 
-      i->ptr->Apply(pDst, m_pPCS->Check(pSrc, i->ptr->GetXform()));
+      i->ptr->Apply(pDst, pSrc);
 
 #ifdef DEBUG_CMM_APPLY
       DumpCmmApplyPixel(nCount++, pDst, i->ptr->GetXform()->GetNumDstSamples());
@@ -7597,14 +7697,14 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
     }
 
     pLastXform = i->ptr->GetXform();   
-    i->ptr->Apply(DstPixel, m_pPCS->Check(pSrc, pLastXform));
+    i->ptr->Apply(DstPixel, pSrc);
     bNoClip = pLastXform->NoClipPCS();
   }
   else if (n==1) {
     i = m_Xforms->begin();
 
     pLastXform = i->ptr->GetXform();
-    i->ptr->Apply(DstPixel, m_pPCS->Check(SrcPixel, pLastXform));
+    i->ptr->Apply(DstPixel, SrcPixel);
 
 #ifdef DEBUG_CMM_APPLY
     DumpCmmApplyPixel(nCount++, pDst, i->ptr->GetXform()->GetNumDstSamples());
@@ -7616,7 +7716,7 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
     bNoClip = true;
   }
 
-  m_pPCS->CheckLast(DstPixel, m_pCmm->m_nDestSpace, bNoClip);
+  //m_pPCS->CheckLast(DstPixel, m_pCmm->m_nDestSpace, bNoClip);
 
 #ifdef DEBUG_CMM_APPLY
   DumpCmmApplyPixel(nCount, DstPixel, icGetSpaceSamples(m_pCmm->m_nDestSpace));
@@ -7654,15 +7754,13 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
   }
 
   for (k=0; k<nPixels; k++) {
-    m_pPCS->Reset(m_pCmm->m_nSrcSpace);
-
     pSrc = SrcPixel;
     pDst = m_Pixel;
 
     if (n>1) {
       for (j=0, i=m_Xforms->begin(); j<n-1 && i!=m_Xforms->end(); i++, j++) {
 
-        i->ptr->Apply(pDst, m_pPCS->Check(pSrc, i->ptr->GetXform()));
+        i->ptr->Apply(pDst, pSrc);
         pTmp = (icFloatNumber*)pSrc;
         pSrc = pDst;
         if (pTmp==SrcPixel)
@@ -7671,14 +7769,12 @@ icStatusCMM CIccApplyCmm::Apply(icFloatNumber *DstPixel, const icFloatNumber *Sr
           pDst = pTmp;
       }
 
-      i->ptr->Apply(DstPixel, m_pPCS->Check(pSrc, i->ptr->GetXform()));
+      i->ptr->Apply(DstPixel, pSrc);
     }
     else if (n==1) {
       i = m_Xforms->begin();
-      i->ptr->Apply(DstPixel, m_pPCS->Check(SrcPixel, i->ptr->GetXform()));
+      i->ptr->Apply(DstPixel, SrcPixel);
     }
-
-    m_pPCS->CheckLast(DstPixel, m_pCmm->m_nDestSpace);
 
     DstPixel += m_pCmm->GetDestSamples();
     SrcPixel += m_pCmm->GetSourceSamples();
@@ -8287,6 +8383,30 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
     last = next;
     next++;
 
+    icColorSpaceSignature lastSpace = last->ptr->GetSrcSpace();
+    if (!last->ptr->IsInput() && IsSpaceColorimetricPCS(lastSpace) && GetSourceSpace() !=lastSpace) {
+      CIccPcsXform* pPcs = new CIccPcsXform();
+
+      if (!pPcs) {
+        return icCmmStatAllocErr;
+      }
+
+      rv = pPcs->ConnectFirst(last->ptr, GetSourceSpace());
+
+      if (rv != icCmmStatOk && rv != icCmmStatIdentityXform)
+        return rv;
+
+      if (rv != icCmmStatIdentityXform) {
+        ptr.ptr = pPcs;
+        xforms.push_back(ptr);
+
+        bUsesPcsXforms = true;
+      }
+      else {
+        delete pPcs;
+      }
+    }
+
     xforms.push_back(*last);
 
     for (;next!=m_Xforms->end(); last=next, next++) {
@@ -8294,32 +8414,57 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
           (IsSpaceSpectralPCS(last->ptr->GetDstSpace()) || IsSpaceSpectralPCS(next->ptr->GetSrcSpace())) ||
           (!bUsePCSConversions && 
            (IsSpaceColorimetricPCS(last->ptr->GetDstSpace()) || IsSpaceColorimetricPCS(next->ptr->GetSrcSpace())))) {
-          last->ptr->SetDstPCSConversion(false);
-          next->ptr->SetSrcPCSConversion(false);
-          CIccPcsXform *pPcs = new CIccPcsXform();
+        last->ptr->SetDstPCSConversion(false);
+        next->ptr->SetSrcPCSConversion(false);
+        CIccPcsXform *pPcs = new CIccPcsXform();
 
-          if (!pPcs) {
-            return icCmmStatAllocErr;
-          }
+        if (!pPcs) {
+          return icCmmStatAllocErr;
+        }
 
-          rv = pPcs->Connect(last->ptr, next->ptr);
+        rv = pPcs->Connect(last->ptr, next->ptr);
 
-          if (rv!=icCmmStatOk && rv!=icCmmStatIdentityXform)
-            return rv;
+        if (rv!=icCmmStatOk && rv!=icCmmStatIdentityXform)
+          return rv;
 
-          if (rv!=icCmmStatIdentityXform) {
-            ptr.ptr = pPcs;
-            xforms.push_back(ptr);
-          }
-          else {
-            delete pPcs;
-          }
+        if (rv!=icCmmStatIdentityXform) {
+          ptr.ptr = pPcs;
+          xforms.push_back(ptr);
 
           bUsesPcsXforms = true;
+        }
+        else {
+          delete pPcs;
+        }
       }
       xforms.push_back(*next);
     }
+
+    lastSpace = last->ptr->GetDstSpace();
+    if (last->ptr->IsInput() && IsSpaceColorimetricPCS(lastSpace) && 
+        (last->ptr->NeedAdjustPCS() || GetDestSpace() != lastSpace)) {
+      CIccPcsXform* pPcs = new CIccPcsXform();
+
+      if (!pPcs) {
+        return icCmmStatAllocErr;
+      }
+      rv = pPcs->ConnectLast(last->ptr, GetDestSpace());
+
+      if (rv != icCmmStatOk && rv != icCmmStatIdentityXform)
+        return rv;
+
+      if (rv != icCmmStatIdentityXform) {
+        ptr.ptr = pPcs;
+        xforms.push_back(ptr);
+
+        bUsesPcsXforms = true;
+      }
+      else {
+        delete pPcs;
+      }
+    }
   }
+
 
   if (bUsesPcsXforms) {
     *m_Xforms = xforms;
@@ -8705,7 +8850,7 @@ icStatusCMM CIccCmm::ToInternalEncoding(icColorSpaceSignature nSpace, icFloatCol
             pInput[1] = icU16toF((icUInt16Number)pInput[1]);
             pInput[2] = icU16toF((icUInt16Number)pInput[2]);
 
-            CIccPCS::Lab2ToLab4(pInput, pInput);
+            CIccPCSUtil::Lab2ToLab4(pInput, pInput);
             break;
           }
         default:
@@ -8999,7 +9144,7 @@ icStatusCMM CIccCmm::FromInternalEncoding(icColorSpaceSignature nSpace, icFloatC
           }
         case icEncode16BitV2:
           {
-            CIccPCS::Lab4ToLab2(pInput, pInput);
+            CIccPCSUtil::Lab4ToLab2(pInput, pInput);
 
             pInput[0] = icFtoU16(pInput[0]);
             pInput[1] = icFtoU16(pInput[1]);
@@ -9469,8 +9614,6 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
   icChar NamedColor[256];
   icStatusCMM rv;
 
-  m_pPCS->Reset(m_pCmm->GetSourceSpace());
-
   pSrc = SrcPixel;
   pDst = m_Pixel;
 
@@ -9491,14 +9634,14 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
 
         switch(pXform->GetInterface()) {
         case icApplyPixel2Pixel:
-          pXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, pDst, pSrc);
 #ifdef DEBUG_CMM_APPLY
           DumpCmmApplyPixel(nCount++, pDst, pXform->GetNumDstSamples());
 #endif
           break;
 
         case icApplyPixel2Named:
-          pXform->Apply(pApply, NamedColor, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, NamedColor, pSrc);
 #ifdef DEBUG_CMM_APPLY
           printf("Xfm%d: \"%s\"\n", nCount++, NamedColor);
 #endif
@@ -9524,7 +9667,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
         }
       }
       else {
-        pApplyXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pApplyXform));
+        pApplyXform->Apply(pApply, pDst, pSrc);
 #ifdef DEBUG_CMM_APPLY
         DumpCmmApplyPixel(nCount++, pDst, pApplyXform->GetNumDstSamples());
 #endif
@@ -9544,7 +9687,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
 
       switch(pXform->GetInterface()) {
       case icApplyPixel2Pixel:
-        pXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pXform));
+        pXform->Apply(pApply, DstPixel, pSrc);
 #ifdef DEBUG_CMM_APPLY
         DumpCmmApplyPixel(nCount++, DstPixel, pXform->GetNumDstSamples());
 #endif
@@ -9568,7 +9711,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
       }
     }
     else {
-      pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+      pApplyXform->Apply(pApply, DstPixel, pSrc);
 #ifdef DEBUG_CMM_APPLY
       DumpCmmApplyPixel(nCount++, DstPixel, pApplyXform->GetNumDstSamples());
 #endif
@@ -9584,13 +9727,12 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
       return icCmmStatIncorrectApply;
     }
 
-    pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+    pApplyXform->Apply(pApply, DstPixel, pSrc);
 #ifdef DEBUG_CMM_APPLY
     DumpCmmApplyPixel(nCount++, DstPixel, pApplyXform->GetNumDstSamples());
 #endif
   }
 
-  m_pPCS->CheckLast(DstPixel, m_pCmm->GetDestSpace(), true);
 #ifdef DEBUG_CMM_APPLY
   DumpCmmApplyPixel(nCount++, DstPixel, icGetSpaceSamples(m_pCmm->GetDestSpace()));
   printf("End ApplyNamedCmm\n\n");
@@ -9634,7 +9776,6 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
   icStatusCMM rv;
 
   for (k=0; k<nPixels; k++) {
-    m_pPCS->Reset(m_pCmm->GetSourceSpace());
 
     pSrc = SrcPixel;
     pDst = m_Pixel;
@@ -9649,11 +9790,11 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
 
           switch(pXform->GetInterface()) {
           case icApplyPixel2Pixel:
-            pXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+            pXform->Apply(pApply, pDst, pSrc);
             break;
 
           case icApplyPixel2Named:
-            pXform->Apply(pApply, NamedColor, m_pPCS->Check(pSrc, pXform));
+            pXform->Apply(pApply, NamedColor, pSrc);
             break;
 
           case icApplyNamed2Pixel:
@@ -9673,7 +9814,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
           }
         }
         else {
-          pApplyXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pApplyXform));
+          pApplyXform->Apply(pApply, pDst, pSrc);
         }
         pSrc = pDst;
       }
@@ -9685,7 +9826,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
 
         switch(pXform->GetInterface()) {
         case icApplyPixel2Pixel:
-          pXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, DstPixel, pSrc);
           break;
 
         case icApplyPixel2Named:
@@ -9703,7 +9844,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
         }
       }
       else {
-        pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+        pApplyXform->Apply(pApply, DstPixel, pSrc);
       }
 
     }
@@ -9716,10 +9857,8 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icFloat
         return icCmmStatIncorrectApply;
       }
 
-      pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+      pApplyXform->Apply(pApply, DstPixel, pSrc);
     }
-
-    m_pPCS->CheckLast(DstPixel, m_pCmm->GetDestSpace());
 
     SrcPixel += m_pCmm->GetSourceSamples();
     DstPixel += m_pCmm->GetDestSamples();
@@ -9761,8 +9900,6 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar* DstColorName, const icFloatNum
   icChar NamedColor[256];
   icStatusCMM rv;
 
-  m_pPCS->Reset(m_pCmm->GetSourceSpace());
-
   pSrc = SrcPixel;
   pDst = m_Pixel;
 
@@ -9775,11 +9912,11 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar* DstColorName, const icFloatNum
         pXform = (CIccXformNamedColor*)pApplyXform;
         switch(pXform->GetInterface()) {
         case icApplyPixel2Pixel:
-          pXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, pDst, pSrc);
           break;
 
         case icApplyPixel2Named:
-          pXform->Apply(pApply, NamedColor, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, NamedColor, pSrc);
           break;
 
         case icApplyNamed2Pixel:
@@ -9797,7 +9934,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar* DstColorName, const icFloatNum
         }
       }
       else {
-        pApplyXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pApplyXform));
+        pApplyXform->Apply(pApply, pDst, pSrc);
       }
       pTmp = (icFloatNumber*)pSrc;
       pSrc = pDst;
@@ -9814,7 +9951,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar* DstColorName, const icFloatNum
       switch(pXform->GetInterface()) {
 
       case icApplyPixel2Named:
-        pXform->Apply(pApply, DstColorName, m_pPCS->Check(pSrc, pXform));
+        pXform->Apply(pApply, DstColorName, pSrc);
         break;
 
       case icApplyPixel2Pixel:
@@ -9838,7 +9975,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar* DstColorName, const icFloatNum
     }
 
     pXform = (CIccXformNamedColor*)pApplyXform;
-    pXform->Apply(pApply, DstColorName, m_pPCS->Check(pSrc, pXform));
+    pXform->Apply(pApply, DstColorName, pSrc);
   }
 
   return icCmmStatOk;
@@ -9884,7 +10021,6 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icChar 
     return icCmmStatIncorrectApply;
 
   pXform = (CIccXformNamedColor*)pApplyXform;  
-  m_pPCS->Reset(pXform->GetSrcSpace(), pXform->UseLegacyPCS());
 
   pDst = m_Pixel;
 
@@ -9905,11 +10041,11 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icChar 
         CIccXformNamedColor *pXform = (CIccXformNamedColor*)pApplyXform;
         switch(pXform->GetInterface()) {
         case icApplyPixel2Pixel:
-          pXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, pDst, pSrc);
           break;
 
         case icApplyPixel2Named:
-          pXform->Apply(pApply, NamedColor, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, NamedColor, pSrc);
           break;
 
         case icApplyNamed2Pixel:
@@ -9924,7 +10060,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icChar 
         }
       }
       else {
-        pApplyXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pApplyXform));
+        pApplyXform->Apply(pApply, pDst, pSrc);
       }
       pTmp = (icFloatNumber*)pSrc;
       pSrc = pDst;
@@ -9937,7 +10073,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icChar 
       pXform = (CIccXformNamedColor*)pApplyXform;
       switch(pXform->GetInterface()) {
       case icApplyPixel2Pixel:
-        pXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pXform));
+        pXform->Apply(pApply, DstPixel, pSrc);
         break;
 
       case icApplyPixel2Named:
@@ -9955,7 +10091,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icChar 
       }
     }
     else {
-      pApplyXform->Apply(pApply, DstPixel, m_pPCS->Check(pSrc, pApplyXform));
+      pApplyXform->Apply(pApply, DstPixel, pSrc);
     }
 
   }
@@ -9964,10 +10100,8 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icFloatNumber *DstPixel, const icChar 
     if (rv) {
       return rv;
     }
-    m_pPCS->Check(DstPixel, pXform);
   }
 
-  m_pPCS->CheckLast(DstPixel, m_pCmm->GetDestSpace());
 
   return icCmmStatOk;
 }
@@ -10012,8 +10146,6 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar *DstColorName, const icChar *Sr
 
   pXform = (CIccXformNamedColor*)pApplyXform;
 
-  m_pPCS->Reset(pXform->GetSrcSpace(), pXform->UseLegacyPCS());
-
   pDst = m_Pixel;
 
   if (n>1) {
@@ -10034,12 +10166,12 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar *DstColorName, const icChar *Sr
         pXform = (CIccXformNamedColor*)pApplyXform;
         switch(pXform->GetInterface()) {
         case icApplyPixel2Pixel:
-          pXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, pDst, pSrc);
           break;
 
 
         case icApplyPixel2Named:
-          pXform->Apply(pApply, NamedColor, m_pPCS->Check(pSrc, pXform));
+          pXform->Apply(pApply, NamedColor, pSrc);
           break;
 
         case icApplyNamed2Pixel:
@@ -10054,7 +10186,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar *DstColorName, const icChar *Sr
         }
       }
       else {
-        pApplyXform->Apply(pApply, pDst, m_pPCS->Check(pSrc, pXform));
+        pApplyXform->Apply(pApply, pDst, pSrc);
       }
       pTmp = (icFloatNumber*)pSrc;
       pSrc = pDst;
@@ -10067,7 +10199,7 @@ icStatusCMM CIccApplyNamedColorCmm::Apply(icChar *DstColorName, const icChar *Sr
       pXform = (CIccXformNamedColor*)pApplyXform;
       switch(pXform->GetInterface()) {
       case icApplyPixel2Named:
-        pXform->Apply(pApply, DstColorName, m_pPCS->Check(pSrc, pXform));
+        pXform->Apply(pApply, DstColorName, pSrc);
         break;
 
       case icApplyPixel2Pixel:

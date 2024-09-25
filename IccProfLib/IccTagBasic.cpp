@@ -11523,14 +11523,14 @@ bool CIccTagSpectralViewingConditions::setObserver(icStandardObserver observerId
   m_stdObserver = observerId;
   m_observerRange = observerRange;
   if (m_observer) {
-    free(m_observer);
+    delete [] m_observer;
   }
 
   if (observerRange.steps && observer) {
-    icUInt32Number size = observerRange.steps * sizeof(icFloatNumber) * 3;
-    m_observer = (icFloatNumber *)malloc(size);
+    icUInt32Number size = observerRange.steps * 3;
+    m_observer = new icFloatNumber[size];
     if (m_observer)
-      memcpy(m_observer, observer, size);
+      memcpy(m_observer, observer, size*sizeof(icFloatNumber));
     else {
       memset(&m_observerRange, 0, sizeof(m_observerRange));
       return false;

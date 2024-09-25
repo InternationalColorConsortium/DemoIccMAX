@@ -253,14 +253,15 @@ void CIccProfile::Cleanup()
 {
   if (m_pAttachIO) {
     delete m_pAttachIO;
-    m_pAttachIO = NULL;
+    m_pAttachIO = nullptr;
   }
 
   TagPtrList::iterator i;
 
   for (i=m_TagVals->begin(); i!=m_TagVals->end(); i++) {
-    if (NULL != i->ptr)
+    if (i->ptr != nullptr) {
       delete i->ptr;
+    }
   }
   m_Tags->clear();
   m_TagVals->clear();
@@ -1587,7 +1588,7 @@ icValidateStatus CIccProfile::CheckHeader(std::string &sReport) const
     case icSigSolaris:
     case icSigSGI:
     case icSigTaligent:
-    case icSigUnkownPlatform:
+    case icSigUnknownPlatform:
       break;
     
     default:

@@ -2102,7 +2102,7 @@ bool CIccTagXmlSpectralViewingConditions::ParseXml(xmlNode *pNode, std::string &
       vals.ParseTextArray((icChar*)pChild->children->content);
       if (vals.GetSize()!=m_observerRange.steps*3)
         return false;
-      m_observer = (icFloatNumber*)malloc(m_observerRange.steps*3*sizeof(icFloatNumber));
+      m_observer = new icFloatNumber[m_observerRange.steps*3];
       if (!m_observer)
         return false;
       icFloatNumber *pBuf = vals.GetBuf();
