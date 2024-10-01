@@ -307,8 +307,8 @@ void MyFrame::OpenFile(wxString profilePath)
   wxFileName filepath(profilePath);
   wxString profileTitle = filepath.GetName();
 
-  char * pPath = strdup( profilePath.mb_str() );
-  CIccProfile *pIcc = OpenIccProfile(pPath);
+  std::string path = profilePath.mb_str();
+  CIccProfile *pIcc = OpenIccProfile(path.c_str());
 
   if (!pIcc) {
     (void)wxMessageBox(wxString(_T("Unable to open profile '")) + profilePath + _T("'"),
@@ -740,8 +740,8 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
 	else {
 		std::string sReport;
 		wxBeginBusyCursor();
-        char * pPath = strdup( profilePath.mb_str() );
-		CIccProfile *pIcc = ValidateIccProfile(pPath, sReport, nStat);
+    std::string path = profilePath.mb_str();
+		CIccProfile *pIcc = ValidateIccProfile(path.c_str(), sReport, nStat);
         if (pIcc) {
             int m, n;
             TagEntryList::iterator i, j;
@@ -965,9 +965,10 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   else
     report += wxString::Format("Rendering Intent: %s\n", info.GetRenderingIntentName(nIntent));
 
-  char * pPath = strdup( profilePath.mb_str() );
+  std::string path = profilePath.mb_str();
+
   clock_t start = clock();
-  icStatusCMM stat = eval.EvaluateProfile( (const icChar*) pPath, 0, nIntent, icInterpTetrahedral, bUseMPE);
+  icStatusCMM stat = eval.EvaluateProfile( (const icChar*) path.c_str(), 0, nIntent, icInterpTetrahedral, bUseMPE);
 
   if (stat!=icCmmStatOk) {
     report += wxString::Format("  Unable to perform round trip on '%s'\n", profilePath.c_str());
@@ -981,7 +982,7 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
 
   CIccPRMG prmg;
 
-  stat = prmg.EvaluateProfile( (const icChar*) pPath, nIntent, icInterpTetrahedral, bUseMPE);
+  stat = prmg.EvaluateProfile( (const icChar*) path.c_str(), nIntent, icInterpTetrahedral, bUseMPE);
   clock_t elapsed = clock() - start;
 
   if (stat!=icCmmStatOk) {

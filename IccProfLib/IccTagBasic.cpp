@@ -556,8 +556,10 @@ void CIccTagText::Describe(std::string &sDescription, int nVerboseness)
  */
 void CIccTagText::SetText(const icChar *szText)
 {
-  if (!szText) 
+  if (!szText) {
     SetText("");
+    return;
+  }
 
   icUInt32Number len=(icUInt32Number)strlen(szText) + 1;
   icChar *szBuf = GetBuffer(len);
@@ -902,8 +904,10 @@ void CIccTagUtf8Text::Describe(std::string &sDescription, int nVerboseness)
  */
 void CIccTagUtf8Text::SetText(const icUChar *szText)
 {
-  if (!szText) 
+  if (!szText) {
     SetText("");
+    return;
+  }
 
   icUInt32Number len=(icUInt32Number)strlen((icChar*)szText) + 1;
   icUChar *szBuf = GetBuffer(len);
@@ -925,8 +929,10 @@ void CIccTagUtf8Text::SetText(const icUChar *szText)
  */
 void CIccTagUtf8Text::SetText(const icUChar16 *szText)
 {
-  if (!szText) 
+  if (!szText) {
     SetText("");
+    return;
+  }
 
   icUtf8Vector text;
   icUInt32Number len;
@@ -1311,6 +1317,9 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
 #ifndef ICC_USE_ZLIB
   return false;
 #else
+  if (!szText)
+    szText = (const icUChar*)"";
+
   icUInt32Number nSize = (icUInt32Number)strlen((const char*)szText) + 1;
   icUtf8Vector compress;
   int i;
@@ -1380,8 +1389,9 @@ bool CIccTagZipUtf8Text::SetText(const icUChar *szText)
  */
 bool CIccTagZipUtf8Text::SetText(const icUChar16 *szText)
 {
-  if (!szText) 
+  if (!szText) {
     return SetText("");
+  }
 
   icUtf8Vector text;
   icUInt32Number len;
@@ -1411,8 +1421,10 @@ icUChar *CIccTagZipUtf8Text::AllocBuffer(icUInt32Number nSize)
 {
   if (m_nBufSize != nSize) {
     if (!nSize) {
-      if (m_pZipBuf)
+      if (m_pZipBuf) {
         free(m_pZipBuf);
+        m_pZipBuf = NULL;
+      }
 
       m_nBufSize = nSize;
       return NULL;
@@ -1747,6 +1759,7 @@ void CIccTagUtf16Text::SetText(const icUChar16 *szText)
   if (!szText) {
     icUChar16 c=0;
     SetText(&c);
+    return;
   }
 
   icUInt32Number n;
@@ -1774,6 +1787,7 @@ void CIccTagUtf16Text::SetText(const icUChar *szText)
   if (!szText) {
     icUChar16 c=0;
     SetText(&c);
+    return;
   }
 
   icUtf16Vector str;
@@ -2228,8 +2242,10 @@ void CIccTagTextDescription::SetText(const icChar *szText)
 {
   m_bInvalidScript = false;
 
-  if (!szText) 
+  if (!szText) {
     SetText("");
+    return;
+  }
 
   icUInt32Number len=(icUInt32Number)strlen(szText) + 1;
   icChar *szBuf = GetBuffer(len);
@@ -5463,8 +5479,15 @@ bool CIccTagFixedNum<T, Tsig>::Interpolate(icFloatNumber *DstVector, icFloatNumb
   switch (Tsig) {
     case icSigS15Fixed16ArrayType:
       if (!lo) {
-        for (i=0; i<m_nSize; i++) {
-          DstVector[i] = (icFloatNumber)(zeroVals[i]*(1.0f-x) + icFtoD(hi[i])*x);
+        if (zeroVals) {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = (icFloatNumber)(zeroVals[i] * (1.0f - x) + icFtoD(hi[i]) * x);
+          }
+        }
+        else {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = (icFloatNumber)(icFtoD(hi[i]) * x);
+          }
         }
       }
       else {
@@ -5475,8 +5498,15 @@ bool CIccTagFixedNum<T, Tsig>::Interpolate(icFloatNumber *DstVector, icFloatNumb
       break;
     case icSigU16Fixed16ArrayType:
       if (!lo) {
-        for (i=0; i<m_nSize; i++) {
-          DstVector[i] = (icFloatNumber)(zeroVals[i]*(1.0-x) + icUFtoD(hi[i])*x);
+        if (zeroVals) {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = (icFloatNumber)(zeroVals[i] * (1.0 - x) + icUFtoD(hi[i]) * x);
+          }
+        }
+        else {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = (icFloatNumber)(icUFtoD(hi[i]) * x);
+          }
         }
       }
       else {
@@ -6023,8 +6053,15 @@ bool CIccTagNum<T, Tsig>::Interpolate(icFloatNumber *DstVector, icFloatNumber po
   switch (Tsig) {
     case icSigUInt8ArrayType:
       if (!lo) {
-        for (i=0; i<m_nSize; i++) {
-          DstVector[i] = zeroVals[i]*(1.0f-x) + icU8toF((icUInt8Number)hi[i])*x;
+        if (zeroVals) {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = zeroVals[i] * (1.0f - x) + icU8toF((icUInt8Number)hi[i]) * x;
+          }
+        }
+        else {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = icU8toF((icUInt8Number)hi[i]) * x;
+          }
         }
       }
       else {
@@ -6035,8 +6072,15 @@ bool CIccTagNum<T, Tsig>::Interpolate(icFloatNumber *DstVector, icFloatNumber po
       break;
     case icSigUInt16ArrayType:
       if (!lo) {
-        for (i=0; i<m_nSize; i++) {
-          DstVector[i] = zeroVals[i]*(1.0f-x) + icU16toF((icUInt16Number)hi[i])*x;
+        if (zeroVals) {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = zeroVals[i] * (1.0f - x) + icU16toF((icUInt16Number)hi[i]) * x;
+          }
+        }
+        else {
+          for (i = 0; i < m_nSize; i++) {
+            DstVector[i] = icU16toF((icUInt16Number)hi[i]) * x;
+          }
         }
       }
       else {
@@ -6591,8 +6635,15 @@ bool CIccTagFloatNum<T, Tsig>::Interpolate(icFloatNumber *DstVector, icFloatNumb
   icUInt32Number i;
 
   if (!lo) {
-    for (i=0; i<nVectorSize; i++) {
-      DstVector[i] = (icFloatNumber)(zeroVals[i]*invx + hi[i]*x);
+    if (zeroVals) {
+      for (i = 0; i < nVectorSize; i++) {
+        DstVector[i] = (icFloatNumber)(zeroVals[i] * invx + hi[i] * x);
+      }
+    }
+    else {
+      for (i = 0; i < nVectorSize; i++) {
+        DstVector[i] = (icFloatNumber)(hi[i] * x);
+      }
     }
   }
   else {
@@ -7122,6 +7173,9 @@ bool CIccLocalizedUnicode::SetText(const icChar *szText,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
+  if (!szText)
+    szText = "";
+
   //first convert utf8 to unicode
   std::vector<unsigned long> unicode;
   size_t i = 0;
@@ -7244,6 +7298,11 @@ bool CIccLocalizedUnicode::SetText(const icUInt16Number *sszUnicode16Text,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
+  icUInt16Number empty[1] = { 0 };
+
+  if (!sszUnicode16Text)
+    sszUnicode16Text = &empty[0];
+
   const icUInt16Number *pBuf=sszUnicode16Text;
   int len;
 
@@ -7275,6 +7334,10 @@ bool CIccLocalizedUnicode::SetText(const icUInt32Number *sszUnicode32Text,
                                    icLanguageCode nLanguageCode/* = icLanguageCodeEnglish*/,
                                    icCountryCode nRegionCode/* = icCountryCodeUSA*/)
 {
+  const icUInt32Number empty[1] = { 0 };
+  if (!sszUnicode32Text)
+    sszUnicode32Text = &empty[0];
+
   const icUInt32Number *pBuf=sszUnicode32Text;
   int len;
 

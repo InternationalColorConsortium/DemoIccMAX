@@ -3310,15 +3310,16 @@ icStatusCMM CIccPcsXform::pushBiRef2Ref(CIccProfile *pProfile, IIccProfileConnec
 
         delete illumMtx;
 
-        CIccPcsStepPtr ptr;
-        ptr.ptr = pScale;
-        m_list->push_back(ptr);
       }
       else {
         for (i=0; i<pProfile->m_Header.spectralRange.steps; i++) {
           pData[i] = 1.0f / illuminant[i];
         }
       }
+
+      CIccPcsStepPtr ptr;
+      ptr.ptr = pScale;
+      m_list->push_back(ptr);
     }
     else
       return icCmmStatAllocErr;
@@ -5366,7 +5367,7 @@ CIccCurve *CIccXformMatrixTRC::GetCurve(icSignature sig) const
 {
   CIccTag *pTag = m_pProfile->FindTag(sig);
 
-  if (pTag && pTag->GetType()==icSigCurveType || pTag->GetType()==icSigParametricCurveType) {
+  if (pTag && (pTag->GetType()==icSigCurveType || pTag->GetType()==icSigParametricCurveType)) {
     return (CIccCurve*)pTag;
   }
 
@@ -8393,8 +8394,10 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
 
       rv = pPcs->ConnectFirst(last->ptr, GetSourceSpace());
 
-      if (rv != icCmmStatOk && rv != icCmmStatIdentityXform)
+      if (rv != icCmmStatOk && rv != icCmmStatIdentityXform) {
+        delete pPcs;
         return rv;
+      }
 
       if (rv != icCmmStatIdentityXform) {
         ptr.ptr = pPcs;
@@ -10513,6 +10516,9 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
       return icCmmStatBadSpaceLink;
   }
 
+  m_nSrcSpace = nSrcSpace;
+  m_nDestSpace = nDstSpace;
+
   //Automatic creation of intent from header/last profile
   if (nIntent==icUnknownIntent) {
     if (bInput) {
@@ -10969,7 +10975,8 @@ bool CIccMruCache<T>::Apply(T *DstPixel, const T *SrcPixel)
     m_pFirst = ptr;
   }
   else {  //Reuse oldest value and put it at the front of the list
-    prev->pNext = NULL;
+    if (prev)
+      prev->pNext = NULL;
     last->pNext = m_pFirst;
 
     m_pFirst = last;

@@ -342,6 +342,7 @@ CIccStructNamedColor* CIccArrayNamedColor::FindDeviceColor(const icFloatNumber *
       }
     }
   }
+  delete[] temp;
   return NULL;
 }
 
@@ -414,6 +415,8 @@ CIccStructNamedColor* CIccArrayNamedColor::FindSpectralColor(const icFloatNumber
       }
     }
   }
+
+  delete[] temp;
 
   return leastRMSindex;
 }

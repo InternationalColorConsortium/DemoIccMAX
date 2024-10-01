@@ -1087,6 +1087,9 @@ bool CIccMpeXmlCurveSet::ToXml(std::string &xml, std::string blanks/* = ""*/)
 static icCurveSetCurvePtr ParseXmlCurve(xmlNode* pNode, std::string parseStr)
 {
   icCurveSetCurvePtr rv = NULL;
+  
+  if (!pNode)
+    return rv;
 
   if (!strcmp((const char*)pNode->name, "SegmentedCurve")) {
     CIccSegmentedCurveXml* pCurve = new CIccSegmentedCurveXml();
@@ -1593,7 +1596,7 @@ bool CIccMpeXmlTintArray::ParseXml(xmlNode *pNode, std::string &parseStr)
     // create a tag based on the signature
     pTag = CIccTag::Create(sigType);
 
-    if (!pTag && !pTag->IsNumArrayType()) {
+    if (!pTag || !pTag->IsNumArrayType()) {
       parseStr+= "Invalid data type for Tint Array!\n";
       delete pTag;
       return false;

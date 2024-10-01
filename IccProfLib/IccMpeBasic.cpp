@@ -392,6 +392,7 @@ bool CIccFormulaCurveSegment::Read(icUInt32Number size, CIccIO *pIO)
 
   if (m_params) {
     free(m_params);
+    m_params = NULL;
   }
 
   switch(m_nFunctionType) {
@@ -3156,15 +3157,18 @@ bool CIccMpeCurveSet::SetCurve(int nIndex, icCurveSetCurvePtr newCurve)
   if (m_curve) {
     int i;
 
-    for (i=0; i<m_nInputChannels; i++)
-      if (i!=nIndex && m_curve[i]==m_curve[nIndex])
+    for (i = 0; i < m_nInputChannels; i++)
+      if (i != nIndex && m_curve[i] == m_curve[nIndex])
         break;
 
-    if (i==m_nInputChannels && m_curve[nIndex]) {
+    if (i == m_nInputChannels && m_curve[nIndex]) {
       delete m_curve[nIndex];
     }
+
+    m_curve[nIndex] = newCurve;
   }
-  m_curve[nIndex] = newCurve;
+  else
+    return false;
   
   return true;
 }
@@ -3691,6 +3695,7 @@ bool CIccMpeTintArray::Read(icUInt32Number size, CIccIO *pIO)
 
   if (!pTag->IsNumArrayType()) {
     delete pTag;
+    return false;
   }
 
   m_Array = (CIccTagNumArray*)pTag;
@@ -4467,6 +4472,7 @@ bool CIccMpeToneMap::Read(icUInt32Number size, CIccIO* pIO)
   }
 
   if (!pCurve->Read(lumPos.size, pIO)) {
+    delete pCurve;
     return false;
   }
 
@@ -5403,6 +5409,9 @@ CIccMpeCLUT::CIccMpeCLUT(const CIccMpeCLUT &clut)
  ******************************************************************************/
 CIccMpeCLUT &CIccMpeCLUT::operator=(const CIccMpeCLUT &clut)
 {
+  if (&clut == this)
+    return *this;
+
   if (m_pCLUT)
     delete m_pCLUT;
 

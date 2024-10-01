@@ -3297,6 +3297,7 @@ icFuncParseStatus CIccCalculatorFunc::SetFunction(CIccCalcOpList &opList, std::s
 {
   if (m_Op) {
     free(m_Op);
+    m_Op = NULL;
   }
 
   m_nOps = (icUInt32Number)opList.size();
@@ -4751,7 +4752,7 @@ CIccApplyMpe *CIccMpeCalculator::GetNewApply(CIccApplyTagMpe *pApplyTag)
 
   pApply->m_nSubElem = m_nSubElem;
   if(m_nSubElem) {
-    pApply->m_SubElem = (CIccSubCalcApply **)calloc(m_nSubElem, sizeof(CIccSubCalcApply));
+    pApply->m_SubElem = (CIccSubCalcApply **)calloc(m_nSubElem, sizeof(CIccSubCalcApply*));
 
     if (m_SubElem) {
       for (i=0; i<m_nSubElem; i++) {
@@ -4946,26 +4947,28 @@ bool CIccMpeCalculator::SetElem(icUInt32Number idx, CIccMultiProcessElement *pEl
 {
   bool rv = true;
 
-  if (idx+1>count) {
+  if (idx + 1 > count) {
     if (*pArray) {
-      *pArray = (CIccMultiProcessElement**)icRealloc(*pArray, (idx+1)*sizeof(CIccMultiProcessElement*));
+      *pArray = (CIccMultiProcessElement**)icRealloc(*pArray, (idx + 1) * sizeof(CIccMultiProcessElement*));
 
       if (!(*pArray))
         return false;
 
       icUInt32Number i;
-      for (i=count; i<=idx; i++) {
+      for (i = count; i <= idx; i++) {
         (*pArray)[i] = NULL;
       }
     }
     else {
-      *pArray = (CIccMultiProcessElement**)calloc(idx+1, sizeof(CIccMultiProcessElement*));
+      *pArray = (CIccMultiProcessElement**)calloc(idx + 1, sizeof(CIccMultiProcessElement*));
 
       if (!(*pArray))
         return false;
     }
-    count = idx+1;
+    count = idx + 1;
   }
+  else if (!(*pArray))
+    return false;
 
   if ((*pArray)[idx]) {
     delete (*pArray)[idx];

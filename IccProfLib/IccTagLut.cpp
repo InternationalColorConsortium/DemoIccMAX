@@ -1209,6 +1209,9 @@ CIccTagSegmentedCurve::CIccTagSegmentedCurve(const CIccTagSegmentedCurve &ITSCur
 */
 CIccTagSegmentedCurve &CIccTagSegmentedCurve::operator=(const CIccTagSegmentedCurve &CurveTag)
 {
+  if (&CurveTag == this)
+    return *this;
+
   if (m_pCurve)
     delete m_pCurve;
 
