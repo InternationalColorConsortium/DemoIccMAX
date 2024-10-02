@@ -1,5 +1,6 @@
-2024-10-01 Max Derhak
+2024-10-02 Max Derhak
 * Incorporate changes from Bug Tracker analysis
+* Added version of ValidateProfile() function to validate embedded in memory profiles
 
 2024-09-25 Max Derhak
 * Refactor PCS operation to improve performance
