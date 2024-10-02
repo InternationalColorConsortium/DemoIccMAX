@@ -3453,6 +3453,7 @@ CIccProfile* OpenIccProfile(const icWChar *szFilename, bool bUseSubProfile/*=fal
 * Args: 
 *  pMem = pointer to memory containing profile data
 *  nSize = size of memory related to profile
+*  bUseSubProfile = flag to indicate that to use embedded subprofile
 * 
 * Return: 
 *  Pointer to icc profile object, or NULL on failure
@@ -3611,6 +3612,57 @@ CIccProfile* ValidateIccProfile(const icChar *szFilename, std::string &sReport, 
   return pIcc;
 }
 
+
+/**
+******************************************************************************
+* Name: ValidateIccProfile
+*
+* Purpose: Open an ICC profile file.  This will only read the profile header
+*  and tag directory.  Loading of actual tags will be deferred until the
+*  tags are actually referenced by FindTag().
+*
+* Args:
+*  pMem = pointer to memory containing profile data
+*  nSize = size of memory related to profile
+*  sReport - std::string to put report into
+*  nStatus - return status value
+*
+* Return:
+*  Pointer to icc profile object, or NULL on failure
+*******************************************************************************
+*/
+CIccProfile* ValidateIccProfile(const icUInt8Number* pMem, icUInt32Number nSize, std::string& sReport, icValidateStatus& nStatus)
+{
+  CIccMemIO* pMemIO = new CIccMemIO;
+
+  if (!pMemIO->Attach((icUInt8Number*)pMem, nSize)) {
+    sReport = icMsgValidateCriticalError;
+    sReport += " - Unable to attach IO access to memory block.";
+    delete pMemIO;
+    return NULL;
+  }
+
+  CIccProfile* pIcc = new CIccProfile;
+
+  if (!pIcc) {
+    delete pMemIO;
+    return NULL;
+  }
+
+  nStatus = pIcc->ReadValidate(pMemIO, sReport);
+
+  if (nStatus >= icValidateCriticalError) {
+    delete pIcc;
+    delete pMemIO;
+    return NULL;
+  }
+
+  delete pMemIO;
+
+  nStatus = icMaxStatus(nStatus, pIcc->Validate(sReport));
+
+  return pIcc;
+}
 
 
 /**
