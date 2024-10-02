@@ -3954,7 +3954,7 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO)
       if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO))
         return false;
 
-      if (!pIO->Sync32(Offset[1]))
+      if (!pIO->Sync32(Offset[0]))
         return false;
     }
   }

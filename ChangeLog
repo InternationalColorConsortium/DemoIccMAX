@@ -1,6 +1,7 @@
 2024-10-02 Max Derhak
 * Incorporate changes from Bug Tracker analysis
 * Added version of ValidateProfile() function to validate embedded in memory profiles
+* Fixed minor offset sync problem with LutAtoB reading
 
 2024-09-25 Max Derhak
 * Refactor PCS operation to improve performance
