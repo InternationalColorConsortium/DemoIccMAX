@@ -17,7 +17,7 @@ cd /tmp
 
 ```bash
 cd /tmp
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/Build/cmake/build_clang_master_branch.sh)"
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_clang_master_branch.sh)"
 ```
 
 The script performs the following steps:
