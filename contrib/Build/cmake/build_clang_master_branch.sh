@@ -98,7 +98,7 @@ print_banner "cd Testing/"
 cd ../Testing || { echo "Error: Testing directory not found. Exiting."; exit 1; }
 
 print_banner "Creating Profiles"
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/UnitTest/CreateAllProfiles_cross_check.sh)" || { echo "Error: Profile creation failed. Exiting."; exit 1; }
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/CreateAllProfiles_cross_check.sh)" || { echo "Error: Profile creation failed. Exiting."; exit 1; }
 
 print_banner "Build Project and CreateAllProfiles Done!"
 print_elapsed_time
