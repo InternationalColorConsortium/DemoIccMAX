@@ -1,10 +1,4 @@
 # CreateAllProfiles Script
-**Run:** Copy and Paste into your Terminal
-
-```
-cd Testing/
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
-```
 
 ## Overview
 

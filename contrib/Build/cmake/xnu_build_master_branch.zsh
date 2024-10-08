@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 ##
 ## Copyright (c) 2024 The International Color Consortium. All rights reserved.
 ##
@@ -27,12 +27,12 @@ run_and_log() {
 print_elapsed_time() {
     END_TIME=$(date +%s)
     ELAPSED_TIME=$((END_TIME - START_TIME))
-    echo "Elapsed Time: $(date -ud "@$ELAPSED_TIME" +'%H:%M:%S')"
+    echo "Elapsed Time: $(date -u -r "$ELAPSED_TIME" +'%H:%M:%S')"
 }
 
 # Start Script
 print_banner "International Color Consortium | DemoIccMAX Project | Copyright 2024. For more information on The International Color Consortium, please see http://color.org/."
-print_banner "Build Script now running.."
+print_banner "XNU Build Script now running.."
 run_and_log echo "Logfile: $LOGFILE"
 
 # Step 1: Configuring Git user
@@ -44,7 +44,7 @@ run_and_log echo "Git user configuration done."
 # Step 2: Cloning master branch
 print_banner "Step 2: Cloning DemoIccMAX on master branch"
 run_and_log git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git || { echo "Error: Git clone failed. Exiting."; exit 1; }
-cd DemoIccMAX/ || { echo "Error: Failed to change directory to PatchIccMAX. Exiting."; exit 1; }
+cd DemoIccMAX/ || { echo "Error: Failed to change directory to DemoIccMAX. Exiting."; exit 1; }
 run_and_log echo "Repository cloned and switched to DemoIccMAX directory."
 
 # Step 3: Revert
@@ -55,9 +55,7 @@ run_and_log echo "master branch checked out."
 
 # Step 4: Installing Dependencies
 print_banner "Step 4: Installing Dependencies, you will be prompted for the sudo password to continue..."
-sudo apt-get install curl git make cmake clang clang-tools \
-libwxgtk-media3.0-gtk3-dev libwxgtk-webview3.0-gtk3-dev \
-libwxgtk3.0-gtk3-dev libxml2 libxml2-dev libtiff5 libtiff5-dev build-essential || { echo "Error: Failed to install dependencies. Exiting."; exit 1; }
+brew install libtiff libxml2 wxwidgets libxml2 libtiff|| { echo "Error: Failed to install dependencies via Homebrew. Exiting."; exit 1; }
 
 # Step 5: Build
 print_banner "Step 5: Starting Build...."
@@ -69,7 +67,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug \
 -Wno-dev Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
 
 print_banner "Step 6: running make"
-make -j$(nproc) >/dev/null 2>&1 || { echo "Error: Build failed. Exiting."; exit 1; }
+make -j$(sysctl -n hw.ncpu) >/dev/null 2>&1 || { echo "Error: Build failed. Exiting."; exit 1; }
 
 print_banner "Built Files:"
 find . -type f \( \( -perm -111 \) -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -exec ls -lh {} \;
@@ -80,5 +78,5 @@ cd ../Testing || { echo "Error: Testing directory not found. Exiting."; exit 1; 
 print_banner "Creating Profiles"
 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles_cross_check.sh)" || { echo "Error: Profile creation failed. Exiting."; exit 1; }
 
-print_banner "Build Project and CreateAllProfiles Done!"
+print_banner "XNU Build Project and CreateAllProfiles Done!"
 print_elapsed_time
