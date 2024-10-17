@@ -1,0 +1,1 @@
+sudo apt install curl git make cmake clang clang-tools libwxgtk-media3.0-gtk3-dev libwxgtk-webview3.0-gtk3-dev libwxgtk3.0-gtk3-dev libwxgtk-media3.0-gtk3 libwxgtk-webview3.0-gtk3 libwxgtk3.0-gtk3 libxml2 libtiff5 libxml2-dev libtiff5-dev make cmake build-essential

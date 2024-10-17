@@ -10,7 +10,7 @@
 LOGFILE="build_log_$(date +%Y-%m-%d_%H-%M-%S).log"
 START_TIME=$(date +%s)
 
-# Set compiler to Clang explicitly for clang build
+# Set compiler to Clang explicitly for B testing
 COMPILER="clang++"
 CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall"
 
@@ -98,7 +98,7 @@ print_banner "cd Testing/"
 cd ../Testing || { echo "Error: Testing directory not found. Exiting."; exit 1; }
 
 print_banner "Creating Profiles"
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/CreateAllProfiles_cross_check.sh)" || { echo "Error: Profile creation failed. Exiting."; exit 1; }
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles_cross_check.sh)" || { echo "Error: Profile creation failed. Exiting."; exit 1; }
 
 print_banner "Build Project and CreateAllProfiles Done!"
 print_elapsed_time

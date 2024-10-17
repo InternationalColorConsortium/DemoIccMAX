@@ -6,18 +6,24 @@ This repository contains scripts that automate the setup and build process on CM
 
 ### Build Master from Repository
 
-**gnu**: Copy and Paste the Build from Remote Script into your Terminal:
+**Ubuntu gnu**: Copy and Paste the Build from Remote Script into your Terminal:
 
 ```bash
 cd /tmp
 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
 ```
 
-**clang**: Copy and Paste the Build from Remote Script into your Terminal:
+**Ubuntu clang**: Copy and Paste the Build from Remote Script into your Terminal:
 
 ```bash
 cd /tmp
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_clang_master_branch.sh)"
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/Build/cmake/build_clang_master_branch.sh)"
+```
+
+**macOS clang**
+
+```
+ /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/Build/cmake/xnu_build_master_branch.zsh)"
 ```
 
 The script performs the following steps:
@@ -126,19 +132,19 @@ Configured RefIccMAX-Linux64-2.1.17
  Built Files:
  Time: Mon Oct  7 13:49:13 EDT 2024
 ============================================================
-./IccProfLib/libIccProfLib2-static.a
-./IccProfLib/libIccProfLib2.so.2.1.17
-./IccXML/libIccXML2-static.a
-./IccXML/libIccXML2.so.2.1.17
-./Tools/IccDumpProfile/iccDumpProfile
-./Tools/wxProfileDump/iccDumpProfileGui
-./Tools/IccToXml/iccToXml
-./Tools/IccApplyProfiles/iccApplyProfiles
-./Tools/IccTiffDump/iccTiffDump
-./Tools/IccSpecSepToTiff/iccSpecSepToTiff
-./Tools/IccApplyNamedCmm/iccApplyNamedCmm
-./Tools/IccFromXml/iccFromXml
-./Tools/IccRoundTrip/iccRoundTrip
+-rw-r--r-- 1 xss xss 55M Oct  7 13:49 ./IccProfLib/libIccProfLib2-static.a
+-rwxr-xr-x 1 xss xss 43M Oct  7 13:49 ./IccProfLib/libIccProfLib2.so.2.1.17
+-rw-r--r-- 1 xss xss 17M Oct  7 13:49 ./IccXML/libIccXML2-static.a
+-rwxr-xr-x 1 xss xss 12M Oct  7 13:49 ./IccXML/libIccXML2.so.2.1.17
+-rwxr-xr-x 1 xss xss 300K Oct  7 13:49 ./Tools/IccDumpProfile/iccDumpProfile
+-rwxr-xr-x 1 xss xss 3.3M Oct  7 13:49 ./Tools/wxProfileDump/iccDumpProfileGui
+-rwxr-xr-x 1 xss xss 227K Oct  7 13:49 ./Tools/IccToXml/iccToXml
+-rwxr-xr-x 1 xss xss 832K Oct  7 13:49 ./Tools/IccApplyProfiles/iccApplyProfiles
+-rwxr-xr-x 1 xss xss 550K Oct  7 13:49 ./Tools/IccTiffDump/iccTiffDump
+-rwxr-xr-x 1 xss xss 478K Oct  7 13:49 ./Tools/IccSpecSepToTiff/iccSpecSepToTiff
+-rwxr-xr-x 1 xss xss 532K Oct  7 13:49 ./Tools/IccApplyNamedCmm/iccApplyNamedCmm
+-rwxr-xr-x 1 xss xss 257K Oct  7 13:49 ./Tools/IccFromXml/iccFromXml
+-rwxr-xr-x 1 xss xss 149K Oct  7 13:49 ./Tools/IccRoundTrip/iccRoundTrip
 ============================================================
  cd Testing/
  Time: Mon Oct  7 13:49:13 EDT 2024
