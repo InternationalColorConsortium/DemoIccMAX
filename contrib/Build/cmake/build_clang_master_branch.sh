@@ -49,7 +49,7 @@ run_and_log echo "Git user configuration done."
 # Step 2: Cloning master branch
 print_banner "Step 2: Cloning DemoIccMAX on master branch"
 run_and_log git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git || { echo "Error: Git clone failed. Exiting."; exit 1; }
-cd DemoIccMAX/ || { echo "Error: Failed to change directory to PatchIccMAX. Exiting."; exit 1; }
+cd DemoIccMAX/ || { echo "Error: Failed to change directory to DemoIccMAX. Exiting."; exit 1; }
 run_and_log echo "Repository cloned and switched to DemoIccMAX directory."
 
 # Step 3: Revert
