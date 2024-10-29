@@ -5,7 +5,7 @@
 ### PoC
 ```
 cd /tmp/DemoIccMAX-master/testing
-wget https://github.com/xsscx/PatchIccMAX/raw/development/contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
+wget https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
 ./iccDumpProfile icPlatformSignature-ubsan-poc.icc
 ```
 

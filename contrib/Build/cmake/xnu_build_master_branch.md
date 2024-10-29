@@ -7,7 +7,7 @@ Copy and Paste the folowing Command into your Terminal to Build the DemoIccMAX P
 
    ```
    cd /tmp
-   /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+   /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/development/contrib/Build/cmake/xnu_build_master_branch.zsh)"
    ```
 
 ## Overview
@@ -113,7 +113,7 @@ Ensure all prerequisites are installed and properly configured before running th
 ```
 24.0.0 Darwin Kernel Version 24.0.0: Tue Sep 24 23:36:30 PDT 2024; root:xnu-11215.1.12~1/RELEASE_X86_64 x86_64
 ...
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/development/contrib/Build/cmake/xnu_build_master_branch.zsh)"
 ============================================================
  International Color Consortium | DemoIccMAX Project | Copyright 2024. For more information on The International Color Consortium, please see http://color.org/.
  Time: Tue Oct  8 13:22:26 EDT 2024

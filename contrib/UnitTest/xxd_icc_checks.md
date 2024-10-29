@@ -35,13 +35,6 @@ This script automates the process of analyzing ICC (International Color Consorti
 
 The extracted data is consolidated into a report saved as `consolidated_icc_report.txt`.
 
-## How to Use
-
-```
-cd Testing/
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/development/contrib/UnitTest/xxd_icc_checks.zsh)" 
-```
-
 ### Prerequisites
 
 - **macOS**: The script is designed to run on macOS.
