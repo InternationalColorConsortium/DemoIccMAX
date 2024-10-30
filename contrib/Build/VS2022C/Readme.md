@@ -24,32 +24,10 @@ To build and test the project, use the provided PowerShell scripts:
 
 ### Example Commands
 
-- **Build the master branch of the project**:
-
-	- Powershell
+- **Build the master branch of the project via powershell**:
 
    ```
-   cd C:\temp
-   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build_revert_master_branch.ps1").Content
-   ```
-
-- **Diagnostic build of master branch**:
-
-	- Powershell
-	
-   ```
-   cd $$PROJECT_ROOT$$/
-   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build_diagnostics.ps1").Content
-   ```
-
-
-- **Create ICC profiles after build**:
-
-	- Powershell
-
-   ```
-   cd Testing/
-   $tempFile = "$env:TEMP\CreateAllProfiles.bat"; iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.bat" -OutFile $tempFile; & $tempFile; Remove-Item $tempFile
+   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
    ```
 
 ## Contributing
