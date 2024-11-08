@@ -104,6 +104,7 @@ static __inline bool IsSpaceSpectralPCS(icUInt32Number sig)
          sig==icSigSparseMatrixSpectralPcsData;
 }
 
+#define IsSpaceDevicePCS(x) ((x)==icSigDevXYZData || (x)==icSigDevLabData)
 #define IsSpaceColorimetricPCS(x) ((x)==icSigXYZPcsData || (x)==icSigLabPcsData)
 #define IsSpaceNChannel(x) (icGetColorSpaceType(x)==icSigNChannelData)
 #define IsSpacePCS(x) (IsSpaceColorimetricPCS(x) || IsSpaceSpectralPCS(x))
@@ -114,6 +115,8 @@ static __inline bool IsSpaceSpectralPCS(icUInt32Number sig)
 
 #define IsCompatSpace(x, y) ((x)==(y) || (IsSpacePCS(x) && IsSpacePCS(y)) || (IsSpaceMCS(x) && IsSpaceMCS(y))/* || (IsSpaceCMYK(x) && IsSpaceCMYK(y))*/)
 
+#define IsCompatSpacePCS(x, y) (((x)==icSigDevXYZData && (y)==icSigXYZData) || ((x)==icSigXYZData && (y)==icSigDevXYZData) || \
+                                ((x)==icSigDevLabData && (y)==icSigLabData) || ((x)==icSigLabData && (y)==icSigDevLabData))
 
 #define ICCPCSSTEPDUMPFMT ICCMTXSTEPDUMPFMT
 
@@ -10356,7 +10359,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
         if (bInput) {
           nSrcSpace = icSigNamedData;
         }
-        else if (nLutType == icXformLutSpectral || (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric)) {
+        else if (nLutType == icXformLutSpectral || ((bUseD2BxB2DxTags || !pProfile->m_Header.pcs) && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric)) {
           nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
           bUseD2BxB2DxTags = true;
         }
@@ -10418,7 +10421,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
         if (bInput) {
           nSrcSpace = pProfile->m_Header.colorSpace;
 
-          if (nLutType == icXformLutSpectral || (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric)) {
+          if (nLutType == icXformLutSpectral || ((bUseD2BxB2DxTags || !pProfile->m_Header.pcs) && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric)) {
             nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
             bUseD2BxB2DxTags = true;
           }
@@ -10434,7 +10437,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
             nIntent = icPerceptual; // Note: icPerceptualIntent = 0
           }
 
-          if (nLutType == icXformLutSpectral || (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric)) {
+          if (nLutType == icXformLutSpectral || ((bUseD2BxB2DxTags || !pProfile->m_Header.pcs) && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric)) {
             nSrcSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
             bUseD2BxB2DxTags = true;
           }
@@ -10516,7 +10519,9 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
       return icCmmStatBadSpaceLink;
   }
 
-  m_nSrcSpace = nSrcSpace;
+  if (!m_Xforms->size())
+    m_nSrcSpace = nSrcSpace;
+
   m_nDestSpace = nDstSpace;
 
   //Automatic creation of intent from header/last profile
@@ -10565,7 +10570,7 @@ icStatusCMM CIccNamedColorCmm::AddXform(CIccProfile *pProfile,
   if (m_nDestSpace==icSigUnknownData) {
     m_nDestSpace = m_nLastSpace;
   }
-  else if (!IsCompatSpace(m_nDestSpace, m_nLastSpace)) {
+  else if (!IsCompatSpace(m_nDestSpace, m_nLastSpace) && !IsCompatSpacePCS(m_nDestSpace, m_nLastSpace)) {
     return icCmmStatBadSpaceLink;
   }
 

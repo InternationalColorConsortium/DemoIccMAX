@@ -1193,6 +1193,8 @@ public:
   virtual LPIccCurve* ExtractInputCurves();
   virtual LPIccCurve* ExtractOutputCurves();
 
+  icFloatNumber* GetMatrix() { return &m_e[0]; }
+
 protected:
 
   virtual bool HasPerceptualHandling() { return false; }

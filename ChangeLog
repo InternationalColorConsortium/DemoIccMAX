@@ -1,3 +1,8 @@
+2024-10-08 Max Derhak
+* Fixed bug with selecting transform type in CIccCmmConfig
+* Allow auto selection of spectral xform when PCS is NULL
+* Add CMY colorspace support for it8 files
+
 2024-10-02 Max Derhak
 * Incorporate changes from Bug Tracker analysis
 * Added version of ValidateProfile() function to validate embedded in memory profiles

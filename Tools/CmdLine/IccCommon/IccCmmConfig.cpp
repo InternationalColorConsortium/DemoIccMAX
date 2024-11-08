@@ -590,9 +590,9 @@ static const char* icTranNames[] = { "default", "named", "colorimetric", "spectr
                                      "MCS", "preview", "gamut", "brdfParam",
                                      "brdfDirect", "brdfMcsParam" , nullptr };
 
-static int icTranValues[] = { icXformLutColor, icXformLutNamedColor, icXformLutColorimetric, icXformLutSpectral,
-                              icXformLutMCS, icXformLutPreview, icXformLutGamut, icXformLutBRDFParam,
-                              icXformLutBRDFDirect, icXformLutBRDFMcsParam, icXformLutColor };
+static icXformLutType icTranValues[] = { icXformLutColor, icXformLutNamedColor, icXformLutColorimetric, icXformLutSpectral,
+                                         icXformLutMCS, icXformLutPreview, icXformLutGamut, icXformLutBRDFParam,
+                                         icXformLutBRDFDirect, icXformLutBRDFMcsParam, icXformLutColor };
 
 static const char* icInterpNames[] = { "linear", "tetrahedral", nullptr };
 
@@ -635,7 +635,7 @@ bool CIccCfgProfile::fromJson(json j, bool bReset)
       if (str == icTranNames[i])
         break;
     }
-    m_intent = icTranValues[i];
+    m_transform = (icXformLutType)icTranValues[i];
   }
 
   jsonToValue(j["iccEnvVars"], m_iccEnvVars);
@@ -1498,6 +1498,8 @@ std::string CIccCfgColorData::spaceName(icColorSpaceSignature sig)
   switch (sig) {
     case icSigRgbData:
       return "RGB";
+    case icSigCmyData:
+      return "CMY";
     case icSigCmykData:
       return "CMYK";
     case icSigDevXYZData:
@@ -1530,6 +1532,14 @@ void CIccCfgColorData::addFields(std::string& dataFormat, int& nFields, int& nSa
       dataFormat += prefix + "RGB_R";
       dataFormat += tabStr + prefix + "RGB_G";
       dataFormat += tabStr + prefix + "RGB_B";
+      nFields += nSamples;
+      return;
+    case icSigCmyData:
+      nSamples = 3;
+      if (nFields) dataFormat += tabStr;
+      dataFormat += prefix + "CMY_C";
+      dataFormat += tabStr + prefix + "CMY_M";
+      dataFormat += tabStr + prefix + "CMY_Y";
       nFields += nSamples;
       return;
     case icSigCmykData:
