@@ -1279,18 +1279,6 @@ protected:
   const CIccMatrix* m_ApplyMatrixPtr;
 };
 
-
-class ICCPROFLIB_API CIccApplyNDLutXform : public CIccApplyXform
-{
-  friend class CIccXformNDLut;
-public: 
-  CIccApplyNDLutXform(CIccXformNDLut* pXform, CIccApplyCLUT* pApply);
-  virtual ~CIccApplyNDLutXform();
-
-protected:
-  CIccApplyCLUT* m_pApply;
-};
-
 /**
  **************************************************************************
  * Type: Class
@@ -1328,6 +1316,17 @@ protected:
   const CIccMatrix* m_ApplyMatrixPtr;
 };
 
+
+class ICCPROFLIB_API CIccApplyNDLutXform : public CIccApplyXform
+{
+  friend class CIccXformNDLut;
+public:
+  CIccApplyNDLutXform(CIccXformNDLut* pXform, CIccApplyCLUT* pApply);
+  virtual ~CIccApplyNDLutXform();
+
+protected:
+  CIccApplyCLUT* m_pApply;
+};
 
 
 /**
