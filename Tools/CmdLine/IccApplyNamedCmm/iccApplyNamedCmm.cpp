@@ -78,7 +78,7 @@
 #include "IccEnvVar.h"
 #include "IccMpeCalc.h"
 #include "IccProfLibVer.h"
-#include "..\IccCommon\IccCmmConfig.h"
+#include "../IccCommon/IccCmmConfig.h"
 
 
 using namespace nlohmann;

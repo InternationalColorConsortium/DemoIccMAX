@@ -76,7 +76,7 @@
 #include "IccDefs.h"
 #include "IccApplyBPC.h"
 #include "IccEnvVar.h"
-#include "..\IccCommon\IccCmmConfig.h"
+#include "../IccCommon/IccCmmConfig.h"
 #include "TiffImg.h"
 #include "IccProfLibVer.h"
 
