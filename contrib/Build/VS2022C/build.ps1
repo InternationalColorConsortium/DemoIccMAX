@@ -1,10 +1,110 @@
-msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccSpecSepToTiff\iccSpecSepToTiff_v22.vcxproj" /p:Configuration=Debug /p:Platform=x64 /p:VcpkgTriplet=x64-windows-static /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows-static\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" /t:Clean,Build
+# ========================== DemoIccMAX Master Branch Build Script ==========================
+# DemoIccMAX Static Branch Build Script
+# Copyright (c) 2024 The International Color Consortium. All rights reserved.
+# Author: David Hoyt
+# Date: 30-Oct-2024
+# Run via pwsh: iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
+#
+# ============================================================
+
+# Start of Script
+Write-Host "============================= Starting DemoIccMAX Master Branch Build =============================" -ForegroundColor Green
+Write-Host "Copyright (c) 2024 The International Color Consortium. All rights reserved." -ForegroundColor Green
+Write-Host "For more information on the International Color Consortium see URL https://color.org" -ForegroundColor Green
+Write-Host "Signing: David H Hoyt LLC | dhoyt@hoyt.net" -ForegroundColor Green
+
+# Set up directories and environment variables
+Write-Host "Set up \test directories and environment variables...."
+$env:VSCMD_ARG_HOST_ARCH = "x64"
+$env:VSCMD_ARG_TGT_ARCH = "x64"
+$optDir = "C:\test"
+$vcpkgDir = "$optDir\vcpkg"
+$patchDir = "$optDir\DemoIccMAX"
+
+# Setup anon git
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+
+# Create the /opt directory if it doesn't exist
+if (-Not (Test-Path $optDir)) {
+    New-Item -ItemType Directory -Path $optDir
+}
+
+# Clone vcpkg repository and bootstrap
+Write-Host "Cloning vcpkg repository..."
+cd $optDir
+git clone https://github.com/microsoft/vcpkg.git
+cd $vcpkgDir
+Write-Host "Bootstrapping vcpkg..."
+.\bootstrap-vcpkg.bat
+
+# Integrate vcpkg and install dependencies
+Write-Host "Integrating vcpkg..."
+.\vcpkg.exe integrate install
+
+Write-Host "Installing required libraries (libxml2, tiff, wxwidgets) for x64-windows-static..."
+.\vcpkg.exe install libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libxml2:x64-windows-static tiff:x64-windows-static wxwidgets:x64-windows-static
+
+# Clone the DemoIccMAXIccMAX repository
+Write-Host "Cloning DemoIccMAX repository..."
+cd $optDir
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+
+# Checkout the master branch
+cd $patchDir
+git revert --no-edit b90ac3933da99179df26351c39d8d9d706ac1cc6
+
+# Build the project using msbuild
+#Write-Host "Building the project..."
+#msbuild  /m /maxcpucount "Build\MSVC\BuildAll_v22.sln" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+
+Write-Host "Fixups for bad project configs"
+copy C:\test\vcpkg\installed\x64-windows\lib\tiff.lib C:\test\vcpkg\installed\x64-windows\lib\libtiff.lib
+copy C:\test\vcpkg\installed\x64-windows-static\lib\tiff.lib C:\test\vcpkg\installed\x64-windows-static\lib\libtiff.lib 
+
+# Set the PATH in case build and link static not working
+# Confirmed working point and shoot
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccXML\IccLibXML\IccLibXML_CRTDLL_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccXML\IccLibXML\IccLibXML_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccProfLib\IccProfLib_CRTDLL_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccProfLib\IccProfLib_DLL_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccProfLib\IccProfLib_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\IccFromXml_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\IccXML\CmdLine\IccToXml\IccToXml_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccApplyNamedCmm\iccApplyNamedCmm_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccApplyToLink\iccApplyToLink_v16.vcxproj" /p:PlatformToolset=v143 /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccDumpProfile\iccDumpProfile_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccFromCube\iccFromCube_v16.vcxproj" /p:PlatformToolset=v143 /p:Configuration=Release /p:Platform=x64 /p:VcpkgTriplet=x64-windows-static /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows-static\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO"
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccRoundTrip\iccRoundTrip_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccV5DspObsToV4Dsp\IccV5DspObsToV4Dsp_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm_v22.vcxproj" /p:Configuration=Release /p:Platform=x64 /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" 
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\iccApplyProfiles_v22.vcxproj"  /p:Configuration=Release /p:Platform=x64 /p:VcpkgTriplet=x64-windows-static /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows-static\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" /t:Clean,Build
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccTiffDump\iccTiffDump_v22.vcxproj"  /p:Configuration=Release /p:Platform=x64 /p:VcpkgTriplet=x64-windows-static /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows-static\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" /t:Clean,Build
+msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccSpecSepToTiff\iccSpecSepToTiff_v22.vcxproj"  /p:Configuration=Release /p:Platform=x64 /p:VcpkgTriplet=x64-windows-static /p:AdditionalIncludeDirectories="C:\test\vcpkg\installed\x64-windows-static\include" /p:AdditionalLibraryDirectories="C:\test\vcpkg\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" /t:Clean,Build
+
+# Set the PATH in case build and link static not working
+Write-Host "Adding $env:PATH = "C:\test\vcpkg\installed\x64-windows\bin;" + $env:PATH"
+$env:PATH = "C:\test\vcpkg\installed\x64-windows\bin;" + $env:PATH
+
+Write-Host "Copying .dll and .kibs into Testing/"
+cd Testing/
+copy c:\test\vcpkg\installed\x64-windows\lib\*.dll .
+copy c:\test\vcpkg\installed\x64-windows-static\lib\*.lib .
+
+Write-Host "Running the .exe files built"
+# copy ..\..\vcpkg\installed\x64-windows-static\lib\tiff.lib  ..\..\vcpkg\installed\x64-windows-static\lib\libtiff.lib
+Get-ChildItem -Path "." -Recurse -Filter *.exe | ForEach-Object { Write-Host "Running: $($_.FullName)"; & $_.FullName }
+
+Write-Host "Running CreateAllProfiles.bat from remote"
+$tempFile = "$env:TEMP\CreateAllProfiles.bat"; iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.bat" -OutFile $tempFile; & $tempFile; Remove-Item $tempFile
+
+Write-Host "All Done!"
 
 # SIG # Begin signature block
 # MII9BQYJKoZIhvcNAQcCoII89jCCPPICAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBAa+qlJh4Gc7GF
-# H1xVMntxn+xiKh8myUy9tsh2YoABpqCCIqIwggXMMIIDtKADAgECAhBUmNLR1FsZ
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAMpCiF2Fq9kggN
+# esIMjec/q3IAdtJYVaNrSlOAo0VYaaCCIqIwggXMMIIDtKADAgECAhBUmNLR1FsZ
 # lUgTecgRwIeZMA0GCSqGSIb3DQEBDAUAMHcxCzAJBgNVBAYTAlVTMR4wHAYDVQQK
 # ExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xSDBGBgNVBAMTP01pY3Jvc29mdCBJZGVu
 # dGl0eSBWZXJpZmljYXRpb24gUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkgMjAy
@@ -193,20 +293,20 @@ msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccSpecSepToTiff\iccSp
 # ChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSswKQYDVQQDEyJNaWNyb3NvZnQgSUQg
 # VmVyaWZpZWQgQ1MgRU9DIENBIDAxAhMzAAEH2jQUNwFhPC9IAAAAAQfaMA0GCWCG
 # SAFlAwQCAQUAoF4wEAYKKwYBBAGCNwIBDDECMAAwGQYJKoZIhvcNAQkDMQwGCisG
-# AQQBgjcCAQQwLwYJKoZIhvcNAQkEMSIEIOPVTT9tFvdyUJE4eZ793m4exND6XZPm
-# C/f33VamlDqEMA0GCSqGSIb3DQEBAQUABIIBgB9zDK5wOx6fHVq+YjvIn4zZxH3d
-# usudJHW/IYgydAHuFAEnHAGx0hRAAI5Joz7ngnFv/JqN3zlny1SyKfj32SKXO+k2
-# 6roypCf0ZGshDjI2m+YULt87Z/aSsxpAtv9r7GWFpo8tnDaXUSQnCKHjODqWVQfm
-# 46szAaeC9yLscCNcTsmdidTV5t39ncHwg7AT9eglosWhf3K2XjLOsJHyl3rr0p80
-# ZknITl6mTmjNw+X8q+BqTmBz/7nROzvATymJI13gEIrDUc2Cktq7t/BHY8T974uj
-# Dmcw3zFRJJDwJRNIJ6IB1a167VcHze1jN7LlvpqxedGlPoMiaRd0mRaWVB8NVBed
-# TJ6uDPyHSGyNNB/09ji03DJaWHnfveD2Ldh5aXK/bzOX2EAh4nhJNEJfTzJK4pOh
-# RsizuDqYrEbY5XvEQRpgQN0WkAq42vsxlKF/G41pkwwKou0tYayxBp0IHXxPMsxs
-# MljWRhjX2MQIYWNIIeJnjxbq70fUlpht8Hut3qGCFzkwghc1BgorBgEEAYI3AwMB
+# AQQBgjcCAQQwLwYJKoZIhvcNAQkEMSIEIEn/1ra0rypgUz+uxHW1DN9k2pcEe0zG
+# JATIZhd+ShOCMA0GCSqGSIb3DQEBAQUABIIBgCYRjbPCJvCutWzET7DmGHk4KVec
+# TkYyeAbMU8yOOnPDmds+stVqbxtcDpfJBnv1GORGGi7yCbzeZvy8wvF0MVHJEs6o
+# MnmrrF2mQkJOqkCCtpjrWlZiwmNkSfZfepbvNV4ERS8I4thKheWo9Iyhk4YKpyFD
+# /YQgqnSlC7WavhSIVxXJ8SJIzJ4HSB2VVB+Np8oNJx3qDhUaF7RtBnuWXLaDGd8t
+# VzA1kdOWhJCC3MMX0bVCJRB0H7WdslgSqfJXcDE50ypaNFPn7zQhGW9i9rEm+n9v
+# TkpAWipMl0V2vxzzcE9+iY8TCrU/CztmeYT4n61/Qw//Weq+mkABFs2ioWsTUjLD
+# NX7tnDa2sGPG8+y9usQtjPSNlUXAUec75vvDyTZsYvNDkwELASaotf0irUUnj02W
+# U4BGGWVF93U21T94LFmDgYWXpX+7nrlEpikg0CkEtbOvBkq1fsnPAqgFfYViyltj
+# GQpAvoZ03NOfcMvb8o4wg0h6WCWbWgmPGNwUHaGCFzkwghc1BgorBgEEAYI3AwMB
 # MYIXJTCCFyEGCSqGSIb3DQEHAqCCFxIwghcOAgEDMQ8wDQYJYIZIAWUDBAIBBQAw
 # dwYLKoZIhvcNAQkQAQSgaARmMGQCAQEGCWCGSAGG/WwHATAxMA0GCWCGSAFlAwQC
-# AQUABCCD4PLuJ+7r2eqYX5ipmOLHUC7c+MA62rMLtcoIBz4ggwIQO8baOD50D8GE
-# t0iougGYLBgPMjAyNDEwMzAxNTE0NDZaoIITAzCCBrwwggSkoAMCAQICEAuuZrxa
+# AQUABCC4tb29M+FUkmEYIQGulv932+xoCdCPyz95kemGAQZ0wgIQPgTDLHwJTkCa
+# uBIhSvIgLhgPMjAyNDEwMzAxNjM2MjlaoIITAzCCBrwwggSkoAMCAQICEAuuZrxa
 # un+Vh8b56QTjMwQwDQYJKoZIhvcNAQELBQAwYzELMAkGA1UEBhMCVVMxFzAVBgNV
 # BAoTDkRpZ2lDZXJ0LCBJbmMuMTswOQYDVQQDEzJEaWdpQ2VydCBUcnVzdGVkIEc0
 # IFJTQTQwOTYgU0hBMjU2IFRpbWVTdGFtcGluZyBDQTAeFw0yNDA5MjYwMDAwMDBa
@@ -312,19 +412,19 @@ msbuild /m /maxcpucount "C:\test\DemoIccMAX\Tools\CmdLine\IccSpecSepToTiff\iccSp
 # SW5jLjE7MDkGA1UEAxMyRGlnaUNlcnQgVHJ1c3RlZCBHNCBSU0E0MDk2IFNIQTI1
 # NiBUaW1lU3RhbXBpbmcgQ0ECEAuuZrxaun+Vh8b56QTjMwQwDQYJYIZIAWUDBAIB
 # BQCggdEwGgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEP
-# Fw0yNDEwMzAxNTE0NDZaMCsGCyqGSIb3DQEJEAIMMRwwGjAYMBYEFNvThe5i29I+
-# e+T2cUhQhyTVhltFMC8GCSqGSIb3DQEJBDEiBCDgB6vpKj9qi1+TsjZdJ49jpCBL
-# PGuITviMOru30BHzwjA3BgsqhkiG9w0BCRACLzEoMCYwJDAiBCB2dp+o8mMvH0ML
-# OiMwrtZWdf7Xc9sF1mW5BZOYQ4+a2zANBgkqhkiG9w0BAQEFAASCAgBVV8ZMtmgM
-# p7JZTSo/X0TJbHUzlQ+cG4U0XvjnlJwgq4R/esTdF4HOGTJnf/ZYBd7x2NOEuAPZ
-# cffFjBivuP6wDiQ0uwfa2PrMvIK8GkTSWCyxj5tmNUO337ldu6hDmly5ZpG2iph+
-# MzCaVNoMh/yeyzx6lComOMuBNMk3abvsu9Od4SFSdTwnTH+VP2Jqwm/J+gVzRRbX
-# TZ5Oya+2hbG6e7tcxfnHHWNNkSVcRfX8BGlECden9tpW9L0Jskhf2Sa5zr6a4fuT
-# s5iQffDL7theYgfadIOVsk754JXY0jegMEu2oADVUj8+e1vNQflk+o+nwKa4f7Q/
-# V1/1FNyuD8xXfLEMYUWW8baQKmlQqDkagkdJBtYfepHwZvlH2AjRR389DCVrmprG
-# TLQl8r3MugYZ6YfClmUldhWcfZ/XMeGoeVJX9sArT4FGhLBWmYP3E9KOIi5LgEYC
-# RT6piVL21O1LxmLCZKA4785gBckykS2+SGIHaI0ZByberBzz4aqZ+4SfSKPpR9+4
-# pVymNXMV/8w3C6d5/05yGyDZURipq47r6bxogbzwAJ+jstxJLip9ZiNYuguWcaJi
-# E0GS1AZualwgzKZAN8eD40w1fUX5/E/nmVRSmfE2CX1GmgZWpqMjL81378dAeFJV
-# uRg8pXdff1fb5QcugOLRygyMta6YLOfyDw==
+# Fw0yNDEwMzAxNjM2MjlaMCsGCyqGSIb3DQEJEAIMMRwwGjAYMBYEFNvThe5i29I+
+# e+T2cUhQhyTVhltFMC8GCSqGSIb3DQEJBDEiBCAmFRTZG74+vBgEqtML77qT9O79
+# 6u5VPl7Vm+NDB3AxxjA3BgsqhkiG9w0BCRACLzEoMCYwJDAiBCB2dp+o8mMvH0ML
+# OiMwrtZWdf7Xc9sF1mW5BZOYQ4+a2zANBgkqhkiG9w0BAQEFAASCAgBqVijXEKN+
+# Fkx+1lCKdywtATrvv+yyt8m5+NqmFpabfw4QGPgjoyDfD0PAV/CSGokrMNTOvdJj
+# SbUygrHhGpdJt3bxPeJRI6Y31NdWjeyzR1bx1O3Gdxd7+qcsatvogou1E/iv88Lk
+# AfVnUESyf/vrN+ofgUk4CeAKzIBPr5AYpIqOHd1Zq9fuYJVHTFhdR0RCteXsZ4Q/
+# oofWd/a01jJNNFywWtMeIDDkkcRMYuiHq9RwygXC/ggGInW9xmM1EwiePh9870Wd
+# h2Y7VpXjED+L3tFfhySk6JOkadPLMzEgzVrD1pQB2x1CQaFm78LWNyMV0/oJx+D7
+# uKFsNfMjEtLxYUWx+xc1Oul5irSSjG1TG5aCkAheP59WATbK34XJ6UDwqXTzSewl
+# iGUs9U8PHzc5Vg5P6PD/dsH5yFlOLiieBQfpSORlTU7CfIXzkAEUQbHoE4wf/CsO
+# +HWCifn4iGzhH42qZ+BMSNkKVOtqHlvVYZC+Za6j8N6POLvsTv+lknZn9V5NbSRl
+# rym+XTFF7OrwG/rTejcLlXUj4c2lg0mJmaopgZuI1UbC4ayIlwjB/8h1+nsQ/D3f
+# v61WAisMf6OIZc2p5P8LX+wllZ82Vk6NAozBvjqE315osVAIR9cLJ6RiRtSmqfP4
+# EQIkTMOXoTLvIw4itw6o2G5Uj8vfE/WBwg==
 # SIG # End signature block
