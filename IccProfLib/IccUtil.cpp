@@ -1860,7 +1860,7 @@ const icChar *CIccInfo::GetPlatformSigName(icPlatformSignature sig)
   case icSigTaligent:
     return "Taligent";
 
-  case icSigUnkownPlatform:
+  case icSigUnknownPlatform:
     return "Unknown";
 
   default:

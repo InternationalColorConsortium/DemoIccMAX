@@ -57,7 +57,7 @@
  *   the configuration parameters in IccProfLibConf.h. 
  *
  *  <b>VERSION HISTORY</b>
- * - Initially based on April  2011 - 1.6.5 release of SampleICC
+ * - See changlog for updates
  *
  * <b>TODO List</b>
  * TBD
@@ -110,7 +110,7 @@
  * <b>CONTACT</b>
  *
  * Please send your questions, comments, and or suggestions to forums
- * on the SampleICC project site. (http://sourceforge.net/projects/sampleicc/).\n
+ * on the DemoIccMAX project site. (https://github.com/InternationalColorConsortium/DemoIccMAX).\n
  *
  */
 

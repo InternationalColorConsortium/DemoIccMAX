@@ -569,6 +569,8 @@ typedef enum {
   icPcsStepXYZToLab,
   icPcsStepLab2ToXYZ,
   icPcsStepXYZToLab2,
+  icPcsStepLabToLab2,
+  icPcsStepLab2ToLab,
   icPcsStepOffset,
   icPcsStepScale,
   icPcsStepMatrix,
@@ -669,6 +671,41 @@ protected:
   icUInt16Number m_nDstChannels;
   int *m_Index;
   icFloatNumber *m_Defaults;
+};
+
+class ICCPROFLIB_API CIccPcsStepLabToLab2 : public CIccPcsStep
+{
+public:
+  CIccPcsStepLabToLab2() {}
+  virtual icPcsStepType GetType() { return icPcsStepLabToLab2; }
+
+  virtual ~CIccPcsStepLabToLab2() {}
+  virtual void Apply(CIccApplyPcsStep* pApply, icFloatNumber* pDst, const icFloatNumber* pSrc) const;
+  virtual icUInt16Number GetSrcChannels() const { return 3; }
+  virtual icUInt16Number GetDstChannels() const { return 3; }
+
+  virtual CIccPcsStep* concat(CIccPcsStep* pNext) const;
+
+  virtual void dump(std::string& str) const;
+protected:
+};
+
+
+class ICCPROFLIB_API CIccPcsStepLab2ToLab : public CIccPcsStep
+{
+public:
+  CIccPcsStepLab2ToLab() {}
+  virtual icPcsStepType GetType() { return icPcsStepLab2ToLab; }
+
+  virtual ~CIccPcsStepLab2ToLab() {}
+  virtual void Apply(CIccApplyPcsStep* pApply, icFloatNumber* pDst, const icFloatNumber* pSrc) const;
+  virtual icUInt16Number GetSrcChannels() const { return 3; }
+  virtual icUInt16Number GetDstChannels() const { return 3; }
+
+  virtual CIccPcsStep* concat(CIccPcsStep* pNext) const;
+
+  virtual void dump(std::string& str) const;
+protected:
 };
 
 
@@ -979,6 +1016,8 @@ public:
   virtual icXformType GetXformType() const { return icXformTypePCS; }
 
   icStatusCMM Connect(CIccXform *pFromXform, CIccXform *pToXform);
+  icStatusCMM ConnectFirst(CIccXform* pToXform, icColorSpaceSignature srcSpace);
+  icStatusCMM ConnectLast(CIccXform* pFromXform, icColorSpaceSignature dstSpace);
 
   virtual icStatusCMM Begin() { return icCmmStatOk; }
 
@@ -1153,6 +1192,8 @@ public:
   
   virtual LPIccCurve* ExtractInputCurves();
   virtual LPIccCurve* ExtractOutputCurves();
+
+  icFloatNumber* GetMatrix() { return &m_e[0]; }
 
 protected:
 
@@ -1432,6 +1473,7 @@ protected:
   CIccApplyTagMpe *m_pApply;
 };
 
+
 /**
  **************************************************************************
  * Type: Class
@@ -1442,16 +1484,11 @@ protected:
  * 
  **************************************************************************
  */
-class ICCPROFLIB_API CIccPCS
+class ICCPROFLIB_API CIccPCSUtil
 {
 public:
-  CIccPCS();
-  virtual ~CIccPCS() {}
-
-  void Reset(icColorSpaceSignature StartSpace, bool bUseLegacyPCS = false);
-
-  virtual const icFloatNumber *Check(const icFloatNumber *SrcPixel, const CIccXform *pXform);
-  void CheckLast(icFloatNumber *SrcPixel, icColorSpaceSignature Space, bool bNoClip=false);
+  CIccPCSUtil();
+  virtual ~CIccPCSUtil() {}
 
   static void LabToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip=false);
   static void XyzToLab(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip=false);
@@ -1462,14 +1499,8 @@ public:
 
   static void Lab2ToLab4(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoclip=false);
   static void Lab4ToLab2(icFloatNumber *Dst, const icFloatNumber *Src);
-protected:
-
-  bool m_bIsV2Lab;
-  bool m_bLastPcsXform;
-  icColorSpaceSignature m_Space;
-
-  icFloatNumber m_Convert[3];
 };
+
 
 /**
  **************************************************************************
@@ -1558,8 +1589,6 @@ protected:
   CIccApplyXformList *m_Xforms;
   CIccCmm *m_pCmm;
 
-  CIccPCS *m_pPCS;
-
   icFloatNumber *m_Pixel;
   icFloatNumber *m_Pixel2;
 };
@@ -1591,7 +1620,7 @@ public:
           bool bFirstInput=true);
   virtual ~CIccCmm();
 
-  virtual CIccPCS *GetPCS() { return new CIccPCS(); }
+  //virtual CIccPCS *GetPCS() { return new CIccPCS(); }
 
   ///Must make at least one call to some form of AddXform() before calling Begin()
   virtual icStatusCMM AddXform(const icChar *szProfilePath, 
@@ -1939,7 +1968,7 @@ public:
 
   //Forward calls to attached CMM
   virtual icStatusCMM RemoveAllIO() { return m_pCmm->RemoveAllIO(); }
-  virtual CIccPCS *GetPCS() { return m_pCmm->GetPCS(); }
+  //virtual CIccPCS *GetPCS() { return m_pCmm->GetPCS(); }
   virtual icUInt32Number GetNumXforms() const { return m_pCmm->GetNumXforms(); }
 
   virtual icColorSpaceSignature GetFirstXformSource() { return m_pCmm->GetFirstXformSource(); }

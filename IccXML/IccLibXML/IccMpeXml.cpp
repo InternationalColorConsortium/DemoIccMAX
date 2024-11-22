@@ -303,14 +303,13 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
     // format is text
     if (!strcmp(format, "text")) {
       icUInt32Number num = file->GetLength();
-      char *buf = (char *) new char[num];
+      char *buf = new char[num];
 
       if (!buf) {          
         perror("Memory Error");
         parseStr += "'";
         parseStr += filename;
         parseStr += "' may not be a valid text file.\n";
-        delete buf;
         delete file;
         return false;
       }
@@ -320,7 +319,7 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         parseStr += "'";
         parseStr += filename;
         parseStr += "' may not be a valid text file.\n";
-        delete buf;
+        delete[] buf;
         delete file;             
         return false;
       }   
@@ -333,7 +332,7 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         parseStr += filename;
         parseStr += "' is not a valid text file.\n";
         SetSize(0);
-        delete buf;
+        delete[] buf;
         delete file;
         return false;
       }
@@ -351,7 +350,7 @@ bool CIccSampledCurveSegmentXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         }
       }  
 
-      delete buf;
+      delete[] buf;
       delete file;
       return true;
 
@@ -684,14 +683,13 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
     // format is text
     if (!strcmp(format, "text")) {
       icUInt32Number num = file->GetLength();
-      char *buf = (char *) new char[num];
+      char *buf = new char[num];
 
       if (!buf) {
         perror("Memory Error");
         parseStr += "'";
         parseStr += filename;
         parseStr += "' may not be a valid text file.\n";
-        free(buf);
         delete file;
         return false;
       }
@@ -701,7 +699,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
         parseStr += "'";
         parseStr += filename;
         parseStr += "' may not be a valid text file.\n";
-        free(buf);
+        delete [] buf;
         delete file;
         return false;
       }
@@ -716,11 +714,11 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           parseStr += filename;
           parseStr += "' is not a valid text file.\n";
           SetSize(0);
-          free(buf);
+          delete [] buf;
           delete file;
           return false;
         }
-
+ 
         else {
           SetSize(data.GetSize());
           icUInt8Number *src = data.GetBuf();
@@ -738,6 +736,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           //SetSize(0);
           //return false;
           //}
+          delete[] buf;
           delete file;
           return true;
         }
@@ -753,7 +752,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           parseStr += filename;
           parseStr += "' is not a valid text file.\n";
           SetSize(0);
-          free(buf);
+          delete[] buf;
           delete file;
           return false;
         }
@@ -771,6 +770,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
             src++;
           }
         }
+        delete[] buf;
         delete file;
         return true;
       }
@@ -785,7 +785,7 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
           parseStr += filename;
           parseStr += "' is not a valid text file.\n";
           SetSize(0);
-          free(buf);
+          delete[] buf;
           delete file;
           return false;
         }
@@ -802,10 +802,12 @@ bool CIccSinglSampledeCurveXml::ParseXml(xmlNode *pNode, std::string &parseStr)
             src++;
           }
         }
+        delete[] buf;
         delete file;
         return true;
       }
       else {
+        delete[]buf;
         delete file;
         return false;
       }
@@ -1085,6 +1087,9 @@ bool CIccMpeXmlCurveSet::ToXml(std::string &xml, std::string blanks/* = ""*/)
 static icCurveSetCurvePtr ParseXmlCurve(xmlNode* pNode, std::string parseStr)
 {
   icCurveSetCurvePtr rv = NULL;
+  
+  if (!pNode)
+    return rv;
 
   if (!strcmp((const char*)pNode->name, "SegmentedCurve")) {
     CIccSegmentedCurveXml* pCurve = new CIccSegmentedCurveXml();
@@ -1591,7 +1596,7 @@ bool CIccMpeXmlTintArray::ParseXml(xmlNode *pNode, std::string &parseStr)
     // create a tag based on the signature
     pTag = CIccTag::Create(sigType);
 
-    if (!pTag && !pTag->IsNumArrayType()) {
+    if (!pTag || !pTag->IsNumArrayType()) {
       parseStr+= "Invalid data type for Tint Array!\n";
       delete pTag;
       return false;

@@ -329,7 +329,7 @@ CIccCombinedConnectionConditions::CIccCombinedConnectionConditions(CIccProfile *
           m_bValidMediaXYZ = pProfile->calcMediaWhiteXYZ(m_mediaXYZ, pAppliedPCC);
       }
       else {
-          m_pPCC = NULL;
+          m_pPCC = pAppliedPCC;
           m_pViewingConditions = (CIccTagSpectralViewingConditions *) pView->NewCopy();
 
           icSpectralRange illumRange;

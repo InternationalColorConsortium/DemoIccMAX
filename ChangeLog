@@ -1,3 +1,16 @@
+2024-10-08 Max Derhak
+* Fixed bug with selecting transform type in CIccCmmConfig
+* Allow auto selection of spectral xform when PCS is NULL
+* Add CMY colorspace support for it8 files
+
+2024-10-02 Max Derhak
+* Incorporate changes from Bug Tracker analysis
+* Added version of ValidateProfile() function to validate embedded in memory profiles
+* Fixed minor offset sync problem with LutAtoB reading
+
+2024-09-25 Max Derhak
+* Refactor PCS operation to improve performance
+
 2024-05-10 Max Derhak
 * Added JSON config file ultility code for use by applications (added new dependency on JSON for Modern C++ - see https://github.com/nlohmann/json_
 * Modified IccApplyNamedCmm and iccApplyProfiles to optionally use JSON configuraiton files to control behavior resulting in new features

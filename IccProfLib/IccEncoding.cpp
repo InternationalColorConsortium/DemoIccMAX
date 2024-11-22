@@ -139,38 +139,38 @@ static void icYxy2XYZVector(icFloatNumber*XYZ, icFloatNumber Y, icFloatNumber *x
   XYZ[idxOffset<<1] = Y*(1.0f-xy[0]-xy[1]) / xy[1];
 }
 
-icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfilePtr &newIcc, CIccTagStruct *pParams, icHeader *pHeader)
+icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfilePtr& newIcc, CIccTagStruct* pParams, icHeader* pHeader)
 {
   newIcc = NULL;
 
-  if (!pParams || pParams->GetTagStructType()!= icSigColorEncodingParamsSruct || !pHeader)
+  if (!pParams || pParams->GetTagStructType() != icSigColorEncodingParamsSruct || !pHeader)
     return icEncConvertBadParams;
 
-  CIccTagFloat32 *pWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptWhitePointChromaticityMbr, icSigFloat32ArrayType);
-  CIccTagFloat32 *pMediaWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptMediumWhitePointChromaticityMbr, icSigFloat32ArrayType);
+  CIccTagFloat32* pWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptWhitePointChromaticityMbr, icSigFloat32ArrayType);
+  CIccTagFloat32* pMediaWhitePt = (CIccTagFloat32*)pParams->FindElemOfType(icSigCeptMediumWhitePointChromaticityMbr, icSigFloat32ArrayType);
 
-  if (!pWhitePt || pWhitePt->GetNumValues()<2) {
+  if (!pWhitePt || pWhitePt->GetNumValues() < 2) {
     return icEncConvertBadParams;
   }
-  
+
   if (!pMediaWhitePt)
     pMediaWhitePt = pWhitePt;
 
-  if (!pMediaWhitePt || pMediaWhitePt->GetNumValues()<2) {
+  if (!pMediaWhitePt || pMediaWhitePt->GetNumValues() < 2) {
     return icEncConvertBadParams;
   }
 
-  CIccProfile *pIcc = new CIccProfile;
+  CIccProfile* pIcc = new CIccProfile;
   pIcc->m_Header = *pHeader;
 
-  struct tm *newtime;
+  struct tm* newtime;
   time_t long_time;
 
-  time( &long_time );                /* Get time as long integer. */
-  newtime = gmtime( &long_time ); 
+  time(&long_time);                /* Get time as long integer. */
+  newtime = gmtime(&long_time);
 
-  pIcc->m_Header.date.year = newtime->tm_year+1900;
-  pIcc->m_Header.date.month = newtime->tm_mon+1;
+  pIcc->m_Header.date.year = newtime->tm_year + 1900;
+  pIcc->m_Header.date.month = newtime->tm_mon + 1;
   pIcc->m_Header.date.day = newtime->tm_mday;
   pIcc->m_Header.date.hours = newtime->tm_hour;
   pIcc->m_Header.date.minutes = newtime->tm_min;
@@ -186,11 +186,13 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
   pIcc->m_Header.illuminant.Z = icDtoF(XYZWhite[2]);
 
   //Fill Media White Point tag
-  CIccTagXYZ *pXYZ = new CIccTagXYZ();
+  CIccTagXYZ* pXYZ = new CIccTagXYZ();
   float XYZMedia[3];
   icYxy2XYZVector(XYZMedia, 1.0f, &(*pMediaWhitePt)[0], 1);
-  if (!pXYZ->SetSize(1))
+  if (!pXYZ->SetSize(1)) {
+    delete pIcc;
     return icEncConvertMemoryError;
+  }
 
   (*pXYZ)[0].X = icDtoF(XYZMedia[0]);
   (*pXYZ)[0].Y = icDtoF(XYZMedia[1]);
@@ -476,6 +478,8 @@ icStatusEncConvert CIccDefaultEncProfileConverter::ConvertFromParams(CIccProfile
 
     pMpeTag = (CIccTagMultiProcessElement*)CIccTag::Create(icSigMultiProcessElementType);
     if (!pMpeTag) {
+      delete pCstmConvert2;
+      delete pStdConvert2;
       delete pIcc;
       return icEncConvertMemoryError;
     }

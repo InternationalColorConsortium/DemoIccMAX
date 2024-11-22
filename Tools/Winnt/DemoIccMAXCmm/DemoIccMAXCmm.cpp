@@ -1335,7 +1335,7 @@ BOOL WINAPI CMTranslateColors(
         srcPixel[1] = (icFloatNumber)(lpaInputColors->Lab.a) / 65535.0f;
         srcPixel[2] = (icFloatNumber)(lpaInputColors->Lab.b) / 65535.0f;
         if (pCmm->GetFirstXformSource()!=icSigDevLabData) { //
-          CIccPCS::Lab2ToLab4(srcPixel, srcPixel);
+          CIccPCSUtil::Lab2ToLab4(srcPixel, srcPixel);
         }
         break;
 
@@ -1409,7 +1409,7 @@ BOOL WINAPI CMTranslateColors(
 
       case COLOR_Lab:
         if (pCmm->GetLastXformDest()!=icSigDevLabData) {
-          CIccPCS::Lab4ToLab2(destPixel, destPixel);
+          CIccPCSUtil::Lab4ToLab2(destPixel, destPixel);
         }
         lpaOutputColors->Lab.L = (icUInt16Number)(UnitClip(destPixel[0]) * 65535.0 + 0.5);
         lpaOutputColors->Lab.a = (icUInt16Number)(UnitClip(destPixel[1]) * 65535.0 + 0.5);
@@ -1559,7 +1559,7 @@ BOOL WINAPI CMTranslateRGBsExt(
             srcPixel[2] = (icFloatNumber)(bits&0x001F) / 31.0f;
 
             if (pCmm->GetSourceSpace()!=icSigDevLabData) {
-              CIccPCS::Lab2ToLab4(srcPixel, srcPixel);
+              CIccPCSUtil::Lab2ToLab4(srcPixel, srcPixel);
             }
 
             lpSrcBits += 2;
@@ -1595,7 +1595,7 @@ BOOL WINAPI CMTranslateRGBsExt(
             srcPixel[2] = (icFloatNumber)bits[2] / 255.0f;
 
             if (pCmm->GetSourceSpace()!=icSigDevLabData) {
-              CIccPCS::Lab2ToLab4(srcPixel, srcPixel);
+              CIccPCSUtil::Lab2ToLab4(srcPixel, srcPixel);
             }
 
             lpSrcBits += 3;
@@ -1783,7 +1783,7 @@ BOOL WINAPI CMTranslateRGBsExt(
             srcPixel[2] = (icFloatNumber)(bits&0x000003FF) / 1023.0f;
 
             if (pCmm->GetSourceSpace()!=icSigDevLabData) {
-              CIccPCS::Lab2ToLab4(srcPixel, srcPixel);
+              CIccPCSUtil::Lab2ToLab4(srcPixel, srcPixel);
             }
 
             lpSrcBits += 4;
@@ -1819,7 +1819,7 @@ BOOL WINAPI CMTranslateRGBsExt(
             srcPixel[2] = (icFloatNumber)bits[2] / 65535.0f;
 
             if (pCmm->GetSourceSpace()!=icSigDevLabData) {
-              CIccPCS::Lab2ToLab4(srcPixel, srcPixel);
+              CIccPCSUtil::Lab2ToLab4(srcPixel, srcPixel);
             }
 
             lpSrcBits += 6;
@@ -1887,7 +1887,7 @@ BOOL WINAPI CMTranslateRGBsExt(
         case BM_x555Lab:
           {
             if (pCmm->GetDestSpace()!=icSigDevLabData) {
-              CIccPCS::Lab4ToLab2(destPixel, destPixel);
+              CIccPCSUtil::Lab4ToLab2(destPixel, destPixel);
             }
             *((icUInt16Number*)lpDestBits) = ((icUInt16Number)(UnitClip(destPixel[0]) * 31.0 + 0.5) << 10) + 
               ((icUInt16Number)(UnitClip(destPixel[1]) * 31.0 + 0.5) << 5) +
@@ -1918,7 +1918,7 @@ BOOL WINAPI CMTranslateRGBsExt(
         case BM_LabTRIPLETS:
           {
             if (pCmm->GetDestSpace()!=icSigDevLabData) {
-              CIccPCS::Lab4ToLab2(destPixel, destPixel);
+              CIccPCSUtil::Lab4ToLab2(destPixel, destPixel);
             }
             *lpDestBits++ = (icUInt8Number)(UnitClip(destPixel[0]) * 255.0 + 0.5);
             *lpDestBits++ = (icUInt8Number)(UnitClip(destPixel[1]) * 255.0 + 0.5);
@@ -2048,7 +2048,7 @@ BOOL WINAPI CMTranslateRGBsExt(
         case BM_10b_Lab:
           {
             if (pCmm->GetDestSpace()!=icSigDevLabData) {
-              CIccPCS::Lab4ToLab2(destPixel, destPixel);
+              CIccPCSUtil::Lab4ToLab2(destPixel, destPixel);
             }
             *((icUInt32Number*)lpDestBits) = ((icUInt32Number)(UnitClip(destPixel[0]) * 1023.0 + 0.5) << 20) + 
               ((icUInt32Number)(UnitClip(destPixel[1]) * 1023.0 + 0.5) << 10) +
@@ -2079,7 +2079,7 @@ BOOL WINAPI CMTranslateRGBsExt(
         case BM_16b_Lab:
           {
             if (pCmm->GetDestSpace()!=icSigDevLabData) {
-              CIccPCS::Lab4ToLab2(destPixel, destPixel);
+              CIccPCSUtil::Lab4ToLab2(destPixel, destPixel);
             }
             icUInt16Number *bits = (icUInt16Number*)lpDestBits;
 

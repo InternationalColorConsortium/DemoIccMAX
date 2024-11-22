@@ -182,6 +182,8 @@ icStatusCMM CIccEvalCompare::EvaluateProfile(CIccProfile *pProfile, icUInt8Numbe
 
     Compare(sPixel, devPcs, roundPcs1, roundPcs2);
   }
+
+  delete[] steps;
   
   return icCmmStatOk;
 }

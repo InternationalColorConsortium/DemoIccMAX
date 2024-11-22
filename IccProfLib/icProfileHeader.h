@@ -974,7 +974,7 @@ typedef enum {
     icSigSolaris                        = 0x53554E57,  /* 'SUNW' */
     icSigSGI                            = 0x53474920,  /* 'SGI ' */
     icSigTaligent                       = 0x54474E54,  /* 'TGNT' */
-    icSigUnkownPlatform                 = 0x00000000
+    icSigUnknownPlatform                 = 0x00000000
 } icPlatformSignature;
 
 /** Convenience Enum Definition - Not defined in ICC specification*/

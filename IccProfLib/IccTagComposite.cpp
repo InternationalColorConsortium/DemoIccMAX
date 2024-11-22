@@ -1399,6 +1399,7 @@ bool CIccTagArray::Write(CIccIO *pIO)
           return false;
       }
     }
+    delete[] tagPos;
     pIO->Seek(endPos, icSeekSet);
   }
 
@@ -1516,7 +1517,9 @@ void CIccTagArray::Cleanup()
     }
   }
 
-  delete [] m_TagVals;
+  if (m_TagVals)
+    free(m_TagVals);
+  m_TagVals = nullptr;
 
   if (m_pArray)
     delete m_pArray;

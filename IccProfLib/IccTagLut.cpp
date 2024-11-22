@@ -1209,6 +1209,9 @@ CIccTagSegmentedCurve::CIccTagSegmentedCurve(const CIccTagSegmentedCurve &ITSCur
 */
 CIccTagSegmentedCurve &CIccTagSegmentedCurve::operator=(const CIccTagSegmentedCurve &CurveTag)
 {
+  if (&CurveTag == this)
+    return *this;
+
   if (m_pCurve)
     delete m_pCurve;
 
@@ -3951,7 +3954,7 @@ bool CIccTagLutAtoB::Read(icUInt32Number size, CIccIO *pIO)
       if (!pCurves[i]->Read(nEnd - pIO->Tell(), pIO))
         return false;
 
-      if (!pIO->Sync32(Offset[1]))
+      if (!pIO->Sync32(Offset[0]))
         return false;
     }
   }

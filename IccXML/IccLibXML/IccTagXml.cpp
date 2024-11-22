@@ -2102,7 +2102,7 @@ bool CIccTagXmlSpectralViewingConditions::ParseXml(xmlNode *pNode, std::string &
       vals.ParseTextArray((icChar*)pChild->children->content);
       if (vals.GetSize()!=m_observerRange.steps*3)
         return false;
-      m_observer = (icFloatNumber*)malloc(m_observerRange.steps*3*sizeof(icFloatNumber));
+      m_observer = new icFloatNumber[m_observerRange.steps*3];
       if (!m_observer)
         return false;
       icFloatNumber *pBuf = vals.GetBuf();
@@ -2598,7 +2598,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           parseStr += "'";
           parseStr += filename;
           parseStr += "' may not be a valid text file.\n";
-          free(buf);
+          delete [] buf;
           delete file;
           return false;
         }
@@ -2608,7 +2608,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
           parseStr += "'";
           parseStr += filename;
           parseStr += "' may not be a valid text file.\n";
-          free(buf);
+          delete [] buf;
           delete file;             
           return false;
         }         
@@ -2623,7 +2623,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             parseStr += filename;
             parseStr += "' is not a valid text file.\n";
             SetSize(0);
-            free(buf);
+            delete [] buf;
             delete file;
             return false;
           }
@@ -2645,6 +2645,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             //SetSize(0);
             //return false;
             //}
+            delete[] buf;
             delete file;
             return true;
           }
@@ -2660,7 +2661,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             parseStr += filename;
             parseStr += "' is not a valid text file.\n";
             SetSize(0);
-            free(buf);
+            delete[] buf;
             delete file;
             return false;
           }
@@ -2678,6 +2679,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               src++;
             }
           }
+          delete[] buf;
           delete file;
           return true;
         }
@@ -2692,7 +2694,7 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
             parseStr += filename;
             parseStr += "' is not a valid text file.\n";
             SetSize(0);
-            free(buf);
+            delete[] buf;
             delete file;
             return false;
           }
@@ -2708,11 +2710,13 @@ bool CIccTagXmlCurve::ParseXml(xmlNode *pNode, icConvertType nType, std::string 
               dst++;
               src++;
             }
-          }  
+          } 
+          delete[] buf;
           delete file;
           return true;
         }        
         else {
+          delete[] buf;
           delete file;
           return false;
         }
@@ -3257,6 +3261,8 @@ bool icCurvesFromXml(LPIccCurve *pCurve, icUInt32Number nChannels, xmlNode *pNod
               parseStr += "Unable to parse curve at Line";
               sprintf(num, "%d\n", pCurveNode->line);
               parseStr += num;
+
+              delete pCurveTag;
               return false;
             }
           }
@@ -3273,8 +3279,14 @@ bool icCurvesFromXml(LPIccCurve *pCurve, icUInt32Number nChannels, xmlNode *pNod
               parseStr += "Unable to parse curve tag at Line";
               sprintf(num, "%d\n", pCurveNode->line);
               parseStr += num;
+
+              delete pCurveTag;
               return false;
             }
+          }
+          else {
+            delete pCurveTag;
+            return false;
           }
         }
       }
@@ -4179,12 +4191,13 @@ bool CIccTagXmlProfileSequenceId::ParseXml(xmlNode *pNode, std::string &parseStr
 
     xmlAttr *langCode;
 
-    for (pNode = icXmlFindNode(pNode, "LocalizedText"); pNode; pNode = icXmlFindNode(pNode->next, "LocalizedText")) {
-      if ((langCode = icXmlFindAttr(pNode, "languageCountry")) &&
-        pNode->children) {
+    xmlNode* pSubNode;
+    for (pSubNode = icXmlFindNode(pNode, "LocalizedText"); pSubNode; pSubNode = icXmlFindNode(pSubNode->next, "LocalizedText")) {
+      if ((langCode = icXmlFindAttr(pSubNode, "languageCountry")) &&
+        pSubNode->children) {
           xmlNode *pText;
 
-          for (pText = pNode->children; pText && pText->type != XML_TEXT_NODE; pText = pText->next);
+          for (pText = pSubNode->children; pText && pText->type != XML_TEXT_NODE; pText = pText->next);
 
           if (pText) {
             icUInt32Number lc = icGetSigVal(icXmlAttrValue(langCode));
@@ -4664,7 +4677,10 @@ bool CIccTagXmlStruct::ParseXml(xmlNode *pNode, std::string &parseStr)
   }
   if (!pNode) {
     parseStr += "Invalid Tag Structure: ";
-    parseStr += (const char *)firstNode->name;
+    if (firstNode)
+      parseStr += (const char*)firstNode->name;
+    else
+      parseStr += ":";
     parseStr += "\n";
     return false;
   }
@@ -4784,7 +4800,10 @@ bool CIccTagXmlArray::ParseXml(xmlNode *pNode, std::string &parseStr)
   }
   if (!pNode) {
     parseStr += "Invalid Tag Array: ";
-    parseStr += (const char *)firstNode->name;
+    if (firstNode)
+      parseStr += (const char*)firstNode->name;
+    else
+      parseStr += ":";
     parseStr += "\n";
     return false;
   }
