@@ -307,7 +307,7 @@ void MyFrame::OpenFile(wxString profilePath)
   wxFileName filepath(profilePath);
   wxString profileTitle = filepath.GetName();
 
-  std::string path = profilePath.mb_str();
+  std::string path = profilePath.ToStdString(wxConvUTF8);
   CIccProfile *pIcc = OpenIccProfile(path.c_str());
 
   if (!pIcc) {
@@ -740,7 +740,7 @@ MyDialog::MyDialog(wxWindow *pParent, const wxString& title, wxString &profilePa
 	else {
 		std::string sReport;
 		wxBeginBusyCursor();
-    std::string path = profilePath.mb_str();
+    std::string path = profilePath.ToStdString(wxConvUTF8);
 		CIccProfile *pIcc = ValidateIccProfile(path.c_str(), sReport, nStat);
         if (pIcc) {
             int m, n;
@@ -965,7 +965,7 @@ wxString AnalyzeRoundTrip(wxString &profilePath, icRenderingIntent nIntent, bool
   else
     report += wxString::Format("Rendering Intent: %s\n", info.GetRenderingIntentName(nIntent));
 
-  std::string path = profilePath.mb_str();
+  std::string path = profilePath.ToStdString(wxConvUTF8);
 
   clock_t start = clock();
   icStatusCMM stat = eval.EvaluateProfile( (const icChar*) path.c_str(), 0, nIntent, icInterpTetrahedral, bUseMPE);
