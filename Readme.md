@@ -194,9 +194,42 @@ abridged spectral encoding is provided.
 ## Project Build Considerations
 
 ### Dependencies
-* [libxml2](http://xmlsoft.org/) - for IccXML2 library and tools
-* [libtiff](http://www.libtiff.org/) - for Tiff image tools
-* [wxWidgets](https://www.wxwidgets.org/) - for basic profile viewer GUI
+
+The DemoIccMAX project relies on the following libraries. Ensure they are installed before building the project:
+
+1. **[libxml2](http://xmlsoft.org/)**  
+   - **Purpose:** Provides XML parsing and serialization for the IccXML2 library and tools.  
+   - **Usage:** Handles ICC profile data in XML format, enabling efficient transformation and validation.  
+   - **Installation:**  
+     - On Debian/Ubuntu: `sudo apt-get install libxml2 libxml2-dev`  
+     - On macOS: `brew install libxml2`  
+   - **Documentation:** [libxml2 documentation](http://xmlsoft.org/docs.html)
+
+2. **[libtiff](http://libtiff.org/)**  
+   - **Purpose:** Supports TIFF image manipulation for image processing tools.  
+   - **Usage:** Processes ICC profiles embedded in TIFF images and extracts color profile metadata.  
+   - **Installation:**  
+     - On Debian/Ubuntu: `sudo apt-get install libtiff5 libtiff-dev`  
+     - On macOS: `brew install libtiff`  
+   - **Documentation:** [libtiff documentation](http://libtiff.org/libtiff.html)
+
+3. **[wxWidgets](https://www.wxwidgets.org/)**  
+   - **Purpose:** Cross-platform GUI framework for the basic profile viewer.  
+   - **Usage:** Renders the graphical interface for interacting with ICC profiles.  
+   - **Installation:**  
+     - On Debian/Ubuntu: `sudo apt-get install libwxgtk3.0-gtk3-dev`  
+     - On macOS: `brew install wxwidgets`  
+   - **Documentation:** [wxWidgets documentation](https://docs.wxwidgets.org/)
+
+4. **[nlohmann's JSON](https://github.com/nlohmann/json)**  
+   - **Purpose:** C++ library for JSON parsing and serialization.  
+   - **Usage:** Handles JSON-based configuration and data interchange, enabling serialization and deserialization of ICC profile metadata.  
+   - **Installation:**  
+     - On Debian/Ubuntu: `sudo apt-get install nlohmann-json3-dev`  
+     - On macOS: `brew install nlohmann-json`  
+     - Using `vcpkg`: `vcpkg install nlohmann-json`  
+     - Alternatively, copy `json.hpp` directly from the repository into your project.  
+   - **Documentation:** [nlohmann’s JSON documentation](https://json.nlohmann.me/)
 
 ### Windows
 
