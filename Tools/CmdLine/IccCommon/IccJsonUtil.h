@@ -1,3 +1,7 @@
+#include <list>
+#include <string>
+#include <nlohmann/json.hpp>
+
 #ifndef _ICCJSONUTIL_H
 #define _ICCJSONUTIL_H
 
