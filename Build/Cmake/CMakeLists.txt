@@ -19,6 +19,15 @@ specifications ")
 
 SET( ${PROJECT_NAME}_VERSION_MAJORMINOR "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}" )
 
+# Define the true project root directory
+set(PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/../..)
+
+# Debugging information
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+# message(STATUS "PROJECT_ROOT_DIR: ${PROJECT_ROOT_DIR}")
+message(STATUS "PROJECT_ROOT_DIR is resolved as: ${PROJECT_ROOT_DIR}")
+
+
 include(GNUInstallDirs)
 
 option(ENABLE_TESTS "Build tests (requires static libs)" ON)
@@ -146,22 +155,55 @@ ADD_SUBDIRECTORY(IccXML)
 SET(TARGET_LIB_ICCXML ${TARGET_LIB})
 INCLUDE_DIRECTORIES(${TOP_SOURCE_DIR}/IccXML/IccLibXML/)
 
-IF(ENABLE_TOOLS)
-  # Locate nlohmann JSON library
-  FIND_PATH(nlohmann_INCLUDE_DIR json.hpp
-    PATHS
-      /usr/local/Cellar/nlohmann-json/3.11.3/include
-      /usr/local/include
-    DOC "Path to nlohmann JSON header"
-  )
+# Locate required libraries
+find_package(nlohmann_json REQUIRED)
+find_package(TIFF REQUIRED)
 
-  IF(nlohmann_INCLUDE_DIR)
-    MESSAGE(STATUS "Found nlohmann JSON at: ${nlohmann_INCLUDE_DIR}")
-    INCLUDE_DIRECTORIES(${nlohmann_INCLUDE_DIR})
+# Debugging information for located packages
+message(STATUS "TIFF include directory: ${TIFF_INCLUDE_DIR}")
+message(STATUS "TIFF libraries: ${TIFF_LIBRARIES}")
+# message(STATUS "nlohmann_json library found: ${nlohmann_json_DIR}")
+
+IF(ENABLE_TOOLS)
+  # Check if nlohmann JSON was successfully found
+  IF(nlohmann_json_DIR)
+    MESSAGE(STATUS "Found nlohmann JSON library at: ${nlohmann_json_DIR}")
+
+    # Use the nlohmann_json include directory
+    include_directories(${nlohmann_json_DIR})
+
+message(STATUS "Adding IccApplyNamedCmm from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+
+# Add subdirectory for IccApplyNamedCmm
+IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+  message(STATUS "Added IccApplyNamedCmm")
+  add_subdirectory(
+    ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm
+    ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyNamedCmm_Build
+  )
+ELSE()
+  message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+ENDIF()
+
+message(STATUS "Adding IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+
+# IccApplyProfiles
+if(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+  message(STATUS "Added IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+  add_subdirectory(
+    ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles
+    ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyProfiles_Build
+  )
+else()
+  message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+endif()
+
+
   ELSE()
     MESSAGE(WARNING "nlohmann JSON library not found. Skipping Tools/IccApplyNamedCmm and Tools/IccApplyProfiles.")
     RETURN() # Exit the script for tools if dependency is not found
   ENDIF()
+
 
   # Add additional include paths
   INCLUDE_DIRECTORIES(
@@ -170,9 +212,6 @@ IF(ENABLE_TOOLS)
     ${CMAKE_SOURCE_DIR}/Tools/CmdLine/IccCommon
   )
 
-  # Build required tools
-  ADD_SUBDIRECTORY(Tools/IccApplyNamedCmm)
-  ADD_SUBDIRECTORY(Tools/IccApplyProfiles)
 
   # Ensure linker paths are set
   LINK_DIRECTORIES(
@@ -286,5 +325,3 @@ IF(ENABLE_INSTALL_RIM)
 		DESTINATION ${CMAKE_MODULES_INSTALL_DIR} COMPONENT dev
 	)
 ENDIF(ENABLE_INSTALL_RIM)
-
-
