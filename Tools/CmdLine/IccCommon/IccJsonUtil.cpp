@@ -94,6 +94,7 @@ template <typename T>
 }
 
 // Explicit template instantiations
+template bool jsonToValue<int>(const json&, int&);
 template std::string arrayToJson<icUInt8Number>(icUInt8Number*, int);
 template std::string arrayToJson<icUInt16Number>(icUInt16Number*, int);
 template std::string arrayToJson<icUInt32Number>(icUInt32Number*, int);

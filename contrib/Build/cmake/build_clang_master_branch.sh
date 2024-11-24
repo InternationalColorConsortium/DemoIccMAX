@@ -3,7 +3,7 @@
 ## Copyright (c) 2024 The International Color Consortium. All rights reserved.
 ##
 ## Written by David Hoyt for ICC color.org & DemoIccMAX Project
-## Date: 27-Sept-24
+## Date: 24-Nov-2024
 ## Build Script using Clang for master branch
 
 # Define log file
@@ -52,13 +52,7 @@ run_and_log git clone https://github.com/InternationalColorConsortium/DemoIccMAX
 cd DemoIccMAX/ || { echo "Error: Failed to change directory to DemoIccMAX. Exiting."; exit 1; }
 run_and_log echo "Repository cloned and switched to DemoIccMAX directory."
 
-# Step 3: Revert
-print_banner "Step 3: Reverting a bad commit"
-run_and_log echo "Step 3a: Reverting 6ac1cc6"
-run_and_log git revert --no-edit b90ac3933da99179df26351c39d8d9d706ac1cc6 || { echo "Error: Git revert failed. Exiting."; exit 1; }
-run_and_log echo "master branch checked out."
-
-# Step 4: Installing Dependencies, with conflict resolution
+# Step 3: Installing Dependencies, with conflict resolution
 print_banner "Step 4: Installing Dependencies, you will be prompted for the sudo password to continue..."
 
 # Attempt to remove conflicting packages
@@ -72,18 +66,15 @@ sudo apt-get --fix-broken install || { echo "Error: Failed to fix broken package
 
 # Install the necessary dependencies
 echo "Installing necessary dependencies..."
-sudo apt-get install -y curl git make cmake clang clang-tools \
-libwxgtk-media3.0-gtk3-dev libwxgtk-webview3.0-gtk3-dev \
-libwxgtk3.0-gtk3-dev libxml2 libxml2-dev libtiff5 libtiff5-dev build-essential \
-libopencl-clang-12-dev python3-clang-14 || { echo "Error: Failed to install dependencies. Exiting."; exit 1; }
+sudo apt-get install -y libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential || { echo "Error: Failed to install dependencies. Exiting."; exit 1; } || { echo "Error: Failed to install dependencies. Exiting."; exit 1; }
 
 echo "Dependencies installed successfully."
 
-# Step 5: Build with Clang
-print_banner "Step 5: Starting Build using $COMPILER...."
+# Step 4: Build with Clang
+print_banner "Step 4: Starting Build using $COMPILER...."
 cd Build/ || { echo "Error: Build directory not found. Exiting."; exit 1; }
 
-print_banner "Step 5a: configuring cmake with $COMPILER"
+print_banner "Step 5: configuring cmake with $COMPILER"
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug \
 -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
 -Wno-dev Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
