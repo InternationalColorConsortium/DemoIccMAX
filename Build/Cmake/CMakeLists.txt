@@ -213,12 +213,12 @@ endif()
   )
 
 
-  # Ensure linker paths are set
-  LINK_DIRECTORIES(
-    ${CMAKE_BINARY_DIR}/IccProfLib
-    ${CMAKE_BINARY_DIR}/IccXML
-    /usr/local/lib
-  )
+LINK_DIRECTORIES(
+  ${PROJECT_ROOT_DIR}/Build/IccProfLib
+  ${PROJECT_ROOT_DIR}/Build/IccXML
+  /usr/local/lib
+)
+
 ENDIF()
 
 
@@ -231,7 +231,7 @@ ENDIF()
   FIND_PATH(TIFF_INCLDIR tiff.h)
   IF( TIFF_FOUND )
     INCLUDE_DIRECTORIES( ${TIFF_INCLUDE_DIR} )
-    ADD_SUBDIRECTORY( Tools/IccApplyProfiles )
+#    ADD_SUBDIRECTORY( Tools/IccApplyProfiles )
     ADD_SUBDIRECTORY( Tools/IccSpecSepToTiff )
     ADD_SUBDIRECTORY( Tools/IccTiffDump )
   ENDIF( TIFF_FOUND )
