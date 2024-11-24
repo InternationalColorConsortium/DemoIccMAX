@@ -5,7 +5,7 @@ SET (PROJECT_UP_NAME "REFICCMAX" )
 SET(CMAKE_CXX_STANDARD 17)
 SET( ${PROJECT_UP_NAME}_MAJOR_VERSION 2)
 SET( ${PROJECT_UP_NAME}_MINOR_VERSION 1)
-SET( ${PROJECT_UP_NAME}_MICRO_VERSION 17)
+SET( ${PROJECT_UP_NAME}_MICRO_VERSION 25)
 SET( ${PROJECT_UP_NAME}_VERSION "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}.${${PROJECT_UP_NAME}_MICRO_VERSION}" )
 
 SET (PROJECT_DOWN_NAME "reficcmax" )
@@ -139,15 +139,50 @@ IF(ENABLE_ICCXML)
     ENDIF()
   ENDIF(LIBXML2_FOUND)
 
-  #
-  # XML library
-  #
-  ADD_SUBDIRECTORY( IccXML )
-  SET( TARGET_LIB_ICCXML ${TARGET_LIB} )
-  INCLUDE_DIRECTORIES ( ${TOP_SOURCE_DIR}/IccXML/IccLibXML/ )
-ENDIF()
+#
+# XML library
+#
+ADD_SUBDIRECTORY(IccXML)
+SET(TARGET_LIB_ICCXML ${TARGET_LIB})
+INCLUDE_DIRECTORIES(${TOP_SOURCE_DIR}/IccXML/IccLibXML/)
 
 IF(ENABLE_TOOLS)
+  # Locate nlohmann JSON library
+  FIND_PATH(nlohmann_INCLUDE_DIR json.hpp
+    PATHS
+      /usr/local/Cellar/nlohmann-json/3.11.3/include
+      /usr/local/include
+    DOC "Path to nlohmann JSON header"
+  )
+
+  IF(nlohmann_INCLUDE_DIR)
+    MESSAGE(STATUS "Found nlohmann JSON at: ${nlohmann_INCLUDE_DIR}")
+    INCLUDE_DIRECTORIES(${nlohmann_INCLUDE_DIR})
+  ELSE()
+    MESSAGE(WARNING "nlohmann JSON library not found. Skipping Tools/IccApplyNamedCmm and Tools/IccApplyProfiles.")
+    RETURN() # Exit the script for tools if dependency is not found
+  ENDIF()
+
+  # Add additional include paths
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/IccProfLib
+    ${CMAKE_SOURCE_DIR}/IccXML
+    ${CMAKE_SOURCE_DIR}/Tools/CmdLine/IccCommon
+  )
+
+  # Build required tools
+  ADD_SUBDIRECTORY(Tools/IccApplyNamedCmm)
+  ADD_SUBDIRECTORY(Tools/IccApplyProfiles)
+
+  # Ensure linker paths are set
+  LINK_DIRECTORIES(
+    ${CMAKE_BINARY_DIR}/IccProfLib
+    ${CMAKE_BINARY_DIR}/IccXML
+    /usr/local/lib
+  )
+ENDIF()
+
+
   ADD_SUBDIRECTORY( Tools/IccApplyNamedCmm )
   ADD_SUBDIRECTORY( Tools/IccDumpProfile )
   ADD_SUBDIRECTORY( Tools/IccRoundTrip )
