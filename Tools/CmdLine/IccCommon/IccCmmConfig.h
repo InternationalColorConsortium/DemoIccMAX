@@ -1,3 +1,7 @@
+#include <list>
+#include <string>
+
+
 #ifndef _ICCCMMCONFIG_H
 #define _ICCCMMCONFIG_H
 

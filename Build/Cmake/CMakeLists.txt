@@ -1,23 +1,113 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8.5)
+# CMakeLists.txt - Project Configuration File
+# DemoIccMAX Project
+#
+# Last Updated: 2024-11-23 by David Hoyt
 
-PROJECT (RefIccMAX)
-SET (PROJECT_UP_NAME "REFICCMAX" )
-SET(CMAKE_CXX_STANDARD 17)
-SET( ${PROJECT_UP_NAME}_MAJOR_VERSION 2)
-SET( ${PROJECT_UP_NAME}_MINOR_VERSION 1)
-SET( ${PROJECT_UP_NAME}_MICRO_VERSION 17)
-SET( ${PROJECT_UP_NAME}_VERSION "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}.${${PROJECT_UP_NAME}_MICRO_VERSION}" )
+cmake_minimum_required(VERSION 2.8.5)
 
-SET (PROJECT_DOWN_NAME "reficcmax" )
-SET (PACKAGE_NAME "${PROJECT_DOWN_NAME}" )
-SET (PACKAGE_DESCRIPTION "The RefIccMAX project provides an open source set of
-libraries and tools that allow for the interaction, manipulation, and
-application of iccMAX based color management profiles based on the iccMAX
-profile specification http://www.color.org/iccmax.xalter
-in addition to legacy ICC profiles defined by earlier ICC profile
-specifications ")
+# Fetch current date and time for logging
+execute_process(
+    COMMAND date "+%Y-%m-%d %H:%M:%S"
+    OUTPUT_VARIABLE CURRENT_DATETIME
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-SET( ${PROJECT_NAME}_VERSION_MAJORMINOR "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}" )
+# Start Configuration Message
+message(STATUS "##########################################################################")
+message(STATUS "## Starting to Configure the DemoIccMAX Project at ${CURRENT_DATETIME}")
+message(STATUS "##########################################################################")
+
+# Project Configuration
+project(RefIccMAX)
+set(PROJECT_UP_NAME "REFICCMAX")
+set(CMAKE_CXX_STANDARD 17)
+
+set(${PROJECT_UP_NAME}_MAJOR_VERSION 2)
+set(${PROJECT_UP_NAME}_MINOR_VERSION 1)
+set(${PROJECT_UP_NAME}_MICRO_VERSION 25)
+set(${PROJECT_UP_NAME}_VERSION
+    "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}.${${PROJECT_UP_NAME}_MICRO_VERSION}"
+)
+
+set(PROJECT_DOWN_NAME "reficcmax")
+set(PACKAGE_NAME "${PROJECT_DOWN_NAME}")
+set(PACKAGE_DESCRIPTION "The RefIccMAX project provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX-based color management profiles based on the iccMAX specification http://www.color.org/iccmax.xalter, in addition to legacy ICC profiles defined by earlier ICC specifications.")
+
+set(${PROJECT_NAME}_VERSION_MAJORMINOR
+    "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}"
+)
+
+# Define the true project root directory
+set(PROJECT_ROOT_DIR ${CMAKE_SOURCE_DIR}/../..)
+
+# Debugging and Host System Details
+message(STATUS "### System Information ###")
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+message(STATUS "PROJECT_ROOT_DIR is resolved as: ${PROJECT_ROOT_DIR}")
+message(STATUS "System Name: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "System Version: ${CMAKE_SYSTEM_VERSION}")
+message(STATUS "System Processor: ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "")
+
+# Compiler Information
+message(STATUS "### Compiler Information ###")
+message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "C++ Compiler Version: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "C Compiler: ${CMAKE_C_COMPILER}")
+message(STATUS "C Compiler Version: ${CMAKE_C_COMPILER_VERSION}")
+message(STATUS "Linker: ${CMAKE_LINKER}")
+message(STATUS "")
+
+# macOS Specific Details
+if(APPLE)
+    message(STATUS "macOS SDK Path: ${CMAKE_OSX_SYSROOT}")
+endif()
+
+# Build Configuration
+message(STATUS "### Build Configuration ###")
+message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
+message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS}")
+message(STATUS "C Flags: ${CMAKE_C_FLAGS}")
+message(STATUS "")
+
+# Features Enabled/Disabled
+message(STATUS "Enable Tools: ${ENABLE_TOOLS}")
+message(STATUS "Enable Tests: ${ENABLE_TESTS}")
+message(STATUS "Enable Shared Libraries: ${ENABLE_SHARED_LIBS}")
+message(STATUS "Enable Static Libraries: ${ENABLE_STATIC_LIBS}")
+message(STATUS "")
+
+# Dependencies
+message(STATUS "### Dependencies ###")
+find_package(LibXml2 REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(TIFF REQUIRED)
+
+message(STATUS "LibXml2: ${LIBXML2_LIBRARIES} (found version ${LIBXML2_VERSION})")
+message(STATUS "nlohmann_json: ${nlohmann_json_DIR} (found version ${nlohmann_json_VERSION})")
+message(STATUS "TIFF: ${TIFF_LIBRARIES} (found version ${TIFF_VERSION})")
+message(STATUS "TIFF Include Directory: ${TIFF_INCLUDE_DIR}")
+message(STATUS "")
+
+# Include Directories
+message(STATUS "### Include Directories ###")
+message(STATUS "IccProfLib: ${PROJECT_ROOT_DIR}/IccProfLib")
+message(STATUS "IccXML: ${PROJECT_ROOT_DIR}/IccXML")
+message(STATUS "")
+
+# Link Directories
+message(STATUS "### Link Directories ###")
+message(STATUS "IccProfLib: ${CMAKE_BINARY_DIR}/IccProfLib")
+message(STATUS "IccXML: ${CMAKE_BINARY_DIR}/IccXML")
+message(STATUS "/usr/local/lib")
+message(STATUS "")
+
+# Library paths for debugging
+message(STATUS "Library Path for IccProfLib: ${PROJECT_ROOT_DIR}/Build/IccProfLib")
+message(STATUS "Library Path for IccXML: ${PROJECT_ROOT_DIR}/Build/IccXML")
+message(STATUS "")
+
 
 include(GNUInstallDirs)
 
@@ -139,15 +229,80 @@ IF(ENABLE_ICCXML)
     ENDIF()
   ENDIF(LIBXML2_FOUND)
 
-  #
-  # XML library
-  #
-  ADD_SUBDIRECTORY( IccXML )
-  SET( TARGET_LIB_ICCXML ${TARGET_LIB} )
-  INCLUDE_DIRECTORIES ( ${TOP_SOURCE_DIR}/IccXML/IccLibXML/ )
-ENDIF()
+#
+# XML library
+#
+ADD_SUBDIRECTORY(IccXML)
+SET(TARGET_LIB_ICCXML ${TARGET_LIB})
+INCLUDE_DIRECTORIES(${TOP_SOURCE_DIR}/IccXML/IccLibXML/)
+
+# Locate required libraries
+find_package(nlohmann_json REQUIRED)
+find_package(TIFF REQUIRED)
+
+# Debugging information for located packages
+message(STATUS "TIFF include directory: ${TIFF_INCLUDE_DIR}")
+message(STATUS "TIFF libraries: ${TIFF_LIBRARIES}")
+# message(STATUS "nlohmann_json library found: ${nlohmann_json_DIR}")
 
 IF(ENABLE_TOOLS)
+  # Check if nlohmann JSON was successfully found
+  IF(nlohmann_json_DIR)
+    MESSAGE(STATUS "Found nlohmann JSON library at: ${nlohmann_json_DIR}")
+
+    # Use the nlohmann_json include directory
+    include_directories(${nlohmann_json_DIR})
+
+message(STATUS "Adding IccApplyNamedCmm from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+
+# Add subdirectory for IccApplyNamedCmm
+IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+  message(STATUS "Added IccApplyNamedCmm")
+  add_subdirectory(
+    ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm
+    ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyNamedCmm_Build
+  )
+ELSE()
+  message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+ENDIF()
+
+message(STATUS "Adding IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+
+# IccApplyProfiles
+if(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+  message(STATUS "Added IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+  add_subdirectory(
+    ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles
+    ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyProfiles_Build
+  )
+else()
+  message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+endif()
+
+
+  ELSE()
+    MESSAGE(WARNING "nlohmann JSON library not found. Skipping Tools/IccApplyNamedCmm and Tools/IccApplyProfiles.")
+    RETURN() # Exit the script for tools if dependency is not found
+  ENDIF()
+
+
+  # Add additional include paths
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/IccProfLib
+    ${CMAKE_SOURCE_DIR}/IccXML
+    ${CMAKE_SOURCE_DIR}/Tools/CmdLine/IccCommon
+  )
+
+
+LINK_DIRECTORIES(
+  ${PROJECT_ROOT_DIR}/Build/IccProfLib
+  ${PROJECT_ROOT_DIR}/Build/IccXML
+  /usr/local/lib
+)
+
+ENDIF()
+
+
   ADD_SUBDIRECTORY( Tools/IccApplyNamedCmm )
   ADD_SUBDIRECTORY( Tools/IccDumpProfile )
   ADD_SUBDIRECTORY( Tools/IccRoundTrip )
@@ -157,7 +312,7 @@ IF(ENABLE_TOOLS)
   FIND_PATH(TIFF_INCLDIR tiff.h)
   IF( TIFF_FOUND )
     INCLUDE_DIRECTORIES( ${TIFF_INCLUDE_DIR} )
-    ADD_SUBDIRECTORY( Tools/IccApplyProfiles )
+#    ADD_SUBDIRECTORY( Tools/IccApplyProfiles )
     ADD_SUBDIRECTORY( Tools/IccSpecSepToTiff )
     ADD_SUBDIRECTORY( Tools/IccTiffDump )
   ENDIF( TIFF_FOUND )
@@ -252,4 +407,7 @@ IF(ENABLE_INSTALL_RIM)
 	)
 ENDIF(ENABLE_INSTALL_RIM)
 
-
+message(STATUS "")
+message(STATUS "##########################################################################")
+message(STATUS "## Finished Configuring the DemoIccMAX Project at ${CURRENT_DATETIME}")
+message(STATUS "##########################################################################")

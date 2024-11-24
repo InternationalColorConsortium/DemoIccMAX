@@ -1,8 +1,12 @@
+#include <list>
+#include <string>
+#include <nlohmann/json.hpp>
+
 #ifndef _ICCJSONUTIL_H
 #define _ICCJSONUTIL_H
 
 #include <nlohmann/json.hpp>
-#include "..\..\..\IccProfLib\IccDefs.h"
+#include "../../../IccProfLib/IccDefs.h"
 
 using namespace nlohmann;
 

@@ -71,6 +71,8 @@
 #include "IccJsonUtil.h"
 #include "IccUtil.h"
 #include <stdio.h>
+#include <string>
+#include <sstream>  // For std::to_string fallback
 
 template <typename T>
  std::string arrayToJson(T* a, int nCount)
@@ -91,6 +93,7 @@ template <typename T>
   return str;
 }
 
+// Explicit template instantiations
 template std::string arrayToJson<icUInt8Number>(icUInt8Number*, int);
 template std::string arrayToJson<icUInt16Number>(icUInt16Number*, int);
 template std::string arrayToJson<icUInt32Number>(icUInt32Number*, int);
@@ -100,24 +103,27 @@ template std::string arrayToJson<icInt16Number>(icInt16Number*, int);
 template std::string arrayToJson<icInt32Number>(icInt32Number*, int);
 template std::string arrayToJson<icInt64Number>(icInt64Number*, int);
 
+// General template implementation
 template<typename T>
 std::string valueToJson(const char* name, T v)
 {
-  std::string str = std::string("\"") + name + "\": " + std::to_string(v);
+  // Safeguard for nullptr name
+  if (!name) {
+    throw std::invalid_argument("name cannot be null");
+  }
 
-  return str;
+  return std::string("\"") + name + "\": " + std::to_string(v);
 }
 
+// Explicit template instantiations for supported types
 template std::string valueToJson<icUInt8Number>(const char*, icUInt8Number);
 template std::string valueToJson<icUInt16Number>(const char*, icUInt16Number);
 template std::string valueToJson<icUInt32Number>(const char*, icUInt32Number);
 template std::string valueToJson<icUInt64Number>(const char*, icUInt64Number);
-template std::string valueToJson<unsigned int>(const char*, unsigned int);
 template std::string valueToJson<icInt8Number>(const char*, icInt8Number);
 template std::string valueToJson<icInt16Number>(const char*, icInt16Number);
 template std::string valueToJson<icInt32Number>(const char*, icInt32Number);
 template std::string valueToJson<icInt64Number>(const char*, icInt64Number);
-template std::string valueToJson<int>(const char*, int);
 template std::string valueToJson<float>(const char*, float);
 template std::string valueToJson<double>(const char*, double);
 
@@ -135,41 +141,57 @@ std::string fixJsonString(const char* v)
   return rv;
 }
 
+// Specialization for std::string
 template<>
-std::string valueToJson(const char *name, const std::string &v)
+std::string valueToJson(const char* name, const std::string& v)
 {
-  std::string str = std::string("\"") + name + "\": \"" + fixJsonString(v.c_str()) + "\"";
-  return str;
+  if (!name) {
+    throw std::invalid_argument("name cannot be null");
+  }
+  return "\"" + std::string(name) + "\": \"" + fixJsonString(v.c_str()) + "\"";
 }
 
+// Specialization for const char*
 template<>
 std::string valueToJson(const char* name, const char* v)
 {
-  std::string str = std::string("\"") + name + "\": \"" + fixJsonString(v) + "\"";
-
-  return str;
+  if (!name) {
+    throw std::invalid_argument("name cannot be null");
+  }
+  if (!v) {
+    return "\"" + std::string(name) + "\": null";
+  }
+  return "\"" + std::string(name) + "\": \"" + fixJsonString(v) + "\"";
 }
 
+// Specialization for char*
 template<>
 std::string valueToJson(const char* name, char* v)
 {
-  std::string str = std::string("\"") + name + "\": \"" + fixJsonString(v) + "\"";
-
-  return str;
+  if (!name) {
+    throw std::invalid_argument("name cannot be null");
+  }
+  if (!v) {
+    return "\"" + std::string(name) + "\": null";
+  }
+  return "\"" + std::string(name) + "\": \"" + fixJsonString(v) + "\"";
 }
 
+// Overload for valueToJson with a boolean flag
 std::string valueToJson(const char* name, const char* v, bool& bPreviousLine)
 {
-  std::string str;
-  if (v && *v) {
-    if (bPreviousLine)
-      str = std::string(", ") + valueToJson(name, v);
-    else
-      str = valueToJson(name, v);
-
-    bPreviousLine = true;
+  if (!name) {
+    throw std::invalid_argument("name cannot be null");
   }
-  return str;
+  if (v && *v) {
+    std::string str = valueToJson(name, v);
+    if (bPreviousLine) {
+      return ", " + str;
+    }
+    bPreviousLine = true;
+    return str;
+  }
+  return {};
 }
 
 template <typename T>
@@ -184,8 +206,6 @@ bool jsonToValue(const json& j, T& nValue)
 }
 
 template bool jsonToValue<icInt8Number>(const json&, icInt8Number&);
-template bool jsonToValue<int>(const json&, int&);
-template bool jsonToValue<unsigned int>(const json&, unsigned int&);
 template bool jsonToValue<icUInt8Number>(const json&, icUInt8Number&);
 template bool jsonToValue<icInt16Number>(const json&, icInt16Number&);
 template bool jsonToValue<icUInt16Number>(const json&, icUInt16Number&);
