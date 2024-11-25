@@ -4,7 +4,7 @@
 ##
 ## Written by David Hoyt for ICC color.org & DemoIccMAX Project
 ## Date: 27-Sept-24
-## Fiel: xnu_sips-verify.zsh
+## File: xnu_sips-verify.zsh
 
 # Summary counters for unique and recurring issues
 declare -A header_issues

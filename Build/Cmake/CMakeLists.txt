@@ -1,7 +1,17 @@
-# CMakeLists.txt - Project Configuration File
-# DemoIccMAX Project
+# 
+# Top Level Configuration CMakeLists.txt | DemoIccMAX Project
+# Copyright (©) 2024 The International Color Consortium. All rights reserved.
+# 
 #
-# Last Updated: 2024-11-23 by David Hoyt
+# Last Updated: 2024-11-24 by David Hoyt
+#
+# Changes: 	Added JSON Dependency
+#						Adjusted Cross Platform Build Args
+#						
+# TODO: Refactor Debug, Release, Asan 
+# 			Collapse 3-tier CMakeLists.txt, Housekeeping
+#				Refactor Base Configs & logging to .mk's 
+#
 
 cmake_minimum_required(VERSION 2.8.5)
 
@@ -148,48 +158,66 @@ if(APPLE)
   if("${OSX_ARCHITECTURE}" STREQUAL "arm64")
     add_definitions(-DARM64)
     message(STATUS "Configuring build for ARM64 architecture.")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch arm64")
   elseif("${OSX_ARCHITECTURE}" STREQUAL "x86_64")
     message(STATUS "Configuring build for X86_64 architecture.")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch x86_64")
   else()
     message(FATAL_ERROR "Unsupported architecture: ${OSX_ARCHITECTURE}")
   endif()
+elseif(UNIX AND NOT APPLE)
+  message(STATUS "Configuring build for Linux.")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17")
+elseif(WIN32)
+  message(STATUS "Configuring build for Windows.")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_WINDOWS /EHsc")
+else()
+  message(FATAL_ERROR "Unsupported platform!")
 endif()
 
-IF( CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]" )
-  MESSAGE( "-- Info build \"${CMAKE_BUILD_TYPE}\"" )
-  SET( DEBUG 1 )
-  add_definitions( -D_DEBUG )
-ENDIF()
+# Debug configuration
+if(CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
+  message("-- Info: Debug build \"${CMAKE_BUILD_TYPE}\"")
+  set(DEBUG 1)
+  add_definitions(-D_DEBUG)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+endif()
+
+# Sanitizer support (Optional, for Linux/Unix-like systems)
+if(UNIX AND NOT APPLE AND CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -fno-omit-frame-pointer")
+  message(STATUS "Sanitizers enabled for Debug build.")
+endif()
 
 #
 # Target installation folders
 #
 
 SET (TARGET_INCLUDE_FOLDER
-		${PROJECT_NAME}
-		CACHE STRING
-		"Optional folder below system include folder to install include files."
+    ${PROJECT_NAME}
+    CACHE STRING
+    "Optional folder below system include folder to install include files."
     )
 
 IF(NOT CMAKE_MODULES_INSTALL_DIR)
   SET (CMAKE_MODULES_INSTALL_DIR
-		"${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_DOWN_NAME}"
-		CACHE STRING
-		"The folder where to install cmake files."
+    "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_DOWN_NAME}"
+    CACHE STRING
+    "The folder where to install cmake files."
     )
 ENDIF(NOT CMAKE_MODULES_INSTALL_DIR)
 
 
 SET (TARGET_PKGCONFIG_FOLDER
-		"pkgconfig"
-		CACHE STRING
-		"The folder below system library folder where to install pkgconfig files."
+    "pkgconfig"
+    CACHE STRING
+    "The folder below system library folder where to install pkgconfig files."
     )
 
 SET (TARGET_DOCUMENTATION_FOLDER
-		"share/doc/${PACKAGE_NAME}-api"
-		CACHE STRING
-		"The folder below system prefix where to install api documentation files."
+    "share/doc/${PACKAGE_NAME}-api"
+    CACHE STRING
+    "The folder below system prefix where to install api documentation files."
     )
 
 # additional cmake modules for loading libraries
@@ -229,105 +257,96 @@ IF(ENABLE_ICCXML)
     ENDIF()
   ENDIF(LIBXML2_FOUND)
 
-#
-# XML library
-#
-ADD_SUBDIRECTORY(IccXML)
-SET(TARGET_LIB_ICCXML ${TARGET_LIB})
-INCLUDE_DIRECTORIES(${TOP_SOURCE_DIR}/IccXML/IccLibXML/)
+  #
+  # XML library
+  #
+  ADD_SUBDIRECTORY( IccXML )
+  SET( TARGET_LIB_ICCXML ${TARGET_LIB} )
+  INCLUDE_DIRECTORIES ( ${TOP_SOURCE_DIR}/IccXML/IccLibXML/ )
+ENDIF()
 
-# Locate required libraries
+# Ensure nlohmann_json is found
 find_package(nlohmann_json REQUIRED)
-find_package(TIFF REQUIRED)
-
-# Debugging information for located packages
-message(STATUS "TIFF include directory: ${TIFF_INCLUDE_DIR}")
-message(STATUS "TIFF libraries: ${TIFF_LIBRARIES}")
-# message(STATUS "nlohmann_json library found: ${nlohmann_json_DIR}")
+message(STATUS "nlohmann_json library found: ${nlohmann_json_DIR}")
 
 IF(ENABLE_TOOLS)
-  # Check if nlohmann JSON was successfully found
+  # Verify nlohmann_json is configured properly
   IF(nlohmann_json_DIR)
     MESSAGE(STATUS "Found nlohmann JSON library at: ${nlohmann_json_DIR}")
 
-    # Use the nlohmann_json include directory
+    # Use nlohmann_json include directory
     include_directories(${nlohmann_json_DIR})
 
-message(STATUS "Adding IccApplyNamedCmm from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+ message(STATUS "Adding IccApplyNamedCmm from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
 
 # Add subdirectory for IccApplyNamedCmm
 IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
-  message(STATUS "Added IccApplyNamedCmm")
   add_subdirectory(
     ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm
     ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyNamedCmm_Build
   )
+  message(STATUS "Added IccApplyNamedCmm")
 ELSE()
   message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
 ENDIF()
 
-message(STATUS "Adding IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-
-# IccApplyProfiles
-if(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-  message(STATUS "Added IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-  add_subdirectory(
-    ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles
-    ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyProfiles_Build
-  )
-else()
-  message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-endif()
-
-
+    # Add IccApplyProfiles
+    MESSAGE(STATUS "Adding IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+    IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+      add_subdirectory(
+        ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles
+        ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyProfiles_Build
+      )
+      MESSAGE(STATUS "Added IccApplyProfiles")
+    ELSE()
+      message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
+    ENDIF()
   ELSE()
     MESSAGE(WARNING "nlohmann JSON library not found. Skipping Tools/IccApplyNamedCmm and Tools/IccApplyProfiles.")
-    RETURN() # Exit the script for tools if dependency is not found
+    RETURN() # Exit script for tools if dependency is not found
   ENDIF()
 
+  # Add remaining tools
+  ADD_SUBDIRECTORY(Tools/IccDumpProfile)
+  ADD_SUBDIRECTORY(Tools/IccRoundTrip)
 
-  # Add additional include paths
-  INCLUDE_DIRECTORIES(
-    ${CMAKE_SOURCE_DIR}/IccProfLib
-    ${CMAKE_SOURCE_DIR}/IccXML
-    ${CMAKE_SOURCE_DIR}/Tools/CmdLine/IccCommon
-  )
+  # Check for TIFF library
+  find_package(TIFF REQUIRED)
+  if (TIFF_FOUND)
+    include_directories(${TIFF_INCLUDE_DIR})
+    message(STATUS "TIFF library found: ${TIFF_LIBRARIES}")
+    
+    # Add TIFF-dependent tools
+#    ADD_SUBDIRECTORY(Tools/IccApplyProfiles)
+    ADD_SUBDIRECTORY(Tools/IccSpecSepToTiff)
+    ADD_SUBDIRECTORY(Tools/IccTiffDump)
+  else()
+    message(FATAL_ERROR "TIFF library not found. Please install libtiff-dev.")
+  endif()
 
+  # Add XML-related tools
+  ADD_SUBDIRECTORY(Tools/IccFromXml)
+  ADD_SUBDIRECTORY(Tools/IccToXml)
 
-LINK_DIRECTORIES(
-  ${PROJECT_ROOT_DIR}/Build/IccProfLib
-  ${PROJECT_ROOT_DIR}/Build/IccXML
-  /usr/local/lib
-)
-
-ENDIF()
-
-
-  ADD_SUBDIRECTORY( Tools/IccApplyNamedCmm )
-  ADD_SUBDIRECTORY( Tools/IccDumpProfile )
-  ADD_SUBDIRECTORY( Tools/IccRoundTrip )
-
-  # needs libtiff
-  FIND_PACKAGE( TIFF )
-  FIND_PATH(TIFF_INCLDIR tiff.h)
-  IF( TIFF_FOUND )
-    INCLUDE_DIRECTORIES( ${TIFF_INCLUDE_DIR} )
-#    ADD_SUBDIRECTORY( Tools/IccApplyProfiles )
-    ADD_SUBDIRECTORY( Tools/IccSpecSepToTiff )
-    ADD_SUBDIRECTORY( Tools/IccTiffDump )
-  ENDIF( TIFF_FOUND )
-
-  ADD_SUBDIRECTORY( Tools/IccFromXml )
-  ADD_SUBDIRECTORY( Tools/IccToXml )
-
-  # needs wxWidgets
-  FIND_PACKAGE(wxWidgets COMPONENTS core base)
-  IF( WXWIDGETS_FOUND )
-    INCLUDE(${wxWidgets_USE_FILE})
-    ADD_SUBDIRECTORY( Tools/wxProfileDump )
-  ENDIF( WXWIDGETS_FOUND )
+  # Configure wxWidgets
+  find_package(wxWidgets COMPONENTS core base REQUIRED)
+  if (wxWidgets_FOUND)
+    include(${wxWidgets_USE_FILE})
+    message(STATUS "wxWidgets found and configured")
+  else()
+    message(FATAL_ERROR "wxWidgets not found. Please install it manually or via vcpkg.")
+  endif()
 
 ENDIF(ENABLE_TOOLS)
+
+
+# Optionally add a description for the option
+option(ENABLE_FUZZING "Enable fuzzing sanitizer" OFF)
+
+if(ENABLE_FUZZING)
+    message(STATUS "Fuzzing enabled")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=fuzzer")
+endif()
 
 IF( ENABLE_TESTS )
   ADD_SUBDIRECTORY( Testing )
@@ -339,7 +358,7 @@ CONFIGURE_FILE(
     IMMEDIATE @ONLY)
 
 ADD_CUSTOM_TARGET( uninstall
-	"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Uninstall.cmake")
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Uninstall.cmake")
 
 IF( CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64" )
   SET( ARCH 64 )
@@ -363,10 +382,10 @@ ADD_CUSTOM_TARGET( dist-bin
     COMMAND echo "We are in:"
     COMMAND pwd
     COMMAND ls -l ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}.tar.gz
-		COMMENT Make a ${PROJECT_NAME} binary package
-		VERBATIM
-		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		)
+    COMMENT Make a ${PROJECT_NAME} binary package
+    VERBATIM
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    )
 
 ADD_CUSTOM_TARGET( dist-bin2
     DEPENDS check
@@ -384,10 +403,10 @@ ADD_CUSTOM_TARGET( dist-bin2
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/RunTests.sh ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
     COMMAND echo tar cf - ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/ --owner user:1000 --group group:500 | gzip -9 > ../${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}.tar.gz
     COMMAND tar cf - ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/ ${GNUTAR_OPTS} | gzip -9 > ../${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}.tar.gz
-		COMMENT Helper for making a ${PROJECT_NAME} binary package
-		VERBATIM
-		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		)
+                COMMENT Helper for making a ${PROJECT_NAME} binary package
+                VERBATIM
+                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+                )
 
 #
 # Misc.
@@ -395,19 +414,14 @@ ADD_CUSTOM_TARGET( dist-bin2
 
 #cmake settings for use by find_package
 CONFIGURE_FILE (
-		"${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-		@ONLY
-	)
+                "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+                @ONLY
+        )
 
 IF(ENABLE_INSTALL_RIM)
   INSTALL ( FILES
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-		DESTINATION ${CMAKE_MODULES_INSTALL_DIR} COMPONENT dev
-	)
+                "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+                DESTINATION ${CMAKE_MODULES_INSTALL_DIR} COMPONENT dev
+        )
 ENDIF(ENABLE_INSTALL_RIM)
-
-message(STATUS "")
-message(STATUS "##########################################################################")
-message(STATUS "## Finished Configuring the DemoIccMAX Project at ${CURRENT_DATETIME}")
-message(STATUS "##########################################################################")

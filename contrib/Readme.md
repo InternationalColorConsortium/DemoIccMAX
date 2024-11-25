@@ -26,50 +26,14 @@ The Project can be built automatically. Copy the command below and Paste into yo
 ## MSBuild on Windows using VS2022
 
    ```powershell
-   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build_revert_master_branch_release.ps1").Content
+   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
    ```
-
-### Run Signed Files from Powershell
-
-If you are familiar with [SysInternals](https://learn.microsoft.com/en-us/sysinternals/), this process should feel similar. The following commands allow you to download and execute signed tools directly from PowerShell. These tools are designed to simplify working with ICC profiles.
-
-To download and run the signed executables, copy and paste the following commands into your PowerShell session:
-
-```powershell
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccToXml.exe" -OutFile ".\iccToXml.exe"; & ".\iccToXml.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccFromXml.exe" -OutFile ".\iccFromXml.exe"; & ".\iccFromXml.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccDumpProfile.exe" -OutFile ".\iccDumpProfile.exe"; & ".\iccDumpProfile.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccSpecSepToTiff.exe" -OutFile ".\iccSpecSepToTiff.exe"; & ".\iccSpecSepToTiff.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccApplyToLink.exe" -OutFile ".\iccApplyToLink.exe"; & ".\iccApplyToLink.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccApplyProfiles.exe" -OutFile ".\iccApplyProfiles.exe"; & ".\iccApplyProfiles.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccApplyNamedCmm.exe" -OutFile ".\iccApplyNamedCmm.exe"; & ".\iccApplyNamedCmm.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccV5DspObsToV4Dsp.exe" -OutFile ".\iccV5DspObsToV4Dsp.exe"; & ".\iccV5DspObsToV4Dsp.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccRoundTrip.exe" -OutFile ".\iccRoundTrip.exe"; & ".\iccRoundTrip.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccFromCube.exe" -OutFile ".\iccFromCube.exe"; & ".\iccFromCube.exe"
-```
-
-### Download Links for Signed Tools
-
-For easier access, click the links below to directly download each signed tool:
-
-- [iccToXml](https://xss.cx/2024/10/26/signed/iccToXml.exe): Converts ICC profiles to XML format for easier inspection and editing.
-- [iccFromXml](https://xss.cx/2024/10/26/signed/iccFromXml.exe): Converts XML back into ICC profiles for processing.
-- [iccDumpProfile](https://xss.cx/2024/10/26/signed/iccDumpProfile.exe): Dumps the contents of an ICC profile for analysis.
-- [iccSpecSepToTiff](https://xss.cx/2024/10/26/signed/iccSpecSepToTiff.exe): Converts specialized ICC-separated color data to TIFF.
-- [iccApplyToLink](https://xss.cx/2024/10/26/signed/iccApplyToLink.exe): Applies an ICC profile to linked data.
-- [iccApplyProfiles](https://xss.cx/2024/10/26/signed/iccApplyProfiles.exe): Applies multiple ICC profiles to image data.
-- [iccApplyNamedCmm](https://xss.cx/2024/10/26/signed/iccApplyNamedCmm.exe): Applies a named Color Management Module (CMM) to an ICC profile.
-- [iccV5DspObsToV4Dsp](https://xss.cx/2024/10/26/signed/iccV5DspObsToV4Dsp.exe): Converts ICC version 5 Display Observer profiles to version 4.
-- [iccRoundTrip](https://xss.cx/2024/10/26/signed/iccRoundTrip.exe): Performs a round-trip ICC profile conversion for testing.
-- [iccFromCube](https://xss.cx/2024/10/26/signed/iccFromCube.exe): Converts LUT data from Cube format to an ICC profile.
-
-> **Note**: The tool `iccTiffDump.exe` currently has a known memory leak and may terminate unexpectedly. Use with caution until an updated version is available.
 
 ## Automatic Install of DemoIccMAXCmm.dll and Registry Key
 
 To streamline the setup of `DemoIccMAXCmm.dll` and ensure the necessary registry keys are applied, the following PowerShell script automates the entire process. This setup step is required for proper ICC profile color management.
 
-Simply copy and paste the following commands into your **PowerShell** window:
+Copy and paste the following commands into your **PowerShell** window:
 
 ```powershell
 mkdir "C:\Program Files\RefIccMAX"
