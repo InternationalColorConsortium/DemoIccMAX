@@ -34,7 +34,7 @@ print_elapsed_time() {
 print_banner "International Color Consortium | DemoIccMAX Project | Copyright 2024. For more information on The International Color Consortium, please see http://color.org/."
 print_banner "Build Script now running.."
 run_and_log echo "Logfile: $LOGFILE"
-
+export CXX=clang++
 # Step 1: Configuring Git user
 print_banner "Step 1: Configuring Git user for this session"
 run_and_log git config --global user.email "github-actions@github.com" || { echo "Error: Git config failed. Exiting."; exit 1; }

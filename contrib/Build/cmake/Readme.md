@@ -1,192 +1,191 @@
-## Automated Build from Master Branch
+# [contrib/](https://github.com/InternationalColorConsortium/DemoIccMAX/tree/master/contrib)
 
-## Building the Project
+Last Updated: 02-DEC-2024 by David Hoyt | [@h02332](https://x.com/h02332)
 
-This repository contains scripts that automate the setup and build process on CMake. Follow the steps below to configure and build the project from the master branch.
+**Data** is ***Code***
 
-### Build Master from Repository
+The [contrib/](https://github.com/InternationalColorConsortium/DemoIccMAX/tree/master/contrib) directory provides examples, tools, and scripts for building, testing, and running ICC profile-related functionality across different platforms. It also includes helper scripts and automated workflows designed to streamline the development process for the Community.
 
-**Ubuntu gnu**: Copy and Paste the Build from Remote Script into your Terminal:
+## Build Instructions
 
-```bash
+The Project code currently compiles on Unix & Windows out of the box using **Clang**, **MSVC** and **GNU** C++ with the instructions provided below.
+
+### **Clang** Build 
+
+Copy and Paste into your Terminal:
+
+```
+# Set Clang++
+export CXX=clang++
+# change to /tmp dir
 cd /tmp
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
+# Build Project
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+# change to ../Testing/ dir
+cd ../Testing/
+# Build ICC Profiles
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
 ```
 
-**Ubuntu clang**: Copy and Paste the Build from Remote Script into your Terminal:
+### Expected Output
 
-```bash
-cd /tmp
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_clang_master_branch.sh)"
-```
-
-**macOS clang**
+**Clang Build Tools**
 
 ```
- /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+[2024-11-27 18:09:24] $ cd Build
+$ make
+...
+[100%] Built target iccToXml
+...
++ ../../Build/Tools/IccFromXml/iccFromXml RefIncW.xml RefIncW.icc
+Profile parsed and saved correctly
+...
+Expecting 204 .icc color profiles...
+-n ICC file count.. :
+     204
+...
+ Clang Build Project and CreateAllProfiles Done!
 ```
 
-The script performs the following steps:
-1. **Git Configuration**: Configures Git for the current session.
-2. **Cloning the Repository**: Clones the repository from the master branch.
-3. **Reverting a Commit**: Reverts a known bad commit (ID: `6ac1cc6`).
-4. **Installing Dependencies**: Prompts for the sudo password to install required dependencies.
-5. **Building the Project**: Configures and builds the project using CMake and runs make.
-6. **Lists the Build Files**: Lists the Project Binaries
+### Windows **MSVC** Build
 
-## Expected Output
+Copy and Paste into Powershell:
+
+   ```powershell
+   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
+   ```
+### Expected Output   
+
+Windows using **MSBuild Build** & **vcpkg** Tools
 
 ```
- /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
-============================================================
- International Color Consortium | DemoIccMAX Project | Copyright 2024. For more information on The International Color Consortium, please see http://color.org/.
- Time: Mon Oct  7 13:48:38 EDT 2024
-============================================================
-============================================================
- Build Script now running..
- Time: Mon Oct  7 13:48:38 EDT 2024
-============================================================
-Logfile: build_log_2024-10-07_13-48-38.log
-============================================================
- Step 1: Configuring Git user for this session
- Time: Mon Oct  7 13:48:38 EDT 2024
-============================================================
-Git user configuration done.
-============================================================
- Step 2: Cloning DemoIccMAX on master branch
- Time: Mon Oct  7 13:48:38 EDT 2024
-============================================================
-Cloning into 'DemoIccMAX'...
-Repository cloned and switched to DemoIccMAX directory.
-============================================================
- Step 3: Reverting a bad commit
- Time: Mon Oct  7 13:48:41 EDT 2024
-============================================================
-Step 3a: Reverting 6ac1cc6
-Auto-merging ChangeLog
-Auto-merging IccProfLib/icProfileHeader.h
-[master 7be6fcf] Revert "Integrate 5.1 changes into Master Branch (#69)"
- Date: Mon Oct 7 13:48:41 2024 -0400
- 28 files changed, 793 insertions(+), 3865 deletions(-)
- rewrite Tools/CmdLine/IccApplyNamedCmm/iccApplyNamedCmm.cpp (66%)
- delete mode 100644 Tools/CmdLine/IccCommon/IccCmmConfig.cpp
- delete mode 100644 Tools/CmdLine/IccCommon/IccCmmConfig.h
- delete mode 100644 Tools/CmdLine/IccCommon/IccJsonUtil.cpp
- delete mode 100644 Tools/CmdLine/IccCommon/IccJsonUtil.h
-master branch checked out.
-============================================================
- Step 4: Installing Dependencies, you will be prompted for the sudo password to continue...
- Time: Mon Oct  7 13:48:41 EDT 2024
-============================================================
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-build-essential is already the newest version (12.9ubuntu3).
-make is already the newest version (4.3-4.1build1).
-clang is already the newest version (1:14.0-55~exp2).
-clang-tools is already the newest version (1:14.0-55~exp2).
-libwxgtk-media3.0-gtk3-dev is already the newest version (3.0.5.1+dfsg-4).
-libwxgtk-webview3.0-gtk3-dev is already the newest version (3.0.5.1+dfsg-4).
-libwxgtk3.0-gtk3-dev is already the newest version (3.0.5.1+dfsg-4).
-cmake is already the newest version (3.22.1-1ubuntu1.22.04.2).
-curl is already the newest version (7.81.0-1ubuntu1.18).
-git is already the newest version (1:2.34.1-1ubuntu1.11).
-libtiff5 is already the newest version (4.3.0-6ubuntu0.10).
-libtiff5-dev is already the newest version (4.3.0-6ubuntu0.10).
-libxml2 is already the newest version (2.9.13+dfsg-1ubuntu0.4).
-libxml2-dev is already the newest version (2.9.13+dfsg-1ubuntu0.4).
-0 upgraded, 0 newly installed, 0 to remove and 7 not upgraded.
-============================================================
- Step 5: Starting Build....
- Time: Mon Oct  7 13:48:42 EDT 2024
-============================================================
-============================================================
- Step 5a: configuring cmake
- Time: Mon Oct  7 13:48:42 EDT 2024
-============================================================
--- The C compiler identification is GNU 11.4.0
--- The CXX compiler identification is GNU 11.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: /usr/bin/c++ - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- Info build "Debug"
--- Found LibXml2: /usr/lib/x86_64-linux-gnu/libxml2.so (found version "2.9.13")
--- Found TIFF: /usr/lib/x86_64-linux-gnu/libtiff.so (found version "4.3.0")
--- Found wxWidgets: -L/usr/lib/x86_64-linux-gnu;-pthread;;;-lwx_gtk3u_core-3.0;-lwx_baseu-3.0 (found version "3.0.5")
-Configured RefIccMAX-Linux64-2.1.17
--- Configuring done
--- Generating done
--- Build files have been written to: /home/xss/tmm/DemoIccMAX/Build
-============================================================
- Step 6: running make
- Time: Mon Oct  7 13:48:49 EDT 2024
-============================================================
-============================================================
- Built Files:
- Time: Mon Oct  7 13:49:13 EDT 2024
-============================================================
--rw-r--r-- 1 xss xss 55M Oct  7 13:49 ./IccProfLib/libIccProfLib2-static.a
--rwxr-xr-x 1 xss xss 43M Oct  7 13:49 ./IccProfLib/libIccProfLib2.so.2.1.17
--rw-r--r-- 1 xss xss 17M Oct  7 13:49 ./IccXML/libIccXML2-static.a
--rwxr-xr-x 1 xss xss 12M Oct  7 13:49 ./IccXML/libIccXML2.so.2.1.17
--rwxr-xr-x 1 xss xss 300K Oct  7 13:49 ./Tools/IccDumpProfile/iccDumpProfile
--rwxr-xr-x 1 xss xss 3.3M Oct  7 13:49 ./Tools/wxProfileDump/iccDumpProfileGui
--rwxr-xr-x 1 xss xss 227K Oct  7 13:49 ./Tools/IccToXml/iccToXml
--rwxr-xr-x 1 xss xss 832K Oct  7 13:49 ./Tools/IccApplyProfiles/iccApplyProfiles
--rwxr-xr-x 1 xss xss 550K Oct  7 13:49 ./Tools/IccTiffDump/iccTiffDump
--rwxr-xr-x 1 xss xss 478K Oct  7 13:49 ./Tools/IccSpecSepToTiff/iccSpecSepToTiff
--rwxr-xr-x 1 xss xss 532K Oct  7 13:49 ./Tools/IccApplyNamedCmm/iccApplyNamedCmm
--rwxr-xr-x 1 xss xss 257K Oct  7 13:49 ./Tools/IccFromXml/iccFromXml
--rwxr-xr-x 1 xss xss 149K Oct  7 13:49 ./Tools/IccRoundTrip/iccRoundTrip
-============================================================
- cd Testing/
- Time: Mon Oct  7 13:49:13 EDT 2024
-============================================================
-============================================================
- Creating Profiles
- Time: Mon Oct  7 13:49:13 EDT 2024
-============================================================
-Creating Profiles...
-cd to CalcTest
-cd to HDR
-cd to Overprint
-cd mcs
-cd Testing
-==================================================
-[2024-10-07 13:49:30] Starting XML to ICC correlation analysis
-==================================================
-==================================================
-[2024-10-07 13:49:30] Identifying non-creations (XML files without corresponding ICC files)
-==================================================
-Non-creation: ./CMYK-3DLUTs/CMYK-3DLUTs.xml
-Non-creation: ./CMYK-3DLUTs/CMYK-3DLUTs2.xml
-Non-creation: ./Calc/calcImport.xml
-Non-creation: ./Calc/calcVars.xml
-Non-creation: ./Overprint/17ChanPart1.xml
-Non-creation: ./SpecRef/RefEstimationImport.xml
-Non-creation: ./mcs/17ChanWithSpots-MVIS.xml
-Non-creation: ./mcs/18ChanWithSpots-MVIS.xml
-==================================================
-[2024-10-07 13:49:31] Summary Report
-==================================================
-Total XML files: 144
-Total ICC files: 214
-Total successful creations (matched XML and ICC): 136
-Total non-creation (XML without ICC): 8
-==================================================
-[2024-10-07 13:49:31] Analysis completed
-==================================================
-Cross-Check for CreateAllProfiles Done!
-============================================================
- Build Project and CreateAllProfiles Done!
- Time: Mon Oct  7 13:49:31 EDT 2024
-============================================================
-Elapsed Time: 00:00:53
+[100%] Built target iccToXml
+...
++ ../../Build/Tools/IccFromXml/iccFromXml RefIncW.xml RefIncW.icc
+Profile parsed and saved correctly
+...
+Expecting 204 .icc color profiles...
+-n ICC file count.. :
+     204
 ```
+
+### **GNU C++** Build
+
+Manually complete the Clone, Patch & Build process shown below on Ubuntu:
+
+```
+#### Clone the DemoIccMAX repository
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+cd DemoIccMAX
+
+# Clone the PatchIccMAX repository to a directory outside the DemoIccMAX repo
+git clone https://github.com/xsscx/PatchIccMAX.git ../PatchIccMAX
+cd ../PatchIccMAX
+git checkout development
+cd -
+
+# Apply the GCC Patch from the PatchIccMAX repository
+# TODO: Analyze Scoping Issue, Fix Template, Re: GNU C++ Strict Checks vs Clang
+git apply ../PatchIccMAX/contrib/patches/pr109-ubuntu-5.15.153.1-microsoft-standard-WSL2-patch.txt
+
+# Verify the patch was applied successfully
+git status
+
+# Navigate to the Build directory
+cd Build
+
+# Install Deps
+sudo apt-get install -y wx-common curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential libtiff-tools libtiff-opengl
+
+# Configure the build with CMake
+cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release -DENABLE_TOOLS=ON  -Wno-dev Cmake/
+
+# Build the project
+make -j$(nproc)
+
+# change to ../Testing/ dir
+cd ../Testing/
+
+# Build ICC Profiles
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
+```
+
+### Expected Output | Linux DESKTOP 5.15.153.1-microsoft-standard-WSL2
+
+```
+[2024-11-27 18:29:09 ~/tmp/DemoIccMAX/Build]% uname -a
+Linux DESKTOP 5.15.153.1-microsoft-standard-WSL2 #1 SMP Fri Mar 29 23:14:13 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+[2024-11-27 18:29:19 ~/tmp/tt/DemoIccMAX/Build]% make -j$(nproc)
+[ 45%] Built target IccProfLib2-static
+...
+[100%] Built target iccDumpProfile
+
+[2024-11-27 18:29:25 ~/tmp/DemoIccMAX/Build]% Tools/IccToXml/iccToXml
+IccToXml built with IccProfLib Version 2.2.5, IccLibXML Version 2.2.5
+
+[2024-11-27 18:31:15 ~/tmp/tt/DemoIccMAX/Build]% Tools/IccFromXml/iccFromXml
+IccFromXml built with IccProfLib Version 2.2.5, IccLibXML Version 2.2.5
+
+...
+```
+
+## Reproduction Hosts
+
+```
+Darwin Kernel Version 24.1.0: Thu Oct 10 21:02:27 PDT 2024; root:xnu-11215.41.3~2/RELEASE_X86_64 x86_64
+24.1.0 Darwin Kernel Version 24.1.0: Thu Oct 10 21:05:14 PDT 2024; root:xnu-11215.41.3~2/RELEASE_ARM64_T8103 arm64
+5.15.153.1-microsoft-standard-WSL2 #1 SMP Fri Mar 29 23:14:13 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+Microsoft Windows 11 Pro 10.0.26100 26100 & VisualStudio/17.12.1
+```
+
+## Automatic Install of DemoIccMAXCmm.dll and Registry Key
+
+To streamline the setup of `DemoIccMAXCmm.dll` and ensure the necessary registry keys are applied, the following PowerShell script automates the entire process. This setup step is required for proper ICC profile color management.
+
+Copy and paste the following commands into your **PowerShell** window:
+
+```powershell
+mkdir "C:\Program Files\RefIccMAX"
+cd "C:\Program Files\RefIccMAX"
+iwr -Uri "https://xss.cx/2024/10/26/signed/DemoIccMAXCmm.dll" -OutFile ".\DemoIccMAXCmm.dll"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/HelperScripts/Install-RefIccMAX.reg" -OutFile "$env:TEMP\Install-RefIccMAX.reg"; Start-Process reg.exe -ArgumentList "import $env:TEMP\Install-RefIccMAX.reg" -Wait; Remove-Item "$env:TEMP\Install-RefIccMAX.reg" -Force
+```
+
+## Subdirectories and Files in contrib/
+
+### [Workflows](contrib/.github/workflows)
+This directory contains GitHub Actions workflow files used for continuous integration (CI) and code scanning.
+
+- **codeql.yml**: A GitHub Actions workflow for CodeQL code scanning, which helps identify vulnerabilities and errors in the code.
+- **macos-self-hosted-example.yml**: An example workflow for building the project using a self-hosted macOS runner.
+- **windows-vs2022-vcpkg-example.yml**: An example workflow for building the project on Windows using Visual Studio 2022 and vcpkg.
+
+### [CalcTest](contrib/CalcTest)
+The `CalcTest` directory includes shell scripts for performing various calculations and profile checks.
+
+- **calc_test.zsh**: A script for running a set of calculation tests.
+- **check_profiles.zsh**: A script for verifying ICC profile compatibility and integrity.
+- **test_icc_apply_named_cmm.zsh**: A script for testing the application of named Color Management Modules (CMM) to ICC profiles.
+
+### [Doxygen](contrib/Doxygen)
+The `Doxygen` directory contains configuration files for generating project documentation using Doxygen.
+
+- **Doxyfile**: The main configuration file for Doxygen, specifying how the documentation should be generated.
+- **README.md**: A readme file providing an overview of how to use Doxygen for generating documentation.
+
+### [HelperScripts](contrib/HelperScripts)
+The `HelperScripts` directory contains various helper scripts for building dependencies and running tests.
+
+- **libtiff_build.zsh**: A script for building the libtiff library, which is a dependency for the project.
+- **libxml2_build.zsh**: A script for building the libxml2 library, another dependency for the project.
+- **test_xmlarray_type.zsh**: A script for testing XML array types.
+- **vs2022_build.ps1**: A PowerShell script for building the project using Visual Studio 2022.
+
+### [UnitTest](contrib/UnitTest)
+The `UnitTest` directory includes unit test files and related scripts.
+
+- **cve-2023-46602-icFixXml-function-IccTagXml_cpp-line_337-baseline-variant-000.xml**: An XML file related to testing a specific CVE (Common Vulnerabilities and Exposures) issue.
+- **cve-2023-46602.icc**: An ICC profile file related to the same CVE issue.
+- **cve-2023-46602.zsh**: A shell script for testing the specific CVE issue.
+- **TestCIccTagXmlProfileSequenceId.cpp**: A C++ test file for the `CIccTagXmlProfileSequenceId` class.
+- **TestParseText.cpp**: A C++ test file for testing text parsing functionality.
