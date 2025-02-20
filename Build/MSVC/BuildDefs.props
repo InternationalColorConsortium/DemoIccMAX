@@ -1,11 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="..\..\..\..\Common\VSProps\Developer Defs.props" Condition="exists('..\..\..\..\Common\VSProps\Developer Defs.props')" Label="DeveloperDefs" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <EIGEN>$(VendorTreeDir)\eigen\eigen-3.2.8</EIGEN>
-	<ICONV>$(VendorTreeDir)\iconv\iconv-1.9.2</ICONV>
+    <ICONV>$(VendorTreeDir)\iconv\iconv-1.9.2</ICONV>
+    <NLOHMANN_JSON>$(VendorTreeDir)\nlohmann-json\include</NLOHMANN_JSON>
     <LIBTIFF_DLIB>libtiff.lib</LIBTIFF_DLIB>
     <LIBTIFF_INCLUDE>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiff</LIBTIFF_INCLUDE>
     <LIBTIFF_INCLUDEx64>$(VendorTreeDir)\libtiff\tiff-4.0.3\libtiffx64</LIBTIFF_INCLUDEx64>

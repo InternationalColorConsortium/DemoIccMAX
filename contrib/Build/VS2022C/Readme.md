@@ -16,13 +16,7 @@ This directory contains build scripts and documentation for building the DemoIcc
 - Visual Studio 2022 Community
 	- Git for Windows
 
-### Setup
-
-To build and test the project, use the provided PowerShell scripts:
-- `build_leaf_projects_release.ps1`: Builds all leaf projects in release mode.
-- `build_revert_master_branch.ps1`: Reverts changes to the master branch if needed.
-
-### Example Commands
+###Run
 
 - **Build the master branch of the project via powershell**:
 

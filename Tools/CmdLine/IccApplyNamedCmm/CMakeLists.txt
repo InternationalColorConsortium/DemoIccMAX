@@ -1,12 +1,24 @@
+# 
+# IccApplyNamedCmm CMakeLists.txt | DemoIccMAX Project
+# Copyright (©) 2024 The International Color Consortium. All rights reserved.
+# 
+#
+# Last Updated: 02-DEC-2024 by David Hoyt
+#
+# Changes: 	Remove hardcoded build args and debugging output from my prior commit
+#						
+#						
+# TODO: Refactor Debug, Release, Asan 
+# 			Collapse 3-tier CMakeLists.txt, Housekeeping
+#				Refactor Base Configs & logging to .mk's 
+#
+
 cmake_minimum_required(VERSION 3.5)
 project(iccApplyNamedCmm)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(APPLE)
-  set(CMAKE_OSX_ARCHITECTURES "x86_64")
-endif()
 
 # Set the path for nlohmann-json
 set(CMAKE_PREFIX_PATH "/usr/local/Cellar/nlohmann-json/3.11.3")
@@ -45,24 +57,10 @@ target_link_libraries(iccApplyNamedCmm PRIVATE
 )
 
 # Compiler options
-target_compile_options(iccApplyNamedCmm PRIVATE
-  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk
-  -arch x86_64
-)
+target_compile_options(iccApplyNamedCmm PRIVATE)
 
 # Linker options
 target_link_options(iccApplyNamedCmm PRIVATE
-  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk
-  -arch x86_64
   -L${CMAKE_SOURCE_DIR}/../../../Build/IccProfLib
   -L${CMAKE_SOURCE_DIR}/../../../Build/IccXML
 )
-
-# Debugging output
-message(STATUS "Include Directories:")
-message(STATUS "IccProfLib: ${CMAKE_SOURCE_DIR}/../../../IccProfLib")
-message(STATUS "IccXML: ${CMAKE_SOURCE_DIR}/../../../IccXML")
-message(STATUS "macOS SDK Path: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk")
-message(STATUS "Link Directories:")
-message(STATUS "IccProfLib: ${CMAKE_SOURCE_DIR}/../../../Build/IccProfLib")
-message(STATUS "IccXML: ${CMAKE_SOURCE_DIR}/../../../Build/IccXML")

@@ -1,75 +1,148 @@
 # [contrib/](https://github.com/InternationalColorConsortium/DemoIccMAX/tree/master/contrib)
 
-Last Updated: 30-Oct-2024 by David Hoyt | [@h02332](https://x.com/h02332)
+Last Updated: 02-DEC-2024 by David Hoyt | [@h02332](https://x.com/h02332)
 
 **Data** is ***Code***
 
 The [contrib/](https://github.com/InternationalColorConsortium/DemoIccMAX/tree/master/contrib) directory provides examples, tools, and scripts for building, testing, and running ICC profile-related functionality across different platforms. It also includes helper scripts and automated workflows designed to streamline the development process for the Community.
 
-# Automated Builds
+## Build Instructions
 
-The Project can be built automatically. Copy the command below and Paste into your Terminal to start the Build.
+The Project code currently compiles on Unix & Windows out of the box using **Clang**, **MSVC** and **GNU** C++ with the instructions provided below.
 
-## Build via CMake
+### **Clang** Build 
 
-   ```bash
-  /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
-   ```
+Copy and Paste into your Terminal:
 
-### Xcode Build
-
-   ```bash
-   cd Build/Xcode
-   /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/Build/XCode/xnu_build_macos15_x86_64.zsh)"
-   ```
-
-## MSBuild on Windows using VS2022
-
-   ```powershell
-   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build_revert_master_branch_release.ps1").Content
-   ```
-
-### Run Signed Files from Powershell
-
-If you are familiar with [SysInternals](https://learn.microsoft.com/en-us/sysinternals/), this process should feel similar. The following commands allow you to download and execute signed tools directly from PowerShell. These tools are designed to simplify working with ICC profiles.
-
-To download and run the signed executables, copy and paste the following commands into your PowerShell session:
-
-```powershell
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccToXml.exe" -OutFile ".\iccToXml.exe"; & ".\iccToXml.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccFromXml.exe" -OutFile ".\iccFromXml.exe"; & ".\iccFromXml.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccDumpProfile.exe" -OutFile ".\iccDumpProfile.exe"; & ".\iccDumpProfile.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccSpecSepToTiff.exe" -OutFile ".\iccSpecSepToTiff.exe"; & ".\iccSpecSepToTiff.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccApplyToLink.exe" -OutFile ".\iccApplyToLink.exe"; & ".\iccApplyToLink.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccApplyProfiles.exe" -OutFile ".\iccApplyProfiles.exe"; & ".\iccApplyProfiles.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccApplyNamedCmm.exe" -OutFile ".\iccApplyNamedCmm.exe"; & ".\iccApplyNamedCmm.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccV5DspObsToV4Dsp.exe" -OutFile ".\iccV5DspObsToV4Dsp.exe"; & ".\iccV5DspObsToV4Dsp.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccRoundTrip.exe" -OutFile ".\iccRoundTrip.exe"; & ".\iccRoundTrip.exe"
-iwr -Uri "https://xss.cx/2024/10/26/signed/iccFromCube.exe" -OutFile ".\iccFromCube.exe"; & ".\iccFromCube.exe"
+```
+# Set Clang++
+export CXX=clang++
+# change to /tmp dir
+cd /tmp
+# Build Project
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+# change to ../Testing/ dir
+cd ../Testing/
+# Build ICC Profiles
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
 ```
 
-### Download Links for Signed Tools
+### Expected Output
 
-For easier access, click the links below to directly download each signed tool:
+**Clang Build Tools**
 
-- [iccToXml](https://xss.cx/2024/10/26/signed/iccToXml.exe): Converts ICC profiles to XML format for easier inspection and editing.
-- [iccFromXml](https://xss.cx/2024/10/26/signed/iccFromXml.exe): Converts XML back into ICC profiles for processing.
-- [iccDumpProfile](https://xss.cx/2024/10/26/signed/iccDumpProfile.exe): Dumps the contents of an ICC profile for analysis.
-- [iccSpecSepToTiff](https://xss.cx/2024/10/26/signed/iccSpecSepToTiff.exe): Converts specialized ICC-separated color data to TIFF.
-- [iccApplyToLink](https://xss.cx/2024/10/26/signed/iccApplyToLink.exe): Applies an ICC profile to linked data.
-- [iccApplyProfiles](https://xss.cx/2024/10/26/signed/iccApplyProfiles.exe): Applies multiple ICC profiles to image data.
-- [iccApplyNamedCmm](https://xss.cx/2024/10/26/signed/iccApplyNamedCmm.exe): Applies a named Color Management Module (CMM) to an ICC profile.
-- [iccV5DspObsToV4Dsp](https://xss.cx/2024/10/26/signed/iccV5DspObsToV4Dsp.exe): Converts ICC version 5 Display Observer profiles to version 4.
-- [iccRoundTrip](https://xss.cx/2024/10/26/signed/iccRoundTrip.exe): Performs a round-trip ICC profile conversion for testing.
-- [iccFromCube](https://xss.cx/2024/10/26/signed/iccFromCube.exe): Converts LUT data from Cube format to an ICC profile.
+```
+[2024-11-27 18:09:24] $ cd Build
+$ make
+...
+[100%] Built target iccToXml
+...
++ ../../Build/Tools/IccFromXml/iccFromXml RefIncW.xml RefIncW.icc
+Profile parsed and saved correctly
+...
+Expecting 204 .icc color profiles...
+-n ICC file count.. :
+     204
+...
+ Clang Build Project and CreateAllProfiles Done!
+```
 
-> **Note**: The tool `iccTiffDump.exe` currently has a known memory leak and may terminate unexpectedly. Use with caution until an updated version is available.
+### Windows **MSVC** Build
+
+Copy and Paste into Powershell:
+
+   ```powershell
+   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
+   ```
+### Expected Output   
+
+Windows using **MSBuild Build** & **vcpkg** Tools
+
+```
+[100%] Built target iccToXml
+...
++ ../../Build/Tools/IccFromXml/iccFromXml RefIncW.xml RefIncW.icc
+Profile parsed and saved correctly
+...
+Expecting 204 .icc color profiles...
+-n ICC file count.. :
+     204
+```
+
+### **GNU C++** Build
+
+Manually complete the Clone, Patch & Build process shown below on Ubuntu:
+
+```
+#### Clone the DemoIccMAX repository
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+cd DemoIccMAX
+
+# Clone the PatchIccMAX repository to a directory outside the DemoIccMAX repo
+git clone https://github.com/xsscx/PatchIccMAX.git ../PatchIccMAX
+cd ../PatchIccMAX
+git checkout development
+cd -
+
+# Apply the GCC Patch from the PatchIccMAX repository
+# TODO: Analyze Scoping Issue, Fix Template, Re: GNU C++ Strict Checks vs Clang
+git apply ../PatchIccMAX/contrib/patches/pr109-ubuntu-5.15.153.1-microsoft-standard-WSL2-patch.txt
+
+# Verify the patch was applied successfully
+git status
+
+# Navigate to the Build directory
+cd Build
+
+# Install Deps
+sudo apt-get install -y wx-common curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential libtiff-tools libtiff-opengl
+
+# Configure the build with CMake
+cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release -DENABLE_TOOLS=ON  -Wno-dev Cmake/
+
+# Build the project
+make -j$(nproc)
+
+# change to ../Testing/ dir
+cd ../Testing/
+
+# Build ICC Profiles
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
+```
+
+### Expected Output | Linux DESKTOP 5.15.153.1-microsoft-standard-WSL2
+
+```
+[2024-11-27 18:29:09 ~/tmp/DemoIccMAX/Build]% uname -a
+Linux DESKTOP 5.15.153.1-microsoft-standard-WSL2 #1 SMP Fri Mar 29 23:14:13 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+[2024-11-27 18:29:19 ~/tmp/tt/DemoIccMAX/Build]% make -j$(nproc)
+[ 45%] Built target IccProfLib2-static
+...
+[100%] Built target iccDumpProfile
+
+[2024-11-27 18:29:25 ~/tmp/DemoIccMAX/Build]% Tools/IccToXml/iccToXml
+IccToXml built with IccProfLib Version 2.2.5, IccLibXML Version 2.2.5
+
+[2024-11-27 18:31:15 ~/tmp/tt/DemoIccMAX/Build]% Tools/IccFromXml/iccFromXml
+IccFromXml built with IccProfLib Version 2.2.5, IccLibXML Version 2.2.5
+
+...
+```
+
+## Reproduction Hosts
+
+```
+Darwin Kernel Version 24.1.0: Thu Oct 10 21:02:27 PDT 2024; root:xnu-11215.41.3~2/RELEASE_X86_64 x86_64
+24.1.0 Darwin Kernel Version 24.1.0: Thu Oct 10 21:05:14 PDT 2024; root:xnu-11215.41.3~2/RELEASE_ARM64_T8103 arm64
+5.15.153.1-microsoft-standard-WSL2 #1 SMP Fri Mar 29 23:14:13 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+Microsoft Windows 11 Pro 10.0.26100 26100 & VisualStudio/17.12.1
+```
 
 ## Automatic Install of DemoIccMAXCmm.dll and Registry Key
 
 To streamline the setup of `DemoIccMAXCmm.dll` and ensure the necessary registry keys are applied, the following PowerShell script automates the entire process. This setup step is required for proper ICC profile color management.
 
-Simply copy and paste the following commands into your **PowerShell** window:
+Copy and paste the following commands into your **PowerShell** window:
 
 ```powershell
 mkdir "C:\Program Files\RefIccMAX"

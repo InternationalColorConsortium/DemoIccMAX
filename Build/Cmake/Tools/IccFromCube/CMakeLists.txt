@@ -1,11 +1,13 @@
 # 
-# IccApplyNamedCmm CMakeLists.txt | DemoIccMAX Project
+# IccFromCube CMakeLists.txt | DemoIccMAX Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #
-# Last Updated: 2024-11-24 by David Hoyt
+# Last Updated: 02-DEC-2024 by David Hoyt
 #
-# Changes: 	Added JSON Dependency
+# Changes: 	Modified Build/Cmake/CMakelists.txt and others
+#           Added IccFromCubeProject
+#           Added IccV5DspObsToV4Dsp
 #						Adjusted Cross Platform Build Args
 #						
 # TODO: Refactor Debug, Release, Asan 
@@ -14,10 +16,10 @@
 #
 
 # Check if the target is already defined before adding it
-IF(NOT TARGET iccApplyNamedCmm)
+IF(NOT TARGET iccFromCube)
   SET(SRC_PATH ../../../..)
-  SET(SOURCES ${SRC_PATH}/Tools/CmdLine/IccApplyNamedCmm/iccApplyNamedCmm.cpp)
-  SET(TARGET_NAME iccApplyNamedCmm)
+  SET(SOURCES ${SRC_PATH}/Tools/CmdLine/IccFromCube/iccFromCube.cpp)
+  SET(TARGET_NAME iccFromCube)
 
   ADD_EXECUTABLE(${TARGET_NAME} ${SOURCES})
   TARGET_LINK_LIBRARIES(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})

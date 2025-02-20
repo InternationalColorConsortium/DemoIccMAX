@@ -6,7 +6,9 @@
 ## Date: 27-Sept-24
 ##
 
-echo "International Color Consortium | DemoIccMAX Project | Copyright 2024. For more information on The International Color Consortium, please see http://color.org/."
+echo "International Color Consortium | DemoIccMAX Project"
+echo "Copyright © 2024"
+echo "For more information on The International Color Consortium, please see http://color.org/."
 echo "Running remote script of Testing/CreateAllProfiles.sh Script now running.."
 
 if [ "$1" = "clean" ]

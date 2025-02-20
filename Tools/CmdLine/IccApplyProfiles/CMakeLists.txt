@@ -1,3 +1,18 @@
+# 
+# IccApplyProfiles CMakeLists.txt | DemoIccMAX Project
+# Copyright (©) 2024 The International Color Consortium. All rights reserved.
+# 
+#
+# Last Updated: 03-DEC-2024 by David Hoyt
+#
+# Changes: 	Remove hardcoded build args and debugging output from my prior commit
+#						
+#						
+# TODO: Refactor Debug, Release, Asan 
+# 			Collapse 3-tier CMakeLists.txt, Housekeeping
+#				Refactor Base Configs & logging to .mk's 
+#
+
 cmake_minimum_required(VERSION 3.5)
 project(iccApplyProfiles)
 
@@ -6,9 +21,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure architecture compatibility on macOS
-if(APPLE)
-  set(CMAKE_OSX_ARCHITECTURES "x86_64")
-endif()
+# if(APPLE)
+#  set(CMAKE_OSX_ARCHITECTURES "x86_64")
+# endif()
 
 # Locate required libraries
 find_package(nlohmann_json REQUIRED)
@@ -52,21 +67,8 @@ target_link_libraries(iccApplyProfiles PRIVATE
 )
 
 # Compiler options
-target_compile_options(iccApplyProfiles PRIVATE
-  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk
-  -arch x86_64
-)
+target_compile_options(iccApplyProfiles PRIVATE)
 
 # Linker options
-target_link_options(iccApplyProfiles PRIVATE
-  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk
-  -arch x86_64
-)
+target_link_options(iccApplyProfiles PRIVATE)
 
-# Debugging output
-message(STATUS "Build Configuration:")
-message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
-message(STATUS "macOS Architecture: ${CMAKE_OSX_ARCHITECTURES}")
-message(STATUS "Custom Libraries:")
-message(STATUS "IccProfLib: ${CMAKE_SOURCE_DIR}/../../../Build/IccProfLib")
-message(STATUS "IccXML: ${CMAKE_SOURCE_DIR}/../../../Build/IccXML")

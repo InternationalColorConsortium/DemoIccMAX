@@ -2,22 +2,25 @@
 # Build Clang Master Branch
 
 ## Overview
-This Shell script is designed for building the master branch using Clang. It automates tasks related to Clang build setup, ensuring an efficient workflow.
+This Remote Script builds the master branch using Clang.
 
 ## Usage
-To use this script, open a PowerShell window and execute the following command:
+Copy and Paste the Command into your Terminal to Build the Project with all dependencies.
 
-```powershell
-.\build_clang_master_branch.sh
+```
+cd /tmp
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_clang_master_branch.sh)"
 ```
 
-## Parameters
-No parameters required.
+### Expected Output
 
-## Requirements
-- Windows PowerShell
-- None
+```
+cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_CXX_FLAGS="$CXX_FLAGS" -Wno-dev Cmake/
 
-## Notes
-Ensure Clang and necessary dependencies are installed
-
+-- ##########################################################################
+-- ## Starting to Configure the DemoIccMAX Project at 2024-11-24 14:42:41
+-- ##########################################################################
+-- The C compiler identification is GNU 13.2.0
+-- The CXX compiler identification is Clang 18.1.3
+...
+```
