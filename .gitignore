@@ -29,6 +29,7 @@
 
 # Testing icc
 Testing/*/*.icc
+Testing/private/**
 
 # Xcode deps
 Build/XCode/libtiff/*.h*
@@ -57,6 +58,8 @@ Build/XCode/libxml/*.h*
 **/Debug/**
 **/x64/**
 **/Win32/**
+**/vc_msw*/**
+Developer Defs.props
 
 
 # copied code
