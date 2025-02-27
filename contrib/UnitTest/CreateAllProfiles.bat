@@ -1,11 +1,11 @@
 @echo off
 echo =========================================================
-echo     Welcome to the DemoIccMAX Profile Creation Script
-echo     Copyright (C) 2024 Internation Color Consortium
-echo     Author: David Hoyt dhoyt@hoyt.net  29-Oct-2024
+echo     Welcome to the IccMAX Profile Creation Script
+echo     Copyright (C) 2024-2025 International Color Consortium
+echo     Author: David Hoyt  25-FEB-2025 0939 EST
 echo =========================================================
 
-title ICC DemoIccMAX - Profile Creation Script
+title IccMAX - Profile Creation Script
 
 @echo on
 if exist C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe (
@@ -93,6 +93,31 @@ C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe sRgbEnco
 C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe sRgbEncodingOverrides.xml sRgbEncodingOverrides.icc
 @echo off
 :end_Encoding
+
+cd ..\HDR
+
+:: Cleanup mode - Deletes .icc files and exits
+if "%1"=="clean" (
+    echo Cleaning HDR directory...
+    del /F/Q *.icc 2>NUL:
+    goto end_HDR
+)
+
+:do_HDR
+@echo on
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100HlgFullScene.xml BT2100HlgFullScene.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100HlgNarrowScene.xml BT2100HlgNarrowScene.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100HlgFullDisplay.xml BT2100HlgFullDisplay.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100HlgNarrowDisplay.xml BT2100HlgNarrowDisplay.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100PQFullScene.xml BT2100PQFullScene.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100PQNarrowScene.xml BT2100PQNarrowScene.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100PQFullDisplay.xml BT2100PQFullDisplay.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100PQNarrowDisplay.xml BT2100PQNarrowDisplay.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100HlgSceneToDisplayLink.xml BT2100HlgSceneToDisplayLink.icc
+C:\test\DemoIccMAX\IccXML\CmdLine\IccFromXml\x64\Release\IccFromXml.exe BT2100PQSceneToDisplayLink.xml BT2100PQSceneToDisplayLink.icc
+@echo off
+
+:end_HDR
 
 cd ..\ICS
 if not "%1"=="clean" goto do_ICS

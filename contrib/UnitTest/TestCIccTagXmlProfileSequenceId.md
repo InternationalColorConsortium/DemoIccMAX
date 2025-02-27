@@ -36,5 +36,23 @@ This unit test also integrates **AddressSanitizer (ASan)** to detect potential m
 - **pkg-config** to ensure the proper linking of `libxml2`.
 
 On **Ubuntu**, install the dependencies with:
-```bash
+```
 sudo apt-get install g++ libxml2-dev pkg-config
+```
+
+### Expected Output
+
+#### 25-FEB-2025
+
+```
+xss@W5:~/tmp/pr111/gnu/DemoIccMAX/Testing$ g++ -std=c++17 -g -fsanitize=address,undefined -fno-omit-frame-pointer \
+    TestCIccTagXmlProfileSequenceId.cpp \
+    -I/usr/include/libxml2 -I../IccProfLib -I../IccXML/IccLibXML \
+    -L../Build/IccProfLib -L../Build/IccXML \
+    -lpthread -lxml2 -lIccProfLib2 -lIccXML2 \
+    -Wl,-rpath,../Build/IccProfLib -Wl,-rpath,../Build/IccXML \
+    -o TestCIccTagXmlProfileSequenceId
+xss@W5:~/tmp/pr111/gnu/DemoIccMAX/Testing$ ./TestCIccTagXmlProfileSequenceId
+Starting unit tests for CIccTagXmlProfileSequenceId...
+Test succeeded: ParseXml correctly handled the provided node.
+```

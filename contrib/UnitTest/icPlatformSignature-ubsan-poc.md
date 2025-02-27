@@ -59,5 +59,51 @@ Profile Tags
 
 EXIT 0
 ```
+### 25-FEB-2025 Output Sample
 
+```
+xss@W5:~/tmp/pr111/gnu/DemoIccMAX/Testing$ ../Build/Tools/IccDumpProfile/iccDumpProfile icPlatformSignature-ubsan-poc.icc
+Built with IccProfLib version 2.2.5
+
+Profile:            'icPlatformSignature-ubsan-poc.icc'
+Profile ID:         Profile ID not calculated.
+Size:               504 (0x1f8) bytes
+
+Header
+------
+Attributes:         Transparency | Matte
+Cmm:                Apple
+Creation Date:      7/151/2003 (M/D/Y)  38807:38807:38807
+Creator:            'appl' = 6170706C
+Device Manufacturer:'????' = 97979797
+Data Color Space:   RgbData
+Flags:              EmbeddedProfileTrue | UseWithEmbeddedDataOnly
+PCS Color Space:    LabData
+/home/xss/tmp/pr111/gnu/DemoIccMAX/Tools/CmdLine/IccDumpProfile/iccDumpProfile.cpp:227:11: runtime error: load of value 2543294359, which is not a valid value for type 'icPlatformSignature'
+Platform:           Unknown '????' = 97979797
+Rendering Intent:   Perceptual
+Profile Class:      InputClass
+Profile SubClass:   Not Defined
+Version:            2.20
+Illuminant:         X=-26728.4082, Y=1.0000, Z=0.8249
+Spectral PCS:       NoSpectralData
+Spectral PCS Range: Not Defined
+BiSpectral Range:   Not Defined
+MCS Color Space:    Not Defined
+
+Profile Tags
+------------
+                         Tag    ID      Offset      Size             Pad
+                        ----  ------    ------      ----             ---
+       profileDescriptionTag  'desc'       192       110              42
+   Unknown 'dscm' = 6473636D  'dscm'       264        78               2
+          mediaWhitePointTag  'wtpt'       344        20               0
+      chromaticAdaptationTag  'chad'       364        44              96
+                    AToB0Tag  'A2B0'       204       300               0
+
+
+
+
+EXIT 0
+```
 
