@@ -79,6 +79,7 @@ namespace refIccMAX {
 #endif
 
 #include "IccTagBasic.h"
+#include <vector>
 
 /**
 ****************************************************************************
@@ -665,6 +666,100 @@ protected:
 };	
 
 
+// The IccGainPointSlope is the fundamental unit of a GainCurve
+typedef struct
+{
+  icFloat32Number x;
+  icFloat32Number y;
+  icFloat32Number slope;
+} IccGainPointSlope;
+
+typedef std::vector<IccGainPointSlope> IccGainPointSlopeArray;
+typedef IccGainPointSlopeArray* IccGainPointSlopeArrayPtr;
+
+
+/**
+****************************************************************************
+* Class: CIccTagAdaptiveGainCurve
+*
+* Purpose: the adaptiveGainCurve tag used for HDR tone mapping
+****************************************************************************
+*/
+class ICCPROFLIB_API CIccTagAdaptiveGainCurve : public CIccTag
+{
+public:
+  CIccTagAdaptiveGainCurve();
+  CIccTagAdaptiveGainCurve(const CIccTagAdaptiveGainCurve& ITADCGC);
+  CIccTagAdaptiveGainCurve& operator=(const CIccTagAdaptiveGainCurve& ITADCGC);
+  virtual CIccTag* NewCopy() const { return new CIccTagAdaptiveGainCurve(*this); }
+  virtual ~CIccTagAdaptiveGainCurve();
+
+  virtual icTagTypeSignature GetType() const { return icSigAdaptiveGainCurveType; }
+  virtual const icChar* GetClassName() const { return "CIccTagAdaptiveGainCurve"; }
+
+  virtual void Describe(std::string& sDescription, int nVerboseness);
+
+  virtual bool Read(icUInt32Number size, CIccIO* pIO);
+  virtual bool Write(CIccIO* pIO);
+
+  virtual icValidateStatus Validate(std::string sigPath, std::string& sReport, const CIccProfile* pProfile = NULL) const;
+
+  //The SetXXXCurveData functions assume ownership of the curve
+  //It is allowed to set the same curve to multiple channels
+  void SetRedCurve(IccGainPointSlopeArray* pCurve);
+  void SetGreenCurve(IccGainPointSlopeArray* pCurve);
+  void SetBlueCurve(IccGainPointSlopeArray* pCurve);
+
+  IccGainPointSlopeArray* GetRedCurve() { return m_redCurve; }
+  IccGainPointSlopeArray* GetGreenCurve() { return m_greenCurve; }
+  IccGainPointSlopeArray* GetBlueCurve() { return m_blueCurve; }
+
+  void ResetRedCurve() { SetRedCurve(nullptr); }
+  void ResetGreenCurve() { SetGreenCurve(nullptr); }
+  void ResetBlueCurve() { SetBlueCurve(nullptr); }
+
+  //Member variables
+  icUInt32Number m_nFunctionTypeID;
+  icUInt8Number m_imageGuid[16];
+
+  icFloat32Number m_baselineHeadroom;
+  icFloat32Number m_altHeadroom;
+
+  icFloat32Number m_redGainMin;
+  icFloat32Number m_redGainMax;
+  icFloat32Number m_redWeight;
+
+  icFloat32Number m_greenGainMin;
+  icFloat32Number m_greenGainMax;
+  icFloat32Number m_greenWeight;
+
+  icFloat32Number m_blueGainMin;
+  icFloat32Number m_blueGainMax;
+  icFloat32Number m_blueWeight;
+
+  icFloat32Number m_rgbWeightMin;
+  icFloat32Number m_rgbWeightMax;
+
+  icFloat32Number m_compWeight;
+
+  icUInt32Number m_preGainCICP;
+  icUInt32Number m_postGainCICP;
+
+  icFloat32Number m_headroomA2B0;
+  icFloat32Number m_headroomA2B1;
+  icFloat32Number m_headroomA2B2;
+
+  icUInt8Number m_future[4];
+
+protected:
+  IccGainPointSlopeArray* m_redCurve;
+  IccGainPointSlopeArray* m_greenCurve;
+  IccGainPointSlopeArray* m_blueCurve;
+
+  bool ReadPointSlopeArray(IccGainPointSlopeArrayPtr& pCurve, CIccIO* pIO, icFloat32Number pos, icFloat32Number size);
+};
+
+#define IccAdaptiveGainFunctionType1 1
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX

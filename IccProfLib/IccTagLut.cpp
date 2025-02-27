@@ -5833,6 +5833,319 @@ icValidateStatus CIccTagGamutBoundaryDesc::Validate(std::string sigPath, std::st
 }	
 
 
+CIccTagAdaptiveGainCurve::CIccTagAdaptiveGainCurve()
+{
+  m_nFunctionTypeID = IccAdaptiveGainFunctionType1;
+
+  memset(m_imageGuid, 0, sizeof(m_imageGuid));
+
+  m_baselineHeadroom = 0.0f;
+  m_altHeadroom = 0.0f;
+
+  m_redGainMin = 0.0f;
+  m_redGainMax = 0.0f;
+  m_redWeight = 0.0f;
+
+  m_greenGainMin = 0.0f;
+  m_greenGainMax = 0.0f;
+  m_greenWeight = 0.0f;
+
+  m_blueGainMin = 0.0f;
+  m_blueGainMax = 0.0f;
+  m_blueWeight = 0.0f;
+
+  m_rgbWeightMin = 0.0f;
+  m_rgbWeightMax = 0.0f;
+
+  m_compWeight = 0.0f;
+
+  m_preGainCICP = 0;
+  m_postGainCICP = 0;
+
+  m_headroomA2B0 = 0;
+  m_headroomA2B1 = 0;
+  m_headroomA2B2 = 0;
+
+  memset(m_future, 0, sizeof(m_future));
+
+  m_redCurve = nullptr;
+  m_greenCurve = nullptr;
+  m_blueCurve = nullptr;
+}
+
+
+CIccTagAdaptiveGainCurve::CIccTagAdaptiveGainCurve(const CIccTagAdaptiveGainCurve& ITADCGC)
+{
+  *this = ITADCGC;
+
+  if (ITADCGC.m_redCurve) {
+    m_redCurve = new IccGainPointSlopeArray;
+    *m_redCurve = *ITADCGC.m_redCurve;
+  }
+
+  if (ITADCGC.m_greenCurve) {
+    if (ITADCGC.m_greenCurve == ITADCGC.m_redCurve)
+      m_greenCurve = m_redCurve;
+    else {
+      m_greenCurve = new IccGainPointSlopeArray;
+      *m_greenCurve = *ITADCGC.m_greenCurve;
+    }
+  }
+
+  if (ITADCGC.m_blueCurve) {
+    if (ITADCGC.m_blueCurve == ITADCGC.m_redCurve)
+      m_blueCurve = m_redCurve;
+    else if (ITADCGC.m_blueCurve == ITADCGC.m_greenCurve)
+      m_blueCurve = m_greenCurve;
+    else {
+      m_blueCurve = new IccGainPointSlopeArray;
+      *m_blueCurve = *ITADCGC.m_blueCurve;
+    }
+  }
+}
+
+
+CIccTagAdaptiveGainCurve& CIccTagAdaptiveGainCurve::operator=(const CIccTagAdaptiveGainCurve& ITADCGC)
+{
+  SetRedCurve(nullptr);
+  SetGreenCurve(nullptr);
+  SetBlueCurve(nullptr);
+
+  *this = ITADCGC;
+
+  if (ITADCGC.m_redCurve) {
+    m_redCurve = new IccGainPointSlopeArray;
+    *m_redCurve = *ITADCGC.m_redCurve;
+  }
+
+  if (ITADCGC.m_greenCurve) {
+    if (ITADCGC.m_greenCurve == ITADCGC.m_redCurve)
+      m_greenCurve = m_redCurve;
+    else {
+      m_greenCurve = new IccGainPointSlopeArray;
+      *m_greenCurve = *ITADCGC.m_greenCurve;
+    }
+  }
+
+  if (ITADCGC.m_blueCurve) {
+    if (ITADCGC.m_blueCurve == ITADCGC.m_redCurve)
+      m_blueCurve = m_redCurve;
+    else if (ITADCGC.m_blueCurve == ITADCGC.m_greenCurve)
+      m_blueCurve = m_greenCurve;
+    else {
+      m_blueCurve = new IccGainPointSlopeArray;
+      *m_blueCurve = *ITADCGC.m_blueCurve;
+    }
+  }
+}
+
+
+CIccTagAdaptiveGainCurve::~CIccTagAdaptiveGainCurve()
+{
+  SetRedCurve(nullptr);
+  SetGreenCurve(nullptr);
+  SetBlueCurve(nullptr);
+}
+
+
+void CIccTagAdaptiveGainCurve::Describe(std::string& sDescription, int nVerboseness)
+{
+}
+
+bool CIccTagAdaptiveGainCurve::Read(icUInt32Number size, CIccIO* pIO)
+{
+  icTagTypeSignature sig;
+  icUInt32Number sizeData = sizeof(icTagTypeSignature) +
+    sizeof(icUInt32Number) * 4 +
+    sizeof(icFloat32Number) * 17 +
+    sizeof(icPositionNumber) * 3 +
+    sizeof(m_future);
+
+  if (sizeData > size)
+    return false;
+
+  if (!pIO) {
+    return false;
+  }
+
+  icUInt32Number tagPos = pIO->Tell();
+
+  icPositionNumber redPos, greenPos, bluePos;
+
+  if (!pIO->Read32(&sig) ||
+      !pIO->Read32(&m_nReserved) ||
+
+      !pIO->Read32(&m_nFunctionTypeID) ||
+      pIO->Read8(&m_imageGuid[0], sizeof(m_imageGuid)) != sizeof(m_imageGuid) ||
+
+      !pIO->Read32(&m_baselineHeadroom) ||
+      !pIO->Read32(&m_altHeadroom) ||
+
+      !pIO->Read32(&m_redGainMin) ||
+      !pIO->Read32(&m_redGainMax) ||
+      !pIO->Read32(&m_redWeight) ||
+
+      !pIO->Read32(&m_greenGainMin) ||
+      !pIO->Read32(&m_greenGainMax) ||
+      !pIO->Read32(&m_greenWeight) ||
+
+      !pIO->Read32(&m_blueGainMin) ||
+      !pIO->Read32(&m_blueGainMax) ||
+      !pIO->Read32(&m_blueWeight) ||
+
+      !pIO->Read32(&m_rgbWeightMin) ||
+      !pIO->Read32(&m_rgbWeightMax) ||
+
+      !pIO->Read32(&m_compWeight) ||
+
+      !pIO->Read32(&m_preGainCICP) ||
+      !pIO->Read32(&m_postGainCICP) ||
+
+      !pIO->Read32(&m_headroomA2B0) ||
+      !pIO->Read32(&m_headroomA2B1) ||
+      !pIO->Read32(&m_headroomA2B2) ||
+
+      pIO->Read32(&redPos,2) !=2 ||
+      pIO->Read32(&greenPos, 2) != 2 ||
+      pIO->Read32(&bluePos, 2) != 2 ||
+
+      pIO->Read8(&m_future[0], sizeof(m_future)) != sizeof(m_future)) {
+    return false;
+  }
+
+  IccGainPointSlopeArray* pCurve = nullptr;
+  if (redPos.offset) {
+    if (redPos.offset < sizeData ||
+      redPos.offset + redPos.size > size ||
+      !ReadPointSlopeArray(&pCurve, pIO, tagPos + redPos.offset, redPos.size))
+      return false;
+    SetRedCurve(pCurve);
+    pCurve = nullptr;
+  }
+  else if (redPos.size)
+    return false;
+  else
+    SetRedCurve(nullptr);
+
+  if (greenPos.offset == redPos.offset) {
+    if (greenPos.size == redPos.size)
+      SetGreenCurve(m_redCurve);
+    else
+      return false;
+  }
+  else if (greenPos.offset) {
+    if (greenPos.offset < sizeData ||
+      greenPos.offset + greenPos.size > size ||
+      !ReadPointSlopeArray(&pCurve, pIO, tagPos + greenPos.offset, greenPos.size))
+      return false;
+    SetGreenCurve(pCurve);
+    pCurve = nullptr;
+  }
+  else if (greenPos.size)
+    return false;
+  else
+    SetGreenCurve(nullptr);
+
+  if (bluePos.offset == redPos.offset) {
+    if (bluePos.size == redPos.size)
+      SetBlueCurve(m_redCurve);
+    else
+      return false;
+  }
+  else if (bluePos.offset == greenPos.offset) {
+    if (bluePos.size == greenPos.size)
+      SetBlueCurve(m_greenCurve);
+    else
+      return false;
+  }
+  else if (bluePos.offset) {
+    if (bluePos.offset < sizeData ||
+      bluePos.offset + bluePos.size > size ||
+      !ReadPointSlopeArray(&pCurve, pIO, tagPos + bluePos.offset, bluePos.size))
+      return false;
+    SetBlueCurve(pCurve);
+    pCurve = nullptr;
+  }
+  else if (bluePos.size)
+    return false;
+  else
+    SetBlueCurve(nullptr);
+
+  return true;
+}
+
+bool CIccTagAdaptiveGainCurve::ReadPointSlopeArray(IccGainPointSlopeArrayPtr& pCurve, CIccIO* pIO, icFloat32Number pos, icFloat32Number size)
+{
+  pCurve = nullptr;
+
+  if (size < sizeof(icUInt32Number))
+    return false;
+
+  if (pIO->Seek(pos, icSeekSet) != pos)
+    return false;
+
+  icUInt32Number nPoints;
+  if (!pIO->Read32(&nPoints))
+    return false;
+
+  if (size < nPoints * 3 * sizeof(icFloat32Number))
+    return false;
+
+  pCurve = new IccGainPointSlopeArray;
+  
+  IccGainPointSlope ps;
+  for (icUInt32Number i = 0; i < nPoints; i++) {
+    if (!pIO->Read32(&ps.slope) ||
+        !pIO->Read32(&ps.x) ||
+        !pIO->Read32(&ps.y)) {
+      delete pCurve;
+      pCurve = nullptr;
+      return false;
+    }
+    pCurve->push_back(ps);
+  }
+
+  return true;
+}
+
+bool CIccTagAdaptiveGainCurve::Write(CIccIO* pIO)
+{
+}
+
+icValidateStatus CIccTagAdaptiveGainCurve::Validate(std::string sigPath, std::string& sReport, const CIccProfile* pProfile = NULL) const
+{
+}
+
+void CIccTagAdaptiveGainCurve::SetRedCurve(IccGainPointSlopeArray* pCurve)
+{
+  if (pCurve != m_redCurve) {
+    if (m_redCurve && m_redCurve != m_greenCurve && m_redCurve != m_blueCurve) {
+      delete m_redCurve;
+    }
+    m_redCurve = pCurve;
+  }
+}
+
+void CIccTagAdaptiveGainCurve::SetGreenCurve(IccGainPointSlopeArray* pCurve)
+{
+  if (pCurve != m_greenCurve) {
+    if (m_greenCurve && m_greenCurve != m_redCurve && m_greenCurve != m_blueCurve) {
+      delete m_greenCurve;
+    }
+    m_greenCurve = pCurve;
+  }
+}
+
+void CIccTagAdaptiveGainCurve::SetBlueCurve(IccGainPointSlopeArray* pCurve)
+{
+  if (pCurve != m_blueCurve) {
+    if (m_blueCurve && m_blueCurve != m_redCurve && m_blueCurve != m_greenCurve) {
+      delete m_blueCurve;
+    }
+    m_blueCurve = pCurve;
+  }
+}
+
 
 #ifdef USEREFICCMAXNAMESPACE
 } //namespace refIccMAX
