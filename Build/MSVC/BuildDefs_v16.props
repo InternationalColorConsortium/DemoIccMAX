@@ -2,6 +2,7 @@
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="..\..\..\..\Common\VSProps\Developer Defs.props" Condition="exists('..\..\..\..\Common\VSProps\Developer Defs.props')" Label="DeveloperDefs" />
+    <Import Project=".\Developer Defs.props" Condition="exists('.\Developer Defs.props')" Label="LocalDeveloperDefs" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <EIGEN>$(VendorTreeDir)\eigen\eigen-3.2.8</EIGEN>
