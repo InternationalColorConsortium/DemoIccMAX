@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  � see ICC Software License
+    Copyright:  © see ICC Software License
 */
 
 /*
@@ -11423,26 +11423,26 @@ bool CIccTagSpectralViewingConditions::setIlluminant(icIlluminant illumId, const
   m_colorTemperature = illumCCT;
 
   if (m_illuminant) {
-    free(m_illuminant);
+    delete[] m_illuminant;
+    m_illuminant = nullptr;
   }
 
   m_illuminantRange = illumRange;
 
   if (illumRange.steps && illum) {
-    icUInt32Number size = illumRange.steps * sizeof(icFloatNumber);
-    m_illuminant = (icFloatNumber *)malloc(size);
+    icUInt32Number size = illumRange.steps;
+    m_illuminant = new icFloatNumber[size]; // Replaced malloc with new[]
     if (m_illuminant)
-      memcpy(m_illuminant, illum, size);
+      memcpy(m_illuminant, illum, size * sizeof(icFloatNumber)); // Retained memcpy
     else {
       memset(&m_illuminantRange, 0, sizeof(m_illuminantRange));
       return false;
     }
-  }
-  else {
+  } else {
     if (!illum)
       memset(&m_illuminantRange, 0, sizeof(m_illuminantRange));
 
-    m_illuminant = NULL;
+    m_illuminant = nullptr;
   }
 
   return true;

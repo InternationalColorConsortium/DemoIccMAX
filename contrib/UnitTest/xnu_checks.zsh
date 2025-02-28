@@ -3,7 +3,7 @@
 # Copyright (c) 2025. International Color Consortium. All rights reserved.
 # Copyright (c) 2024. David H Hoyt LLC. All rights reserved.
 #
-# Last Updated: 16-FEB-2025 at 1510 EST by David Hoyt | h02332
+# Last Updated: 16-FEB-2025 at 1525 EST by David Hoyt | h02332
 #
 # Intent:
 #   This script polls the macOS device, retrieves system, build and development environment
@@ -15,8 +15,8 @@
 #   - Examines environmental variables relevant to development
 #
 # Usage:
-#   Run this script in a terminal with:
-#     /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/xnu/contrib/UnitTest/xnu_checks.zsh)"
+#   Run this script in a terminal from project_root with:
+#     /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/xnu_checks.zsh)"
 #
 # Output files
 LOG_FILE="build-troubleshooter.log"
@@ -96,7 +96,7 @@ check_codesigning() {
 
 log_message "Starting inventory for compiled build files (excluding scripts & CMakeFiles/)"
 
-find ./build/ ./Tools ./IccXML ./IccProfLib -type f \( \
+find Build/ Tools/ Testing/ IccXML/ IccProfLib/ -type f \( \
     -name "*.dylib" -o -name "*.a" -o -perm -111 \) \
     ! -name "*.sh" ! -name "*.zsh" ! -name "*.py" \
     ! -path "*/CMakeFiles/*" | while read -r binary; do

@@ -5,7 +5,7 @@
 
     Version:    V1
 
-    Copyright:  (c) see ICC Software License
+    Copyright:  © see ICC Software License
 */
 
 /*
@@ -2144,7 +2144,7 @@ bool CIccTagXmlSpectralViewingConditions::ParseXml(xmlNode *pNode, std::string &
       vals.ParseTextArray((icChar*)pChild->children->content);
       if (vals.GetSize()!=m_illuminantRange.steps)
         return false;
-      m_illuminant = (icFloatNumber*)malloc(m_illuminantRange.steps * sizeof(icFloatNumber));
+      m_illuminant = new icFloatNumber[m_illuminantRange.steps];
       if (!m_illuminant)
         return false;
       icFloatNumber *pBuf = vals.GetBuf();
