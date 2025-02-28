@@ -1,6 +1,8 @@
 **Reporter:** David Hoyt @xsscx  
 **Date:** August 31, 2024
 
+UPDATED: 05-MAR-2025 | Resolved
+
 **tl;dr**
 These findings need to be analyzed and discussed by the relevant technical groups to validate the identified issues. Seeking consensus on how to best address these and other issues is recommended.
 
