@@ -1,10 +1,23 @@
-#!/bin/bash
-##
-## Copyright (c) 2024 The International Color Consortium. All rights reserved.
-##
-## Written by David Hoyt for ICC color.org & DemoIccMAX Project
-## Date: 24-Nov-24
-##
+#!/bin/sh
+#
+# Copyright (c) 2025. International Color Consortium. All rights reserved.
+# Copyright (c) 2024. David H Hoyt LLC. All rights reserved.
+#
+# Last Updated: 06-MAR-2025 at 0732 EST by David Hoyt | h02332
+#
+# Intent: sh build script for Master Branch 
+# 
+# This script has been tested on XNU & WSL2 using /bin/sh
+#
+#
+# TODO
+#     Sanity Checks
+#     Logging
+#
+# Usage:
+#   Run this script in a terminal with:
+#     /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/xnu/contrib/Build/cmake/build_master_branch.zsh)"
+#
 
 # Define log file
 LOGFILE="build_log_$(date +%Y-%m-%d_%H-%M-%S).log"
@@ -58,7 +71,7 @@ cd Build/ || { echo "Error: Build directory not found. Exiting."; exit 1; }
 print_banner "Configuring cmake"
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug \
 -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" \
--Wno-dev Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
+-Wno-dev -DENABLE_TOOLS=ON Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
 
 print_banner "Step 5: running make"
 make -j$(nproc) >/dev/null 2>&1 || { echo "Error: Build failed. Exiting."; exit 1; }

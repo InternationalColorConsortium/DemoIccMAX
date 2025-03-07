@@ -3,7 +3,7 @@
 # Copyright (c) 2025. International Color Consortium. All rights reserved.
 # Copyright (c) 2024. David H Hoyt LLC. All rights reserved.
 #
-# Last Updated: 16-FEB-2025 at 1422 EST by David Hoyt | h02332
+# Last Updated: 06-MAR-2025 at 0729 EST by David Hoyt | h02332
 #
 # Intent:
 #   This script is to be run from Project_Root/Build/
@@ -47,7 +47,7 @@ cd Xcode || { echo "Error: Failed to enter Xcode directory"; exit 1; }
 
 # Recreate CMake Project with Xcode
 echo "Generating new Xcode project..."
-cmake -G "Xcode" -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release -Wno-dev ../Cmake/
+cmake -G "Xcode" -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release -Wno-dev  -DENABLE_TOOLS=ON ../Cmake/
 
 # Verify configuration
 echo "Verifying configuration..."

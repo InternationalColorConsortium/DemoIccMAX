@@ -1,11 +1,23 @@
 #!/bin/zsh
-##
-## Copyright (©) 2024 The International Color Consortium. All rights reserved.
-##
-## Written by David Hoyt for ICC color.org & DemoIccMAX Project
-## Date: 24-Nov-2024
-## 
-## Zsh build script for macOS
+#
+# Copyright (c) 2025. International Color Consortium. All rights reserved.
+# Copyright (c) 2024. David H Hoyt LLC. All rights reserved.
+#
+# Last Updated: 06-MAR-2025 at 0730 EST by David Hoyt | h02332
+#
+# Intent: Zsh build script for macOS
+#
+# 
+#
+#
+# TODO
+#     Sanity Checks
+#     Logging
+#
+# Usage:
+#   Run this script in a terminal with:
+#     /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/xnu/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+#
 
 # Define log file
 LOGFILE="build_log_$(date +%Y-%m-%d_%H-%M-%S).log"
@@ -62,7 +74,7 @@ cd Build/ || { echo "Error: Build directory not found. Exiting."; exit 1; }
 print_banner "Configuring cmake for Debug"
 run_and_log cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" \
-    -Wno-dev Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
+    -Wno-dev -DENABLE_TOOLS=ON Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
 
 print_banner "Step 5: Running make"
 run_and_log make -j$(sysctl -n hw.ncpu) || { echo "Error: Build failed. Exiting."; exit 1; }

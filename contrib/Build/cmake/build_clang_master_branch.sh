@@ -1,10 +1,24 @@
 #!/bin/bash
-##
-## Copyright (c) 2024 The International Color Consortium. All rights reserved.
-##
-## Written by David Hoyt for ICC color.org & DemoIccMAX Project
-## Date: 24-Nov-2024
-## Build Script using Clang for master branch
+#
+# Copyright (c) 2025. International Color Consortium. All rights reserved.
+# Copyright (c) 2024. David H Hoyt LLC. All rights reserved.
+#
+# Last Updated: 06-MAR-2025 at 0733 EST by David Hoyt | h02332
+#
+# Intent: bash build script for Master Branch 
+# 
+# This script has been tested on XNU & WSL2 using /bin/bash
+#
+#
+# TODO
+#     Sanity Checks
+#     Logging
+#
+# Usage:
+#   Run this script in a terminal with:
+#     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/xnu/contrib/Build/cmake/build_clang_master_branch.sh)"
+#
+
 
 # Define log file
 LOGFILE="build_log_$(date +%Y-%m-%d_%H-%M-%S).log"
@@ -77,7 +91,7 @@ cd Build/ || { echo "Error: Build directory not found. Exiting."; exit 1; }
 print_banner "Step 5: configuring cmake with $COMPILER"
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug \
 -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
--Wno-dev Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
+-Wno-dev -DENABLE_TOOLS=ON Cmake/ || { echo "Error: cmake configuration failed. Exiting."; exit 1; }
 
 print_banner "Step 6: running make (low-noise)"
 make -j$(nproc) >/dev/null 2>&1 || { echo "Error: Build failed. Exiting."; exit 1; }

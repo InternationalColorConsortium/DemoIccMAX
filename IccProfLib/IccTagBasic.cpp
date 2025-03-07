@@ -11423,7 +11423,7 @@ bool CIccTagSpectralViewingConditions::setIlluminant(icIlluminant illumId, const
   m_colorTemperature = illumCCT;
 
   if (m_illuminant) {
-    free(m_illuminant);
+delete[] m_illuminant;
   }
 
   m_illuminantRange = illumRange;
