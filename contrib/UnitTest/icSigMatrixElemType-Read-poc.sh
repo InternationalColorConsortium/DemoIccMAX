@@ -15,7 +15,7 @@
 #  
 #  Requirements:
 #    - LLDB installed
-#    - iccToXml tool located at ../../Build/Tools/IccToXml/iccToXml
+#    - iccToXml tool located at ../Build/Tools/IccToXml/iccToXml
 #
 ###############################################################################
 
@@ -53,7 +53,7 @@ startup_banner
 # Set up variables
 POC_FILE="icSigMatrixElemType-Read-poc.icc"
 OUTPUT_XML="icSigMatrixElemType-Read-poc.xml"
-ICC_TO_XML=$(realpath ../../Build/Tools/IccToXml/iccToXml)
+ICC_TO_XML=$(realpath ../Build/Tools/IccToXml/iccToXml)
 ASAN_LOG="asan_log.txt"
 LLDB_LOG="lldb_output.txt"
 

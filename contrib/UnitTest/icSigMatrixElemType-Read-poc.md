@@ -1,5 +1,22 @@
 # Type Confusion in `CIccMpeCalculator::Read`
 
+#### PoC
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/icSigMatrixElemType-Read-poc.sh)"
+```
+#### Expected Output
+```
+zsh icSigMatrixElemType-Read-poc.sh
+############################################################
+#  Starting Type Confusion Reproduction Script              #
+#  Automating debugging with LLDB                           #
+############################################################
+Running iccToXml on the PoC ICC file...
+############################################################
+#  Script completed successfully with no ASan errors.       #
+############################################################
+```
+
 ### LLDB Debugging Session and Analysis
 
 ## PoC
