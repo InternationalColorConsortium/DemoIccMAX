@@ -1,6 +1,6 @@
 #!/bin/sh
 ## Author: David Hoyt
-## Date: 29-Sept-24
+## Date: 25-MAR-2025 1630 EDT by David Hoyt
 ## Unit Test for TestCIccTagXmlProfileSequenceId.sh
 ## This Script is for macOS or ubuntu
 ##
@@ -21,13 +21,13 @@ UNAME_S := $(shell uname -s)
 CXXFLAGS := -std=c++17 -g -fsanitize=address,undefined -fno-omit-frame-pointer
 
 # Include directories (adjust paths as necessary)
-INCLUDES := -I/usr/local/include -I../../IccProfLib -I../../IccXML/IccLibXML $(shell pkg-config --cflags libxml-2.0)
+INCLUDES := -I/usr/local/include -I../IccProfLib -I../IccXML/IccLibXML $(shell pkg-config --cflags libxml-2.0)
 
 # Library search paths and libraries
-LIBS := -L../../Build/IccProfLib -L../../Build/IccXML -lpthread $(shell pkg-config --libs libxml-2.0) -lIccProfLib2 -lIccXML2
+LIBS := -L../Build/IccProfLib -L../Build/IccXML -lpthread $(shell pkg-config --libs libxml-2.0) -lIccProfLib2 -lIccXML2
 
 # Additional linker flags for rpath (for runtime linking)
-LDFLAGS := -Wl,-rpath,../../Build/IccProfLib -Wl,-rpath,../../Build/IccXML
+LDFLAGS := -Wl,-rpath,../Build/IccProfLib -Wl,-rpath,../Build/IccXML
 
 # Output executable
 TARGET := TestCIccTagXmlProfileSequenceId
