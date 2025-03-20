@@ -3,11 +3,11 @@
 ## Copyright (c) 2025 David H Hoyt LLC. All rights reserved.
 ##
 ## Written by David Hoyt 
-## Date: 15-MAR-2025 1334 EDT
+## Date: 20-MAR-2025 1224 EDT by David Hoyt
 #
 # Branch: XNU
-# Intent: PROTOTYPE
-# Production: FALSE
+# Intent: BUILD
+# Production: TRUE
 # Runner: TRUE
 #
 #
@@ -76,7 +76,7 @@ run_and_log echo "Repository cloned and switched to DemoIccMAX directory."
 
 # Step 3: Installing Dependencies
 print_banner "Step 3: Installing Dependencies, you will be prompted for the sudo password to continue..."
-sudo apt-get install -y libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential || { echo "Error: Failed to install dependencies. Exiting."; exit 1; }
+sudo apt-get install -y libpng-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential || { echo "Error: Failed to install dependencies. Exiting."; exit 1; }
 
 # Step 4: Build
 print_banner "Step 4: Starting Build...."
