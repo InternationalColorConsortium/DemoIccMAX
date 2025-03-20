@@ -65,6 +65,7 @@
  // HISTORY:
  //
  // -Initial implementation by Max Derhak 1-11-2024
+ // -Added Explicit Template Instantiations D Hoyt 18-MAR-2025
  //
  //////////////////////////////////////////////////////////////////////
 
@@ -210,7 +211,6 @@ template bool jsonToValue<icInt8Number>(const json&, icInt8Number&);
 template bool jsonToValue<icUInt8Number>(const json&, icUInt8Number&);
 template bool jsonToValue<icInt16Number>(const json&, icInt16Number&);
 template bool jsonToValue<icUInt16Number>(const json&, icUInt16Number&);
-template bool jsonToValue<icInt32Number>(const json&, icInt32Number&);
 template bool jsonToValue<icUInt32Number>(const json&, icUInt32Number&);
 template bool jsonToValue<icInt64Number>(const json&, icInt64Number&);
 template bool jsonToValue<icUInt64Number>(const json&, icUInt64Number&);
@@ -398,7 +398,7 @@ bool saveJsonAs(const json& j, const char* szFname, int indent)
   bool rv = false;
 
   FILE* f;
-  
+
   if (szFname && szFname[0])
     f = fopen(szFname, "wb");
   else
