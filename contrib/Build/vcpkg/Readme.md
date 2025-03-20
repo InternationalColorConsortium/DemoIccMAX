@@ -1,38 +1,110 @@
 
-# VCPKG Contrib Directory for DemoIccMAX Project
+# 🧰 Setting up `vcpkg` for IccMAX
 
-This directory contains custom triplet files and a PowerShell script to install **vcpkg** dependencies for the DemoIccMAX project. The custom triplets and installation script are designed to provide support for multiple configurations, including static and dynamic linking, release and debug builds, and AddressSanitizer (ASAN).
+This document will help you set up the `vcpkg` dependency manager for the IccMAX project and configure a CMake-based build using either MSVC (Windows) or Clang/GCC (Linux/macOS).
 
-## Files
+---
 
-- **Custom Triplets**:
-  - `x64-windows-release.cmake`: Dynamic linking in release mode.
-  - `x64-windows-static-md-release.cmake`: Static linking with dynamic runtime (`/MD`) in release mode.
-  - `x64-windows-asan.cmake`: Dynamic linking with AddressSanitizer (ASAN) enabled in release mode.
-  - `x64-windows-asan-debug.cmake`: Dynamic linking with AddressSanitizer (ASAN) enabled in debug mode.
+## 🔧 Prerequisites
 
-- **PowerShell Script**:
-  - `install_vcpkg_deps.ps1`: Script to install **vcpkg** dependencies for the project using the custom triplets.
+- Git
+- CMake ≥ 3.21
+- Compiler: MSVC (Windows), GCC or Clang (Linux/macOS)
+- PowerShell (Windows) or Bash-compatible shell (Linux/macOS)
 
-## Usage Instructions
+---
 
-### 1. Install Dependencies Using the PowerShell Script
+## 📦 Step 1: Clone and Bootstrap vcpkg
 
-To install all the necessary **vcpkg** dependencies with support for different build configurations (release, debug, static, dynamic, ASAN), run the `install_vcpkg_deps.ps1` script.
+```
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh        # Linux/macOS
+.\bootstrap-vcpkg.bat       # Windows
+./vcpkg integrate install
+```
 
-#### Steps:
+---
 
-1. **Clone the vcpkg repository** (if you haven't already):
-   ```bash
-   git clone https://github.com/microsoft/vcpkg
-   ```
+## 📚 Step 2: Install Required Packages
 
-2. **Bootstrap vcpkg**:
-   ```bash
-   ./vcpkg/bootstrap-vcpkg.bat
-   ```
+> Required for DemoIccMAX: PNG, XML, TIFF, wxWidgets, JSON
 
-### 2. Custom Triplet Descriptions
+### Windows
+
+```
+vcpkg.exe install `
+  libpng `
+  nlohmann-json:x64-windows `
+  nlohmann-json:x64-windows-static `
+  libxml2:x64-windows `
+  libxml2:x64-windows-static `
+  tiff:x64-windows `
+  tiff:x64-windows-static `
+  wxwidgets:x64-windows `
+  wxwidgets:x64-windows-static
+```
+
+### Linux/macOS
+
+```bash
+./vcpkg install libpng libxml2 nlohmann-json tiff wxwidgets
+```
+
+---
+
+## 🛠️ Step 3: Configure with CMake
+
+### Windows (MSVC)
+
+```
+cd DemoIccMAX\Build\Cmake\
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+  -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/scripts/buildsystems/vcpkg.cmake `
+  -DCMAKE_BUILD_TYPE=Release `
+  -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON
+```
+
+### Linux/macOS
+
+```
+cd DemoIccMAX/Build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug   -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/scripts/buildsystems/vcpkg.cmake   -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON
+```
+
+---
+
+## 🧪 Step 4: Build the Project
+
+```bash
+cmake --build build --config Release -j$(nproc)
+```
+
+---
+
+## 🧼 Cleanup
+
+To remove installed packages:
+
+```bash
+./vcpkg remove --outdated
+```
+
+---
+
+## 🔍 Notes
+
+- The vcpkg integration ensures both static and shared builds are supported.
+- You can use the `--graphviz=output.dot` option during configuration to visualize target dependencies.
+
+---
+
+_Contributions welcome!_
+
+---
+
+This directory also contains custom triplet files and a PowerShell script to install **vcpkg** dependencies for the IccMAX project. The custom triplets and installation script are designed to provide support for multiple configurations, including static and dynamic linking, release and debug builds, and AddressSanitizer (ASAN).
+
 
 #### Custom Triplets Provided:
 
@@ -41,7 +113,7 @@ To install all the necessary **vcpkg** dependencies with support for different b
 - **x64-windows-asan.cmake**: Enables AddressSanitizer (ASAN) for detecting memory issues in dynamic release builds.
 - **x64-windows-asan-debug.cmake**: Enables ASAN in debug mode for dynamic linking.
 
-### 3. Add Triplets to Your vcpkg Environment
+### Add Triplets to Your vcpkg Environment
 
 To use the custom triplets, you need to place them in the correct **vcpkg** triplet directory. The triplets are placed in the `contrib` directory, you can copy or link them into `vcpkg/triplets/community/` or reference the path directly.
 
@@ -64,7 +136,7 @@ For example:
   vcpkg install --triplet x64-windows-asan
 ```
 
-### 4. Install Triplets
+### Install Triplets
 ```
 $env:VCPKG_ROOT
 
@@ -123,20 +195,4 @@ wxwidgets[sound]:x64-windows                                          Build wxSo
 wxwidgets[sound]:x64-windows-static                                   Build wxSound support
 zlib:x64-windows                                  1.3.1               A compression library
 zlib:x64-windows-static                           1.3.1               A compression library
-```
-
-### 5. MSBuild Example | VS2022C
-
-```
-msbuild /m /maxcpucount .\Build\MSVC\BuildAll_v22.sln /p:Configuration=Debug /p:Platform=x64 /p:AdditionalIncludeDirectories="$vcpkgDir\installed\x64-windows-static\include" /p:AdditionalLibraryDirectories="$vcpkgDir\installed\x64-windows-static\lib" /p:CLToolAdditionalOptions="/MT /Zi /Od /DDEBUG /W4" /p:LinkToolAdditionalOptions="/NODEFAULTLIB:msvcrt /LTCG /OPT:REF /INCREMENTAL:NO" /t:Clean,Build
-```
-
-### Build Result
-
-```
-Build succeeded.
-    0 Warning(s)
-    0 Error(s)
-
-Time Elapsed 00:00:22.29
 ```
