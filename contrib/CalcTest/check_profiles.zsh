@@ -1,7 +1,26 @@
 #!/bin/zsh
+#################################################################################
+# check_profiles.zsh | iccMAX Project
+# Copyright (C) 2024-2025 The International Color Consortium. 
+#                                        All rights reserved.
+# 
+#
+#  Last Updated: Mon Mar 24 16:40:19 EDT 2025 by David Hoyt
+#  date -d @1742848819
+#  Mon Mar 24 16:40:19 EDT 2025
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#################################################################################
 
 # Set relative path to the tool and report file
-TOOL_PATH="Tools/IccDumpProfile/IccDumpProfile"
+TOOL_PATH="Tools/IccDumpProfile/iccDumpProfile"
 REPORT_FILE="../Testing/CalcTest/check_profiles_report.txt"
 
 # Profiles to check
