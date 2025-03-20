@@ -2,7 +2,7 @@
 # DemoIccMAX Master Branch Build Script
 # Copyright (c) 2024-2025 The International Color Consortium. All rights reserved.
 # Author: David Hoyt
-# Date: 24-FEB-2025 1257 EST by David Hoyt
+# Date: 20-MAR-2025 1217 EDT by David Hoyt
 # Run via pwsh: iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
 #
 # ============================================================
@@ -11,7 +11,7 @@
 Write-Host "============================= Starting DemoIccMAX Master Branch Build =============================" -ForegroundColor Green
 Write-Host "Copyright (c) 2024-2025 The International Color Consortium. All rights reserved." -ForegroundColor Green
 Write-Host "For more information on the International Color Consortium see URL https://color.org" -ForegroundColor Green
-Write-Host "Author: David H Hoyt LLC" -ForegroundColor Green
+Write-Host "Last Update: 20-MAR-2025 by David H Hoyt LLC" -ForegroundColor Green
 
 # Set up directories and environment variables
 Write-Host "Set up \test directories and environment variables...."
@@ -43,7 +43,7 @@ Write-Host "Integrating vcpkg..."
 .\vcpkg.exe integrate install
 
 Write-Host "Installing required libraries (libxml2, tiff, wxwidgets) for x64-windows-static..."
-.\vcpkg.exe install nlohmann-json:x64-windows nlohmann-json:x64-windows-static libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libxml2:x64-windows-static tiff:x64-windows-static wxwidgets:x64-windows-static
+.\vcpkg.exe install libpng:x64-windows libpng:x64-windows-static nlohmann-json:x64-windows nlohmann-json:x64-windows-static libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libxml2:x64-windows tiff:x64-windows wxwidgets:x64-windows libxml2:x64-windows-static tiff:x64-windows-static wxwidgets:x64-windows-static
 
 # Clone the DemoIccMAXIccMAX repository
 Write-Host "Cloning DemoIccMAX repository..."
