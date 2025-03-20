@@ -1,20 +1,24 @@
 # 
-# Top Level Configuration CMakeLists.txt | DemoIccMAX Project
-# Copyright (©) 2024 The International Color Consortium. All rights reserved.
+# Top Level Configuration CMakeLists.txt | IccMAX Project
+# Copyright (©) 2024-2025 The International Color Consortium. All rights reserved.
 # 
 #
-# Last Updated: 02-DEC-2024 by David Hoyt
+# Last Updated: 22-MAR-2025 0900 EDT by David Hoyt
 #
-# Changes: 	Modified Build/Cmake/CMakelists.txt and others
-#           Added to CMakelists.txt: IccFromCubeProject, IccV5DspObsToV4Dsp, IccApplyTolink
+# Changes: 	Modified output target to fix a few subproject pathing issues
+#           Added to CMakelists.txt: IccPngDump
 #           Adjusted Cross Platform Build Args
 #						
-# TODO: Refactor Debug, Release, Asan 
+# TODO: Refactor Debug, Release, Asan, subproject pathing issues
 #       Collapse 3-tier CMakeLists.txt, Housekeeping
 #       Refactor Base Configs & logging to .mk's 
 #
 
 cmake_minimum_required(VERSION 3.5.0)
+cmake_policy(SET CMP0112 NEW)
+# cmake_policy(SET CMP0156 NEW)
+set(CMAKE_WARN_DEPRECATED TRUE)
+set(CMAKE_POLICY_WARNING_CMP0012 TRUE)
 
 # Include timestamp for logs
 # Start Configuration Message
@@ -160,6 +164,18 @@ message(STATUS "nlohmann_json: ${nlohmann_json_DIR} (found version ${nlohmann_js
 message(STATUS "TIFF: ${TIFF_LIBRARIES} (found version ${TIFF_VERSION})")
 message(STATUS "TIFF Include Directory: ${TIFF_INCLUDE_DIR}")
 
+# Find and log PNG
+message(STATUS "Checking for PNG...")
+find_package(PNG REQUIRED)
+if(PNG_FOUND)
+message(STATUS "  PNG Library: ${PNG_LIBRARIES} (found version ${PNG_VERSION})")
+message(STATUS "  PNG Include Directory: ${PNG_INCLUDE_DIRS}")
+message(STATUS "  PNG Version: ${PNG_VERSION}")
+else()
+    message(FATAL_ERROR "PNG not found. Please install libpng-dev.")
+endif()
+message(STATUS "")
+
 # Include Directories
 message(STATUS "### Include Directories ###")
 message(STATUS "IccProfLib: ${PROJECT_ROOT_DIR}/IccProfLib")
@@ -265,6 +281,12 @@ if(UNIX AND NOT APPLE AND CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
   message(STATUS "Sanitizers enabled for Debug build.")
 endif()
 
+# Prevent old-style path-based linking
+unset(IccProfLib2_LIBRARIES CACHE)
+unset(IccProfLib2_LIBRARY CACHE)
+unset(IccProfLib2_LIB CACHE)
+unset(IccProfLib2 CACHE)
+
 #
 # Target installation folders
 #
@@ -309,39 +331,52 @@ FIND_PROGRAM(CMAKE_AR_TMP NAMES ar)
 #
 # Core library
 #
-  message(STATUS "Adding subdirectory for IccProfLib.")
-ADD_SUBDIRECTORY( IccProfLib )
-SET( TARGET_LIB_ICCPROFLIB ${TARGET_LIB} )
+message(STATUS "Adding subdirectory for IccProfLib.")
+add_subdirectory(IccProfLib)
 
-## external dependency
-IF(ENABLE_ICCXML)
-  IF(USE_SYSTEM_LIBXML2)
-    FIND_PACKAGE(LibXML2 REQUIRED)
-  ELSE()
-    FIND_PACKAGE(LibXML2)
-  ENDIF()
-  IF(LIBXML2_FOUND)
-    INCLUDE_DIRECTORIES( ${LIBXML2_INCLUDE_DIR} )
-    LINK_DIRECTORIES( ${LIBXML2_LIBRARY_DIRS} )
-    SET( HAVE_LIBXML2 1 )
-  ELSE( LIBXML2_FOUND )
-    IF(CMAKE_VERSION VERSION_GREATER 2.8.0)
-      SET( HAVE_LIBXML2 TRUE  )
-      INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/IccXML/libxml2 )
-      LINK_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/IccXML/libxml2 )
-      ADD_SUBDIRECTORY( IccXML/libxml2 )
-      SET( LIBXML2_LIBRARIES xml2-static )
-    ENDIF()
-  ENDIF(LIBXML2_FOUND)
+# Set default link target for IccProfLib
+# Use CACHE INTERNAL so that it's available in Tools/* subdirectories
+set(TARGET_LIB_ICCPROFLIB IccProfLib2 CACHE INTERNAL "Link target for IccProfLib2")
 
-  #
-  # XML library
-  #
-  message(STATUS "Adding subdirectory for IccXML.")
-  ADD_SUBDIRECTORY( IccXML )
-  SET( TARGET_LIB_ICCXML ${TARGET_LIB} )
-  INCLUDE_DIRECTORIES ( ${TOP_SOURCE_DIR}/IccXML/IccLibXML/ )
-ENDIF()
+#
+# Optional external dependency: LibXML2
+#
+if(ENABLE_ICCXML)
+  if(USE_SYSTEM_LIBXML2)
+    find_package(LibXML2 REQUIRED)
+  else()
+    find_package(LibXML2)
+  endif()
+
+  if(LIBXML2_FOUND)
+    include_directories(${LIBXML2_INCLUDE_DIR})
+    link_directories(${LIBXML2_LIBRARY_DIRS})
+    set(HAVE_LIBXML2 1)
+  else()
+    set(HAVE_LIBXML2 TRUE)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/IccXML/libxml2)
+    link_directories(${CMAKE_CURRENT_BINARY_DIR}/IccXML/libxml2)
+    add_subdirectory(IccXML/libxml2)
+    set(LIBXML2_LIBRARIES xml2-static)
+  endif()
+endif()
+
+#
+# XML library
+#
+message(STATUS "Adding subdirectory for IccXML.")
+add_subdirectory(IccXML)
+
+# Set default link target for IccXML
+set(TARGET_LIB_ICCXML IccXML2 CACHE INTERNAL "Link target for IccXML2")
+
+# Ensure IccXML headers are available globally
+include_directories(${TOP_SOURCE_DIR}/IccXML/IccLibXML/)
+
+# 🔍 Diagnostic: Output current linker flags
+message(STATUS "CMAKE_EXE_LINKER_FLAGS = ${CMAKE_EXE_LINKER_FLAGS}")
+message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
+message(STATUS "CMAKE_MODULE_LINKER_FLAGS = ${CMAKE_MODULE_LINKER_FLAGS}")
 
 # Ensure nlohmann_json is found
 find_package(nlohmann_json REQUIRED)
@@ -361,7 +396,7 @@ IF(ENABLE_TOOLS)
 IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
   add_subdirectory(
     ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm
-    ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyNamedCmm_Build
+    ${CMAKE_BINARY_DIR}/Tools/IccApplyNamedCmm
   )
   message(STATUS "Added IccApplyNamedCmm")
 ELSE()
@@ -373,7 +408,7 @@ ENDIF()
     IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
       add_subdirectory(
         ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles
-        ${CMAKE_BINARY_DIR}/Tools/CmdLine/IccApplyProfiles_Build
+        ${CMAKE_BINARY_DIR}/Tools/IccApplyProfiles
       )
       MESSAGE(STATUS "Added IccApplyProfiles")
     ELSE()
@@ -383,6 +418,13 @@ ENDIF()
     MESSAGE(WARNING "nlohmann JSON library not found. Skipping Tools/IccApplyNamedCmm and Tools/IccApplyProfiles.")
     RETURN() # Exit script for tools if dependency is not found
   ENDIF()
+
+ # Function to add and log subdirectories
+function(add_tool_subdirectory TOOL_SUBDIRECTORY)
+    message(STATUS "Adding Subdirectory: ${TOOL_SUBDIRECTORY}...")
+    add_subdirectory(${TOOL_SUBDIRECTORY})
+    message(STATUS "Successfully added Subdirectory: ${TOOL_SUBDIRECTORY}")
+endfunction()
 
   # Add remaining tools
   message(STATUS "Adding Subdirectory IccDumpProfile.")
@@ -395,7 +437,21 @@ ENDIF()
   ADD_SUBDIRECTORY(Tools/IccV5DspObsToV4Dsp)
   message(STATUS "Adding Subdirectory IccApplyToLink.")
   ADD_SUBDIRECTORY(Tools/IccApplyToLink)
-    
+  # Add PNG Tools
+
+# Check for PNG library
+find_package(PNG REQUIRED)
+
+if (PNG_FOUND)
+    include_directories(${PNG_INCLUDE_DIRS})
+    message(STATUS "PNG library found: ${PNG_LIBRARIES}")
+
+    message(STATUS "Adding Subdirectory IccPngDump.")
+    ADD_SUBDIRECTORY(Tools/IccPngDump)
+else()
+    message(FATAL_ERROR "PNG library not found. Please install libpng-dev.")
+endif()
+
   # Check for TIFF library
   find_package(TIFF REQUIRED)
   if (TIFF_FOUND)
@@ -491,6 +547,7 @@ ADD_CUSTOM_TARGET( dist-bin2
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/iccRoundTrip ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/iccSpecSepToTiff ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/iccTiffDump ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
+    COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/iccPngDump ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/iccV5DspObsToV4Dsp ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/CreateAllProfiles.sh ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
     COMMAND cp -av ${CMAKE_SOURCE_DIR}/../../Testing/RunTests.sh ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME}${ARCH}-${${PROJECT_UP_NAME}_VERSION}/Testing/
