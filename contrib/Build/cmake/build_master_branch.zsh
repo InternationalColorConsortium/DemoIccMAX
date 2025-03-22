@@ -79,7 +79,7 @@ run_and_log echo "Repository cloned and switched to DemoIccMAX directory."
 # Step 3: Installing Dependencies
 print_banner "Step 3: Installing Dependencies"
 echo "You may be prompted for the sudo password to continue..."
-run_and_log brew install nlohmann-json libxml2 wxwidgets libtiff || { echo "Error: Failed to install dependencies via Homebrew. Exiting."; exit 1; }
+run_and_log brew install libpng nlohmann-json libxml2 wxwidgets libtiff || { echo "Error: Failed to install dependencies via Homebrew. Exiting."; exit 1; }
 
 # Step 4: Build
 print_banner "Step 4: Starting Build...."
