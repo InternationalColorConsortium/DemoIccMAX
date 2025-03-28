@@ -13,7 +13,6 @@
 #				Refactor Base Configs & logging to .mk's 
 #
 
-cmake_minimum_required(VERSION 3.5)
 project(iccApplyProfiles)
 
 # Set C++ standard
