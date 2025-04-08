@@ -1,3 +1,24 @@
+#################################################################################
+# IccProfLib Cmake Project Configuration| iccMAX Project
+# Copyright (©) 2024-2025 The International Color Consortium. 
+#                                        All rights reserved.
+# 
+#
+#  Last Updated: 24-MAR-2025 1222 EDT by David Hoyt
+#  date -d @1742833338
+#  Mon Mar 24 12:22:18 EDT 2025
+#
+# Changes:  Modified output target to fix a few subproject pathing issues
+#           Added to CMakelists.txt: IccPngDump
+#           Adjusted Cross Platform Build Args
+#						
+# TODO: Refactor Debug, Release, Asan, subproject pathing issues
+#       Collapse 3-tier CMakeLists.txt, Housekeeping
+#       Refactor Base Configs & logging to .mk's 
+#
+#
+#################################################################################
+
 SET( TARGET_NAME IccProfLib2)
 
 SET( SRC_PATH ../../.. )
@@ -85,51 +106,62 @@ IF(ENABLE_INSTALL_RIM)
 	     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TARGET_INCLUDE_FOLDER}/${TARGET_NAME} )
 ENDIF(ENABLE_INSTALL_RIM)
 
-SET( SOURCES ${CFILES} )
+SET(SOURCES ${CFILES})
 
 IF(APPLE)
-   INCLUDE_DIRECTORIES ( /Developer/Headers/FlatCarbon )
-   FIND_LIBRARY( CARBON_LIBRARY Carbon )
-   FIND_LIBRARY( IOKIT_LIBRARY IOKit )
-   MARK_AS_ADVANCED( CARBON_LIBRARY )
-   MARK_AS_ADVANCED( IOKIT_LIBRARY )
-   SET(EXTRA_LIBS_CS ${CARBON_LIBRARY} ${IOKIT_LIBRARY})
-ENDIF (APPLE)
+  INCLUDE_DIRECTORIES(/Developer/Headers/FlatCarbon)
+  FIND_LIBRARY(CARBON_LIBRARY Carbon)
+  FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+  MARK_AS_ADVANCED(CARBON_LIBRARY)
+  MARK_AS_ADVANCED(IOKIT_LIBRARY)
+  SET(EXTRA_LIBS_CS ${CARBON_LIBRARY} ${IOKIT_LIBRARY})
+ENDIF()
 
 IF(ENABLE_SHARED_LIBS)
-  ADD_LIBRARY( ${TARGET_NAME} SHARED ${SOURCES} )
-  SET_TARGET_PROPERTIES( ${TARGET_NAME}
+  ADD_LIBRARY(${TARGET_NAME} SHARED ${SOURCES})
+
+  SET_TARGET_PROPERTIES(${TARGET_NAME}
     PROPERTIES VERSION ${${PROJECT_UP_NAME}_VERSION}
-             SOVERSION ${${PROJECT_UP_NAME}_MAJOR_VERSION}
-                     )
-  TARGET_LINK_LIBRARIES (
-               ${TARGET_NAME}
-               ${EXTRA_LIBS} ${EXTRA_LIBS_CS} )
-  IF(ENABLE_INSTALL_RIM)
-    INSTALL( TARGETS ${TARGET_NAME}
-             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-  ENDIF(ENABLE_INSTALL_RIM)
-ENDIF(ENABLE_SHARED_LIBS)
+               SOVERSION ${${PROJECT_UP_NAME}_MAJOR_VERSION})
 
-IF(ENABLE_STATIC_LIBS)
-   ADD_LIBRARY( ${TARGET_NAME}-static STATIC ${SOURCES} )
-   TARGET_LINK_LIBRARIES (
-                ${TARGET_NAME}-static
-                ${EXTRA_LIBS} ${EXTRA_LIBS_CS} )
+  TARGET_LINK_LIBRARIES(${TARGET_NAME} ${EXTRA_LIBS} ${EXTRA_LIBS_CS})
 
   IF(ENABLE_INSTALL_RIM)
-   INSTALL( TARGETS ${TARGET_NAME}-static
+    INSTALL(TARGETS ${TARGET_NAME}
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-  ENDIF(ENABLE_INSTALL_RIM)
-ENDIF(ENABLE_STATIC_LIBS)
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  ENDIF()
+ENDIF()
 
+IF(ENABLE_STATIC_LIBS)
+  ADD_LIBRARY(${TARGET_NAME}-static STATIC ${SOURCES})
+  SET_TARGET_PROPERTIES(${TARGET_NAME}-static PROPERTIES OUTPUT_NAME "${TARGET_NAME}-static")
+
+  TARGET_LINK_LIBRARIES(${TARGET_NAME}-static ${EXTRA_LIBS} ${EXTRA_LIBS_CS})
+
+  IF(ENABLE_INSTALL_RIM)
+    INSTALL(TARGETS ${TARGET_NAME}-static
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  ENDIF()
+
+  # 💡 Provide alias to resolve MSVC LNK1104: expected IccProfLib2.lib
+  IF(WIN32 AND ENABLE_SHARED_LIBS)
+ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME}-static POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "$<TARGET_FILE:${TARGET_NAME}-static>"
+    "$<TARGET_FILE_DIR:${TARGET_NAME}-static>/${TARGET_NAME}.lib"
+  COMMENT "Aliasing ${TARGET_NAME}-static.lib to ${TARGET_NAME}.lib for MSVC compatibility")
+  ENDIF()
+ENDIF()
+
+# Target selection logic for parent use
 IF(ENABLE_SHARED_LIBS)
-  SET( TARGET_LIB ${TARGET_NAME} )
-ELSE(ENABLE_SHARED_LIBS)
-  SET( TARGET_LIB ${TARGET_NAME}-static )
-ENDIF(ENABLE_SHARED_LIBS)
-SET( TARGET_LIB ${TARGET_LIB} PARENT_SCOPE )
+  SET(TARGET_LIB ${TARGET_NAME})
+ELSE()
+  SET(TARGET_LIB ${TARGET_NAME}-static)
+ENDIF()
+
+SET(TARGET_LIB ${TARGET_LIB} PARENT_SCOPE)
