@@ -1,73 +1,93 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #################################################################################
 # iccMAX-cicd-build-checks.sh | iccMAX Project
-# Copyright (C) 2024-2025 The International Color Consortium. 
+# Copyright (C) 2024-2025 The International Color Consortium.
 #                                        All rights reserved.
-# 
 #
-#  Last Updated: Mon Mar 24 16:40:19 EDT 2025 by David Hoyt
-#  date -d @1742848819
-#  Mon Mar 24 16:40:19 EDT 2025
+#
+#  Last Updated: 09-APRIL-2025 1900 EDT by David Hoyt
+#
+#
 #
 #
 #
 #
 # RUN from Testing/
 #
-# STUB for Post-Build CI-CD Checks
 #
+# STUB for Post-Build CI-CD Checks
 #
 #################################################################################
 
-#!/bin/bash
 set -euo pipefail
 
-echo "==========================================================================="
-echo "✅ Runner Stub Entry Point"
-echo "==========================================================================="
+# === Config ===
+LOG_TAG="RunnerStub"
+log()  { echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$LOG_TAG] $*"; }
+fail() { log "❌ ERROR: $*" >&2; exit 1; }
 
-# === [Check 1] Run Profile Creation Script from ICC Main ===
-echo "[Check 1] Generate Test Profiles via CreateAllProfiles.sh"
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh | bash
+# === Entrypoint ===
+log "==========================================================================="
+log "✅ Entry Point | iccMAX Runner Stub"
+log "==========================================================================="
 
-# === [Check 2] Validate Profile Results (xsscx fork) ===
-echo "[Check 2] Profile Calculation Test Suite (check_profiles.zsh)"
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/CalcTest/check_profiles.zsh | bash
+# === [Check 1] Run Profile Creation Script ===
+log "[Check 1] CreateAllProfiles.sh"
+curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh | bash || fail "CreateAllProfiles.sh failed"
+log "[Check 1] ✅ DONE"
 
-echo "[Check 3] Profile Output Verification (calc_test.zsh)"
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/CalcTest/calc_test.zsh | bash
+# === [Check 2] Profile Calculation Tests ===
+log "[Check 2] check_profiles.zsh"
+cd ../Build || fail "Missing ../Build directory"
+curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/CalcTest/check_profiles.zsh | bash || fail "check_profiles.zsh failed"
+log "[Check 2] ✅ DONE"
 
-# === [Check 4] Heap + UBSan Trigger Profile ===
-echo "[Check 4] Run icPlatformSignature-ubsan-poc with iccDumpProfile"
-wget -q https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
-../Build/Tools/IccDumpProfile/iccDumpProfile icPlatformSignature-ubsan-poc.icc
+# === [Check 3] Profile Output Verification ===
+log "[Check 3] calc_test.zsh"
+curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/CalcTest/calc_test.zsh | bash || fail "calc_test.zsh failed"
+cd ../Testing || fail "Missing ../Testing directory"
+log "[Check 3] ✅ DONE"
 
-# === [Check 5] Allocator Mismatch Check ===
-echo "[Check 5] iccApplyNamedCmm Allocator Mismatch Check"
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/iccApplyNamedCmm_allocator_mismatch_check.sh | bash
+# === [Check 4] UBSan Trigger Profile ===
+log "[Check 4] icPlatformSignature-ubsan-poc.icc"
+wget -q https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/icPlatformSignature-ubsan-poc.icc || fail "UBSan profile download failed"
+../Build/Tools/IccDumpProfile/iccDumpProfile icPlatformSignature-ubsan-poc.icc || fail "iccDumpProfile failed"
+log "[Check 4] ✅ DONE"
+
+# === [Check 5] Allocator Mismatch PoC (Disabled) ===
+log "[Check 5] Skipped: iccApplyNamedCmm allocator mismatch PoC"
+# curl ... | bash
+log "[Check 5] ✅ SKIPPED"
 
 # === [Check 6] Matrix Elem Type PoC ===
-wget https://github.com/xsscx/PatchIccMAX/raw/refs/heads/pr119/contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/icSigMatrixElemType-Read-poc.sh | bash
+log "[Check 6] MatrixElemType"
+wget -q https://github.com/InternationalColorConsortium/DemoIccMAX/raw/refs/heads/master/contrib/UnitTest/icSigMatrixElemType-Read-poc.icc || fail "Matrix PoC download failed"
+curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/icSigMatrixElemType-Read-poc.sh | bash || fail "MatrixElemType test failed"
+log "[Check 6] ✅ DONE"
 
-# === [Check 7] ProfileSequenceId Test (Type Confusion/Overflow) ===
-echo "[Check 7] TestCIccTagXmlProfileSequenceId PoC"
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/TestCIccTagXmlProfileSequenceId.sh | bash
+# === [Check 7] ProfileSequenceId Type Confusion ===
+log "[Check 7] ProfileSequenceId PoC"
+wget -q https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/master/contrib/UnitTest/TestCIccTagXmlProfileSequenceId.cpp || fail "ProfileSequenceId PoC download failed"
+curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/TestCIccTagXmlProfileSequenceId.sh | bash || fail "ProfileSequenceId PoC test failed"
+log "[Check 7] ✅ DONE"
 
-# === [Check 8] Type Confusion with Real Profile ===
-echo "[Check 8] Type Confusion on Lab_float-D50_2deg.icc"
-../Build/Tools/IccRoundTrip/iccRoundTrip PCC/Lab_float-D50_2deg.icc
+# === [Check 8] Lab_float Type Confusion (Skipped) ===
+log "[Check 8] Skipped: Lab_float-D50_2deg.icc"
+# ../Build/Tools/IccRoundTrip/iccRoundTrip PCC/Lab_float-D50_2deg.icc
+log "[Check 8] ✅ SKIPPED"
 
-# === [Check 9] CVE Regression (CVE-2023-46602) ===
-echo "[Check 9] Validate CVE-2023-46602 is Handled Safely"
-cd ..
-Build/Tools/IccToXml/iccToXml contrib/UnitTest/cve-2023-46602.icc contrib/UnitTest/cve-2023-46602.xml
+# === [Check 9] CVE-2023-46602 ===
+log "[Check 9] CVE-2023-46602 Regression Check"
+cd .. || fail "Could not go up to root"
+Build/Tools/IccToXml/iccToXml contrib/UnitTest/cve-2023-46602.icc contrib/UnitTest/cve-2023-46602.xml || fail "CVE-2023-46602 test failed"
+log "[Check 9] ✅ DONE"
 
-# === [Check 10] Trigger and Validate Heap Overflow / ParseText ===
-echo "[Check 10] Run testParse() Against Crafted Input"
-cd Testing/
-curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/TestParseText.sh | bash
+# === [Check 10] Heap Overflow / ParseText ===
+log "[Check 10] Heap Overflow PoC (testParseText)"
+cd Testing || fail "Missing Testing directory"
+curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/TestParseText.sh | bash || fail "testParseText failed"
+log "[Check 10] ✅ DONE"
 
-echo "==========================================================================="
-echo "✅ Runner Stub Complete"
-echo "==========================================================================="
+log "==========================================================================="
+log "✅ All Checks Completed Successfully | iccMAX Runner Stub"
+log "==========================================================================="

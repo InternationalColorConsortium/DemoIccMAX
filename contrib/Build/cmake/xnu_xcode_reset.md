@@ -3,7 +3,7 @@
 Last Updated: Sunday 16-FEB-2025 1645 EST | David Hoyt
 
 ## Overview
-This script resets and rebuilds the Xcode project for RefIccMAX from scratch. It should be run from the **Project_Root/Build/** directory. You cam then manually delete the legacy  Xcode Project files.
+This script resets and rebuilds the Xcode project for RefIccMAX from scratch. It should be run from the **Project_Root/Build/** directory. You can then manually delete the legacy Xcode Project files.
 
 ## Requirements
 - macOS with **Xcode** installed
@@ -14,7 +14,7 @@ This script resets and rebuilds the Xcode project for RefIccMAX from scratch. It
 To execute this script, run the following command in a terminal:
 
 ```sh
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/xnu/contrib/Build/cmake/xnu_xcode_reset.zsh)"
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/xnu_xcode_reset.zsh)"
 ```
 
 ## What This Script Does
@@ -60,5 +60,4 @@ If you encounter issues:
 
 ```text
 Copyright (c) 2025. International Color Consortium. All rights reserved.
-Copyright (c) 2024. David H Hoyt LLC. All rights reserved.
 ```
