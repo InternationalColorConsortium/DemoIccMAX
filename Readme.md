@@ -1,57 +1,28 @@
-![Demo ICC Max Logo](ReadMeFiles/DemoIccMAX-Logo.png)
-# DemoIccMAX
+[![color.org logo](ReadMeFiles/ICC_header.png "color.org")](https://color.org)
+
+# IccMAX
+
 ## Introduction
 
-The DemoIccMAX project (formally known as RefIccMAX) provides an open
-source set of libraries and tools that allow for the interaction,
-manipulation, and application of iccMAX based color management profiles
-based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter)
-in addition to legacy ICC profiles defined by [earlier ICC profile
-specifications](http://www.color.org/icc_specs2.xalter).
+The IccMAX project (formally known as RefIccMAX, or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX based color management profiles based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
 
-iccMAX is not intended as a replacement for legacy ICC.1
-based profiles, the existing architecture, but as an extension or alternative
-where requirements cannot be fully met by ICC.1. Some of the areas covered by
-iccMAX include: Multi-spectral, Medical Imaging, Image Capture/Digital
-Photography, Package Printing, Color Management on Internet, Fine Art,
-and Color Information Archiving. A more full description of
-capabilities and functionality can be found on the ICC web site,
-http://www.color.org/iccmax.xalter.
 
-Note: The code in DemoIccMAX was initially based on the
-[SampleICC](https://sourceforge.net/projects/sampleicc/) and
-[IccXML](https://sourceforge.net/projects/iccxml/) open source projects, and
-therefore concepts, files and data structures within DemoIccMAX may have
-similarities (as well as various differences) to those in the SampleICC and
-IccXML projects.
-
-## Overview
-
-Within the DemoIccMAX project are several libraries and tools as follows:
+Within the project are several libraries and tools as follows:
 
 * Libraries that allow applications to interact with iccMAX profiles
 
-  * IccProfLib - The DemoIccMAX IccProfLib project represents an open source &
+  * IccProfLib - The IccMAX IccProfLib project represents an open source &
     cross platform reference implementation of a C++ library for reading,
     writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
     profile specification](http://www.color.org/iccmax.xalter). Class and object
-    interaction documentation for IccProfLib can be found at ().
+    interaction documentation for IccProfLib in [Doxygen](https://xss.cx/public/docs/DemoIccMAX/).
 
-    * There are no intentional discrepancies between the DemoIccMAX
-      implementation and the iccMAX specification. If any should occur then this
-      should be brought to the attention of and resolved by the DemoIccMAX project
-      team within the Architecture Working Group of the ICC organization.
-
-      Though SampleICC provides a sample implementation, it does NOT
-      represent a reference implementation of ICC.1 color management.
-
-  * IccLibXML - The DemoIccMAX IccLibXML project contains a parallel C++
+  * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
     objects defined by IccProfLib using an XML representation thus allowing iccMAX
-    profiles to be expressed as or created from text based XML files. The
-    IccLibXML project has a dependencies on the [libxml](http://www.xmlsoft.org/)
-    project (which also has a dependency on iconv which must be separately
-    installed on windows platforms).
+    profiles to be expressed as or created from text based XML files. Class and object
+    interaction documentation for IccLibXML in [Doxygen](https://xss.cx/public/docs/DemoIccMAX/).
+
 
 * Tools based upon these libraries
 
@@ -64,18 +35,12 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     edited using a text editor and then converted back to ICC/iccMAX profile
     formats using IccFromXML.
 
-    * This tool is dependent upon the IccLibXML project (above) as well as
-      libXML and iconv.
-
   * IccFromXML is a cross platform command line tool that allows both legacy ICC
     and iccMAX profiles to be created from the same XML representation provided by
     IccToXML. A schema for iccXML files is forthcoming but can be determined using
     the FromXML() and ToXML() member functions defined in IccLibXML. The
     IccFromXML tool provides a simple direct method to create and manipulate
     iccMAX based profiles.
-
-    * This tool is dependent upon the IccLibXML project (above) as well as
-      libXML2 and iconv.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
     sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
@@ -88,8 +53,6 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     legacy and/or iccMAX profiles to a source TIFF image resulting in a destination
     TIFF image. The final destination profile can optionally be embedded in the
     resulting TIFF image.
-
-    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
 
   * IccDumpProfile is a cross platform command line tool that allows information
     from a legacy ICC and or iccMAX profile to be output to the console. Data
@@ -118,28 +81,16 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     single multi-sample per pixel TIFF image. An iccMAX based profile can optionally
     be embedded in the resulting TIFF image.
 
-    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
-
   * IccTiffDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a TIFF image to the console. This tool
-    has a dependency on the LibTIFF project.
+    embedded ICC profile information about a TIFF image to the console.
 
-    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
-
-  * RefIccLabsCMM provides a MacOS-X based Color Management Module that can be used
-    within the ColorSync environment.
-
-    * Many features of iccMAX based profiles are not accessible due to the
-      limitation in support for only legacy ICC concepts within ColorSync.
+  * IccPngDump is a cross platform command line tool that outputs header and
+    embedded ICC profile information about a PNG image to the console. 
 
   * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
     iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
-    wxWidgets 2.x, and is therefore dependent on this version of wxWidgets. At
-    present only Windows based testing has been performed on this (though wxWidgets
-    is a cross-platform development environment).
+    wxWidgets 3.2.
 
-    A development effort to port this tool to the cross-platform QT development
-    environment is *greatly needed*.
 
 ## Example iccMAX Profiles
 
@@ -191,219 +142,227 @@ reflectance using Wpt based spectral estimation (see chapter 7 of
 http://scholarworks.rit.edu/theses/8789/. Additionally, examples of 6 channel
 abridged spectral encoding is provided.
 
-## Project Build Considerations
+---
 
-### Dependencies
+## Quick Start
 
-The DemoIccMAX project relies on the following libraries. Ensure they are installed before building the project:
+[Release Libraries & Binaries](https://github.com/xsscx/PatchIccMAX/releases) | [Legacy OS Build Instructions](contrib/Build/cmake/IccMAX_Ubuntu22_Readme.md)
 
-1. **[libxml2](http://xmlsoft.org/)**  
-   - **Purpose:** Provides XML parsing and serialization for the IccXML2 library and tools.  
-   - **Usage:** Handles ICC profile data in XML format, enabling efficient transformation and validation.  
-   - **Installation:**  
-     - On Debian/Ubuntu: `sudo apt-get install libxml2 libxml2-dev`  
-     - On macOS: `brew install libxml2`  
-   - **Documentation:** [libxml2 documentation](http://xmlsoft.org/docs.html)
+### Supported Triples
+| **Operating System**       | **Kernel Version**                                | **Architecture**     | **Environment**                       |
+|----------------------------|--------------------------------------------------|-----------------------|---------------------------------------|
+| macOS                      | Darwin Kernel Version 24.1.0                     | ARM64                | RELEASE_ARM64_T8103                   |
+| macOS                      | Darwin Kernel Version 24.1.0                     | x86_64               | RELEASE_X86_64                        |
+| WSL2 (Ubuntu 24)           | 5.15.167.4-microsoft-standard-WSL2               | x86_64               | GNU/Linux                             |
+| Microsoft Windows 11 Pro   | 10.0.26100                                       | x86_64               | Visual Studio 17.12.1                 |
 
-2. **[libtiff](http://libtiff.org/)**  
-   - **Purpose:** Supports TIFF image manipulation for image processing tools.  
-   - **Usage:** Processes ICC profiles embedded in TIFF images and extracts color profile metadata.  
-   - **Installation:**  
-     - On Debian/Ubuntu: `sudo apt-get install libtiff5 libtiff-dev`  
-     - On macOS: `brew install libtiff`  
-   - **Documentation:** [libtiff documentation](http://libtiff.org/libtiff.html)
+---
 
-3. **[wxWidgets](https://www.wxwidgets.org/)**  
-   - **Purpose:** Cross-platform GUI framework for the basic profile viewer.  
-   - **Usage:** Renders the graphical interface for interacting with ICC profiles.  
-   - **Installation:**  
-     - On Debian/Ubuntu: `sudo apt-get install libwxgtk3.0-gtk3-dev`  
-     - On macOS: `brew install wxwidgets`  
-   - **Documentation:** [wxWidgets documentation](https://docs.wxwidgets.org/)
+### Ubuntu | Build Reproduction | GNU Toolchain
 
-4. **[nlohmann's JSON](https://github.com/nlohmann/json)**  
-   - **Purpose:** C++ library for JSON parsing and serialization.  
-   - **Usage:** Handles JSON-based configuration and data interchange, enabling serialization and deserialization of ICC profile metadata.  
-   - **Installation:**  
-     - On Debian/Ubuntu: `sudo apt-get install nlohmann-json3-dev`  
-     - On macOS: `brew install nlohmann-json`  
-     - Using `vcpkg`: `vcpkg install nlohmann-json`  
-     - Alternatively, copy `json.hpp` directly from the repository into your project.  
-   - **Documentation:** [nlohmann’s JSON documentation](https://json.nlohmann.me/)
-
-### Windows
-
-The project solution files `BuildAll.sln` for various versions
-of the Microsoft Visual Studio development IDE can
-be found in the [./Build/MSVC](Build/Build/MSVC) folder.
-This references additional `.vcproj` files
-for the various libraries and applications provided by DemoIccMAX. Projects
-without any further dependencies should build and link correctly. Both 32 and
-64 bit compile options are supported. Some of the projects have further
-dependencies on third party libraries requiring that the SDK libraries are
-installed, and some system environment variables need to be set to correctly
-reference the include files and libraries. (Note: Projects with additional
-dependencies may not correctly build if these libraries and environment variable
-are not set up before running Visual Studio).
-
-The dependency on libxml2 and iconv by the IccLibXML library as well as the
-IccToXML and IccFromXML applications requires that these SDKs are accessible, and are
-referenced using the system environment variable `VendorTreeDir` with various
-sub-directories beneath.
-Macros for the location of each of these third party libraries is defined in
-`[BuildDefs.props](Build/MSVC/BuildDefs.props)`.
-64-bit versions of these SDKs can be found on the
-[gnome website](http://ftp.gnome.org/pub/GNOME/binaries/win64/dependencies/).
-
-For example:
-
-```bash
-ICONV=C:\DevLibs\iconv\iconv-.9.2
-LIBXML2=C:\DevLibs\libxml2\libxml2-2.7.8
-```
-
-The dependency on libtiff by the IccApplyProfiles, IccSpecSepToTiff, and
-IccTiffDump tools requires that the libtiff SDK is accessible, and is referenced
-using the system environment variables `LIBTIFF_DLIB` (debug library to use),
-`LIBTIFF_INCLUDE`, `LIBTIFF_LIB` (release library to use), and `LIBTIFF_LIBDIR`.
-
-For example:
-
-```bash
-LIBTIFF_DLIB=libtiff.lib
-LIBTIFF_INCLUDE=C:\DevLibs\libtiff\tiff-4.0.3\libtiff
-LIBTIFF_LIB=libtiff.lib
-LIBTIFF_LIBDIR=C:\DevLibs\libtiff\tiff-4.0.3\libtiff
-```
-
-The dependency on wxWidgets by the wxProfileDump tool requires that the
-wxWidgets SDK is accessible, and is reference using the system environment
-variables `WXWIN` and `WXVER`.
-
-For example:
-
-```bash
-WXWIN=C:\DevLibs\WXWidgets\wxWidgets-2.8.11
-WXVER=28
-```
-
-When the `ICC_USE_EIGEN_SOLVER` is defined in
-[IccProfLibConf.h](IccProfLib/IccProfLibConf.h) then the Calc element solv
-operator will be implemented using the Eigen math C++ template library,
-http://eigen.tuxfamily.org/index.php?title=Main_Page. It must be referenced
-using the system environment variable `EIGEN`.
-
-For example:
-
-```bash
-EIGEN=C:\DevLibs\eigen\eigen-3.2.8
-```
-
-### MacOS-X
-
-XCODE projects can be found in each of the library and project folders that are
-presently supported for building on the MacOS-X platform. The file
-Build/XCode/BuildAll.sh contains a bash Terminal script that can be used to
-build all of the XCODE projects.
-
-Header files and binaries for the libtiff and libxml libraries need to be
-manually installed before the BuildAll.sh script is executed. The libtiff header
-files need to be placed in the Build/XCode/libtiff folder (specified by the
-LibTifSetup.txt file in this folder). The libxml header files need to be placed
-in the Build/XCode/libxml folder (specified by the LibXmlSetup.txt file in this
-folder). (Note: Projects with additional dependencies may not correctly build if
-these folders not set up before running the BuildAll.sh script).
-
-The BuildAll.sh script file will make a copy of the libIccProfLib.a and
-libIccXML.a library binaries into the Build/XCode/lib folder. The libraries in
-Build/XCode/lib are then referenced by the rest of the projects in DemoIccMAX.
-Executables for the various tools will be placed into the Testing folder after a
-successful run of `BuildAll.sh`.
-
-### CMake
-
-[Cmake](https://cmake.org/) builds should work cross platform. The source
-archive contains a CMake build configuration, which can be used to build on the
-command line with make or ninja, or generate a project for a KDevelop or Eclipse
-or for the platform specific XCode and VC++ IDEs.
-
-Note: for historic reasons, the CMake system still uses the name "RefIccMAX"
-
-#### Compilation
-
-Typical create a out of source build directory and specify an install path:
-
-```bash
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/.local ../Build/Cmake
-make help
-make
-make install
-```
-
-##### Build Flags
-
-Use `-DCMAKE_BUILD_TYPE=Debug`, `-DCMAKE_BUILD_TYPE=Release` or one of the other
-CMake build types.
-
-Typical cmake flags like `CMAKE_CXX_FLAGS` can be used to tune compilation. For
-development `... -DCMAKE_CXX_FLAGS="-Wextra -Wimplicit-fallthrough=0 -g"` is
-recommended, but this will **not be warning free!**.
-
-Note: `-Wimplicit-fallthrough=0` disables case fall-through warnings on switch
-statements as this is actively used (e.g. in IccConvertUTF.cpp). There will also
-be many `-Wsign-compare` warnings and a few `-Wenum-compare` and
-`-Wdeprecated-copy` warnings.
-
-* `ENABLE_TESTS` - default is ON
-* `ENABLE_TOOLS` - default is ON
-* `ENABLE_SHARED_LIBS` - default is ON
-* `ENABLE_STATIC_LIBS` - default is ON
-* `ENABLE_INSTALL_RIM` - install no files if build as subproject
-* `USE_SYSTEM_LIBXML2` - default is OFF
-
-
-### Linux Packages
-
-* Pre Release Binaries - Open Build Service [OBS](https://software.opensuse.org//download.html?project=home%3Abekun%3Adevel&package=libDemoIccMAX-devel)
-
-### Linux Issues and Solutions
-
-You may also need to set `LD_LIBRARY_PATH` to `CMAKE_INSTALLPREFIX`/lib so that
-`libIccProfLib2.so` and `libIccXML.so` shared libraries can be located at runtime.
-
-Depending on the Host:
-```bash
-export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
-```
-or
-```bash
-export LD_LIBRARY_PATH=$HOME/.local/lib64:$LD_LIBRARY_PATH
-```
-
-When running `iccDumpProfileGui` under X-Windows the following error messages
-may be seen on the console:
-
-`libGL error: No matching fbConfigs or visuals` This can be fixed with:
-
-```bash
-export LIBGL_ALWAYS_INDIRECT=1
-```
-
-`libGL error: failed to load driver: swrast` This can be fixed with:
-
-```bash
-sudo apt-get install -y mesa-utils libgl1-mesa-glx
-```
+Copy and Paste into your Terminal using `bash`:
 
 ```
-/usr/local/lib/libgnutls.so.30: version `GNUTLS_3_6_3' not found (required by /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so)
-Failed to load module: /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
 ```
-The above error messages appear to be harmless, but running
-`apt-cache policy libgnutls30` or `gntls-cli -v` will likely indicate a
-different (later) version of gnutls.
 
-## License
+The Install Script performs the following tasks:
+
+```
+export CXX=g++
+cd ~
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+cd DemoIccMAX/Build
+sudo apt-get install -y libpng-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential
+cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" -DCMAKE_BUILD_TYPE=Debug -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON -Wno-dev -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
+make -j$(nproc)
+find IccProfLib/ IccXML/ Tools/ -type f -executable -exec file {} \; | grep 'ELF' | cut -d: -f1
+cd Testing/
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
+```
+
+### macOS Build Reproduction | Clang Toolchain
+
+Copy and Paste into your Terminal using `zsh`:
+
+```
+/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.zsh)"
+```
+
+The Install Script performs the following tasks:
+
+```
+export CXX=clang++
+cd ~
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+cd DemoIccMAX/Build
+brew install libpng nlohmann-json libxml2 wxwidgets libtiff
+cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
+make -j$(nproc)
+cd Testing/
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
+```
+
+---
+
+## Windows Build
+
+- **Build the master branch of the project via powershell**:
+
+   ```
+   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
+   ```
+
+### Windows Cmake Instructions
+
+#### Prerequisites
+
+- Windows 10/11
+- Visual Studio 2022 (with C++ Desktop Development workload)
+- PowerShell
+- Administrator or Developer command prompt
+
+---
+
+#### Setup: Environment & Dependencies
+
+This example installs `vcpkg` to `c:\test` to avoid `devenv` pollution.
+
+```
+mkdir C:\test\
+cd C:\test\
+```
+
+### Clone vcpkg and bootstrap
+
+```
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat -disableMetrics
+.\vcpkg.exe integrate install
+```
+
+#### Install required libraries (both dynamic and static)
+
+```
+.\vcpkg.exe install `
+  libpng `
+  nlohmann-json:x64-windows `
+  nlohmann-json:x64-windows-static `
+  libxml2:x64-windows `
+  libxml2:x64-windows-static `
+  tiff:x64-windows `
+  tiff:x64-windows-static `
+  wxwidgets:x64-windows `
+  wxwidgets:x64-windows-static
+```
+
+
+#### Clone and Checkout IccMAX
+
+```
+cd ~
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+cd DemoIccMAX
+```
+
+---
+
+#### Configure & Build Example (MinSizeRel)
+
+This example Cmake Configure and Build uses `vcpkg` installed to `c:\test` to avoid `devenv` pollution. 
+
+```
+cd Build
+mkdir win
+cd win
+
+cmake -S ..\Cmake -B . -G "Visual Studio 17 2022" -A x64 `
+  -DCMAKE_BUILD_TYPE=MinSizeRel `
+  -DCMAKE_TOOLCHAIN_FILE=C:/test/vcpkg/scripts/buildsystems/vcpkg.cmake `
+  -DCMAKE_C_FLAGS="/MD /Od /Zi /I C:/test/vcpkg/installed/x64-windows/include" `
+  -DCMAKE_CXX_FLAGS="/MD /Od /Zi /I C:/test/vcpkg/installed/x64-windows/include" `
+  -DCMAKE_SHARED_LINKER_FLAGS="/LIBPATH:C:/test/vcpkg/installed/x64-windows/lib" `
+  -DENABLE_TOOLS=ON `
+  -DENABLE_SHARED_LIBS=ON `
+  -DENABLE_STATIC_LIBS=ON `
+  -DENABLE_TESTS=ON `
+  -DENABLE_INSTALL_RIM=ON `
+  -DENABLE_ICCXML=ON `
+  -DENABLE_SPECTRE_MITIGATION=OFF `
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON `
+  --graphviz=iccMAX-project.dot
+
+cmake --build . --config MinSizeRel -- /m /maxcpucount:32
+```
+
+##### Expected Output
+
+```
+  IccProfLib2-static.vcxproj -> Build\win\IccProfLib\MinSizeRel\IccProfLib2-static.lib
+  IccProfLib2.vcxproj -> Build\win\IccProfLib\MinSizeRel\IccProfLib2.dll
+  Aliasing IccProfLib2-static.lib to IccProfLib2.lib for MSVC compatibility
+  iccFromCube.vcxproj -> Build\win\Tools\IccFromCube\MinSizeRel\iccFromCube.exe
+  iccApplyToLink.vcxproj -> Build\win\Tools\IccApplyToLink\MinSizeRel\iccApplyToLink.exe
+  iccPngDump.vcxproj -> Build\win\Tools\IccPngDump\MinSizeRel\iccPngDump.exe
+  IccXML2-static.vcxproj -> Build\win\IccXML\MinSizeRel\IccXML2-static.lib
+  iccV5DspObsToV4Dsp.vcxproj -> Build\win\Tools\IccV5DspObsToV4Dsp\MinSizeRel\iccV5DspObsToV4Dsp.exe
+  iccDumpProfile.vcxproj -> Build\win\Tools\IccDumpProfile\MinSizeRel\iccDumpProfile.exe
+  iccTiffDump.vcxproj -> Build\win\Tools\IccTiffDump\MinSizeRel\iccTiffDump.exe
+  iccSpecSepToTiff.vcxproj -> Build\win\Tools\IccSpecSepToTiff\MinSizeRel\iccSpecSepToTiff.exe
+  iccRoundTrip.vcxproj -> Build\win\Tools\IccRoundTrip\MinSizeRel\iccRoundTrip.exe
+  Aliasing IccXML2-static.lib to IccXML2.lib for MSVC compatibility
+  IccXML2.vcxproj -> Build\win\IccXML\MinSizeRel\IccXML2.dll
+  iccDumpProfileGui.vcxproj -> Build\win\Tools\wxProfileDump\MinSizeRel\iccDumpProfileGui.exe
+  IccMAXCmm.vcxproj -> Build\win\Tools\IccMAXCmm\x64\MinSizeRel\IccMAXCmm.dll
+  iccFromXml.vcxproj -> Build\win\Tools\IccFromXml\MinSizeRel\iccFromXml.exe
+  iccToXml.vcxproj -> Build\win\Tools\IccToXml\MinSizeRel\iccToXml.exe
+  iccApplyNamedCmm.vcxproj -> Build\win\Tools\IccApplyNamedCmm\MinSizeRel\iccApplyNamedCmm.exe
+  iccApplyProfiles.vcxproj -> Build\win\Tools\IccApplyProfiles\MinSizeRel\iccApplyProfiles.exe
+```
+
+### Dependency Install via vcpkg.json
+
+There is `vcpkg.json` to install and integrate the dependencies:
+
+```
+cd DemoIccMAX
+vcpkg integrate install
+vcpkg install
+```
+
+##### Reproduction
+
+```
+[2025-04-13 11:35:22 F:\pr124\DemoIccMAX]%  vcpkg integrate install
+Applied user-wide integration for this vcpkg root.
+CMake projects should use: "-DCMAKE_TOOLCHAIN_FILE= C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg\scripts\buildsystems\vcpkg.cmake"
+
+All MSBuild C++ projects can now #include any installed libraries. Linking will be handled automatically. Installing new libraries will make them instantly available.
+[2025-04-13 11:35:31 F:\pr124\DemoIccMAX]%
+```
+
+Adjust the Cmake Configure args shown above to use `$vcpkg` instead of `C:/test/vcpkg/`
+
+### Visual Studio Solution
+
+`devenv RefIccMAX.sln`
+
+---
+
+## Project PR Preflight Checks
+1. Build on Linux, macOS & Windows
+2. Create ICC Profiles
+3. CICD Runner plus Stub
+
+### Project Dependencies
+- `libpng-dev`: Required for Png Support.
+- `libxml2`: Required for XML support.
+- `libwxgtk3.2-dev`: Required for GUI support.
+- `nlohmann-json3-dev`: Enables JSON parsing for configuration files.
+- `libtiff`: Supports TIFF image manipulation for image processing tools.
+- `wxWidgets`: Cross-platform GUI framework for the basic profile viewer.
+
+---
 
 [The ICC Software License](LICENSE.md)

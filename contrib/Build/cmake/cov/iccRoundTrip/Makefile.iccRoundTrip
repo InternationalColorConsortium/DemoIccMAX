@@ -1,0 +1,50 @@
+## Makefile.iccRoundTrip.afl
+## Builds iccApplyProfiles binary instrumented for AFL++ fuzzing (no sanitizers, no LLVM coverage)
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt 
+## Date: 15-APRIL-2025 2000 EDT
+#
+# Branch: PR124
+# Intent: Builds AFL++ instrumented iccRoundTrip binary with ASan (no coverage/profile)
+# Production: TRUE
+# Runner: TRUE
+#
+#
+# Updates:  Coverage Scope
+#          
+#
+# 
+#
+## Makefile.icctoXml.afl
+## Builds AFL++ instrumented iccRoundTrip binary with ASan (no coverage/profile)
+
+# === CONFIG ===
+CXX := afl-clang++
+CXXFLAGS := -O0 -g -fno-inline -fno-omit-frame-pointer -fsanitize=address
+
+INCLUDES := -I../../../../../IccXML/IccLibXML \
+            -I../../../../../IccProfLib \
+            -I../../../../../IccXML/CmdLine/IccToXml \
+            -I/usr/include/libxml2
+
+LDFLAGS := -fsanitize=address \
+           -Wl,--whole-archive ../iccXmlLib/libIccXML2.a ../iccProfLib/libIccProfLib2.a -Wl,--no-whole-archive \
+           -lxml2
+
+SRC := ../../../../../Tools/CmdLine/IccRoundTrip/iccRoundTrip.cpp
+BIN := iccRoundTrip_afl
+
+.PHONY: all clean
+
+# === BUILD AFL FUZZ TARGET ===
+all: $(BIN)
+
+$(BIN): $(SRC)
+	@echo "[AFL] Building silo fuzz target with ASan"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
+
+# === CLEAN ===
+clean:
+	@echo "[CLEAN] Removing AFL fuzzing binary"
+	rm -f $(BIN)

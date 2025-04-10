@@ -106,4 +106,3 @@ print_banner "Creating Profiles"
 run_and_log /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)" || { echo "Error: Profile creation failed. Exiting."; exit 1; }
 
 print_banner "XNU Build Project and CreateAllProfiles Done!"
-print_elapsed_time

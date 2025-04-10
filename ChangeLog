@@ -1,3 +1,6 @@
+2025-APR-12 David Hoyt
+* Align Cmake X-Platform, Code Refactoring, Code Coverage + AFL
+
 2024-10-08 Max Derhak
 * Fixed bug with selecting transform type in CIccCmmConfig
 * Allow auto selection of spectral xform when PCS is NULL

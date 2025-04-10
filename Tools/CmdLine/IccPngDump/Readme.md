@@ -60,7 +60,7 @@ make clean
 make -j32
 ```
 
-### Running `iccPngDump`
+### Running iccPngDump
 
 #### Run iccPngDump on a single PNG file and save ICC profile
 

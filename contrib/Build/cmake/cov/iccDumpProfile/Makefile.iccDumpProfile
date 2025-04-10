@@ -1,0 +1,51 @@
+#
+## 
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt 
+## Date: 15-APRIL-2025 2000 EDT
+#
+# Branch: PR124
+# Intent: Makefile for building instrumented iccDumpProfile and checking LLVM coverage symbols
+# Production: TRUE
+# Runner: TRUE
+#
+#
+# Updates:  Coverage Scope
+#          
+#
+# 
+# 
+#  
+##  Makefile for building instrumented iccDumpprofile and checking LLVM coverage symbols
+
+CXX := clang++
+CXXFLAGS := -O0 -g -fprofile-instr-generate -fcoverage-mapping
+INCLUDES := -I../../../../../IccXML/IccLibXML -I../../../../../IccProfLib -I../../../../../Tools/CmdLine/IccDumpProfile -I/usr/include/libxml2
+LDFLAGS := -Wl,--whole-archive ../iccxml/libIccXML2.a ../iccproflib/libIccProfLib2.a -Wl,--no-whole-archive -lxml2
+
+SRC := ../../../../../Tools/CmdLine/IccDumpProfile/iccDumpProfile.cpp
+BIN := iccDumpProfile_test
+RAW := iccDumpProfile.profraw
+PROFDATA := iccDumpProfile.profdata
+COV := coverage_iccdumpprofile.txt
+
+.PHONY: all clean run profile report
+
+all: $(BIN)
+
+$(BIN): $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
+
+run: $(BIN)
+	LLVM_PROFILE_FILE=$(RAW) ./$(BIN) || true
+
+profile: run
+	llvm-profdata merge -sparse $(RAW) -o $(PROFDATA)
+
+report: profile
+	llvm-cov show ./$(BIN) -instr-profile=$(PROFDATA) > $(COV)
+	@echo "[+] Coverage written to $(COV)"
+
+clean:
+	rm -f $(BIN) $(RAW) $(PROFDATA) $(COV)

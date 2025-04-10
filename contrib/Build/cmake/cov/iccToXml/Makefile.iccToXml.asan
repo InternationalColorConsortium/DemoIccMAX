@@ -1,0 +1,73 @@
+## Makefile.icctoxml.asan
+#
+## 
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt 
+## Date: 15-APRIL-2025 2000 EDT
+#
+# Branch: PR124
+# Intent: Builds instrumented iccToXml binary with ASan/UBSan and generates LLVM coverage data
+# Production: TRUE
+# Runner: TRUE
+#
+#
+# Updates:  Coverage Scope
+#          
+#
+# 
+#  
+## Builds instrumented icctoXml binary with ASan/UBSan and generates LLVM coverage data
+
+# === CONFIG ===
+CXX := clang++
+SANITIZER_FLAGS := -fsanitize=address,undefined -fno-omit-frame-pointer
+
+CXXFLAGS := -O0 -g -fno-limit-debug-info -fno-inline \
+            -fprofile-instr-generate -fcoverage-mapping \
+            $(SANITIZER_FLAGS)
+
+INCLUDES := -I../../../../../IccXML/IccLibXML \
+            -I../../../../../IccProfLib \
+            -I../../../../../IccXML/CmdLine/IccToXml \
+            -I/usr/include/libxml2
+
+LDFLAGS := $(SANITIZER_FLAGS) \
+           -Wl,--whole-archive ../iccXmlLib/libIccXML2.a ../iccProfLib/libIccProfLib2.a -Wl,--no-whole-archive \
+           -lxml2
+
+SRC := ../../../../../IccXML/CmdLine/IccToXml/IccToXml.cpp
+BIN := iccToXml_test
+RAW := iccToXml.profraw
+PROFDATA := iccToXml.profdata
+COV := coverage.txt
+
+.PHONY: all clean run profile report
+
+# === BUILD ===
+all: $(BIN)
+
+$(BIN): $(SRC)
+	@echo "[CXX] Compiling and linking $@ with ASan/UBSan"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
+
+# === RUN WITH COVERAGE ===
+run: $(BIN)
+	@echo "[RUN] Executing $(BIN) with LLVM_PROFILE_FILE=$(RAW)"
+	LLVM_PROFILE_FILE=$(RAW) ./$(BIN) --help
+
+# === MERGE PROFILE DATA ===
+profile: run
+	@echo "[PROF] Merging raw profile into $(PROFDATA)"
+	llvm-profdata merge -sparse $(RAW) -o $(PROFDATA)
+
+# === GENERATE COVERAGE REPORT ===
+report: profile
+	@echo "[REPORT] Generating coverage report → $(COV)"
+	llvm-cov show ./$(BIN) -instr-profile=$(PROFDATA) > $(COV)
+	@echo "[+] Coverage written to $(COV)"
+
+# === CLEAN ===
+clean:
+	@echo "[CLEAN] Removing build artifacts"
+	rm -f $(BIN) $(RAW) $(PROFDATA) $(COV)

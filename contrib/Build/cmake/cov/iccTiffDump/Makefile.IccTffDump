@@ -1,0 +1,76 @@
+#
+## 
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt 
+## Date: 15-APRIL-2025 2000 EDT
+#
+# Branch: PR124
+# Intent: Makefile for building instrumented iccTiffDump and checking LLVM coverage symbols
+# Production: TRUE
+# Runner: TRUE
+#
+#
+# Updates:  Coverage Scope
+#          
+#
+# 
+# 
+#  
+## Makefile for building instrumented iccTiffDump with TIFF, LLVM coverage, and AFL fuzzing support
+
+## Toggle AFL fuzzing build: `make AFL=1`
+AFL ?= 0
+
+ifeq ($(AFL),1)
+	CXX := afl-clang-fast
+	CXXFLAGS := -O3 -g
+	BIN := iccTiffDump_afl
+else
+	CXX := clang++
+	CXXFLAGS := -O0 -g -fprofile-instr-generate -fcoverage-mapping
+	BIN := iccTiffDump_test
+endif
+
+INCLUDES := -I../../../../../IccXML/IccLibXML \
+            -I../../../../../IccProfLib \
+            -I/usr/include/libxml2 \
+            -I/usr/include \
+            -I../../../../../Tools/CmdLine/IccApplyProfiles/ \
+            -I../../../../../Tools/Utils/
+
+LDFLAGS := -Wl,--whole-archive \
+           ../iccXmlLib/libIccXML2.a \
+           ../iccProfLib/libIccProfLib2.a \
+           -Wl,--no-whole-archive \
+           -lxml2 -ltiff -lm -lstdc++
+
+SRC := ../../../../../Tools/CmdLine/IccTiffDump/iccTiffDump.cpp \
+       ../../../../../Tools/CmdLine/IccApplyProfiles/TiffImg.cpp
+
+RAW := iccTiffDump.profraw
+PROFDATA := iccTiffDump.profdata
+COV := coverage.txt
+
+.PHONY: all clean run profile report fuzz
+
+all: $(BIN)
+
+$(BIN): $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
+
+run: $(BIN)
+	LLVM_PROFILE_FILE=$(RAW) ./$(BIN) --help
+
+profile: run
+	llvm-profdata merge -sparse $(RAW) -o $(PROFDATA)
+
+report: profile
+	llvm-cov show ./$(BIN) -instr-profile=$(PROFDATA) > $(COV)
+	@echo "[+] Coverage written to $(COV)"
+
+fuzz: $(BIN)
+	afl-fuzz -i ./in -o ./out -- ./$(BIN) @@
+
+clean:
+	rm -f iccTiffDump_test iccTiffDump_afl $(RAW) $(PROFDATA) $(COV)
