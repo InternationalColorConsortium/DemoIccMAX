@@ -3,16 +3,23 @@
 ## Copyright (©) 2024-2025 David H Hoyt. All rights reserved.
 ##                 https://srd.cx
 ##
-## Last Updated: 22-MAR-2025 1315 EST by David Hoyt (©)
+## Last Updated: 09-APRIL-2025 1900 EDT by David Hoyt (©)
 #
-## Intent: PR119-Latest
+## Intent: Latest-iccMAX
 #
-## TODO: Refactor for all Windows & UNIX Device Reporting
+## 
+#
+#
+#
+#
+#
+#
+#
 #
 #
 ###############################################################
 
-name: PR119-Latest
+name: Latest-iccMAX
 
 on:
   workflow_dispatch:
@@ -26,14 +33,14 @@ jobs:
       matrix:
         compiler: [gcc, clang]
     steps:
-      - name: 📥 Checkout PR119
+      - name: 📥 Checkout PR122
         uses: actions/checkout@v4
         with:
-          ref: pr119
+          ref: pr122
       - name: 🛠️ Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y             build-essential cmake gcc g++ clang clang-tools             libpng-dev libxml2 libxml2-dev libtiff-dev             nlohmann-json3-dev libwxgtk3.2-dev wx-common             python3 python3-pip curl git llvm
+          sudo apt-get install -y build-essential cmake gcc g++ clang clang-tools libpng-dev libxml2 libxml2-dev libtiff-dev nlohmann-json3-dev libwxgtk3.2-dev wx-common python3 python3-pip curl git llvm
       - name: 🔧 Set Compiler
         run: |
           if [ "${{ matrix.compiler }}" = "gcc" ]; then
@@ -46,7 +53,7 @@ jobs:
       - name: ⚙️ CMake Configure
         run: |
           cd Build
-          cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local                 -DCMAKE_BUILD_TYPE=Release                 -DENABLE_TOOLS=ON                 -DENABLE_STATIC_LIBS=ON                 -DENABLE_SHARED_LIBS=ON                 -Wno-dev Cmake/
+          cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release  -DENABLE_TOOLS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_SHARED_LIBS=ON -Wno-dev Cmake/
       - name: 🏗️ Build
         run: |
           cd Build
@@ -61,60 +68,71 @@ jobs:
           path: Build
 
   macos:
-    name: "🍎 macOS Clang"
+    name: "macOS Clang"
     runs-on: macos-latest
     steps:
-      - name: 📥 Checkout PR119
+      - name: Checkout PR122
         uses: actions/checkout@v4
         with:
-          ref: pr119
-      - name: 🛠️ Install macOS Deps
+          ref: pr122
+      - name: Install macOS Deps
         run: |
           brew update
           brew install libpng nlohmann-json libxml2 wxwidgets libtiff
-      - name: 🔧 Set Compiler to Clang
+      - name: Set Compiler to Clang
         run: |
           echo "CC=clang" >> $GITHUB_ENV
           echo "CXX=clang++" >> $GITHUB_ENV
-      - name: ⚙️ CMake Configure
+      - name: CMake Configure
         run: |
           cd Build
-          cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local                 -DCMAKE_BUILD_TYPE=Release                 -DENABLE_TOOLS=ON                 -DENABLE_STATIC_LIBS=ON                 -DENABLE_SHARED_LIBS=ON                 -Wno-dev Cmake/
-      - name: 🏗️ Build
+          sudo rm -rf /Library/Frameworks/Mono.framework/Headers/png.h
+          export CFLAGS="-I$(brew --prefix libpng)/include"
+          export LDFLAGS="-L$(brew --prefix libpng)/lib"
+          cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release  -DENABLE_TOOLS=ON  -DENABLE_STATIC_LIBS=ON  -DENABLE_SHARED_LIBS=ON  -Wno-dev Cmake/
+      - name: Build
         run: |
           cd Build
           make -j$(sysctl -n hw.logicalcpu)
-      - name: 🧾 Verify CMake Cache
+      - name: Runner Stub
         run: |
-          test -f Build/CMakeCache.txt && echo "✅ Build OK" || (echo "❌ Failed" && exit 1)
-      - name: 📤 Upload macOS Artifacts
+          cd Testing
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/pr122/contrib/UnitTest/iccMAX-cicd-build-checks.sh)"
+      - name: Verify CMake Cache
+        run: |
+          test -f Build/CMakeCache.txt && echo "? Build OK" || (echo "? Failed" && exit 1)
+      - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: iccmax-macos-clang
-          path: Build
-
+          path: |
+            Build/Tools/**/icc*
+            Build/IccProfLib/*.dylib
+            Build/IccProfLib/*.a
+            Build/IccXML/*.dylib
+            Build/IccXML/*.a
   windows:
-    name: "🪟 Windows MSVC"
+    name: "Windows MSVC"
     runs-on: windows-latest
     steps:
-      - name: 🔹 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🔹 Setup MSBuild
+      - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: 🔹 Restore vcpkg Cache
+      - name: Restore vcpkg Cache
         uses: actions/cache@v3
         with:
           path: C:\test\vcpkg
           key: Win70-${{ runner.os }}-${{ hashFiles('**/vcpkg.json', '**/bootstrap-vcpkg.bat') }}
           restore-keys: |
             Win70-${{ runner.os }}-
-      - name: 🔹 Setup Environment & Build Preparation
+      - name: Setup Environment & Build Preparation
         shell: pwsh
         run: |
           Write-Host "============================= Starting Build =============================" -ForegroundColor Green
-          Write-Host "© 2024-2025 David H Hoyt LLC. All rights reserved." -ForegroundColor Green
+          Write-Host "C 2024-2025 David H Hoyt LLC. All rights reserved." -ForegroundColor Green
           
           $env:VSCMD_ARG_HOST_ARCH = "x64"
           $env:VSCMD_ARG_TGT_ARCH = "x64"
@@ -132,7 +150,7 @@ jobs:
               & "$vcpkgDir\bootstrap-vcpkg.bat"
           }
           if (-Not (Test-Path "$vcpkgDir\vcpkg.exe")) {
-              Write-Host "❌ ERROR: vcpkg failed to install!" -ForegroundColor Red
+              Write-Host "? ERROR: vcpkg failed to install!" -ForegroundColor Red
               exit 1
           }
           $packages = @(
@@ -141,15 +159,15 @@ jobs:
             "libxml2:x64-windows-static", "tiff:x64-windows-static", "wxwidgets:x64-windows-static"
           )
           foreach ($pkg in $packages) { & "$vcpkgDir\vcpkg.exe" install $pkg }
-      - name: 🔹 Clone PatchIccMAX Repository
+      - name: Clone PatchIccMAX Repository
         shell: pwsh
         run: |
           $patchDir = "C:\test\PatchIccMAX"
           if (Test-Path $patchDir) { Remove-Item -Recurse -Force $patchDir }
           git clone https://github.com/xsscx/PatchIccMAX.git $patchDir
           cd $patchDir
-          git checkout pr119
-      - name: 🔹 Configure & Build with CMake
+          git checkout pr122
+      - name: Configure & Build with CMake
         shell: pwsh
         run: |
           cd C:\test\PatchIccMAX\Build\Cmake
@@ -166,29 +184,29 @@ jobs:
             -DENABLE_INSTALL_RIM=ON `
             -DENABLE_ICCXML=ON
           cmake --build build --config Release -- /m /maxcpucount:32
-      - name: ✅ Verify Build Output
+      - name: Verify Build Output
         shell: pwsh
         run: |
           $cmakeCache = "C:\test\PatchIccMAX\Build\Cmake\build\CMakeCache.txt"
           if (Test-Path $cmakeCache) {
-            Write-Host "✅ Build succeeded. CMake cache found."
+            Write-Host "? Build succeeded. CMake cache found."
           } else {
-            Write-Host "❌ Build failed! No CMakeCache.txt found."
+            Write-Host "? Build failed! No CMakeCache.txt found."
             exit 1
           }
-      - name: 📤 Upload Build Artifacts
+      - name: Upload Windows Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Build-Artifacts
+          name: Windows Build-Artifacts
           path: C:\test\PatchIccMAX
 
-      - name: 📄 Upload Build Logs
+      - name: Upload Windows Build Logs
         uses: actions/upload-artifact@v4
         with:
-          name: Build-Logs
+          name: Windows Build-Logs
           path: C:\test\PatchIccMAX\Build\Cmake\build\CMakeCache.txt
 
-      - name: 🖥️ Host System Info
+      - name: Host System Info
         shell: pwsh
         run: |
           systeminfo

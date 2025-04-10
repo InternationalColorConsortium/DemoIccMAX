@@ -1,0 +1,95 @@
+###############################################################
+#
+## Copyright (©) 2024 David H Hoyt. All rights reserved.
+##                 https://srd.cx
+##
+## Last Updated: 98-APRIL-2025 at 1900 EDT by David Hoyt (©)
+#
+## Intent: icc Runner Stub
+#
+## TODO: Refactor for all Windows & UNIX Device Reporting
+#
+#
+###############################################################
+
+name: "icc Runner Stub"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    name: Build and Test Linux PR122 Branch
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git anonymous identity
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libpng-dev libxml2 libxml2-dev libtiff-dev nlohmann-json3-dev build-essential \
+            cmake clang clang-tools python3 python3-pip libwxgtk3.2-dev wx-common \
+            libopencl-clang-17-dev curl git llvm clang-17
+      - name: Clone the PatchIccMAX repository
+        run: |
+          git clone https://github.com/xsscx/PatchIccMAX.git
+          cd PatchIccMAX
+          git checkout pr122
+      - name: Configure the build with CMake
+        run: |
+          cd PatchIccMAX/Build
+          export CC=gcc
+          export CXX=g++
+          export PATH="/usr/lib/llvm-17/bin:$PATH"
+          echo "CC=gcc" >> $GITHUB_ENV
+          echo "CXX=g++" >> $GITHUB_ENV
+          clang++ --version
+          clang --version
+          cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" -DCMAKE_BUILD_TYPE=Debug \
+                -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON \
+                -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON \
+                -Wno-dev -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" \
+                -Wno-dev Cmake/
+      - name: Build project with CMake
+        run: |
+          cd PatchIccMAX/Build
+          make -j$(nproc)
+          cd ../Testing
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/xsscx/PatchIccMAX/refs/heads/pr122/contrib/UnitTest/iccMAX-cicd-build-checks.sh)"
+          
+      - name: Gather system information
+        run: |
+          uname -a
+          cat /etc/os-release
+          gcc -v
+          lscpu
+          free -m
+          df -h
+      - name: Check build success
+        run: |
+          if [ -f PatchIccMAX/Build/CMakeCache.txt ]; then
+            echo "✅ Build configuration exists."
+          else
+            echo "❌ Build configuration failed."
+            exit 1
+          fi
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: master-build-linux
+          path: PatchIccMAX/Build
+
+      - name: Upload build logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: DemoIccMAX/Build/CMakeCache.txt
