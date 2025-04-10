@@ -1,28 +1,36 @@
-# 
+#
 # IccApplyNamedCmm CMakeLists.txt | DemoIccMAX Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
-# 
 #
-# Last Updated: 2024-11-24 by David Hoyt
 #
-# Changes: 	Added JSON Dependency
-#						Adjusted Cross Platform Build Args
-#						
-# TODO: Refactor Debug, Release, Asan 
-# 			Collapse 3-tier CMakeLists.txt, Housekeeping
-#				Refactor Base Configs & logging to .mk's 
+# Last Updated: 09-APRIL-2025 at 1300 EDT by David Hoyt
+#
+# Changes:      Added JSON Dependency
+#               Adjusted Cross Platform Build Args
+#
+#
+#
+#
 #
 
 # Check if the target is already defined before adding it
-IF(NOT TARGET iccApplyNamedCmm)
-  SET(SRC_PATH ../../../..)
-  SET(SOURCES ${SRC_PATH}/Tools/CmdLine/IccApplyNamedCmm/iccApplyNamedCmm.cpp)
-  SET(TARGET_NAME iccApplyNamedCmm)
+if(NOT TARGET iccApplyNamedCmm)
+  set(SRC_PATH ../../../..)
 
-  ADD_EXECUTABLE(${TARGET_NAME} ${SOURCES})
-  TARGET_LINK_LIBRARIES(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})
+  set(SOURCES
+    ${SRC_PATH}/Tools/CmdLine/IccApplyNamedCmm/iccApplyNamedCmm.cpp
+    ${SRC_PATH}/Tools/CmdLine/IccCommon/IccCmmConfig.cpp
+    ${SRC_PATH}/Tools/CmdLine/IccCommon/IccJsonUtil.cpp
+  )
 
-  IF(ENABLE_INSTALL_RIM)
-    INSTALL(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
-  ENDIF(ENABLE_INSTALL_RIM)
-ENDIF()
+  set(TARGET_NAME iccApplyNamedCmm)
+
+  include_directories(${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/)
+
+  add_executable(${TARGET_NAME} ${SOURCES})
+  target_link_libraries(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})
+
+  if(ENABLE_INSTALL_RIM)
+    install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+  endif()
+endif()
