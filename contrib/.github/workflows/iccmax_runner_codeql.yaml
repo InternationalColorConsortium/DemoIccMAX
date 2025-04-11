@@ -3,16 +3,16 @@
 ## Copyright (©) 2024-2025 David H Hoyt. All rights reserved.
 ##                 https://srd.cx
 ##
-## Last Updated: 07-MAR-2025 1315 EST by David Hoyt (©)
+## Last Updated: 07-MAR-2025 1342 EST by David Hoyt (©)
 #
-## Intent: CodeQL
+## Intent: CodeQL PR123
 #
 ## TODO: Refactor for all Windows & UNIX Device Reporting
 #
 #
 ###############################################################
 
-name: CodeQL
+name: iccMAX CodeQL
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: pr123
 
       - name: Initialize the CodeQL tools
         uses: github/codeql-action/init@v3
@@ -57,7 +57,7 @@ jobs:
           sudo apt-get install -y \
             libxml2 libxml2-dev nlohmann-json3-dev build-essential \
             cmake libopencl-clang-17-dev libwxgtk3.2-dev libtiff-dev \
-            curl git llvm clang-tools clang-17
+            curl git llvm clang-tools clang-17 libpng-dev libtiff6 libtiff5-dev libtiff-tools libtiff-dev
           export CC=clang
           export CXX=clang++
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
