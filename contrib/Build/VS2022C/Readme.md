@@ -16,7 +16,7 @@ This directory contains build scripts and documentation for building the DemoIcc
 - Visual Studio 2022 Community
 	- Git for Windows
 
-###Run
+### Run
 
 - **Build the master branch of the project via powershell**:
 
