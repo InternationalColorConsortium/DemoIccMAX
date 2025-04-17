@@ -160,13 +160,7 @@ abridged spectral encoding is provided.
 
 ### Ubuntu | Build Reproduction | GNU Toolchain
 
-Copy and Paste into your Terminal using `bash`:
-
-```
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
-```
-
-The Install Script performs the following tasks:
+Copy and Paste into your Terminal:
 
 ```
 export CXX=g++
@@ -183,13 +177,7 @@ cd Testing/
 
 ### macOS Build Reproduction | Clang Toolchain
 
-Copy and Paste into your Terminal using `zsh`:
-
-```
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.zsh)"
-```
-
-The Install Script performs the following tasks:
+Copy and Paste into your Terminal:
 
 ```
 export CXX=clang++
