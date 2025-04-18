@@ -3,9 +3,9 @@
 ## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
 ##
 ## Written by David Hoyt 
-## Date: 28-MAR-2025 2000 EDT
+## Date: 16-APRIL-2025 2000 EDT
 #
-# Branch: PR121
+# Branch: PR125
 # Intent: Makefile for building instrumented Libs + Tools and checking LLVM coverage symbols
 # Production: TRUE
 # Runner: TRUE
@@ -25,9 +25,9 @@ make -C iccProfLib -f Makefile.iccProfLib
 make -C iccXmlLib -f Makefile.iccXmlLib
 
 echo "[*] Verifying static lib instrumentation..."
-cd iccproflib
+cd iccProfLib
 ar -x libIccProfLib2.a && for f in *.o; do llvm-objdump -h "$f" | grep -q __llvm_prf_data && echo "   [INSTRUMENTED] $f"; done; rm -f *.o
-cd ../iccxml
+cd ../iccXmlLib
 ar -x libIccXML2.a && for f in *.o; do llvm-objdump -h "$f" | grep -q __llvm_prf_data && echo "   [INSTRUMENTED] $f"; done; rm -f *.o
 cd ..
 
@@ -39,10 +39,10 @@ make -C iccPngDump -f Makefile.iccPngDump
 make -c iccRoundTrip -f Makefile.iccRoundTrip
 make -c iccTiffDump -f Makefile.iccTiffDump
 make -c iccApplyNamedCmm -f Makefile.iccApplyNamedCmm
-make -c iccapplyProfiles -f Makefile.iccApplyProfiles
+make -c iccApplyProfiles -f Makefile.iccApplyProfiles
 
 echo "[*] Verifying tool instrumentation..."
-for tool in iccToXml iccFromXml iccDumpProfile iccPngdump iccRoundTrip; do
+for tool in iccToXml iccFromXml iccDumpProfile iccPngdump iccRoundTrip iccApplyNamedCmm iccApplyProfiles; do
   BIN="$tool/${tool}_test"
   if [[ -f "$BIN" ]]; then
     llvm-objdump -t "$BIN" | grep __llvm_profile > /dev/null && echo "[PASS] $BIN is instrumented" || echo "[FAIL] $BIN not instrumented"

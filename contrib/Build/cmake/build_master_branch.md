@@ -7,18 +7,10 @@ This Remote Script will build the master branch.
 ## Usage
 To use this script, open a Terminal and execute the following command:
  
- - sh
+`sh`
  
 ```
-cd /tmp
 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
-```
-
- - zsh
-
-```
-cd /tmp
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.zsh)"
 ```
 
 ## Expected Output

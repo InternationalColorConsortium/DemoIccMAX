@@ -160,13 +160,7 @@ abridged spectral encoding is provided.
 
 ### Ubuntu | Build Reproduction | GNU Toolchain
 
-Copy and Paste into your Terminal using `bash`:
-
-```
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.sh)"
-```
-
-The Install Script performs the following tasks:
+Copy and Paste into your Terminal:
 
 ```
 export CXX=g++
@@ -177,19 +171,19 @@ sudo apt-get install -y libpng-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgt
 cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" -DCMAKE_BUILD_TYPE=Debug -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON -Wno-dev -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
 make -j$(nproc)
 find IccProfLib/ IccXML/ Tools/ -type f -executable -exec file {} \; | grep 'ELF' | cut -d: -f1
+cd ..
+```
+
+Create Profiles:
+
+```
 cd Testing/
 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
 ```
 
 ### macOS Build Reproduction | Clang Toolchain
 
-Copy and Paste into your Terminal using `zsh`:
-
-```
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/cmake/build_master_branch.zsh)"
-```
-
-The Install Script performs the following tasks:
+Copy and Paste into your Terminal:
 
 ```
 export CXX=clang++
@@ -199,6 +193,12 @@ cd DemoIccMAX/Build
 brew install libpng nlohmann-json libxml2 wxwidgets libtiff
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
 make -j$(nproc)
+cd ..
+```
+
+Create Profiles:
+
+```
 cd Testing/
 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
 ```
