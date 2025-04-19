@@ -8,6 +8,15 @@
 ## zsh iccDumpProfile check of Testing/ .icc color profiles
 ## Purpose: Automates the build and testing for icc color profiles
 ##
+#
+#
+#
+#
+# Run from Testing/
+# /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/iccDumpProfile_checks.zsh)"
+#
+#
+#
 # ============================================================
 
 # Path to the iccDumpProfile tool

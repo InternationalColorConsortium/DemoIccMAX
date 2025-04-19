@@ -4,13 +4,13 @@
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: Mon Mar 24 16:40:19 EDT 2025 by David Hoyt
-#  date -d @1742848819
-#  Mon Mar 24 16:40:19 EDT 2025
+#  Last Updated: Sat Apr 19 14:00:59 EDT 2025 by David Hoyt
+#  date -r 1745085659
+# 
 #
-#  Changes: Minimized for Production, Logging is Verbose, Default
-#           Added to CMakelists.txt: IccPngDump
-#           Adjusted Cross Platform Build Args
+#  Changes: 
+#           Added to CMakelists.txt: IccJpegDump
+#           Adjusted Cross Platform Build Args, Add Jpeg Dep
 #						
 #  TODO:    Refactor Debug, Release, Asan, subproject pathing issues
 #           Collapse 3-tier CMakeLists.txt, Housekeeping
@@ -60,7 +60,7 @@ set(CMAKE_SUPPRESS_REGENERATION ON)
 string(TIMESTAMP CURRENT_DATETIME "%Y-%m-%d %H:%M:%S")
 message(STATUS "")
 message(STATUS "##########################################################################")
-message(STATUS "## Starting to Configure the DemoIccMAX Project at ${CURRENT_DATETIME}")
+message(STATUS "## Starting to Configure the IccMAX Project at ${CURRENT_DATETIME}") 
 message(STATUS "##########################################################################")
 message(STATUS "")
 
@@ -91,7 +91,7 @@ set(PROJECT_DOWN_NAME "reficcmax")  # All-lowercase variant for packaging
 # Version Components
 set(${PROJECT_UP_NAME}_MAJOR_VERSION 2)
 set(${PROJECT_UP_NAME}_MINOR_VERSION 1)
-set(${PROJECT_UP_NAME}_MICRO_VERSION 25)
+set(${PROJECT_UP_NAME}_MICRO_VERSION 26)
 set(${PROJECT_UP_NAME}_VERSION
   "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}.${${PROJECT_UP_NAME}_MICRO_VERSION}"
 )
@@ -325,6 +325,16 @@ if(PNG_FOUND)
   message(STATUS "PNG Version            : ${PNG_VERSION}")
 else()
   message(FATAL_ERROR " PNG not found. Please install libpng-dev or install via vcpkg.")
+endif()
+
+# --- JPEG ---
+message(STATUS "Checking for JPEG...")
+find_package(JPEG REQUIRED)
+if(JPEG_FOUND)
+  message(STATUS " JPEG Library          : ${JPEG_LIBRARIES}")
+  message(STATUS "JPEG Include Directory : ${JPEG_INCLUDE_DIR}")
+else()
+  message(FATAL_ERROR " JPEG not found. Please install libjpeg-dev or install via vcpkg.")
 endif()
 
 # ----------------------------------------------------------------------
@@ -704,7 +714,9 @@ endif()
   ADD_SUBDIRECTORY(Tools/IccFromXml)
   message(STATUS "Adding Subdirectory IccToXml.")
   ADD_SUBDIRECTORY(Tools/IccToXml)
-
+  message(STATUS "Adding Subdirectory IccJpegDump.")
+  ADD_SUBDIRECTORY(Tools/IccJpegDump)
+  
   # Configure wxWidgets
   find_package(wxWidgets COMPONENTS core base REQUIRED)
   if (wxWidgets_FOUND)

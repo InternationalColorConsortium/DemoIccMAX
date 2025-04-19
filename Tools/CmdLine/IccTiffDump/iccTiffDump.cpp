@@ -65,7 +65,7 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
-//
+// -Fix Saving to Icc Profile by David Hoyt 16-APR-2025
 //////////////////////////////////////////////////////////////////////
 
 
@@ -77,53 +77,45 @@
 #include "IccApplyBPC.h"
 #include "TiffImg.h"
 
-
 typedef struct {
   unsigned long nId;
   char const * const szName;
 } IdList;
 #define UNKNOWNID 0xffffffff
 
-
 IdList planar_types[] = {
   {0,  "Interleaved samples"},
   {PLANARCONFIG_CONTIG,  "Interleaved samples"},
-  {PLANARCONFIG_SEPARATE,     "Samples in separate planes"},
-
+  {PLANARCONFIG_SEPARATE, "Samples in separate planes"},
   {UNKNOWNID, "Unknown"},
 };
 
 IdList photo_types[] = {
   {PHOTO_MINISWHITE, "Min Is White"},
   {PHOTO_MINISBLACK, "Min Is Black"},
-  {PHOTO_CIELAB, "CIELab"},
-  {PHOTO_ICCLAB, "IccLab"},
-
-  {UNKNOWNID, "Unknown"},
+  {PHOTO_CIELAB,     "CIELab"},
+  {PHOTO_ICCLAB,     "IccLab"},
+  {UNKNOWNID,        "Unknown"},
 };
 
 IdList compression_types[] = {
-  {COMPRESSION_NONE,   "None"},
-  {COMPRESSION_LZW,    "LZW"},
-  {COMPRESSION_JPEG,   "JPEG"},
-  {COMPRESSION_DEFLATE, "Deflate"},
-  {COMPRESSION_ADOBE_DEFLATE, "Deflate"},
-
-  {UNKNOWNID, "Unknown"},
+  {COMPRESSION_NONE,         "None"},
+  {COMPRESSION_LZW,          "LZW"},
+  {COMPRESSION_JPEG,         "JPEG"},
+  {COMPRESSION_DEFLATE,      "Deflate"},
+  {COMPRESSION_ADOBE_DEFLATE,"Deflate"},
+  {UNKNOWNID,                "Unknown"},
 };
 
 const char* GetId(unsigned long nId, IdList* pIdList)
 {
   for (;pIdList->nId != nId && pIdList->nId != UNKNOWNID; pIdList++);
-
   return pIdList->szName;
 }
-
 
 void Usage() 
 {
   printf("iccTiffDump built with IccProfLib version " ICCPROFLIBVER "\n\n");
-
   printf("Usage: iccTiffDump tiff_file {exported_icc_file}\n\n");
 }
 
@@ -131,14 +123,13 @@ void Usage()
 
 int main(int argc, icChar* argv[])
 {
-  int minargs = 1; // minimum number of arguments
-  if(argc<=minargs) {
+  int minargs = 1;
+  if (argc <= minargs) {
     Usage();
     return -1;
   }
 
   CTiffImg SrcImg;
-
   if (!SrcImg.Open(argv[1])) {
     printf("\nFile [%s] cannot be opened.\n", argv[1]);
     return false;
@@ -154,20 +145,31 @@ int main(int argc, icChar* argv[])
   printf("SamplesPerPixel:   %d\n", SrcImg.GetSamples());
   int nExtra = SrcImg.GetExtraSamples();
   if (nExtra)
-    printf("ExtraSamples       %d\n", nExtra);
+    printf("ExtraSamples:      %d\n", nExtra);
   printf("Photometric:       %s\n", GetId(SrcImg.GetPhoto(), photo_types));
   printf("BytesPerLine:      %d\n", SrcImg.GetBytesPerLine());
-
   printf("Resolution:        (%lf x %lf) pixels per/inch\n", SrcImg.GetXRes(), SrcImg.GetYRes());
   printf("Compression:       %s\n", GetId(SrcImg.GetCompress(), compression_types));
 
-  unsigned char *pProfMem;
-  unsigned int nLen;
+  unsigned char *pProfMem = nullptr;
+  unsigned int nLen = 0;
   if (SrcImg.GetIccProfile(pProfMem, nLen)) {
     printf("Profile:           Embedded\n");
 
-    CIccProfile *pProfile = OpenIccProfile(pProfMem, nLen);
+    // Optional profile export
+    if (argc > 2 && pProfMem && nLen > 0) {
+      FILE *fp = fopen(argv[2], "wb");
+      if (fp) {
+        fwrite(pProfMem, 1, nLen, fp);
+        fclose(fp);
+        printf("ICC profile saved to: %s\n", argv[2]);
+      } else {
+        fprintf(stderr, "Failed to write ICC profile to %s\n", argv[2]);
+      }
+    }
 
+    // Profile description and metadata
+    CIccProfile *pProfile = OpenIccProfile(pProfMem, nLen);
     if (pProfile) {
       icHeader *pHdr = &pProfile->m_Header;
       CIccInfo Fmt;
@@ -191,29 +193,30 @@ int main(int argc, icChar* argv[])
             pHdr->biSpectralRange.steps);
         }
       }
+
       CIccTag *pDesc = pProfile->FindTag(icSigProfileDescriptionTag);
-      if (pDesc->GetType()==icSigTextDescriptionType) {
-        CIccTagTextDescription *pText = (CIccTagTextDescription*)pDesc;
-        printf(" Description:      %s\n", pText->GetText());
-      }
-      else if (pDesc->GetType()==icSigMultiLocalizedUnicodeType) {
-        CIccTagMultiLocalizedUnicode *pStrs = (CIccTagMultiLocalizedUnicode*)pDesc;
-        if (pStrs->m_Strings) {
-          CIccMultiLocalizedUnicode::iterator text = pStrs->m_Strings->begin();
-          if (text != pStrs->m_Strings->end()) {
-            std::string line;
-            text->GetText(line);
-            printf(" Description:      %s\n", line.c_str());
+      if (pDesc) {
+        if (pDesc->GetType() == icSigTextDescriptionType) {
+          CIccTagTextDescription *pText = (CIccTagTextDescription*)pDesc;
+          printf(" Description:      %s\n", pText->GetText());
+        }
+        else if (pDesc->GetType() == icSigMultiLocalizedUnicodeType) {
+          CIccTagMultiLocalizedUnicode *pStrs = (CIccTagMultiLocalizedUnicode*)pDesc;
+          if (pStrs->m_Strings) {
+            CIccMultiLocalizedUnicode::iterator text = pStrs->m_Strings->begin();
+            if (text != pStrs->m_Strings->end()) {
+              std::string line;
+              text->GetText(line);
+              printf(" Description:      %s\n", line.c_str());
+            }
           }
         }
       }
     }
-  }
-  else {
-    printf("Profile:           Embedded\n");
+  } else {
+    printf("Profile:           None\n");
   }
 
   SrcImg.Close();
   return 0;
 }
-

@@ -1,27 +1,14 @@
 {
-  "name": "demoiccmax",
+  "name": "iccmax",
   "version": "2.1.25",
-  "builtin-baseline": "f728b64be8a56e3b9485f9e431efaf43ed6e9789",
+  "builtin-baseline": "35c4249523ecc2ade23826f120d3f9f6a07a697c",
   "dependencies": [
+    "libpng",
     "wxwidgets",
-    "libtiff",
-    "curl",
-    "git",
+    "tiff",
     "libxml2",
-    "nlohmann-json"
+    "nlohmann-json",
+    "libjpeg-turbo"
   ],
-  "overrides": [
-    {
-      "name": "wxwidgets",
-      "triplets": ["x64-windows", "x64-windows-static"]
-    },
-    {
-      "name": "libtiff",
-      "triplets": ["x64-windows", "x64-windows-static"]
-    },
-    {
-      "name": "libxml2",
-      "triplets": ["x64-windows", "x64-windows-static"]
-    }
-  ]
+  "overrides": []
 }
