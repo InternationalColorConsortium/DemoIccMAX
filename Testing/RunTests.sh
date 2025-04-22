@@ -1,6 +1,34 @@
 #!/bin/sh
-##
-## Assumes "iccApplyNamedCmm" is somewhere on $PATH
+#################################################################################
+# Testing/RunTests.sh | iccMAX Project
+# Copyright (C) 2024-2025 The International Color Consortium. 
+#                                        All rights reserved.
+# 
+#
+#  Last Updated: Thu May  8 07:33:04 EDT 2025 by David Hoyt
+#
+#
+#
+#
+#
+#
+# Intent: iccMAX CICD
+#
+#
+#
+#
+#################################################################################
+
+echo "====================== Entering Testing/RunTests.sh =========================="
+
+# Properly handle newline-separated paths as a list
+find ../Build/Tools -type f -perm -111 -exec dirname {} \; | sort -u | while read -r d; do
+  abs_path=$(cd "$d" && pwd)
+  PATH="$abs_path:$PATH"
+done
+
+export PATH
+
 
 if ! command -v iccApplyNamedCmm   # print which executable is being used
 then
@@ -82,3 +110,5 @@ iccApplyNamedCmm SpecRef/sixChanTest.txt 3 0 SpecRef/SixChanCameraRef.icc 3 PCC/
 echo "==========================================================================="
 echo "Test Six Channel Reflectance Camera reflectance under D93 to Lab"
 iccApplyNamedCmm SpecRef/sixChanTest.txt 3 0 SpecRef/SixChanCameraRef.icc 3 -pcc PCC/Spec400_10_700-D93_2deg-Abs.icc PCC/Lab_float-D50_2deg.icc 3
+
+echo "====================== Exiting Testing/RunTests.sh =========================="

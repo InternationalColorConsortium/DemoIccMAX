@@ -1,3 +1,8 @@
+2025-MAY-02 David Hoyt
+* Align Cmakelists.txt
+* Add IccProfLib/IccSignatureUtils.h debug helper
+* Add research branch for CICD
+
 2025-APR-12 David Hoyt
 * Align Cmake X-Platform, Code Refactoring, Code Coverage + AFL
 
