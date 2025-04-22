@@ -3,7 +3,7 @@
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #
-# Last Updated: 03-DEC-2024 by David Hoyt
+# Last Updated: 08-MAY-2025 by David Hoyt
 #
 # Changes: 	Remove hardcoded build args and debugging output from my prior commit
 #						
@@ -13,7 +13,7 @@
 #				Refactor Base Configs & logging to .mk's 
 #
 
-cmake_minimum_required(VERSION 3.5)
+# cmake_minimum_required(VERSION 3.5)
 project(iccApplyProfiles)
 
 # Set C++ standard
@@ -47,16 +47,11 @@ add_executable(iccApplyProfiles ${SOURCES})
 
 # Include directories
 target_include_directories(iccApplyProfiles PRIVATE
-  ${CMAKE_SOURCE_DIR}/../../../IccProfLib  # Custom ICC profile library
-  ${CMAKE_SOURCE_DIR}/../../../IccXML     # Custom XML processing library
   ${TIFF_INCLUDE_DIR}                     # Include libtiff headers
 )
 
 # Link directories (if required)
-target_link_directories(iccApplyProfiles PRIVATE
-  ${CMAKE_SOURCE_DIR}/../../../Build/IccProfLib
-  ${CMAKE_SOURCE_DIR}/../../../Build/IccXML
-)
+target_link_directories(iccApplyProfiles PRIVATE)
 
 # Link libraries
 target_link_libraries(iccApplyProfiles PRIVATE
