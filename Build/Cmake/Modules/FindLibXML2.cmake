@@ -1,62 +1,67 @@
-# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
-# file Copyright.txt or https://cmake.org/licensing for details.
+# Distributed under the OSI-approved BSD 3-Clause License.  
+# See https://cmake.org/licensing for details.
 
 #.rst:
-# FindLibXml2
+# FindLibXML2
 # -----------
 #
-# Try to find the LibXml2 xml processing library
+# Try to find the LibXML2 XML processing library.
 #
-# Once done this will define
+# Once done, this will define:
 #
-# ::
-#
-#   LIBXML2_FOUND - System has LibXml2
-#   LIBXML2_INCLUDE_DIR - The LibXml2 include directory
-#   LIBXML2_LIBRARIES - The libraries needed to use LibXml2
-#   LIBXML2_DEFINITIONS - Compiler switches required for using LibXml2
-#   LIBXML2_XMLLINT_EXECUTABLE - The XML checking tool xmllint coming with LibXml2
-#   LIBXML2_VERSION_STRING - the version of LibXml2 found (since CMake 2.8.8)
+#   LIBXML2_FOUND - System has LibXML2
+#   LIBXML2_INCLUDE_DIR - The LibXML2 include directory
+#   LIBXML2_LIBRARIES - The libraries needed to use LibXML2
+#   LIBXML2_DEFINITIONS - Compiler switches required for using LibXML2
+#   LIBXML2_XMLLINT_EXECUTABLE - The XML checking tool xmllint
+#   LIBXML2_VERSION_STRING - Version of LibXML2 (since CMake 2.8.8)
 
-# use pkg-config to get the directories and then use these values
-# in the find_path() and find_library() calls
+# Use pkg-config if available
 find_package(PkgConfig QUIET)
-PKG_CHECK_MODULES(PC_LIBXML QUIET libxml-2.0)
+pkg_check_modules(PC_LIBXML QUIET libxml-2.0)
 set(LIBXML2_DEFINITIONS ${PC_LIBXML_CFLAGS_OTHER})
 
+# Find headers
 find_path(LIBXML2_INCLUDE_DIR NAMES libxml/xpath.h
-   HINTS
-   ${PC_LIBXML_INCLUDEDIR}
-   ${PC_LIBXML_INCLUDE_DIRS}
-   PATH_SUFFIXES libxml2
- )
+  HINTS
+    ${PC_LIBXML_INCLUDEDIR}
+    ${PC_LIBXML_INCLUDE_DIRS}
+  PATH_SUFFIXES libxml2
+)
 
+# Find library
 find_library(LIBXML2_LIBRARIES NAMES xml2 libxml2
-   HINTS
-   ${PC_LIBXML_LIBDIR}
-   ${PC_LIBXML_LIBRARY_DIRS}
- )
+  HINTS
+    ${PC_LIBXML_LIBDIR}
+    ${PC_LIBXML_LIBRARY_DIRS}
+)
 
-find_program(LIBXML2_XMLLINT_EXECUTABLE xmllint)
-# for backwards compat. with KDE 4.0.x:
+# Find xmllint executable
+find_program(LIBXML2_XMLLINT_EXECUTABLE NAMES xmllint)
+
+# Legacy compatibility
 set(XMLLINT_EXECUTABLE "${LIBXML2_XMLLINT_EXECUTABLE}")
 
+# Determine version
 if(PC_LIBXML_VERSION)
-    set(LIBXML2_VERSION_STRING ${PC_LIBXML_VERSION})
+  set(LIBXML2_VERSION_STRING ${PC_LIBXML_VERSION})
 elseif(LIBXML2_INCLUDE_DIR AND EXISTS "${LIBXML2_INCLUDE_DIR}/libxml/xmlversion.h")
-    file(STRINGS "${LIBXML2_INCLUDE_DIR}/libxml/xmlversion.h" libxml2_version_str
-         REGEX "^#define[\t ]+LIBXML_DOTTED_VERSION[\t ]+\".*\"")
-
-    string(REGEX REPLACE "^#define[\t ]+LIBXML_DOTTED_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
-           LIBXML2_VERSION_STRING "${libxml2_version_str}")
-    unset(libxml2_version_str)
+  file(STRINGS "${LIBXML2_INCLUDE_DIR}/libxml/xmlversion.h" libxml2_version_str
+       REGEX "^#define[\t ]+LIBXML_DOTTED_VERSION[\t ]+\".*\"")
+  string(REGEX REPLACE "^#define[\t ]+LIBXML_DOTTED_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
+         LIBXML2_VERSION_STRING "${libxml2_version_str}")
+  unset(libxml2_version_str)
 endif()
 
-# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE if
-# all listed variables are TRUE
-INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibXml2
-                                  REQUIRED_VARS LIBXML2_LIBRARIES LIBXML2_INCLUDE_DIR
-                                  VERSION_VAR LIBXML2_VERSION_STRING)
+# Handle result
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(LibXML2
+  REQUIRED_VARS LIBXML2_LIBRARIES LIBXML2_INCLUDE_DIR
+  VERSION_VAR LIBXML2_VERSION_STRING
+)
 
-mark_as_advanced(LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES LIBXML2_XMLLINT_EXECUTABLE)
+mark_as_advanced(
+  LIBXML2_INCLUDE_DIR 
+  LIBXML2_LIBRARIES 
+  LIBXML2_XMLLINT_EXECUTABLE
+)

@@ -2,8 +2,8 @@
 # Cmake Project Configuration| iccMAX Project
 # Copyright (C) 2024-2025 The International Color Consortium. 
 #                                        All rights reserved.
-#  Last Updated: Mon Mar 24 16:40:19 EDT 2025 EDT by David Hoyt
-#  date -d @1742848819
+#  Last Updated: Mon Apr 28 14:50:05 EDT 2025 by David Hoyt
+#
 #
 #
 #  
@@ -21,16 +21,17 @@
 
 message(STATUS "Configuring wxProfileDump")
 
-
-set(SRC_PATH ../../../..)
+# Resolve source root properly
+get_filename_component(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../.." ABSOLUTE)
+set(SRC_PATH "${PROJECT_ROOT}")
 set(SOURCES ${SRC_PATH}/Tools/wxWidget/wxProfileDump/wxProfileDump.cpp)
 set(TARGET_NAME iccDumpProfileGui)
+
+# Log configuration
 message(STATUS "SRC_PATH: ${SRC_PATH}")
-message(STATUS "Sources:")
+message(STATUS "Sources: ${SOURCES}")
 
 set(wxWidgets_CONFIGURATION mswu)
-message(STATUS "SRC_PATH: ${SRC_PATH}")
-message(STATUS "Sources:")
 
 add_executable(${TARGET_NAME} ${SOURCES})
 set_target_properties(${TARGET_NAME} PROPERTIES WIN32_EXECUTABLE ON)
