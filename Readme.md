@@ -15,13 +15,13 @@ Within the project are several libraries and tools as follows:
     cross platform reference implementation of a C++ library for reading,
     writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
     profile specification](http://www.color.org/iccmax.xalter). Class and object
-    interaction documentation for IccProfLib in [Doxygen](https://xss.cx/public/docs/DemoIccMAX/).
+    interaction documentation for IccProfLib in [Doxygen](https://xss.cx/public/docs/IccMAX/).
 
   * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
     objects defined by IccProfLib using an XML representation thus allowing iccMAX
     profiles to be expressed as or created from text based XML files. Class and object
-    interaction documentation for IccLibXML in [Doxygen](https://xss.cx/public/docs/DemoIccMAX/).
+    interaction documentation for IccLibXML in [Doxygen](https://xss.cx/public/docs/IccMAX/).
 
 
 * Tools based upon these libraries
@@ -87,6 +87,9 @@ Within the project are several libraries and tools as follows:
   * IccPngDump is a cross platform command line tool that outputs header and
     embedded ICC profile information about a PNG image to the console. 
 
+  * IccJpegDump is a cross platform command line tool that outputs header and
+    embedded ICC profile information about a JPG image to the console. 
+
   * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
     iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
     wxWidgets 3.2.
@@ -146,15 +149,16 @@ abridged spectral encoding is provided.
 
 ## Quick Start
 
-[Release Libraries & Binaries](https://github.com/xsscx/PatchIccMAX/releases) | [Legacy OS Build Instructions](contrib/Build/cmake/IccMAX_Ubuntu22_Readme.md)
+[Release Libraries & Binaries](https://github.com/xsscx/PatchIccMAX/releases) 
 
-### Supported Triples
-| **Operating System**       | **Kernel Version**                                | **Architecture**     | **Environment**                       |
-|----------------------------|--------------------------------------------------|-----------------------|---------------------------------------|
-| macOS                      | Darwin Kernel Version 24.1.0                     | ARM64                | RELEASE_ARM64_T8103                   |
-| macOS                      | Darwin Kernel Version 24.1.0                     | x86_64               | RELEASE_X86_64                        |
-| WSL2 (Ubuntu 24)           | 5.15.167.4-microsoft-standard-WSL2               | x86_64               | GNU/Linux                             |
-| Microsoft Windows 11 Pro   | 10.0.26100                                       | x86_64               | Visual Studio 17.12.1                 |
+### [Triples Testing Summary](https://github.com/xsscx/PatchIccMAX/actions)
+
+| **Operating System**       | **Kernel Version**                               | **Architecture**     | **Environment**                       |
+|----------------------------|--------------------------------------------------|----------------------|---------------------------------------|
+| macOS                      | Darwin Kernel Version 24.4.0                     | ARM64                | RELEASE_ARM64_T8103                   |
+| macOS                      | Darwin Kernel Version 24.4.0                     | x86_64               | RELEASE_X86_64                        |
+| WSL2 (Linux)               | 5.15.167.4-microsoft-standard-WSL2               | x86_64               | GNU/Linux                             |
+| Microsoft Windows 11 Pro   | Version	10.0.26100 Build 26100                  | x86_64               | Visual Studio 17.13.6                 |
 
 ---
 
@@ -167,7 +171,7 @@ export CXX=g++
 cd ~
 git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
 cd DemoIccMAX/Build
-sudo apt-get install -y libpng-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential
+sudo apt-get install -y libpng-dev libjpeg-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential
 cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" -DCMAKE_BUILD_TYPE=Debug -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON -Wno-dev -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
 make -j$(nproc)
 find IccProfLib/ IccXML/ Tools/ -type f -executable -exec file {} \; | grep 'ELF' | cut -d: -f1
@@ -190,7 +194,7 @@ export CXX=clang++
 cd ~
 git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
 cd DemoIccMAX/Build
-brew install libpng nlohmann-json libxml2 wxwidgets libtiff
+brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
 make -j$(nproc)
 cd ..
@@ -246,6 +250,7 @@ cd vcpkg
 
 ```
 .\vcpkg.exe install `
+  libjpeg-turbo `
   libpng `
   nlohmann-json:x64-windows `
   nlohmann-json:x64-windows-static `
@@ -356,8 +361,10 @@ Adjust the Cmake Configure args shown above to use `$vcpkg` instead of `C:/test/
 3. CICD Runner plus Stub
 
 ### Project Dependencies
-- `libpng-dev`: Required for Png Support.
 - `libxml2`: Required for XML support.
+- `libpng-dev`: Required for Png Support.
+- `libjpg-dev`: Required for Jpg Support. 
+- `libjpeg-turbo`: Required for JPEG support.
 - `libwxgtk3.2-dev`: Required for GUI support.
 - `nlohmann-json3-dev`: Enables JSON parsing for configuration files.
 - `libtiff`: Supports TIFF image manipulation for image processing tools.

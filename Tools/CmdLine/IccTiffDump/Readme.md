@@ -1,83 +1,63 @@
-# iccTiffDump
+# 🖨️ iccTiffDump
 
-## Overview
-
-`iccTiffDump` is a command-line utility for extracting metadata and ICC profile details from TIFF images. It reports image characteristics such as dimensions, bit depth, photometric interpretation, and embedded ICC color profiles when present.
-
-This tool is ideal for developers and color scientists who need to audit TIFF image color characteristics or verify ICC profile embedding.
+**iccTiffDump** is a command-line tool for extracting ICC profile metadata and technical characteristics from TIFF images.
+It helps color scientists and developers audit TIFF structure, verify embedded color profiles, and analyze imaging parameters.
 
 ---
 
-## Features
+## 🔧 Features
 
-- Extracts and displays key TIFF image metadata
-- Identifies photometric interpretation and compression method
-- Displays embedded ICC profile data including color space, PCS, and profile description
-- Provides support for text and multilingual profile descriptions
-- Outputs image resolution, sample format, and bytes per line
-
----
-
-## Output Details
-
-### TIFF Metadata
-- Image dimensions and physical size (in inches)
-- Planar configuration and photometric interpretation
-- Bit depth, samples per pixel, and compression type
-- Resolution in pixels per inch
-- Extra samples (e.g., alpha channel)
-- Byte stride per line of pixels
-
-### ICC Profile Information (if embedded)
-- Color space and PCS (Profile Connection Space)
-- Spectral PCS and spectral range (if present)
-- Profile description (localized and plain text variants)
+- ✅ **TIFF Metadata Reporting**
+  - Image dimensions, DPI, compression type, photometric model
+- ✅ **ICC Profile Analysis**
+  - Extracts embedded ICC profile with PCS, signature, description
+- ✅ **Sample Precision Reporting**
+  - Bits per component, sample format, samples per pixel
+- ✅ **Tag Visibility**
+  - Shows image layout, color space tags, resolution units
+- ✅ **Multilingual Support**
+  - Recognizes multi-language ICC descriptions and localized tags
 
 ---
 
-## Build Instructions
+## 🚀 Usage
 
-### Clean prior build artifacts
-```sh
-cd Build/
-rm -rf CMakeCache.txt CMakeFiles/ Makefile IccProfLib/ IccXML/ Testing/ Tools/
+### 📤 Extract Profile and Metadata
+
+```bash
+iccTiffDump input.tiff
 ```
 
-### Configure with debug flags and AddressSanitizer
-```sh
-cd Build/
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local       -DCMAKE_BUILD_TYPE=Debug       -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall"       -Wno-dev -DENABLE_TOOLS=YES Cmake/
-```
-
-### Compile with 32 threads
-```sh
-make -j32
-```
+Prints TIFF structure summary and ICC profile block if present.
 
 ---
 
-## Usage Examples
+## 📘 Output Highlights
 
-### Analyze a single TIFF image
-```sh
-Tools/IccTiffDump/iccTiffDump sample.tiff
-```
-
-### Export ICC profile from TIFF (if present)
-```sh
-Tools/IccTiffDump/iccTiffDump sample.tiff exported.icc
-```
+- **Image Size** — Width × Height, DPI resolution
+- **Color Model** — Photometric (RGB, CMYK, grayscale, etc.)
+- **Compression** — e.g., LZW, PackBits, JPEG
+- **ICC Block** — Version, size, PCS, rendering intent, description
 
 ---
 
-## Notes
+## 🧪 Advanced Use
 
-- **TIFF image requirements**: The image should be well-formed and readable by `CTiffImg`.
-- **Exported profiles**: Only available if ICC profile is embedded in the input file.
+- Suitable for fuzzing TIFF encoders with profile injection
+- Validates deterministic TIFF profile roundtrips
 
 ---
 
-## Changelog
+## 📚 Related Tools
 
-- Initial implementation by Max Derhak (2003)
-- CLI modernization and metadata extension by David Hoyt (2025)
+- `iccEval`, `iccFromXml`, `iccApplyProfiles`
+- Compatible with PNG and JPEG ICC tools from same suite
+
+---
+
+## 🔒 Notes
+
+- Supports baseline and BigTIFF variants
+- Reports errors for malformed tag blocks
+
+---

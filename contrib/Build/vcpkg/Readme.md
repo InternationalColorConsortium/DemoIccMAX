@@ -35,6 +35,7 @@ cd vcpkg
 ```
 vcpkg.exe install `
   libpng `
+  libjpeg-turbo `
   nlohmann-json:x64-windows `
   nlohmann-json:x64-windows-static `
   libxml2:x64-windows `

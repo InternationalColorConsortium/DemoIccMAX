@@ -65,7 +65,7 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
-// - CopyPasta by David dHoyt 22-MAR-2025
+// - CopyPasta by David Hoyt 18-APRIL-2025 to Write ICC -> PNG
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -78,6 +78,9 @@
 * image processing, UI interaction, and basic C operations essential for the application.
 */
 
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,6 +89,7 @@
 #include "IccUtil.h"
 #include "IccDefs.h"
 #include "IccProfLibVer.h"
+#include <zlib.h>
 
 // Handle platform-specific png_get_iCCP() profile pointer types
 #if defined(__APPLE__) && defined(__clang__)
@@ -137,6 +141,26 @@ void safe_exit(const char *reason);
  */
 int ExtractIccProfile(png_structp png_ptr, png_infop info_ptr, unsigned char **pProfMem, unsigned int *nLen);
 
+/**
+ * Injects a new ICC profile into a PNG and writes it to disk.
+ *
+ * @param inputPng Source PNG path.
+ * @param iccFile  ICC profile file to inject.
+ * @param outputPng Destination PNG path.
+ * @return true on success, false otherwise.
+ */
+bool InjectIccProfile(const std::string& inputPng,
+                      const std::string& iccFile,
+                      const std::string& outputPng);
+
+/**
+ * Displays and optionally saves ICC profile information.
+ *
+ * @param pProfMem ICC profile memory block.
+ * @param nLen     Size of ICC data.
+ * @param outputFile Path to write ICC (optional).
+ */
+void PrintIccProfileInfo(const unsigned char *pProfMem, unsigned int nLen, const char *outputFile);
 
 /**
  * Prints information about a given PNG file.
@@ -147,20 +171,12 @@ int ExtractIccProfile(png_structp png_ptr, png_infop info_ptr, unsigned char **p
 void PrintPngInfo(png_structp png_ptr, png_infop info_ptr);
 
 
-/**
- * Prints details of an ICC profile extracted from a PNG image.
- *
- * @param pProfMem    Pointer to the ICC profile data.
- * @param nLen        Length of the ICC profile data.
- * @param outputFile  Path to the output file where information should be saved.
- */
-void PrintIccProfileInfo(const unsigned char *pProfMem, unsigned int nLen, const char *outputFile);
 
 /**
  * Entry point of the iccPngDump program.
  *
  * This function handles command-line arguments, opens a PNG file,
- * validates its format, and extracts an embedded ICC profile if available.
+ * validates its format, and either extracts or injects an ICC profile.
  *
  * @param argc Argument count.
  * @param argv Argument vector.
@@ -169,25 +185,58 @@ void PrintIccProfileInfo(const unsigned char *pProfMem, unsigned int nLen, const
 int main(int argc, char* argv[]) {
     printf("[INFO] Starting iccPngDump...\n");
 
-    // Ensure correct number of arguments
     if (argc < 2) {
         Usage();
         safe_exit("Missing input file argument.");
     }
 
-    const char *inputFile = argv[1];
-    const char *outputIccFile = (argc > 2) ? argv[2] : NULL;
+    const char *inputFile = NULL;
+    const char *outputIccFile = NULL;
+    const char *injectIccFile = NULL;
+    const char *outputPngFile = NULL;
 
+    // Simple CLI arg parsing
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--write-icc") == 0 && i + 1 < argc) {
+            injectIccFile = argv[++i];
+        } else if (strcmp(argv[i], "--output") == 0 && i + 1 < argc) {
+            outputPngFile = argv[++i];
+        } else if (!inputFile) {
+            inputFile = argv[i];
+        } else if (!outputIccFile) {
+            outputIccFile = argv[i];
+        }
+    }
+
+    if (!inputFile) {
+        Usage();
+        safe_exit("Input PNG file not specified.");
+    }
+
+// --- Injection Mode ---
+if (injectIccFile) {
+    if (!outputPngFile) {
+        safe_exit("Missing --output argument for write mode.");
+    }
+
+    printf("[INFO] Injecting ICC profile '%s' into PNG: '%s'\n", injectIccFile, outputPngFile);
+
+    if (!InjectIccProfile(inputFile, injectIccFile, outputPngFile)) {
+        safe_exit("Failed to inject ICC profile.");
+    }
+
+    printf("[INFO] Injection successful.\n");
+    return 0;
+}
+
+    // --- Extraction Mode ---
     printf("[INFO] Opening PNG file: %s\n", inputFile);
-
-    // Open the PNG file for reading
     FILE *fp = fopen(inputFile, "rb");
     if (!fp) {
         LOG_ERROR("File cannot be opened.");
         safe_exit("File error.");
     }
 
-    // Read and validate PNG signature
     unsigned char header[8];
     if (fread(header, 1, 8, fp) != 8 || png_sig_cmp(header, 0, 8)) {
         LOG_ERROR("Not a valid PNG file.");
@@ -195,14 +244,12 @@ int main(int argc, char* argv[]) {
         safe_exit("Invalid PNG format.");
     }
 
-    // Initialize PNG read structure
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png_ptr) {
         fclose(fp);
         BAIL_OUT("Failed to create PNG read structure.");
     }
 
-    // Initialize PNG info structure
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr) {
         png_destroy_read_struct(&png_ptr, NULL, NULL);
@@ -210,33 +257,27 @@ int main(int argc, char* argv[]) {
         BAIL_OUT("Failed to create PNG info structure.");
     }
 
-    // Set up error handling for libpng
     if (setjmp(png_jmpbuf(png_ptr))) {
         png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
         fclose(fp);
         BAIL_OUT("LibPNG error encountered.");
     }
 
-    // Initialize PNG I/O and process file signature bytes
     png_init_io(png_ptr, fp);
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);
 
-    // Print PNG metadata
     PrintPngInfo(png_ptr, info_ptr);
 
-    // Attempt to extract ICC profile from the PNG file
     unsigned char *pProfMem = NULL;
     unsigned int nLen = 0;
     if (ExtractIccProfile(png_ptr, info_ptr, &pProfMem, &nLen)) {
-        // If ICC profile found, process it
         PrintIccProfileInfo(pProfMem, nLen, outputIccFile);
         free(pProfMem);
     } else {
         printf("[INFO] No embedded ICC Profile found.\n");
     }
 
-    // Cleanup PNG structures and close the file
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     fclose(fp);
 
@@ -268,9 +309,126 @@ void safe_exit(const char *reason) {
  * This function provides details on the correct command-line syntax.
  */
 void Usage() {
-    printf("Usage: iccPngDump <input.png> [output.icc]\n");
-    printf("  Extracts the ICC profile from a PNG file.\n");
-    printf("  If an output file is provided, the ICC profile is saved.\n");
+    printf("Usage:\n");
+    printf("  iccPngDump <input.png> [output.icc]\n");
+    printf("    - Extracts ICC profile from PNG.\n");
+    printf("    - Saves profile to [output.icc] if specified.\n");
+    printf("\n");
+    printf("  iccPngDump <input.png> --write-icc <profile.icc> --output <output.png>\n");
+    printf("    - Injects specified ICC profile into PNG.\n");
+    printf("    - Outputs modified PNG as <output.png>.\n");
+}
+
+// =====================================================================
+// Function: InjectIccProfile
+// Description: Injects an ICC profile into a PNG file
+// =====================================================================
+/**
+ * Injects a new ICC profile into a PNG image and writes the output.
+ *
+ * @param inputPng Path to the source PNG file.
+ * @param iccFile Path to the ICC file to embed.
+ * @param outputPng Path to write the modified PNG file.
+ * @return true on success, false on failure.
+ */
+bool InjectIccProfile(const std::string& inputPng,
+                      const std::string& iccFile,
+                      const std::string& outputPng) {
+    std::ifstream iccIn(iccFile, std::ios::binary);
+    if (!iccIn.is_open()) {
+        safe_exit("Failed to open ICC profile file for reading.");
+    }
+
+    std::vector<unsigned char> iccData((std::istreambuf_iterator<char>(iccIn)),
+                                       std::istreambuf_iterator<char>());
+
+    FILE* fpIn = fopen(inputPng.c_str(), "rb");
+    if (!fpIn) {
+        safe_exit("Failed to open input PNG file.");
+    }
+
+    FILE* fpOut = fopen(outputPng.c_str(), "wb");
+    if (!fpOut) {
+        fclose(fpIn);
+        safe_exit("Failed to open output PNG file.");
+    }
+
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr) {
+        fclose(fpIn); fclose(fpOut);
+        safe_exit("Failed to create PNG read struct.");
+    }
+
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr) {
+        png_destroy_read_struct(&png_ptr, NULL, NULL);
+        fclose(fpIn); fclose(fpOut);
+        safe_exit("Failed to create PNG info struct.");
+    }
+
+    if (setjmp(png_jmpbuf(png_ptr))) {
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        fclose(fpIn); fclose(fpOut);
+        safe_exit("LibPNG read error.");
+    }
+
+    png_init_io(png_ptr, fpIn);
+    png_read_info(png_ptr, info_ptr);
+
+    png_structp write_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_infop write_info_ptr = png_create_info_struct(write_ptr);
+    if (!write_ptr || !write_info_ptr) {
+        safe_exit("Failed to create PNG write structures.");
+    }
+
+    if (setjmp(png_jmpbuf(write_ptr))) {
+        safe_exit("LibPNG write error.");
+    }
+
+    png_init_io(write_ptr, fpOut);
+   png_set_compression_level(write_ptr, Z_BEST_COMPRESSION);
+
+// MUST propagate original info to write_info_ptr before setting ICC
+png_set_rows(write_ptr, write_info_ptr, nullptr);  // optional
+png_set_IHDR(write_ptr, write_info_ptr,
+             png_get_image_width(png_ptr, info_ptr),
+             png_get_image_height(png_ptr, info_ptr),
+             png_get_bit_depth(png_ptr, info_ptr),
+             png_get_color_type(png_ptr, info_ptr),
+             png_get_interlace_type(png_ptr, info_ptr),
+             png_get_compression_type(png_ptr, info_ptr),
+             png_get_filter_type(png_ptr, info_ptr));
+
+// only now is it safe to attach ICC
+png_set_iCCP(write_ptr, write_info_ptr, "icc", 0, iccData.data(), iccData.size());
+
+// finally write header
+png_write_info(write_ptr, write_info_ptr);
+
+
+    // Re-read the input image data and write to output
+    png_bytepp row_pointers = (png_bytepp)png_malloc(png_ptr,
+        sizeof(png_bytep) * png_get_image_height(png_ptr, info_ptr));
+
+    for (png_uint_32 y = 0; y < png_get_image_height(png_ptr, info_ptr); y++) {
+        row_pointers[y] = (png_bytep)png_malloc(png_ptr, png_get_rowbytes(png_ptr, info_ptr));
+    }
+
+    png_read_image(png_ptr, row_pointers);
+    png_write_image(write_ptr, row_pointers);
+    png_write_end(write_ptr, NULL);
+
+    // Cleanup
+    for (png_uint_32 y = 0; y < png_get_image_height(png_ptr, info_ptr); y++) {
+        png_free(png_ptr, row_pointers[y]);
+    }
+    png_free(png_ptr, row_pointers);
+
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    png_destroy_write_struct(&write_ptr, &write_info_ptr);
+    fclose(fpIn);
+    fclose(fpOut);
+    return true;
 }
 
 // =====================================================================
