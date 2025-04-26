@@ -22,24 +22,34 @@
 # Set the project name
 project(iccJpegDump)
 
+#
+# 26-APRIL-2025 - David Hoyt | Testing for Brew
+#
+# Intent: Add iccmax to package managers
+#
+# Purpose: Workaround for Ubuntu 24 VM Runner with Ubuntu 22 Docker Image
+#
+# Issue: CMake Configure Bypassing Source, Error on Brew Audit
+#
+#
 # Platform-based build gate (skip for Ubuntu < 24.04)
-if(UNIX AND EXISTS "/etc/lsb-release")
-    execute_process(
-        COMMAND lsb_release -rs
-        OUTPUT_VARIABLE LSB_VERSION
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    message(STATUS "Detected Ubuntu version: ${LSB_VERSION}")
-    string(REGEX MATCHALL "[0-9]+" LSB_VERSION_PARTS "${LSB_VERSION}")
-    list(GET LSB_VERSION_PARTS 0 UBUNTU_MAJOR)
-    list(GET LSB_VERSION_PARTS 1 UBUNTU_MINOR)
-
-    math(EXPR LSB_VERSION_COMBINED "${UBUNTU_MAJOR} * 100 + ${UBUNTU_MINOR}")
-    if(LSB_VERSION_COMBINED LESS 2404)
-        message(WARNING "iccJpegDump is skipped: requires Ubuntu 24.04 or later")
-        return()
-    endif()
-endif()
+# if(UNIX AND EXISTS "/etc/lsb-release")
+#     execute_process(
+#         COMMAND lsb_release -rs
+#         OUTPUT_VARIABLE LSB_VERSION
+#         OUTPUT_STRIP_TRAILING_WHITESPACE
+#     )
+#     message(STATUS "Detected Ubuntu version: ${LSB_VERSION}")
+#     string(REGEX MATCHALL "[0-9]+" LSB_VERSION_PARTS "${LSB_VERSION}")
+#     list(GET LSB_VERSION_PARTS 0 UBUNTU_MAJOR)
+#     list(GET LSB_VERSION_PARTS 1 UBUNTU_MINOR)
+# 
+#     math(EXPR LSB_VERSION_COMBINED "${UBUNTU_MAJOR} * 100 + ${UBUNTU_MINOR}")
+#     if(LSB_VERSION_COMBINED LESS 2404)
+#         message(WARNING "iccJpegDump is skipped: requires Ubuntu 24.04 or later")
+#         return()
+#     endif()
+# endif()
 
 # Define the source path
 set(SRC_PATH ../../../..)
