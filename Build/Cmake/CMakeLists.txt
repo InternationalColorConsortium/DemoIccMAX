@@ -4,13 +4,13 @@
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: Sat Apr 19 14:00:59 EDT 2025 by David Hoyt
-#  date -r 1745085659
+#  Last Updated: Sat Apr 27 00:02:00 EDT 2025 by David Hoyt
+#  
 # 
-#
+#  Intent: Align for vcpkg integration 
 #  Changes: 
-#           Added to CMakelists.txt: IccJpegDump
-#           Adjusted Cross Platform Build Args, Add Jpeg Dep
+#           MOD to CMakelists.txt: REMOVE: JPG + TIF Tools
+#           Minimum Smoke Test for VCPKG Cross Platform
 #						
 #  TODO:    Refactor Debug, Release, Asan, subproject pathing issues
 #           Collapse 3-tier CMakeLists.txt, Housekeeping
@@ -683,14 +683,14 @@ if (PNG_FOUND)
     include_directories(${PNG_INCLUDE_DIRS})
     message(STATUS "PNG library found: ${PNG_LIBRARIES}")
 
-    message(STATUS "Adding Subdirectory IccPngDump.")
-    ADD_SUBDIRECTORY(Tools/IccPngDump)
+    message(STATUS "SKIPPING Subdirectory IccPngDump.")
+    # ADD_SUBDIRECTORY(Tools/IccPngDump)
 else()
     message(FATAL_ERROR "PNG library not found. Please install libpng-dev.")
 endif()
 
-    message(STATUS "Adding Subdirectory DemoIccMAXCmm.")
-    ADD_SUBDIRECTORY(Tools/DemoIccMAXCmm)
+    message(STATUS "SKIPPING Subdirectory DemoIccMAXCmm.")
+    # ADD_SUBDIRECTORY(Tools/DemoIccMAXCmm)
 
 
   # Check for TIFF library
@@ -701,10 +701,10 @@ endif()
 
     # Add TIFF-dependent tools
 #    ADD_SUBDIRECTORY(Tools/IccApplyProfiles)
-    message(STATUS "Adding subdirectory IccSpecSepToTiff.")
-    ADD_SUBDIRECTORY(Tools/IccSpecSepToTiff)
-    message(STATUS "Adding Subdirectory IccTiffDump.")
-    ADD_SUBDIRECTORY(Tools/IccTiffDump)
+    message(STATUS "SKIPPING subdirectory IccSpecSepToTiff.")
+    # ADD_SUBDIRECTORY(Tools/IccSpecSepToTiff)
+    message(STATUS "SKIPPING Subdirectory IccTiffDump.")
+    # ADD_SUBDIRECTORY(Tools/IccTiffDump)
   else()
     message(FATAL_ERROR "TIFF library not found. Please install libtiff-dev.")
   endif()
@@ -714,8 +714,8 @@ endif()
   ADD_SUBDIRECTORY(Tools/IccFromXml)
   message(STATUS "Adding Subdirectory IccToXml.")
   ADD_SUBDIRECTORY(Tools/IccToXml)
-  message(STATUS "Adding Subdirectory IccJpegDump.")
-  ADD_SUBDIRECTORY(Tools/IccJpegDump)
+  message(STATUS "SKIPPING Subdirectory IccJpegDump.")
+  # ADD_SUBDIRECTORY(Tools/IccJpegDump)
   
   # Configure wxWidgets
   find_package(wxWidgets COMPONENTS core base REQUIRED)
