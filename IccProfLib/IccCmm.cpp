@@ -2338,6 +2338,9 @@ icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignatur
       else
         pushXyzToLab(pToXform->m_pConnectionConditions);
     }
+    else {
+      pushXyzToXyzIn();
+    }
   }
   else if (srcSpace == icSigLabData) {
 
@@ -2358,6 +2361,14 @@ icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignatur
         pushXyzToLab(pToXform->m_pConnectionConditions);
     }
   }
+
+
+  icStatusCMM rv = Optimize();
+  if (rv != icCmmStatOk)
+    return rv;
+
+  if (m_list->begin() == m_list->end())
+    return icCmmStatIdentityXform;
 
   return icCmmStatOk;
 }
@@ -2393,6 +2404,7 @@ icStatusCMM CIccPcsXform::ConnectLast(CIccXform* pFromXform, icColorSpaceSignatu
   }
 
   if (srcSpace == icSigXYZData && dstSpace == icSigLabData) {
+    pushXyzInToXyz();
     pushXyzToLab(pFromXform->m_pConnectionConditions);
   }
   else if (srcSpace == icSigLabData && dstSpace == icSigXYZData) {
@@ -2403,9 +2415,13 @@ icStatusCMM CIccPcsXform::ConnectLast(CIccXform* pFromXform, icColorSpaceSignatu
     if (pFromXform->IsInput())
       pushXyzToXyzIn();
   }
-  else if (pFromXform->IsInput() && srcSpace == icSigXYZData && dstSpace == icSigXYZData) {
-    pushXyzToXyzIn();
-  }
+
+  icStatusCMM rv = Optimize();
+  if (rv != icCmmStatOk)
+    return rv;
+
+  if (m_list->begin() == m_list->end())
+    return icCmmStatIdentityXform;
 
   return icCmmStatOk;
 }
@@ -8456,8 +8472,10 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
       }
       rv = pPcs->ConnectLast(last->ptr, GetDestSpace());
 
-      if (rv != icCmmStatOk && rv != icCmmStatIdentityXform)
+      if (rv != icCmmStatOk && rv != icCmmStatIdentityXform) {
+        delete pPcs;
         return rv;
+      }
 
       if (rv != icCmmStatIdentityXform) {
         ptr.ptr = pPcs;
