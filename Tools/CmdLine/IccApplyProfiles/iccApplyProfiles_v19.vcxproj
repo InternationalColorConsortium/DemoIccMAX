@@ -273,6 +273,8 @@ copy $(Platform)\$(Configuration)\iccApplyProfiles.pdb ..\..\..\Testing
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\IccCommon\IccCmmConfig.cpp" />
+    <ClCompile Include="..\IccCommon\IccJsonUtil.cpp" />
     <ClCompile Include="iccApplyProfiles.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -299,6 +301,8 @@ copy $(Platform)\$(Configuration)\iccApplyProfiles.pdb ..\..\..\Testing
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\IccCommon\IccCmmConfig.h" />
+    <ClInclude Include="..\IccCommon\IccJsonUtil.h" />
     <ClInclude Include="TiffImg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

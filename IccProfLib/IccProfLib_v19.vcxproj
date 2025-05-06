@@ -614,6 +614,7 @@
     <ClInclude Include="IccProfile.h" />
     <ClInclude Include="IccProfLibConf.h" />
     <ClInclude Include="IccProfLibVer.h" />
+    <ClInclude Include="IccSearch.h" />
     <ClInclude Include="IccSolve.h" />
     <ClInclude Include="IccSparseMatrix.h" />
     <ClInclude Include="IccStructBasic.h" />

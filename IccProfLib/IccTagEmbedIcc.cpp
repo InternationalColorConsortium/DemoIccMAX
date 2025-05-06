@@ -460,13 +460,13 @@ icValidateStatus CIccTagEmbeddedProfile::Validate(std::string sigPath, std::stri
     return rv;
   }
 
-  rv = icMaxStatus(rv, m_pProfile->Validate(sReport, sigPath));
+  rv = icMaxStatus(rv, m_pProfile->Validate(sReport, sigPath, m_pProfile));
 
   if (pProfile) {
-    if (m_pProfile->m_Header.colorSpace != pProfile->m_Header.colorSpace) {
+    if (icGetSpaceSamples(m_pProfile->m_Header.colorSpace) < icGetSpaceSamples(pProfile->m_Header.colorSpace)) {
       sReport += icMsgValidateCriticalError;
       sReport += Info.GetSigPathName(sigPath);
-      sReport += " - color space does not match for embedded profile.\n";
+      sReport += " - Embedded profile has fewer device channels that parent profile.\n";
 
       rv = icMaxStatus(rv, icValidateCriticalError);
     }

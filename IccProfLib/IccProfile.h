@@ -182,9 +182,11 @@ public:
   bool ReadProfileID(icProfileID &profileID); //works if HasIO() is true 
 
   void InitHeader();
-  icValidateStatus Validate(std::string &sReport, std::string sSigPath="") const;
+  icValidateStatus Validate(std::string &sReport, std::string sSigPath="", const CIccProfile *pParentProfile=NULL) const;
 
   icUInt16Number GetSpaceSamples() const;
+  icUInt16Number GetParentSpaceSamples() const;
+  icColorSpaceSignature GetParentColorSpace() const { return m_parentColorSpace; }
 
   bool AreTagsUnique() const;
 	bool IsTagPresent(icSignature sig) const { return (GetTag(sig)!=NULL); }
@@ -216,6 +218,7 @@ protected:
 
   void Cleanup();
   IccTagEntry* GetTag(icSignature sig) const;
+  IccTagEntry* GetTag(icSignature sig, const CIccProfile* pParent) const;
   IccTagEntry* GetTag(CIccTag *pTag) const;
   bool ReadBasic(CIccIO *pIO);
   bool LoadTag(IccTagEntry *pTagEntry, CIccIO *pIO, bool bReadAll=false);
@@ -224,7 +227,7 @@ protected:
   CIccIO* ConnectSubProfile(CIccIO *pIO, bool bOwnIO) const;
 
   // Profile Validation functions
-  icValidateStatus CheckRequiredTags(std::string &sReport) const;
+  icValidateStatus CheckRequiredTags(std::string &sReport, const CIccProfile *pParentProfile = NULL) const;
   bool CheckTagExclusion(std::string &sReport) const;
   icValidateStatus CheckHeader(std::string &sReport) const;
   icValidateStatus CheckTagTypes(std::string &sReport) const;
@@ -236,6 +239,8 @@ protected:
   CIccIO *m_pAttachIO;
 
   TagPtrList *m_TagVals;
+
+  icColorSpaceSignature m_parentColorSpace = icSigNoColorData;
 };
 
 CIccProfile ICCPROFLIB_API *ReadIccProfile(const icChar *szFilename, bool bUseSubProfile=false);

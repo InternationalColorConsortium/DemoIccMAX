@@ -1685,6 +1685,9 @@ public:
   icColorSpaceSignature GetDestSpace() const { return m_nDestSpace; }
     ///Returns the color space of the last profile added
   icColorSpaceSignature GetLastSpace() const { return m_nLastSpace; }
+  ///Returns the parent's color space of the last profile added
+  icColorSpaceSignature GetLastParentSpace() const { return m_nLastParentSpace; }
+
   ///Returns the rendering intent of the last profile added
   icRenderingIntent GetLastIntent() const { return m_nLastIntent; }
 
@@ -1745,6 +1748,7 @@ protected:
   icColorSpaceSignature m_nDestSpace;
 
   icColorSpaceSignature m_nLastSpace;
+  icColorSpaceSignature m_nLastParentSpace;
   icRenderingIntent m_nLastIntent;
 
   CIccXformList *m_Xforms;

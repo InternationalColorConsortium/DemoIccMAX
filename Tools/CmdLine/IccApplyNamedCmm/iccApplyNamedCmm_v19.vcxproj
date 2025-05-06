@@ -286,6 +286,8 @@ copy $(Platform)\$(Configuration)\iccApplyNamedCmm.pdb ..\..\..\Testing
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\IccCommon\IccCmmConfig.cpp" />
+    <ClCompile Include="..\IccCommon\IccJsonUtil.cpp" />
     <ClCompile Include="iccApplyNamedCmm.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -298,6 +300,10 @@ copy $(Platform)\$(Configuration)\iccApplyNamedCmm.pdb ..\..\..\Testing
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\IccCommon\IccCmmConfig.h" />
+    <ClInclude Include="..\IccCommon\IccJsonUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7819,6 +7819,7 @@ CIccCmm::CIccCmm(icColorSpaceSignature nSrcSpace /*=icSigUnknownData*/,
   m_nDestSpace = nDestSpace;
 
   m_nLastSpace = nSrcSpace;
+  m_nLastParentSpace = icSigNoColorData;
   m_nLastIntent = icUnknownIntent;
 
   m_Xforms = new CIccXformList;
@@ -8023,7 +8024,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
                               bool bUseD2BxB2DxTags /*=true*/,
                               CIccCreateXformHintManager *pHintManager /*=NULL*/)
 {
-  icColorSpaceSignature nSrcSpace, nDstSpace;
+  icColorSpaceSignature nSrcSpace, nDstSpace, nParentSpace=icSigNoColorData;
   bool bInput = !m_bLastInput;
 
   if (!pProfile)
@@ -8048,6 +8049,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
       //Check pProfile if nIntent and input can be found.
       if (bInput) {
         nSrcSpace = pProfile->m_Header.colorSpace;
+        nParentSpace = pProfile->GetParentColorSpace();
 
         if (nLutType == icXformLutSpectral || (bUseD2BxB2DxTags && pProfile->m_Header.spectralPCS && nLutType != icXformLutColorimetric))
           nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
@@ -8069,6 +8071,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
           nSrcSpace = pProfile->m_Header.pcs;
 
         nDstSpace = pProfile->m_Header.colorSpace;
+        nParentSpace = pProfile->GetParentColorSpace();
       }
     }
     break;
@@ -8111,6 +8114,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
     case icXformLutMCS:
       if (bInput) {
         nSrcSpace = pProfile->m_Header.colorSpace;
+        nParentSpace = pProfile->GetParentColorSpace();
         nDstSpace = (icColorSpaceSignature)pProfile->m_Header.mcs;
       }
       else {
@@ -8152,6 +8156,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
         }
         else if (pProfile->m_Header.deviceClass==icSigMaterialLinkClass) {
           nDstSpace = pProfile->m_Header.colorSpace;
+          nParentSpace = pProfile->GetParentColorSpace();
         }
         else {
           return icCmmStatBadSpaceLink;
@@ -8167,6 +8172,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
   if (!m_Xforms->size()) {
     if (m_nSrcSpace == icSigUnknownData) {
       m_nLastSpace = nSrcSpace;
+      m_nLastParentSpace = nParentSpace;
       m_nSrcSpace = nSrcSpace;
     }
     else if (!IsCompatSpace(m_nSrcSpace, nSrcSpace)) {
@@ -8205,6 +8211,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
   }
 
   m_nLastSpace = nDstSpace;
+  m_nLastParentSpace = nParentSpace;
   m_nLastIntent = nIntent;
   m_bLastInput = bInput;
 
@@ -8240,7 +8247,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
                               bool bUseSpectralPCS /*=false*/,
                               CIccCreateXformHintManager *pHintManager /*=NULL*/)
 {
-  icColorSpaceSignature nSrcSpace, nDstSpace;
+  icColorSpaceSignature nSrcSpace, nDstSpace, nParentSpace = icSigNoColorData;
   bool bInput = !m_bLastInput;
 
   if (!pProfile)
@@ -8259,6 +8266,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
   //Check pProfile if nIntent and input can be found.
   if (bInput) {
     nSrcSpace = pProfile->m_Header.colorSpace;
+    nParentSpace = pProfile->GetParentColorSpace();
 
     if (bUseSpectralPCS && pProfile->m_Header.spectralPCS)
       nDstSpace = (icColorSpaceSignature)pProfile->m_Header.spectralPCS;
@@ -8284,6 +8292,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
     }
 
     nDstSpace = pProfile->m_Header.colorSpace;
+    nParentSpace = pProfile->GetParentColorSpace();
   }
 
   //Make sure colorspaces match with previous xforms
@@ -8324,6 +8333,7 @@ icStatusCMM CIccCmm::AddXform(CIccProfile *pProfile,
   }
 
   m_nLastSpace = nDstSpace;
+  m_nLastParentSpace = nParentSpace;
   m_nLastIntent = nIntent;
   m_bLastInput = bInput;
 
