@@ -56,3 +56,17 @@ xss@W5:~/tmp/pr111/gnu/DemoIccMAX/Testing$ ./TestCIccTagXmlProfileSequenceId
 Starting unit tests for CIccTagXmlProfileSequenceId...
 Test succeeded: ParseXml correctly handled the provided node.
 ```
+
+#### 22-APRIL-2024 | macOS
+
+```
+Generating Makefile for Unit Test by TestCIccTagXmlProfileSequenceId
+Makefile generated.
+Building the project...
+Compiling for Darwin...
+/usr/bin/clang++ -std=c++17 -g -fsanitize=address -fno-omit-frame-pointer TestCIccTagXmlProfileSequenceId.cpp -I../IccProfLib -I../IccXML/IccLibXML -I/usr/include/libxml2 -L../Build/IccProfLib -L../Build/IccXML -lpthread -lIccProfLib2 -lIccXML2 -lxml2 -fsanitize=address -Wl,-rpath,../Build/IccProfLib -Wl,-rpath,../Build/IccXML -o TestCIccTagXmlProfileSequenceId
+Build complete.
+Running TestCIccTagXmlProfileSequenceId...
+./TestCIccTagXmlProfileSequenceId > run.log 2>&1 || true
+Execution successful, no ASan errors.
+```

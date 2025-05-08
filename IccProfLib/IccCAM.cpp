@@ -66,6 +66,7 @@
 //
 // -Initial implementation by Marc Mahy 5-15-2003
 // -Refactoring to match IccProfLib by Max Derhak 5-31-2012
+// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -143,37 +144,36 @@ CIccCamConverter::H_FunctionInv (icFloatNumber	y)
 	return x;
 }
 
-/*---------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------*/
 
-icFloatNumber
-CIccCamConverter::Hyperbolic (icFloatNumber	x)
+icFloatNumber CIccCamConverter::Hyperbolic(icFloatNumber x)
 {
-	icFloatNumber	y;
+  icFloatNumber y = 0.0f;
 
-	if (x < 0)
-	{
-		if (-x <= m_x0)
-		{
-			y = m_cc * x;
-		}
-		else
-		{
-			y = - ((1 + m_alfa) * H_Function (-x) / H_Function (m_Fl) - m_alfa) * F_Function (m_Fl);
-		}
-	}
-	else
-	{
-		if (x <= m_x0)
-		{
-			y = m_cc * x;
-		}
-		else
-		{
-			y = ((1 + m_alfa) * H_Function (x) / H_Function (m_Fl) - m_alfa) * F_Function (m_Fl);
-		}
-	}
+  if (x < 0)
+  {
+    if (-x <= m_x0)
+    {
+      y = m_cc * x;
+    }
+    else
+    {
+      y = -((1.0f + m_alfa) * H_Function(-x) / H_Function(m_Fl) - m_alfa) * F_Function(m_Fl);
+    }
+  }
+  else
+  {
+    if (x <= m_x0)
+    {
+      y = m_cc * x;
+    }
+    else
+    {
+      y = ((1.0f + m_alfa) * H_Function(x) / H_Function(m_Fl) - m_alfa) * F_Function(m_Fl);
+    }
+  }
 
-	return y;
+  return y;
 }
 
 /*---------------------------------------------------------------------------------*/
@@ -296,52 +296,52 @@ void CIccCamConverter::ab2chDeg(icFloatNumber a, icFloatNumber b, icFloatNumber 
     h+=360.0;
 }
 
+// ===========================================================================
+// LATEST FIX: Runtime Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Attempt to resolve downcast and enum issues
+// OUTCOME: Added incremental changes and re-add to LibFuzzer
+//
+//
+// BUG CLASSES: Type Confusion, Memory Safety, Leaks
+//
+// DEP ISSUES: None Identified
+//
+// ===========================================================================
 
-/* ---------------------------------------------------------------------------------*/
-
-CIccCamConverter::CIccCamConverter ()
+CIccCamConverter::CIccCamConverter()
 {
-//	for XYZwhite = D50, La = 500, Yb = 20, average surround
+	// for XYZwhite = D50, La = 500, Yb = 20, average surround
 
 	/* the initializations are based on values for an average surround */
-	m_La = (icFloatNumber) 500.0;
-	m_Yb = (icFloatNumber)  20.0;
+	m_La = (icFloatNumber)500.0;
+	m_Yb = (icFloatNumber)20.0;
 
-  m_WhitePoint[0] = icD50XYZ[0];
-  m_WhitePoint[1] = icD50XYZ[1];
-  m_WhitePoint[2] = icD50XYZ[2];
+	m_WhitePoint[0] = icD50XYZ[0];
+	m_WhitePoint[1] = icD50XYZ[1];
+	m_WhitePoint[2] = icD50XYZ[2];
 
-	/* the initializations are based on values for an average surround */
-	m_c  = (icFloatNumber) 0.69;	/* impact surround */
-	m_Nc = (icFloatNumber) 1.00;	/* chromatic induction factor */
-	m_F  = (icFloatNumber) 1.00;	/* degree of adaptation factor */
+	m_c = (icFloatNumber)0.69;     // impact surround
+	m_Nc = (icFloatNumber)1.00;    // chromatic induction factor
+	m_F = (icFloatNumber)1.00;     // degree of adaptation factor
 
 	// ciecat02 = HPE
-	m_mFor[0][0] =  0.38970f;	m_mFor[0][1] = 0.68898f;	m_mFor[0][2] = -0.07868f;
-	m_mFor[1][0] = -0.22981f;	m_mFor[1][1] = 1.18340f;	m_mFor[1][2] =  0.04641f;
-	m_mFor[2][0] =  0.00000f;	m_mFor[2][1] = 0.00000f;	m_mFor[2][2] =  1.00000f;
+	m_mFor[0][0] = 0.38970f;  m_mFor[0][1] = 0.68898f;  m_mFor[0][2] = -0.07868f;
+	m_mFor[1][0] = -0.22981f; m_mFor[1][1] = 1.18340f;  m_mFor[1][2] = 0.04641f;
+	m_mFor[2][0] = 0.00000f;  m_mFor[2][1] = 0.00000f;  m_mFor[2][2] = 1.00000f;
 
-	m_mInv[0][0] = 1.910197f;	m_mInv[0][1] = -1.1121240f;	m_mInv[0][2] =  0.201908f;
-	m_mInv[1][0] = 0.370950f;	m_mInv[1][1] =  0.6290540f;	m_mInv[1][2] =  0.000008f;
-	m_mInv[2][0] = 0.000000f;	m_mInv[2][1] =  0.0000000f;	m_mInv[2][2] =  1.000000f;
+	m_mInv[0][0] = 1.910197f;  m_mInv[0][1] = -1.1121240f;  m_mInv[0][2] = 0.201908f;
+	m_mInv[1][0] = 0.370950f;  m_mInv[1][1] = 0.6290540f;  m_mInv[1][2] = 0.000008f;
+	m_mInv[2][0] = 0.000000f;  m_mInv[2][1] = 0.0000000f;  m_mInv[2][2] = 1.000000f;
 
-	/* precalculated values */
-// m_x0 = 0.25 / 255
-//	m_alfa = 0.041747f;
-//	m_exp = 0.396f;
-
-// m_x0 = 1 / 255
-//	m_alfa = 0.089914f;
-//	m_exp = 0.372f;
-
-//	m_x0 = 4 / 255
-//	m_alfa = 0.2307f;
-//	m_exp = 0.3169f;
-
+	// Precalculated values
+	m_x0   = 4.0f / 255.0f;
+	m_cc   = 1.0f;              // ? Added: ensures m_cc is initialized
 	m_alfa = 0.2307f;
-	m_exp = 0.3169f;
+	m_exp  = 0.3169f;
 
-	CalcCoefficients ();
+	CalcCoefficients();
 }
 
 /*---------------------------------------------------------------------------------*/

@@ -1,9 +1,7 @@
 
 # iccDumpProfile Check for `.icc` Color Profiles
 
-**Author:** David Hoyt  
-**Last Refactor Date:** 30-Sept-2024  
-**Purpose:** Automates the analysis and testing of `.icc` color profiles using `iccDumpProfile` to extract critical metadata.
+**Intent:** iccCICD-STUB
 
 ***tl;dr***
 
@@ -20,32 +18,6 @@ The script:
 - Generates individual reports for each profile in a timestamped directory.
 - Extracts and logs key-value pairs from the header section into a summary file.
 - Flags any runtime errors (e.g., UndefinedBehaviorSanitizer errors) found during the report generation.
-
-## How to Use
-
-```
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/iccDumpProfile_checks.zsh)"
-```
-
-The script will generate:
-   - A summary report: `icc_profile_summary_<timestamp>.txt`.
-   - Individual profile reports for each `.icc` file in the `icc_reports/` directory.
-
-### Prerequisites
-
-- **zsh**: The script is designed to run using zsh shell.
-- **iccDumpProfile Tool**: Ensure that the `iccDumpProfile` tool is available at the specified path (adjust the path within the script if necessary).
-- **ICC Profiles**: The `.icc` files should be present in the directory where the script is executed.
-
-### Example Command
-
-To run the script and process all `.icc` files in the current directory:
-
-```
-/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/iccDumpProfile_checks.zsh)"
-```
-
-The script will create a timestamped report for each `.icc` file and consolidate the key data into a summary report.
 
 ### Output
 

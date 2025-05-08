@@ -62,21 +62,34 @@ Copyright:  (c) see ICC Software License
 */
 
 // ===========================================================================
+// LATEST FIX: Compile Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// REPRO: iccGui:PoC:ASAN:index -1 out of bounds for type 'unsigned int [16]'
+// POC: OPEN ../Testing/sRGB_v4_ICC_preference.icc in iccGui, Click RoundTrip
+// INTENT: Resolve Sanitizer Errors
+// OUTCOME: Added incremental changes for runtime Errors, enum
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: Buffer Overflow, NaN, Enum etc..
+//
+// DEP ISSUES: wxWidgets causing TC in iccGui with downcast instead of ASSERT
+//
+// ==========================================================================
+
+// ===========================================================================
 // declarations
 // ===========================================================================
 
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-#include "IccProfile.h"
-#include "IccTag.h"
-#include "IccUtil.h"
-#include "IccEval.h"
-#include "IccPrmg.h"
-#include "IccProfLibVer.h"
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// ---------------------------------------------------------------------------
+// headers
+// ---------------------------------------------------------------------------
 
+#include "wx/wxprec.h"
+#include "IccSignatureUtils.h"
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
@@ -86,15 +99,24 @@ Copyright:  (c) see ICC Software License
     #include "wx/mdi.h"
 #endif
 
-#include "wx/toolbar.h"
-#include "wx/config.h"
-#include "wx/filename.h"
-#include "wx/filedlg.h"
+// wxWidgets controls
+#include <wx/toolbar.h>
+#include <wx/config.h>
+#include <wx/filename.h>
+#include <wx/filedlg.h>
+#include <wx/listctrl.h>
+#include <wx/docview.h>
+#include <wx/dnd.h>
 
-#if !defined(__WXMSW__)
-//    #include "mondrian.xpm"
-#endif
+// ICC core includes
+#include "IccProfile.h"
+#include "IccTag.h"
+#include "IccUtil.h"
+#include "IccEval.h"
+#include "IccPrmg.h"
+#include "IccProfLibVer.h"
 
+// Bitmap includes
 #include "bitmaps/new.xpm"
 #include "bitmaps/open.xpm"
 #include "bitmaps/save.xpm"
@@ -104,7 +126,7 @@ Copyright:  (c) see ICC Software License
 #include "bitmaps/print.xpm"
 #include "bitmaps/help.xpm"
 
-
+// App header with class definitions
 #include "wxProfileDump.h"
 
 #if wxMAJOR_VERSION > 2
@@ -115,7 +137,52 @@ Copyright:  (c) see ICC Software License
 #undef wxT
 #define wxT(x) x
 
+// Entry point macro
 IMPLEMENT_APP(MyApp)
+
+
+// ===========================================================================
+// LATEST FIX: Compile Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// REPRO: iccGui:PoC:ASAN:index -1 out of bounds for type 'unsigned int [16]'
+// POC: OPEN ../Testing/sRGB_v4_ICC_preference.icc in iccGui, Click RoundTrip
+// INTENT: Resolve Sanitizer Errors
+// OUTCOME: Added incremental changes for runtime Errors, enum
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: Buffer Overflow, TC, NaN, Enum etc..
+//
+// DEP ISSUES: wxWidgets silently propagates UB then gui crash.
+//
+// ===========================================================================
+// SafeNavPanel: Explicit subclass with correct navigation support
+// Resolves the RoundTrip Windows Output Error, NaN, TC, BO, UB, Other
+// INTENT: Avoid Ubsan Issues in Gui Type Confusion / wx Downcasts, wx Other
+// ===========================================================================
+class SafeNavPanel : public wxNavigationEnabled<wxPanel> {
+public:
+  SafeNavPanel(wxWindow* parent) {
+    Create(parent, wxID_ANY); // Use wxWidgets 2-phase init
+    wxLogDebug("SafeNavPanel created: %s @ %p", typeid(*this).name(), (void*)this);
+  }
+};
+
+// Declare the helper before use if not included from a header
+
+static bool IsValidPlatformSignature(icPlatformSignature sig)
+{
+  switch (sig) {
+    case icSigMacintosh:   // 'APPL'
+    case icSigMicrosoft:   // 'MSFT'
+    case icSigSolaris:     // 'SUNW'
+    case icSigSGI:         // 'SGI '
+    case icSigTaligent:    // 'TAL '
+      return true;
+    default:
+      return false;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // global variables
@@ -172,6 +239,7 @@ END_EVENT_TABLE()
 bool MyApp::OnInit()
 {
 	// Create the main frame window
+    
     my_frame = new MyFrame((wxFrame *)NULL, wxID_ANY, _T("ProfileDump"),
                         wxDefaultPosition, wxSize(1024, 768),
                         wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
@@ -297,7 +365,7 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
     (void)wxMessageBox(_T("wxProfileDump\n")
-                       _T("Copyright (C) 2005-2023\n\n")
+                       _T("Copyright (C) 2005-2035\n\n")
                        _T("Using ICCProflib version ") ICCPROFLIBVER _T("\n"),
 											 _T("About wxProfileDump"));
 }
@@ -329,6 +397,22 @@ void MyFrame::OpenFile(wxString profilePath)
 #else
 //  subframe->SetIcon(wxIcon( mondrian_xpm ));
 #endif
+
+// ===========================================================================
+// LATEST FIX: Restore Menu Bar Code
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// 
+// 
+// INTENT: Resolve Errors
+// OUTCOME: Added incremental changes
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: UI UX
+//
+// DEP ISSUES: wxWidgets silently propagates UB then gui crash.
+//
+// ===========================================================================
 
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
@@ -379,13 +463,13 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
 {
     wxBitmap* bitmaps[6];
 
-    int index=0;
-    bitmaps[index++] = new wxBitmap( open_xpm );
-    //bitmaps[index++] = new wxBitmap( save_xpm );
-    //bitmaps[index++] = new wxBitmap( copy_xpm );
-    //bitmaps[index++] = new wxBitmap( cut_xpm );
-    //bitmaps[index++] = new wxBitmap( paste_xpm );
-    bitmaps[index++] = new wxBitmap( help_xpm );
+    int index = 0;
+    bitmaps[index++] = new wxBitmap(open_xpm);
+    bitmaps[index++] = new wxBitmap(save_xpm);
+    bitmaps[index++] = new wxBitmap(copy_xpm);
+    bitmaps[index++] = new wxBitmap(cut_xpm);
+    bitmaps[index++] = new wxBitmap(paste_xpm);
+    bitmaps[index++] = new wxBitmap(help_xpm);
 
     int width = 24;
     int currentX = 5;
@@ -394,23 +478,26 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
     toolBar->AddTool(MDI_OPEN_PROFILE, _T("Open"), *(bitmaps[index]), _T("Open Profile"));
     currentX += width + 5;
 
-    //index++;
-    //toolBar->AddTool(index+1,_T("Save"), *bitmaps[index], _T("Save Profile"));
-    //currentX += width + 5;
+    index++;
+    toolBar->AddTool(index + 1, _T("Save"), *bitmaps[index], _T("Save Profile"));
+    currentX += width + 5;
 
-    //toolBar->AddSeparator();
+    toolBar->AddSeparator();
 
-    //index++;
-    //toolBar->AddTool(index+1, _T("Copy"), *bitmaps[index], _T("Copy"));
-    //currentX += width + 5;
+    index++;
+    toolBar->AddTool(index + 1, _T("Copy"), *bitmaps[index], _T("Copy"));
+    currentX += width + 5;
 
-    //index++;
-    //toolBar->AddTool(index+1, _T("Cut"), *bitmaps[index], _T("Cut"));
-    //currentX += width + 5;
+    toolBar->AddSeparator();
 
-    //index++;
-    //toolBar->AddTool(index+1, _T("Paste"), *bitmaps[index], wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _T("Paste"));
-    //currentX += width + 5;
+    index++;
+    toolBar->AddTool(index + 1, _T("Cut"), *bitmaps[index], _T("Cut"));
+    currentX += width + 5;
+
+    toolBar->AddSeparator();
+
+    index++;
+    currentX += width + 5;
 
     toolBar->AddSeparator();
 
@@ -419,54 +506,113 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
 
     toolBar->Realize();
 
-    int i;
-    for (i = 0; i <= index; i++)
+    for (int i = 0; i <= index; i++)
         delete bitmaps[i];
 }
 #endif // wxUSE_TOOLBAR
 
+
 static bool IsRoundTripable(CIccProfile *pIcc)
 {
   icHeader *pHdr = &pIcc->m_Header;
+  ICC_LOG_INFO("IsRoundTripable(): Checking profile with deviceClass=0x%08x", pHdr->deviceClass);
 
   if (pHdr->deviceClass == icSigLinkClass) {
-      return false;
+    ICC_LOG_INFO("IsRoundTripable(): Profile is DeviceLink. Not roundtripable.");
+    return false;
   }
 
-  if ((pIcc->FindTag(icSigAToB0Tag) && pIcc->FindTag(icSigBToA0Tag)) ||
-      (pIcc->FindTag(icSigAToB1Tag) && pIcc->FindTag(icSigBToA1Tag)) ||
-      (pIcc->FindTag(icSigAToB2Tag) && pIcc->FindTag(icSigBToA2Tag)) ||
-      (pIcc->FindTag(icSigDToB0Tag) && pIcc->FindTag(icSigBToD0Tag)) ||
-      (pIcc->FindTag(icSigDToB1Tag) && pIcc->FindTag(icSigBToD1Tag)) ||
-      (pIcc->FindTag(icSigDToB2Tag) && pIcc->FindTag(icSigBToD2Tag)) ||
-      (pIcc->FindTag(icSigRedMatrixColumnTag) && pIcc->FindTag(icSigGreenMatrixColumnTag) && pIcc->FindTag(icSigBlueMatrixColumnTag) &&
-       pIcc->FindTag(icSigRedTRCTag) && pIcc->FindTag(icSigGreenTRCTag) && pIcc->FindTag(icSigBlueTRCTag)))
-     return true;
+  bool hasAToB0 = pIcc->FindTag(icSigAToB0Tag) != nullptr;
+  bool hasBToA0 = pIcc->FindTag(icSigBToA0Tag) != nullptr;
+  bool hasAToB1 = pIcc->FindTag(icSigAToB1Tag) != nullptr;
+  bool hasBToA1 = pIcc->FindTag(icSigBToA1Tag) != nullptr;
+  bool hasAToB2 = pIcc->FindTag(icSigAToB2Tag) != nullptr;
+  bool hasBToA2 = pIcc->FindTag(icSigBToA2Tag) != nullptr;
 
+  bool hasDToB0 = pIcc->FindTag(icSigDToB0Tag) != nullptr;
+  bool hasBToD0 = pIcc->FindTag(icSigBToD0Tag) != nullptr;
+  bool hasDToB1 = pIcc->FindTag(icSigDToB1Tag) != nullptr;
+  bool hasBToD1 = pIcc->FindTag(icSigBToD1Tag) != nullptr;
+  bool hasDToB2 = pIcc->FindTag(icSigDToB2Tag) != nullptr;
+  bool hasBToD2 = pIcc->FindTag(icSigBToD2Tag) != nullptr;
+
+  bool hasMatrix =
+    pIcc->FindTag(icSigRedMatrixColumnTag) &&
+    pIcc->FindTag(icSigGreenMatrixColumnTag) &&
+    pIcc->FindTag(icSigBlueMatrixColumnTag) &&
+    pIcc->FindTag(icSigRedTRCTag) &&
+    pIcc->FindTag(icSigGreenTRCTag) &&
+    pIcc->FindTag(icSigBlueTRCTag);
+
+  ICC_LOG_INFO("Tag pairs found: AToB0/BToA0=%d, AToB1/BToA1=%d, AToB2/BToA2=%d",
+               hasAToB0 && hasBToA0, hasAToB1 && hasBToA1, hasAToB2 && hasBToA2);
+  ICC_LOG_INFO("Tag pairs found: DToB0/BToD0=%d, DToB1/BToD1=%d, DToB2/BToD2=%d",
+               hasDToB0 && hasBToD0, hasDToB1 && hasBToD1, hasDToB2 && hasBToD2);
+  ICC_LOG_INFO("Matrix/TRC tags present: %d", hasMatrix);
+
+  if ((hasAToB0 && hasBToA0) ||
+      (hasAToB1 && hasBToA1) ||
+      (hasAToB2 && hasBToA2) ||
+      (hasDToB0 && hasBToD0) ||
+      (hasDToB1 && hasBToD1) ||
+      (hasDToB2 && hasBToD2) ||
+      hasMatrix) {
+    ICC_LOG_INFO("IsRoundTripable(): Profile meets round-trip conditions.");
+    return true;
+  }
+
+  ICC_LOG_INFO("IsRoundTripable(): No qualifying tag pairs found.");
   return false;
 }
+
 
 // ---------------------------------------------------------------------------
 // MyChild
 // ---------------------------------------------------------------------------
 
+// ===========================================================================
+// LATEST FIX: UB, Compile Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// REPRO: iccGui:PoC:ASAN:index -1 out of bounds for type 'unsigned int [16]'
+// POC: OPEN ../Testing/sRGB_v4_ICC_preference.icc in iccGui, Click RoundTrip
+// INTENT: Resolve Sanitizer Errors
+// OUTCOME: Added incremental changes for runtime Errors, enum
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: Buffer Overflow, NaN, Enum etc..
+//
+// DEP ISSUES: wxWidgets silently propagates UB then gui crash.
+//
+// ==========================================================================
+
 MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *pIcc, const wxString &profilePath)
        : wxMDIChildFrame(parent, wxID_ANY, title, wxDefaultPosition, wxSize(750,900),
                          wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE)
 {
-	m_pIcc = pIcc;
-	m_profilePath = profilePath;
+    m_pIcc = pIcc;
+    m_profilePath = profilePath;
     icHeader* pHdr = &pIcc->m_Header;
 
     my_children.Append(this);
-	// this should work for MDI frames as well as for normal ones
-	SetSizeHints(750, 900);
+    SetSizeHints(750, 900);
 
-	// create controls
-	m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
+    // create controls
+    m_panel = new SafeNavPanel(this);
+    wxLogDebug("m_panel type: %s | address: %p", typeid(*m_panel).name(), (void*)m_panel);
 
-	wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
-	wxSizer *sizerBox = new wxStaticBoxSizer(new wxStaticBox(m_panel, wxID_ANY, _T("&Profile Header")), wxVERTICAL);
+    if (!dynamic_cast<wxNavigationEnabled<wxWindow>*>(m_panel)) {
+        wxLogWarning("❗ m_panel not safe for OnChildFocus – typeconfusion may occur");
+    }
+
+    wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
+
+    // Correct: create static box and assign as parent
+    wxStaticBox* headerBox = new wxStaticBox(m_panel, wxID_ANY, _T("&Profile Header"));
+    wxSizer* sizerBox = new wxStaticBoxSizer(headerBox, wxVERTICAL);
+
+    // Use static box as widget parent during this block
+    m_currentStaticBox = headerBox;
 
     // Keep things consistent and in the same order as CLI "iccDumpProfile"
     sizerBox->Add(CreateSizerWithText(_("Profile ID:"), &m_textProfileID), wxSizerFlags().Expand().Border(wxALL, 0));
@@ -481,7 +627,7 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
     sizerBox->Add(CreateSizerWithText(_("PCS Color Space:"), &m_textPCS), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Platform:"), &m_textPlatform), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Rendering Intent:"), &m_textRenderingIntent), wxSizerFlags().Expand().Border(wxALL, 0));
-	sizerBox->Add(CreateSizerWithText(_("Profile Class:"), &m_textClass), wxSizerFlags().Expand().Border(wxALL, 0));
+	  sizerBox->Add(CreateSizerWithText(_("Profile Class:"), &m_textClass), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Profile SubClass:"), &m_textSubClass), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("Version:"), &m_textVersion), wxSizerFlags().Expand().Border(wxALL, 0));
     if (pHdr && (pHdr->version >= icVersionNumberV5) && pHdr->deviceSubClass) {
@@ -493,7 +639,11 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
     sizerBox->Add(CreateSizerWithText(_("BiSpectral PCS Range:"), &m_textBiSpectralWavelengths), wxSizerFlags().Expand().Border(wxALL, 0));
     sizerBox->Add(CreateSizerWithText(_("MCS Color Space:"), &m_textMaterialColorSpace), wxSizerFlags().Expand().Border(wxALL, 0));
 
-	sizerTop->Add(sizerBox, wxSizerFlags().Expand().Border(wxALL, 5));
+    // Clear static box context to prevent parent leakage
+    m_currentStaticBox = nullptr;
+
+    // ⬇Continue layout
+    sizerTop->Add(sizerBox, 0, wxEXPAND | wxALL, 10);
 
 	wxSizer *sizerBtn = new wxBoxSizer(wxHORIZONTAL);
     if (IsRoundTripable(pIcc)) {
@@ -516,9 +666,9 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
 
     m_tagsCtrl->InsertColumn(0, _("#"), wxLIST_FORMAT_RIGHT, 30);
     m_tagsCtrl->InsertColumn(1, _("Tag ID"), wxLIST_FORMAT_LEFT, 210);
-	m_tagsCtrl->InsertColumn(2, _("Tag Type"), wxLIST_FORMAT_LEFT, 210);
-	m_tagsCtrl->InsertColumn(3, _("Offset"), wxLIST_FORMAT_RIGHT, 100);
-	m_tagsCtrl->InsertColumn(4, _("Size"), wxLIST_FORMAT_RIGHT, 100);
+	  m_tagsCtrl->InsertColumn(2, _("Tag Type"), wxLIST_FORMAT_LEFT, 210);
+	  m_tagsCtrl->InsertColumn(3, _("Offset"), wxLIST_FORMAT_RIGHT, 100);
+	  m_tagsCtrl->InsertColumn(4, _("Size"), wxLIST_FORMAT_RIGHT, 100);
     m_tagsCtrl->InsertColumn(5, _("Padding"), wxLIST_FORMAT_RIGHT, 100);
 
 	// don't allow frame to get smaller than what the sizers tell it and also set
@@ -553,7 +703,23 @@ MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, CIccProfile *p
         m_textColorSpace->SetLabel(Fmt.GetColorSpaceSigName(pHdr->colorSpace));
 	    m_textFlags->SetLabel(Fmt.GetProfileFlagsName(pHdr->flags, pHdr->mcs!=0));
 	    m_textPCS->SetLabel(Fmt.GetColorSpaceSigName(pHdr->pcs));
-	    m_textPlatform->SetLabel(Fmt.GetPlatformSigName(pHdr->platform));
+//
+// FIX: UB, Enum and Casting m_textPlatform->SetLabel
+// TODO: Actual Patch
+//
+//      m_textPlatform->SetLabel(Fmt.GetPlatformSigName((icPlatformSignature)(uint32_t)pHdr->platform));
+// ---- SAFE CAST PATCH: icPlatformSignature ----
+icUInt32Number rawPlatform = 0;
+memcpy(&rawPlatform, &pHdr->platform, sizeof(rawPlatform));
+
+wxString platformLabel;
+if (IsValidPlatformSignature((icPlatformSignature)rawPlatform)) {
+  platformLabel = Fmt.GetPlatformSigName((icPlatformSignature)rawPlatform);
+} else {
+  platformLabel = wxT("Unknown Platform");
+}
+m_textPlatform->SetLabel(platformLabel);
+
 	    m_textRenderingIntent->SetLabel(Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
 	    m_textClass->SetLabel(Fmt.GetProfileClassSigName(pHdr->deviceClass));
         if (pHdr->deviceSubClass) 
@@ -639,25 +805,26 @@ MyChild::~MyChild()
 		delete m_pIcc;
 }
 
-wxSizer *MyChild::CreateSizerWithText(const wxString &labelText, wxStaticText **ppText)
+wxSizer* MyChild::CreateSizerWithText(const wxString &labelText, wxStaticText **ppText)
 {
-	wxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+    wxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 
-	wxSize winSize = wxDefaultSize;
+    wxWindow *parent = m_currentStaticBox ? static_cast<wxWindow*>(m_currentStaticBox)
+                                          : static_cast<wxWindow*>(m_panel);
 
-	winSize.SetWidth(210);
-	wxStaticText *label = new wxStaticText(m_panel, wxID_ANY, labelText, wxDefaultPosition, winSize, wxALIGN_RIGHT);
+    wxSize labelSize(210, wxDefaultSize.GetHeight());
+    wxSize textSize(250, wxDefaultSize.GetHeight());
 
-	winSize.SetWidth(250);
-	wxStaticText *text = new wxStaticText(m_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, winSize, wxSTATIC_BORDER|wxTE_RIGHT);
+    wxStaticText *label = new wxStaticText(parent, wxID_ANY, labelText, wxDefaultPosition, labelSize, wxALIGN_RIGHT);
+    wxStaticText *text  = new wxStaticText(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, textSize, wxSTATIC_BORDER);
 
-	sizerRow->Add(label, 0, wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
-	sizerRow->Add(text,  1, wxLEFT  | wxALIGN_CENTRE_VERTICAL, 5);
+    sizerRow->Add(label, 0, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
+    sizerRow->Add(text,  1, wxLEFT  | wxALIGN_CENTER_VERTICAL, 5);
 
-	if (ppText)
-		*ppText = text;
+    if (ppText)
+        *ppText = text;
 
-	return sizerRow;
+    return sizerRow;
 }
 
 void MyChild::OnQuit(wxCommandEvent& WXUNUSED(event))
@@ -1099,7 +1266,10 @@ MyRoundTripDialog::MyRoundTripDialog(wxWindow *pParent, const wxString& title, w
       theReport = "There is nothing to report\n";
   }
 
-  textReport->SetLabel(theReport);
+//
+// Modified to resolve compile error 30-APRIL-2025 David Hoyt
+//
+  textReport->SetValue(theReport);  // or ChangeValue if no EVT_TEXT expected
 
   SetSizer(sizer);
   sizer->Fit(this);

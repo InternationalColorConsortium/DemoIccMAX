@@ -81,6 +81,8 @@
 #include "IccUtil.h"
 #include "IccMatrixMath.h"
 #include "IccMD5.h"
+#include "IccDefs.h"
+#include "IccSignatureUtils.h"
 
 
 #ifdef USEREFICCMAXNAMESPACE
@@ -1095,14 +1097,29 @@ void CIccProfile::InitHeader()
  */
 bool CIccProfile::ReadBasic(CIccIO *pIO)
 {
-  //Read Header
-  if (pIO->Seek(0, icSeekSet)<0 ||
+  // Read Header
+  if (pIO->Seek(0, icSeekSet) < 0 ||
       !pIO->Read32(&m_Header.size) ||
       !pIO->Read32(&m_Header.cmmId) ||
       !pIO->Read32(&m_Header.version) ||
-      !pIO->Read32(&m_Header.deviceClass) ||
-      !pIO->Read32(&m_Header.colorSpace) ||
-      !pIO->Read32(&m_Header.pcs) ||
+      !pIO->Read32(&m_Header.deviceClass))
+  {
+    return false;
+  }
+
+if (!pIO->Read32(&m_Header.colorSpace)) {
+  fprintf(stderr, "[TRACE] Failed to read m_Header.colorSpace\n");
+  return false;
+}
+
+if (m_Header.colorSpace == 0xbebebebe) {
+  fprintf(stderr, "[TRACE] m_Header.colorSpace is UNINITIALIZED (0xbebebebe) after Read32()\n");
+} else {
+  fprintf(stderr, "[TRACE] Read colorSpace = 0x%08x\n", m_Header.colorSpace);
+}
+
+  // Continue header read
+  if (!pIO->Read32(&m_Header.pcs) ||
       !pIO->Read16(&m_Header.date.year) ||
       !pIO->Read16(&m_Header.date.month) ||
       !pIO->Read16(&m_Header.date.day) ||
@@ -1120,7 +1137,7 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
       !pIO->Read32(&m_Header.illuminant.Y) ||
       !pIO->Read32(&m_Header.illuminant.Z) ||
       !pIO->Read32(&m_Header.creator) ||
-      pIO->Read8(&m_Header.profileID, sizeof(m_Header.profileID))!=sizeof(m_Header.profileID) ||
+      pIO->Read8(&m_Header.profileID, sizeof(m_Header.profileID)) != sizeof(m_Header.profileID) ||
       !pIO->Read32(&m_Header.spectralPCS) ||
       !pIO->Read16(&m_Header.spectralRange.start) ||
       !pIO->Read16(&m_Header.spectralRange.end) ||
@@ -1129,24 +1146,24 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
       !pIO->Read16(&m_Header.biSpectralRange.end) ||
       !pIO->Read16(&m_Header.biSpectralRange.steps) ||
       !pIO->Read32(&m_Header.mcs) ||
-      !pIO->Read32(&m_Header.deviceSubClass) || 
-      pIO->Read8(&m_Header.reserved[0], sizeof(m_Header.reserved))!=sizeof(m_Header.reserved)) {
+      !pIO->Read32(&m_Header.deviceSubClass) ||
+      pIO->Read8(&m_Header.reserved[0], sizeof(m_Header.reserved)) != sizeof(m_Header.reserved))
+  {
     return false;
   }
 
   if (m_Header.magic != icMagicNumber)
     return false;
 
+  // Read tag directory
   icUInt32Number count, i;
   IccTagEntry TagEntry = {};
-
   TagEntry.pTag = NULL;
 
   if (!pIO->Read32(&count))
     return false;
 
-  //Read TagDir
-  for (i=0; i<count; i++) {
+  for (i = 0; i < count; i++) {
     if (!pIO->Read32(&TagEntry.TagInfo.sig) ||
         !pIO->Read32(&TagEntry.TagInfo.offset) ||
         !pIO->Read32(&TagEntry.TagInfo.size)) {
@@ -1154,7 +1171,6 @@ bool CIccProfile::ReadBasic(CIccIO *pIO)
     }
     m_Tags->push_back(TagEntry);
   }
-
 
   return true;
 }
