@@ -1,18 +1,17 @@
 # iccMAX Instrumentation
 
-This cov/ directory is part of the iccMAX CICD Pipeline.
+iccMAX CICD **Research** Pipeline
 
-##### Last Updated: 31-MAR-2024 0845 EDT by David Hoyt
+## Static Libraries, Coverage Instrumentation, AFL, LibFuzzer
 
-## Static Libraries with Coverage Instrumentation
-
-`IccProfLib` and `IccXML` static libraries with Tools `icctoXml` `iccFromXml` and `iccDumpprofile`  [are available](https://github.com/xsscx/PatchIccMAX/releases/tag/Instrumentation) and verified to contain `__llvm_prf_data` instrumentation symbols.
+`IccProfLib` and `IccXML` static libraries with Tools contain `__llvm_prf_data` instrumentation symbols.
 
 ### Clone Repo Reproduction
 
 ```
 git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
 cd DemoIccMAX
+checkout research
 export CC=clang
 export CXX=clang++
 ```

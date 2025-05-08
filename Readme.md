@@ -1,223 +1,342 @@
 [![color.org logo](ReadMeFiles/ICC_header.png "color.org")](https://color.org)
 
-# IccMAX
+# CICD Research
 
-## Introduction
+**Intent:** `Follow the Source` `Under the Hood` `Into the Pixel` `Down the Sink`
 
-The IccMAX project (formally known as RefIccMAX, or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX based color management profiles based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
-
-
-Within the project are several libraries and tools as follows:
-
-* Libraries that allow applications to interact with iccMAX profiles
-
-  * IccProfLib - The IccMAX IccProfLib project represents an open source &
-    cross platform reference implementation of a C++ library for reading,
-    writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
-    profile specification](http://www.color.org/iccmax.xalter). Class and object
-    interaction documentation for IccProfLib in [Doxygen](https://xss.cx/public/docs/IccMAX/).
-
-  * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
-    extension library (IccLibXML) which provides the ability to interact with the
-    objects defined by IccProfLib using an XML representation thus allowing iccMAX
-    profiles to be expressed as or created from text based XML files. Class and object
-    interaction documentation for IccLibXML in [Doxygen](https://xss.cx/public/docs/IccMAX/).
+### Triples Testing Summary
 
 
-* Tools based upon these libraries
+| **Operating System**         | **Kernel Version**                               | **Architecture**     | **Environment**                       |
+|-----------------------------|--------------------------------------------------|----------------------|---------------------------------------|
+| Linux (Ubuntu 24.04 LTS)     | Linux Kernel 6.8.0-31-generic (glibc)   | x86_64           | Homebrew Test-Bot Container (Ubuntu) |
+| macOS 15 Sequoia             | Darwin Kernel Version 24.0.0            | ARM64            | macOS 15-arm64 Runner              |
+| macOS 15 Sequoia             | Darwin Kernel Version 24.0.0            | x86_64           | macOS 15-x86_64 Runner             |
+| macOS 14 Sonoma              | Darwin Kernel Version 23.0.0            | ARM64            | macOS 14-arm64 Runner              |
+| macOS 14 Sonoma              | Darwin Kernel Version 23.0.0            | x86_64           | macOS 14-x86_64 Runner             |
+| macOS 13 Ventura             | Darwin Kernel Version 22.0.0            | ARM64            | macOS 13-arm64 Runner              |
+| macOS 13 Ventura             | Darwin Kernel Version 22.0.0            | x86_64           | macOS 13-x86_64 Runner             |
+| iOS (iPhone 16 Pro Max) | Darwin Kernel Version 24.4.0 (iOS 18.4)          | arm64e               | iOS_ARM64E_A18_PRO                    |
+| iOS (iPad Pro M4)     | Darwin Kernel Version 24.4.0 (iPadOS 18.4)       | arm64                | iOS_ARM64_M4_IPAD_PRO                 |
+| WSL2 (Linux)                | 5.15.167.4-microsoft-standard-WSL2               | x86_64               | GNU/Linux                             |
+| Microsoft Windows 11 Pro    | Version 10.0.26100 Build 26100                   | x86_64               | Visual Studio 17.13.6                 |
+| Microsoft Windows 11 ARM    | Version 10.0.26100 Build 26100                   | ARM64            | windows-11-arm GitHub Runner      |
+| Raspberry Pi OS (Debian)    | Linux 6.1.21-v8+ #1642 SMP PREEMPT               | aarch64 (ARMv8)      | GCC 10.2.1 (Debian 10.2.1-6)          |
 
-  For command line arguments running the application without any arguments
-  will display help information about command line options.
+### Fuzzing Gates
 
-  * IccToXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be expressed using an XML representation. This allows
-    for profiles to be converted to a textual representation that can be directly
-    edited using a text editor and then converted back to ICC/iccMAX profile
-    formats using IccFromXML.
+**CICD Research**
 
-  * IccFromXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be created from the same XML representation provided by
-    IccToXML. A schema for iccXML files is forthcoming but can be determined using
-    the FromXML() and ToXML() member functions defined in IccLibXML. The
-    IccFromXML tool provides a simple direct method to create and manipulate
-    iccMAX based profiles.
+	
+| **Bug Type**     | **Sub-Type**                      | **START** | **CURRENT** |
+|------------------|-----------------------------------|--------------------|----------------------|
+| **All Bugs**     |                                   | 67                 | 47                    |
+| **Logic Error**  | Assigned value is garbage         | 1                  | -                    |
+|                  | Dereference of null pointer       | 1                  | -                    |
+|                  | Garbage return value              | 1                  | -                    |
+|                  | Result of op is garbage/undefined | 4                  | -                    |
+|                  | Uninitialized argument value      | 3                  | -                    |
+| **Memory Error** | Double delete                     | 1                  | -                    |
+|                  | Memory leak                       | 1                  | -                    |
+|                  | Use of zero allocated             | 1                  | -                    |
+|                  | Use-after-free                    | 2                  | -                    |
+| **Unused Code**  | Dead assignment                   | 24                 | 21                   |
+|                  | Dead increment                    | 4                  | 4                    |
+|                  | Dead initialization               | 22                 | 20                   |
+|                  | Dead nested assignment            | 2                  | 2                    |
 
-  * IccApplyNamedCmm is a cross platform command line tool that allows a
-    sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
-    in a text based input profile outputting the results to the console, and can
-    be redirected to a output text file. Example source text files can be found in
-    Testing/ApplyDataFiles. The IccApplyNamedCmm application provides a basis for
-    testing various features of iccMAX.
+**Known Bugs**
 
-  * IccApplyProfiles is a cross platform command line tool that allows a sequence of
-    legacy and/or iccMAX profiles to a source TIFF image resulting in a destination
-    TIFF image. The final destination profile can optionally be embedded in the
-    resulting TIFF image.
+| **Bug Type**     | **Sub-Type**                      | **START** | **CURRENT** |
+|------------------|-----------------------------------|--------------------|----------------------|
+| **All Bugs**     |                                   | 874                 | 848                 |
+| **Other**        | Code Review, CodeQL Bugs          | 860                 | 840                 |
+| **Heap or Stack**  | Over, Under, Other              | 14                  | 8                   |
 
-  * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console. Data
-    with non-printable values are replaced with '?'. Output from this tool is
-    not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
-    given platform.
-
-    Detailed validation messages start with either "Warning!", "Error!" or "NonCompliant!".
-    The overall status of validation is reported 2 lines below the line starting
-    "Validation Report" and can be located using the following simple `grep`:
-
-    ```bash
-    grep --text -A 3 "^Validation Report" out.txt
-    ```
-
-
-  * IccRoundTrip is a cross platform command line tool that allows round trip
-    colorimetric processing characteristics of rendering intent of a profile to be
-    evaluated. (Evaluation goes from device values to PCS to establish initial PCS
-    values. These are then converted to device values and then PCS values for the
-    first round trip. Second round trip comparison then converts the second PCS
-    values to device values to PCS values for comparison to the second PCS values.
-
-  * IccSpecSepToTiff is a cross platform command line tool that combines separate
-    individual TIFF images associated with different spectral wavelengths into a
-    single multi-sample per pixel TIFF image. An iccMAX based profile can optionally
-    be embedded in the resulting TIFF image.
-
-  * IccTiffDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a TIFF image to the console.
-
-  * IccPngDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a PNG image to the console. 
-
-  * IccJpegDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a JPG image to the console. 
-
-  * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
-    iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
-    wxWidgets 3.2.
-
-
-## Example iccMAX Profiles
-
-XML files are provided that can be used to create example iccMAX profiles. The
-CreateAllProfiles.bat file uses the iccFromXML tool to create ICC profiles for
-each of these XML files. The XML files can be found in the following folders:
-
-### [Calc](Testing/Calc)
-
-This folder contains profiles that demonstrate color modeling using the
-Calculator MultiProcessElement. The srgbCalcTest profile exercises all specified
-calculator operations.
-
-### [Display](Testing/Display)
-
-This folder contains profiles that demonstrate spectral modeling of display
-profiles allowing for late binding of the observer using MultiProcessElements
-that are transformed at startup to colorimetry for the desired observer.
-
-### [Encoding](Testing/Encoding)
-
-This folder contains 3 channel encoding class profiles. Both "name only"
-profiles as well as fully specified profiles are present.
-
-### [Named](Testing/Named)
-
-This folder contains named color profiles showcasing
-features such as tints, spectral reflectance, and fluorescence (with and with
-out sparse notation).
-
-### [PCC](Testing/PCC)
-
-This folder contains various profiles that can be used to
-define Profile Connection Conditions (PCC). All profiles are abstract profiles
-that perform no operation to PCS values. However, all profiles contain fully
-defined PCC tags that provide information that can be used to define rendering
-for various observers and illuminants. Profiles that utilize both absolute
-colorimetry as well as Material Adjusted colorimetry are present.
-
-### [SpecRef](Testing/SpaceRef)
-
-This folder contains various profiles that convert data to/from/between a
-spectral reflectance PCS. The argbRef (AdobeRGB) and srgbRef (sRGB) convert RGB
-values to/from spectral reflectance. RefDecC, RefDecH, and RefIncW are abstract
-spectral reflectance profiles that modify "chroma", "hue", and "lightness" of
-spectral reflectance values in a spectral reflectance PCS. The argbRef, srgbRef,
-RefDecC, RefDecH, RefIncW profiles all estimate and/or manipulate spectral
-reflectance using Wpt based spectral estimation (see chapter 7 of
-http://scholarworks.rit.edu/theses/8789/. Additionally, examples of 6 channel
-abridged spectral encoding is provided.
 
 ---
 
-## Quick Start
-
-[Release Libraries & Binaries](https://github.com/xsscx/PatchIccMAX/releases) 
-
-### [Triples Testing Summary](https://github.com/xsscx/PatchIccMAX/actions)
-
-| **Operating System**       | **Kernel Version**                               | **Architecture**     | **Environment**                       |
-|----------------------------|--------------------------------------------------|----------------------|---------------------------------------|
-| macOS                      | Darwin Kernel Version 24.4.0                     | ARM64                | RELEASE_ARM64_T8103                   |
-| macOS                      | Darwin Kernel Version 24.4.0                     | x86_64               | RELEASE_X86_64                        |
-| WSL2 (Linux)               | 5.15.167.4-microsoft-standard-WSL2               | x86_64               | GNU/Linux                             |
-| Microsoft Windows 11 Pro   | Version	10.0.26100 Build 26100                  | x86_64               | Visual Studio 17.13.6                 |
-
----
-
-### Ubuntu | Build Reproduction | GNU Toolchain
-
-Copy and Paste into your Terminal:
+## AFL Build
 
 ```
-export CXX=g++
-cd ~
+[*] Verifying tool instrumentation...
+[PASS] iccToXml/iccToXml_test is instrumented
+[PASS] iccFromXml/iccFromXml_test is instrumented
+[PASS] iccDumpProfile/iccDumpProfile_test is instrumented
+[PASS] iccRoundTrip/iccRoundTrip_afl is instrumented
+[PASS] iccApplyNamedCmm/iccApplyNamedCmm_afl is instrumented
+[PASS] iccApplyProfiles/iccApplyProfiles_afl is instrumented
+[PASS] iccTiffDump/iccTiffDump_afl is instrumented
+[PASS] iccPngDump/iccPngDump_afl is instrumented
+```
+
+---
+
+## icc XML HTTP Service
+
+RESTful service for bidirectional conversion between ICC XML and .icc using iccMAX.
+
+---
+
+### 📌 icc XHR Features
+
+- **POST endpoints** for ICC XML → `.icc` and `.icc` → XML
+- Built on the **iccMAX reference implementation**
+- Enables structured roundtrip validation
+- Exposes **HTTP interfaces** for fuzzing, CI, and test automation
+- Supports integration with tools like **AFL**, **Burp Suite**, and custom harnesses
+- Logs stderr, exit codes, and raw inputs for postmortem and traceability
+- Foundation for expanding **iccMAX tooling as network services**
+
+## 🧪 Fuzzing-Ready
+
+This service is ready for fuzzing with:
+
+- **Burp Suite**
+- **AFLNet**
+- **REST API fuzzers**
+- Your custom toolchains
+
+
+### Sample Output
+
+
+```
+F:\pr129\PatchIccMAX\Build\iis>run_service.bat
+
+[*] Starting ICC XML HTTP Service on: http://localhost:8182/icctoxml
+
+[+] Service listening at: http://localhost:8182/icctoxml
+[+] Received POST request
+[+] Extracted UTF-8 body, size: 134591
+[+] Received POST request
+[+] Extracted UTF-8 body, size: 43245
+[+] Received POST request
+[+] Extracted UTF-8 body, size: 8544
+...
+XML successfully created
+XML successfully created
+Unable to read 'temp_input.icc'
+Unable to read 'temp_input.icc'
+...
+XML successfully created
+XML successfully created
+```
+
+---
+
+## 🔒 Security Notes
+
+- Input size is not validated — use in isolated test environments.
+- XML parser is libxml2 — known to tolerate many malformed patterns.
+
+---
+
+## Build Reproductions
+
+### WSL-2 Ubuntu24
+
+With X11 Libs, Asan + Logging:
+
+```
+cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_TOOLS=ON \
+  -DENABLE_SHARED_LIBS=ON \
+  -DENABLE_STATIC_LIBS=ON \
+  -DENABLE_TESTS=ON \
+  -DENABLE_INSTALL_RIM=ON \
+  -DENABLE_ICCXML=ON \
+  -DICC_CLUT_DEBUG=ON \
+  -DICC_ENABLE_ASSERTS=ON \
+  -DICC_LOG_SAFE=ON \
+  -DICC_TRACE_NAN_ENABLED=ON \
+  -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall -Wno-dev" \
+  -DCMAKE_EXE_LINKER_FLAGS="-lX11" \
+  Cmake/
+  
+make -j"$(nproc)"
+
+cd ../Testing/
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
+```
+
+### Ubuntu24 | GNU
+
+```
+cd /tmp
+export CC=clang
+export CXX=clang++
 git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
-cd DemoIccMAX/Build
-sudo apt-get install -y libpng-dev libjpeg-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential
+cd DemoIccMAX
+git fetch origin pull/129/head:pr-129
+git checkout pr-129
+cd Build
+sudo apt-get install -y libpng-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential
 cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" -DCMAKE_BUILD_TYPE=Debug -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON -Wno-dev -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
 make -j$(nproc)
-find IccProfLib/ IccXML/ Tools/ -type f -executable -exec file {} \; | grep 'ELF' | cut -d: -f1
-cd ..
-```
-
-Create Profiles:
-
-```
-cd Testing/
+cd ../Testing/
 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
 ```
 
-### macOS Build Reproduction | Clang Toolchain
-
-Copy and Paste into your Terminal:
+#### Expected Output
 
 ```
-export CXX=clang++
-cd ~
-git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
-cd DemoIccMAX/Build
-brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
-make -j$(nproc)
-cd ..
+find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print `` 
 ```
 
-Create Profiles:
+```
+./Tools/IccDumpProfile/iccDumpProfile
+./Tools/IccRoundTrip/iccRoundTrip
+./Tools/wxProfileDump/iccDumpProfileGui
+./Tools/IccPngDump/iccPngDump
+./Tools/IccFromXml/iccFromXml
+./Tools/IccV5DspObsToV4Dsp/iccV5DspObsToV4Dsp
+./Tools/IccFromCube/iccFromCube
+./Tools/IccToXml/iccToXml
+./Tools/IccApplyNamedCmm/iccApplyNamedCmm
+./Tools/IccSpecSepToTiff/iccSpecSepToTiff
+./Tools/IccApplyToLink/iccApplyToLink
+./Tools/IccApplyProfiles/iccApplyProfiles
+./Tools/IccTiffDump/iccTiffDump
+./IccXML/libIccXML2-static.a
+./IccXML/libIccXML2.so.2.1.25
+./IccProfLib/libIccProfLib2-static.a
+./IccProfLib/libIccProfLib2.so.2.1.25
+```
+
 
 ```
-cd Testing/
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
+find ./build_* -type d -depth 1 ! -name "*CMakeFiles*" | sort
+```
+
+```
+./build_Debug/IccProfLib
+./build_Debug/IccXML
+./build_Debug/Testing
+./build_Debug/Tools
+./build_MinSizeRel/IccProfLib
+./build_MinSizeRel/IccXML
+./build_MinSizeRel/Testing
+./build_MinSizeRel/Tools
+./build_RelWithDebInfo/IccProfLib
+./build_RelWithDebInfo/IccXML
+./build_RelWithDebInfo/Testing
+./build_RelWithDebInfo/Tools
+./build_Release/IccProfLib
+./build_Release/IccXML
+./build_Release/Testing
+./build_Release/Tools
+```
+
+
+---
+
+### macOS | Brew | x86_64
+
+```
+[2025-04-25 11:18:17] $ mkdir -p $(brew --repo local/iccmax)/Formula
+cp iccmax.rb $(brew --repo local/iccmax)/Formula/
+
+[2025-04-25 11:18:19] $ brew install local/iccmax/iccmax
+==> Fetching local/iccmax/iccmax
+==> Downloading https://github.com/InternationalColorConsortium/DemoIccMAX/archive/refs/heads/master.tar.gz
+Already downloaded: /Users/xss/Library/Caches/Homebrew/downloads/5677725d337abfaee5e353c5810ceae07fe8e8f518f64e0d09e596ea040541cd--DemoIccMAX-master.tar.gz
+==> Installing iccmax from local/iccmax
+==> cmake CMake -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON
+==> make -j12
+==> make install
+🍺  /usr/local/Cellar/iccmax/2.3.0: 75 files, 5.2MB, built in 29 seconds
+==> Running `brew cleanup iccmax`...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+[2025-04-25 11:18:55] $ brew audit --strict --new --online local/iccmax/iccmax
+[2025-04-25 11:19:09] $ more iccmax.rb
+class Iccmax < Formula
+  desc "Reference implementation tools for iccMAX"
+  homepage "https://github.com/InternationalColorConsortium/DemoIccMAX"
+  url "https://github.com/InternationalColorConsortium/DemoIccMAX/archive/refs/heads/master.tar.gz"
+  version "2.3.0"
+  sha256 "87075b823062048acc96dd0ed50ac529511d4627d75becd9ed4e449630a301a8"
+  license "MIT"
+
+  depends_on "cmake" => :build
+  depends_on "libpng"
+  depends_on "libtiff"
+  depends_on "libxml2"
+  depends_on "nlohmann-json"
+  depends_on "wxwidgets"
+
+  def install
+    mkdir "Build" do
+      system "cmake", "CMake", "-DCMAKE_INSTALL_PREFIX=#{prefix}", \
+                      "-DCMAKE_BUILD_TYPE=Release", \
+                      "-DENABLE_TOOLS=ON", \
+                      "-DENABLE_SHARED_LIBS=ON", \
+                      "-DENABLE_STATIC_LIBS=ON", \
+                      "-DENABLE_TESTS=ON", \
+                      "-DENABLE_INSTALL_RIM=ON", \
+                      "-DENABLE_ICCXML=ON", \
+                      "-Wno-dev"
+
+      system "make", "-j#{ENV.make_jobs}"
+      system "make", "install"
+    end
+  end
+
+  test do
+    system "#{bin}/iccDumpProfile", "--help"
+  end
+end
+[2025-04-25 11:19:48] $
+```
+
+## macOS | Brew | arm64
+
+```
+xss@macbookpro brew % brew uninstall iccmax
+Uninstalling /opt/homebrew/Cellar/iccmax/2.1.26... (75 files, 5.5MB)
+==> Autoremoving 10 unneeded formulae:
+docbook
+docbook-xsl
+gl2ps
+gnu-getopt
+jpeg
+libffi
+libgit2@1.8
+libtommath
+tcl-tk
+xmlto
+Uninstalling /opt/homebrew/Cellar/xmlto/0.0.29... (47 files, 182.6KB)
+Uninstalling /opt/homebrew/Cellar/tcl-tk/9.0.1... (3,150 files, 38MB)
+Uninstalling /opt/homebrew/Cellar/libgit2@1.8/1.8.4... (106 files, 4.7MB)
+Uninstalling /opt/homebrew/Cellar/jpeg/9f... (21 files, 900.9KB)
+Uninstalling /opt/homebrew/Cellar/gl2ps/1.4.2... (16 files, 318.2KB)
+Uninstalling /opt/homebrew/Cellar/libffi/3.4.7... (18 files, 782KB)
+Uninstalling /opt/homebrew/Cellar/libtommath/1.3.0... (12 files, 530.6KB)
+Uninstalling /opt/homebrew/Cellar/gnu-getopt/2.41... (13 files, 168.5KB)
+Uninstalling /opt/homebrew/Cellar/docbook-xsl/1.79.2_1... (4,910 files, 94.0MB)
+Uninstalling /opt/homebrew/Cellar/docbook/5.1_1... (199 files, 8.9MB)
+xss@macbookpro brew %  brew install --build-from-source iccmax.rb
+Error: Failed to load cask: iccmax.rb
+Cask 'iccmax' is unreadable: wrong constant name #<Class:0x000000012e95bb98>
+Warning: Treating iccmax.rb as a formula.
+==> Fetching iccmax
+==> Downloading https://github.com/InternationalColorConsortium/DemoIccMAX/archive/refs/heads/master.tar.gz
+Already downloaded: /Users/xss/Library/Caches/Homebrew/downloads/5677725d337abfaee5e353c5810ceae07fe8e8f518f64e0d09e596ea040541cd--DemoIccMAX-master.tar.gz
+==> cmake CMake -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABL
+==> make -j8
+==> make install
+🍺  /opt/homebrew/Cellar/iccmax/2.1.26: 75 files, 5.5MB, built in 16 seconds
+==> Running `brew cleanup iccmax`...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+xss@macbookpro brew %
 ```
 
 ---
 
-## Windows Build
-
-- **Build the master branch of the project via powershell**:
-
-   ```
-   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
-   ```
-
-### Windows Cmake Instructions
+### Windows | MSVC
 
 #### Prerequisites
 
@@ -229,8 +348,6 @@ cd Testing/
 ---
 
 #### Setup: Environment & Dependencies
-
-This example installs `vcpkg` to `c:\test` to avoid `devenv` pollution.
 
 ```
 mkdir C:\test\
@@ -250,7 +367,6 @@ cd vcpkg
 
 ```
 .\vcpkg.exe install `
-  libjpeg-turbo `
   libpng `
   nlohmann-json:x64-windows `
   nlohmann-json:x64-windows-static `
@@ -259,117 +375,130 @@ cd vcpkg
   tiff:x64-windows `
   tiff:x64-windows-static `
   wxwidgets:x64-windows `
-  wxwidgets:x64-windows-static
+  wxwidgets:x64-windows-static `
+  libjpeg-turbo:x64-windows `
+  libjpeg-turbo:x64-windows-static
 ```
 
-
-#### Clone and Checkout IccMAX
+### Clone, Configure and Build
 
 ```
-cd ~
 git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
 cd DemoIccMAX
-```
-
----
-
-#### Configure & Build Example (MinSizeRel)
-
-This example Cmake Configure and Build uses `vcpkg` installed to `c:\test` to avoid `devenv` pollution. 
-
-```
+git fetch origin pull/129/head:pr-129
+git checkout pr-129
 cd Build
 mkdir win
 cd win
+# ---- BASE PATH SETUP ----
+$base = Get-Location
+$sourceDir = Resolve-Path "$base\..\Cmake"
+$toolchain = "C:/test/vcpkg/scripts/buildsystems/vcpkg.cmake"
+$vcpkgInclude = "C:/test/vcpkg/installed/x64-windows/include"
+$vcpkgLib = "C:/test/vcpkg/installed/x64-windows/lib"
 
-cmake -S ..\Cmake -B . -G "Visual Studio 17 2022" -A x64 `
-  -DCMAKE_BUILD_TYPE=MinSizeRel `
-  -DCMAKE_TOOLCHAIN_FILE=C:/test/vcpkg/scripts/buildsystems/vcpkg.cmake `
-  -DCMAKE_C_FLAGS="/MD /Od /Zi /I C:/test/vcpkg/installed/x64-windows/include" `
-  -DCMAKE_CXX_FLAGS="/MD /Od /Zi /I C:/test/vcpkg/installed/x64-windows/include" `
-  -DCMAKE_SHARED_LINKER_FLAGS="/LIBPATH:C:/test/vcpkg/installed/x64-windows/lib" `
-  -DENABLE_TOOLS=ON `
-  -DENABLE_SHARED_LIBS=ON `
-  -DENABLE_STATIC_LIBS=ON `
-  -DENABLE_TESTS=ON `
-  -DENABLE_INSTALL_RIM=ON `
-  -DENABLE_ICCXML=ON `
-  -DENABLE_SPECTRE_MITIGATION=OFF `
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON `
-  --graphviz=iccMAX-project.dot
+# ---- CONFIG TO RUNTIME MAP ----
+$configs = @{
+  "Debug"        = "MultiThreadedDebugDLL"
+  "Release"      = "MultiThreadedDLL"
+  "RelWithDebInfo" = "MultiThreadedDLL"
+  "MinSizeRel"   = "MultiThreadedDLL"
+}
 
-cmake --build . --config MinSizeRel -- /m /maxcpucount:32
-```
+# ---- PER CONFIG BUILD LOOP ----
+foreach ($cfg in $configs.Keys) {
+    $outDir = "$base\build_$cfg"
 
-##### Expected Output
+    # Clean build dir
+    if (-Not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir | Out-Null }
+    Set-Location $outDir
+    Remove-Item -Recurse -Force .\CMakeCache.txt, .\CMakeFiles -ErrorAction SilentlyContinue
 
-```
-  IccProfLib2-static.vcxproj -> Build\win\IccProfLib\MinSizeRel\IccProfLib2-static.lib
-  IccProfLib2.vcxproj -> Build\win\IccProfLib\MinSizeRel\IccProfLib2.dll
-  Aliasing IccProfLib2-static.lib to IccProfLib2.lib for MSVC compatibility
-  iccFromCube.vcxproj -> Build\win\Tools\IccFromCube\MinSizeRel\iccFromCube.exe
-  iccApplyToLink.vcxproj -> Build\win\Tools\IccApplyToLink\MinSizeRel\iccApplyToLink.exe
-  iccPngDump.vcxproj -> Build\win\Tools\IccPngDump\MinSizeRel\iccPngDump.exe
-  IccXML2-static.vcxproj -> Build\win\IccXML\MinSizeRel\IccXML2-static.lib
-  iccV5DspObsToV4Dsp.vcxproj -> Build\win\Tools\IccV5DspObsToV4Dsp\MinSizeRel\iccV5DspObsToV4Dsp.exe
-  iccDumpProfile.vcxproj -> Build\win\Tools\IccDumpProfile\MinSizeRel\iccDumpProfile.exe
-  iccTiffDump.vcxproj -> Build\win\Tools\IccTiffDump\MinSizeRel\iccTiffDump.exe
-  iccSpecSepToTiff.vcxproj -> Build\win\Tools\IccSpecSepToTiff\MinSizeRel\iccSpecSepToTiff.exe
-  iccRoundTrip.vcxproj -> Build\win\Tools\IccRoundTrip\MinSizeRel\iccRoundTrip.exe
-  Aliasing IccXML2-static.lib to IccXML2.lib for MSVC compatibility
-  IccXML2.vcxproj -> Build\win\IccXML\MinSizeRel\IccXML2.dll
-  iccDumpProfileGui.vcxproj -> Build\win\Tools\wxProfileDump\MinSizeRel\iccDumpProfileGui.exe
-  IccMAXCmm.vcxproj -> Build\win\Tools\IccMAXCmm\x64\MinSizeRel\IccMAXCmm.dll
-  iccFromXml.vcxproj -> Build\win\Tools\IccFromXml\MinSizeRel\iccFromXml.exe
-  iccToXml.vcxproj -> Build\win\Tools\IccToXml\MinSizeRel\iccToXml.exe
-  iccApplyNamedCmm.vcxproj -> Build\win\Tools\IccApplyNamedCmm\MinSizeRel\iccApplyNamedCmm.exe
-  iccApplyProfiles.vcxproj -> Build\win\Tools\IccApplyProfiles\MinSizeRel\iccApplyProfiles.exe
-```
+    # ---- CONFIGURE ----
+    cmake -S $sourceDir -B . -G "Visual Studio 17 2022" -A x64 `
+      "-DCMAKE_BUILD_TYPE=$cfg" `
+      "-DCMAKE_TOOLCHAIN_FILE=$toolchain" `
+      "-DCMAKE_C_FLAGS=/Od /Zi /I $vcpkgInclude" `
+      "-DCMAKE_CXX_FLAGS=/Od /Zi /I $vcpkgInclude" `
+      "-DCMAKE_SHARED_LINKER_FLAGS=/LIBPATH:$vcpkgLib" `
+      "-DCMAKE_MSVC_RUNTIME_LIBRARY=$($configs[$cfg])" `
+      -DENABLE_TOOLS=ON `
+      -DENABLE_SHARED_LIBS=ON `
+      -DENABLE_STATIC_LIBS=ON `
+      -DENABLE_TESTS=ON `
+      -DENABLE_INSTALL_RIM=ON `
+      -DENABLE_ICCXML=ON `
+      -DENABLE_SPECTRE_MITIGATION=OFF `
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON `
+      "--graphviz=iccMAX-$cfg.dot"
 
-### Dependency Install via vcpkg.json
+    # ---- BUILD ----
+    Write-Host "`n>>>>> Building $cfg configuration <<<<<" -ForegroundColor Green
+    cmake --build . --config $cfg -- /m /maxcpucount:32
 
-There is `vcpkg.json` to install and integrate the dependencies:
-
-```
-cd DemoIccMAX
-vcpkg integrate install
-vcpkg install
-```
-
-##### Reproduction
+    Set-Location $base
+}
 
 ```
-[2025-04-13 11:35:22 F:\pr124\DemoIccMAX]%  vcpkg integrate install
-Applied user-wide integration for this vcpkg root.
-CMake projects should use: "-DCMAKE_TOOLCHAIN_FILE= C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg\scripts\buildsystems\vcpkg.cmake"
 
-All MSBuild C++ projects can now #include any installed libraries. Linking will be handled automatically. Installing new libraries will make them instantly available.
-[2025-04-13 11:35:31 F:\pr124\DemoIccMAX]%
+#### View Output
+
+Command:
+
+```
+Get-ChildItem -Recurse -Include *.exe,*.lib 
 ```
 
-Adjust the Cmake Configure args shown above to use `$vcpkg` instead of `C:/test/vcpkg/`
+## Git Diff Summary: `master...pr-129`
 
-### Visual Studio Solution
+```
+git clone https://github.com/xsscx/PatchIccMAX.git
+cd PatchIccMAX
+git checkout pr129
+git diff --stat origin/master...
+```
 
-`devenv RefIccMAX.sln`
+### Ubuntu Cmake Example | Debug Logging + X11 Libs
 
----
+```
+cmake \
+  -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_TOOLS=ON \
+  -DENABLE_SHARED_LIBS=ON \
+  -DENABLE_STATIC_LIBS=ON \
+  -DENABLE_TESTS=ON \
+  -DENABLE_INSTALL_RIM=ON \
+  -DENABLE_ICCXML=ON \
+  -DICC_TRACE_NAN_ENABLED=ON \
+  -DICC_CLUT_DEBUG=ON \
+  -DCMAKE_CXX_FLAGS="-g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-inline -Wall -Wextra -DICC_TRACE_NAN_ENABLED -DICC_CLUT_DEBUG -DICC_ENABLE_ASSERTS -DICC_LOG_SAFE" \
+  -DCMAKE_EXE_LINKER_FLAGS="-lX11 -fsanitize=address,undefined" \
+  Cmake/
 
-## Project PR Preflight Checks
-1. Build on Linux, macOS & Windows
-2. Create ICC Profiles
-3. CICD Runner plus Stub
+make -j$(nproc)
+```
 
-### Project Dependencies
-- `libxml2`: Required for XML support.
-- `libpng-dev`: Required for Png Support.
-- `libjpg-dev`: Required for Jpg Support. 
-- `libjpeg-turbo`: Required for JPEG support.
-- `libwxgtk3.2-dev`: Required for GUI support.
-- `nlohmann-json3-dev`: Enables JSON parsing for configuration files.
-- `libtiff`: Supports TIFF image manipulation for image processing tools.
-- `wxWidgets`: Cross-platform GUI framework for the basic profile viewer.
+### Ubuntu Release Example
 
+
+```
+cmake \
+  -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DENABLE_TOOLS=ON \
+  -DENABLE_SHARED_LIBS=ON \
+  -DENABLE_STATIC_LIBS=ON \
+  -DENABLE_TESTS=ON \
+  -DENABLE_INSTALL_RIM=ON \
+  -DENABLE_ICCXML=ON \
+  -DICC_TRACE_NAN_ENABLED=ON \
+  -DICC_CLUT_DEBUG=ON \
+  -DCMAKE_CXX_FLAGS="-DICC_TRACE_NAN_ENABLED -DICC_CLUT_DEBUG -DICC_ENABLE_ASSERTS -DICC_LOG_SAFE" \
+  -DCMAKE_EXE_LINKER_FLAGS="-Wl,--as-needed -Wl,--no-as-needed -lX11" \
+  Cmake/
+
+```
 ---
 
 [The ICC Software License](LICENSE.md)

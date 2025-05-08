@@ -66,33 +66,127 @@
 //
 // -Initial implementation by Max Derhak 5-15-2003
 // -Validation improvements by Peter Wyatt 2021
+// -Runtime Errors, UBSAN Issues by David Hoyt 24-April-2025
 //
 //////////////////////////////////////////////////////////////////////
 
 
 #include <stdio.h>
 #include <cstring>
+
 #include "IccProfile.h"
 #include "IccTag.h"
 #include "IccUtil.h"
 #include "IccProfLibVer.h"
+#include "IccDefs.h"
+#include "IccSignatureUtils.h"
 
-// #define MEMORY_LEAK_CHECK to enable C RTL memory leak checking (slow!)
+// -----------------------------------------------------------------------------
+// MEMORY LEAK CHECKING (Optional)
+// Define MEMORY_LEAK_CHECK to enable debug-time allocation tracking.
+//
+// On Windows (MSVC): Uses CRT leak detection (_CrtSetDbgFlag)
+// On Linux (glibc):  Hooks via mcheck()
+// -----------------------------------------------------------------------------
 #define MEMORY_LEAK_CHECK
 
 #if defined(_WIN32) || defined(WIN32)
-#include <crtdbg.h>
-#elif __GLIBC__
-#include <mcheck.h>
+  #include <crtdbg.h>
+  static void EnableMemoryLeakChecking()
+  {
+    int dbgFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    dbgFlags |= _CRTDBG_ALLOC_MEM_DF;
+    dbgFlags |= _CRTDBG_LEAK_CHECK_DF;
+    _CrtSetDbgFlag(dbgFlags);
+  }
+#elif defined(__GLIBC__)
+  #include <mcheck.h>
+  static void EnableMemoryLeakChecking()
+  {
+    mcheck(NULL);  // Enable glibc memory tracking
+  }
+#else
+  static void EnableMemoryLeakChecking() {}  // Stub for non-supported platforms
 #endif
 
+static bool IsRoundTripable(CIccProfile *pIcc)
+{
+	ICC_LOG_INFO("IsRoundTripable(): Entry point reached.");
+  icHeader *pHdr = &pIcc->m_Header;
+  ICC_LOG_INFO("IsRoundTripable(): Checking profile with deviceClass=0x%08x", pHdr->deviceClass);
 
+  if (pHdr->deviceClass == icSigLinkClass) {
+    ICC_LOG_INFO("IsRoundTripable(): Profile is DeviceLink. Not roundtripable.");
+    return false;
+  }
+
+  bool hasAToB0 = pIcc->FindTag(icSigAToB0Tag) != nullptr;
+  bool hasBToA0 = pIcc->FindTag(icSigBToA0Tag) != nullptr;
+  bool hasAToB1 = pIcc->FindTag(icSigAToB1Tag) != nullptr;
+  bool hasBToA1 = pIcc->FindTag(icSigBToA1Tag) != nullptr;
+  bool hasAToB2 = pIcc->FindTag(icSigAToB2Tag) != nullptr;
+  bool hasBToA2 = pIcc->FindTag(icSigBToA2Tag) != nullptr;
+
+  bool hasDToB0 = pIcc->FindTag(icSigDToB0Tag) != nullptr;
+  bool hasBToD0 = pIcc->FindTag(icSigBToD0Tag) != nullptr;
+  bool hasDToB1 = pIcc->FindTag(icSigDToB1Tag) != nullptr;
+  bool hasBToD1 = pIcc->FindTag(icSigBToD1Tag) != nullptr;
+  bool hasDToB2 = pIcc->FindTag(icSigDToB2Tag) != nullptr;
+  bool hasBToD2 = pIcc->FindTag(icSigBToD2Tag) != nullptr;
+
+  bool hasMatrix =
+    pIcc->FindTag(icSigRedMatrixColumnTag) &&
+    pIcc->FindTag(icSigGreenMatrixColumnTag) &&
+    pIcc->FindTag(icSigBlueMatrixColumnTag) &&
+    pIcc->FindTag(icSigRedTRCTag) &&
+    pIcc->FindTag(icSigGreenTRCTag) &&
+    pIcc->FindTag(icSigBlueTRCTag);
+
+  ICC_LOG_INFO("Tag pairs found: AToB0/BToA0=%d, AToB1/BToA1=%d, AToB2/BToA2=%d",
+               hasAToB0 && hasBToA0, hasAToB1 && hasBToA1, hasAToB2 && hasBToA2);
+  ICC_LOG_INFO("Tag pairs found: DToB0/BToD0=%d, DToB1/BToD1=%d, DToB2/BToD2=%d",
+               hasDToB0 && hasBToD0, hasDToB1 && hasBToD1, hasDToB2 && hasBToD2);
+  ICC_LOG_INFO("Matrix/TRC tags present: %d", hasMatrix);
+
+  if ((hasAToB0 && hasBToA0) ||
+      (hasAToB1 && hasBToA1) ||
+      (hasAToB2 && hasBToA2) ||
+      (hasDToB0 && hasBToD0) ||
+      (hasDToB1 && hasBToD1) ||
+      (hasDToB2 && hasBToD2) ||
+      hasMatrix) {
+    ICC_LOG_INFO("IsRoundTripable(): Profile meets round-trip conditions.");
+    return true;
+  }
+
+  ICC_LOG_INFO("IsRoundTripable(): No qualifying tag pairs found.");
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////
+// FUNCTION: DumpTag
+//
+// PURPOSE:
+//   Print the contents of a tag from the given ICC profile, including
+//   the tag signature, type, and optionally full internal description.
+//
+// PARAMETERS:
+//   pIcc         - pointer to CIccProfile object
+//   sig          - signature of the tag to be printed
+//   nVerboseness - 0 = summary, 1 = full dump
+//
+// NOTES:
+//   Uses CIccTag::Describe() to emit human-readable details.
+//   Includes standard formatting helpers via CIccInfo.
+//
+//   Outputs to stdout.
+//
+////////////////////////////////////////////////////////////////////////
 void DumpTag(CIccProfile *pIcc, icTagSignature sig, int nVerboseness)
 {
   CIccTag *pTag = pIcc->FindTag(sig);
   char buf[64];
   CIccInfo Fmt;
-
   std::string contents;
 
   if (pTag) {
@@ -102,6 +196,7 @@ void DumpTag(CIccProfile *pIcc, icTagSignature sig, int nVerboseness)
       printf("Array of ");
     }
     printf("%s (%s)\n", Fmt.GetTagTypeSigName(pTag->GetType()), icGetSig(buf, pTag->GetType()));
+
     pTag->Describe(contents, nVerboseness);
     fwrite(contents.c_str(), contents.length(), 1, stdout);
   }
@@ -205,73 +300,149 @@ print_usage:
     pHdr = &pIcc->m_Header;
     char buf[64];
 
-    printf("Profile:            '%s'\n", argv[nArg]);
-    if(Fmt.IsProfileIDCalculated(&pHdr->profileID))
-      printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
-    else
-      printf("Profile ID:         Profile ID not calculated.\n");
-    printf("Size:               %d (0x%x) bytes\n", pHdr->size, pHdr->size);
+// ===========================================================================
+// LATEST FIX: Over | Under | Memory Safety
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Resolve runtime Errors from UBSan, Enums, Fix RoundTrip
+// OUTCOME: Added incremental changes for re-fuzzing, first pass attempt
+//
+//
+// BUG CLASSES: Over | Under | Memory Safety
+//
+// DEP ISSUES: None Identified
+// 
+// ===========================================================================
+ICC_LOG_INFO("IsRoundTripable(): Entry point reached.");
 
-    printf("\nHeader\n");
-    printf(  "------\n");
-    printf("Attributes:         %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
-    printf("Cmm:                %s\n", Fmt.GetCmmSigName((icCmmSignature)(pHdr->cmmId)));
-    printf("Creation Date:      %d/%d/%d (M/D/Y)  %02u:%02u:%02u\n",
-                               pHdr->date.month, pHdr->date.day, pHdr->date.year,
-                               pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
-    printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
-    printf("Device Manufacturer:%s\n", icGetSig(buf, pHdr->manufacturer));
-    printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
-    printf("Flags:              %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
+printf("Profile:            '%s'\n", argv[nArg]);
+
+if (Fmt.IsProfileIDCalculated(&pHdr->profileID))
+    printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
+else
+    printf("Profile ID:         Profile ID not calculated.\n");
+
+printf("Size:               %d (0x%x) bytes\n", pHdr->size, pHdr->size);
+
+printf("\nHeader\n");
+printf("------\n");
+
+printf("Attributes:         %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
+
+// CMM Signature (validated)
+if (pHdr->cmmId >= 0x20202020 && pHdr->cmmId <= 0x7A7A7A7A)
+    printf("Cmm:                %s\n", Fmt.GetCmmSigName((icCmmSignature)pHdr->cmmId));
+else
+    printf("Cmm:                InvalidCmm (0x%08X)\n", (unsigned)pHdr->cmmId);
+
+// Creation Date
+printf("Creation Date:      %d/%d/%d (M/D/Y)  %02u:%02u:%02u\n",
+       pHdr->date.month, pHdr->date.day, pHdr->date.year,
+       pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
+
+// Strings
+printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
+printf("Device Manufacturer:%s\n", icGetSig(buf, pHdr->manufacturer));
+
+// PCS
+switch (pHdr->pcs) {
+  case icSigLabData:
+  case icSigXYZData:
     printf("PCS Color Space:    %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
-    printf("Platform:           %s\n", Fmt.GetPlatformSigName(pHdr->platform));
-    printf("Rendering Intent:   %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)(pHdr->renderingIntent)));
-    printf("Profile Class:      %s\n", Fmt.GetProfileClassSigName(pHdr->deviceClass));
-    if (pHdr->deviceSubClass)
-      printf("Profile SubClass:   %s\n", icGetSig(buf, pHdr->deviceSubClass));
-    else
-      printf("Profile SubClass:   Not Defined\n");
-    printf("Version:            %s\n", Fmt.GetVersionName(pHdr->version));
-    if (pHdr->version >= icVersionNumberV5 && pHdr->deviceSubClass) {
-      printf("SubClass Version:   %s\n", Fmt.GetSubClassVersionName(pHdr->version));
-    }
-    printf("Illuminant:         X=%.4lf, Y=%.4lf, Z=%.4lf\n",
-                                icFtoD(pHdr->illuminant.X),
-                                icFtoD(pHdr->illuminant.Y),
-                                icFtoD(pHdr->illuminant.Z));
-    printf("Spectral PCS:       %s\n", Fmt.GetSpectralColorSigName(pHdr->spectralPCS));
-    if (pHdr->spectralRange.start || pHdr->spectralRange.end || pHdr->spectralRange.steps) {
-      printf("Spectral PCS Range: start=%.1fnm, end=%.1fnm, steps=%d\n",
-             icF16toF(pHdr->spectralRange.start),
-             icF16toF(pHdr->spectralRange.end),
-             pHdr->spectralRange.steps);
-    }
-    else {
-      printf("Spectral PCS Range: Not Defined\n");
-    }
+    break;
+  default:
+    printf("PCS Color Space:    InvalidPCS (0x%08X)\n", (unsigned)pHdr->pcs);
+    break;
+}
 
-    if (pHdr->biSpectralRange.start || pHdr->biSpectralRange.end || pHdr->biSpectralRange.steps) {
-      printf("BiSpectral Range:     start=%.1fnm, end=%.1fnm, steps=%d\n",
-        icF16toF(pHdr->biSpectralRange.start),
-        icF16toF(pHdr->biSpectralRange.end),
-        pHdr->biSpectralRange.steps);
-    }
-    else {
-      printf("BiSpectral Range:   Not Defined\n");
-    }
+// Color Space (no validation, fallback safe)
+printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
 
-    if (pHdr->mcs) {
-      printf("MCS Color Space:    %s\n", Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
-    }
-    else {
-      printf("MCS Color Space:    Not Defined\n");
-    }
+// Profile Flags
+printf("Flags:              %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
 
-    printf("\nProfile Tags\n");
-    printf(  "------------\n");
+// Platform Signature (strict enum validation to prevent UBSan fault)
+icUInt32Number platformValue;
+memcpy(&platformValue, &pHdr->platform, sizeof(icUInt32Number));
+printf("Raw Platform Value: 0x%08X\n", platformValue);
 
-    printf("%28s    ID    %8s\t%8s\t%8s\n", "Tag",  "Offset", "Size", "Pad");
-    printf("%28s  ------  %8s\t%8s\t%8s\n", "----", "------", "----", "---");
+
+const char *platformName = nullptr;
+icUInt32Number rawPlatform;
+memcpy(&rawPlatform, &pHdr->platform, sizeof(icUInt32Number));
+if (rawPlatform == 0x4150504C)      // 'APPL'
+  platformName = "Macintosh";
+else if (rawPlatform == 0x4D534654) // 'MSFT'
+  platformName = "Microsoft";
+else if (rawPlatform == 0x53554E20) // 'SUN '
+  platformName = "Solaris";
+else if (rawPlatform == 0x53474920) // 'SGI '
+  platformName = "SGI";
+else if (rawPlatform == 0x54474C20) // 'TGL '
+  platformName = "Taligent";
+else if (rawPlatform == 0x00000000) // icSigUnknownPlatform
+  platformName = "Unknown";
+
+
+if (platformName)
+  printf("Platform:           %s\n", platformName);
+else
+  printf("Platform:           UnknownPlatformSig (0x%08X)\n", rawPlatform);
+
+// Rendering Intent (range: 0–3)
+if (pHdr->renderingIntent <= icAbsoluteColorimetric)
+    printf("Rendering Intent:   %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)pHdr->renderingIntent));
+else
+    printf("Rendering Intent:   InvalidIntent (%u)\n", (unsigned)pHdr->renderingIntent);
+
+// Profile Class (basic signature range check)
+printf("Profile Class:      %s\n", Fmt.GetProfileClassSigName(pHdr->deviceClass));
+
+if (pHdr->deviceSubClass)
+    printf("Profile SubClass:   %s\n", icGetSig(buf, pHdr->deviceSubClass));
+else
+    printf("Profile SubClass:   Not Defined\n");
+
+printf("Version:            %s\n", Fmt.GetVersionName(pHdr->version));
+
+if (pHdr->version >= icVersionNumberV5 && pHdr->deviceSubClass)
+    printf("SubClass Version:   %s\n", Fmt.GetSubClassVersionName(pHdr->version));
+
+printf("Illuminant:         X=%.4lf, Y=%.4lf, Z=%.4lf\n",
+       icFtoD(pHdr->illuminant.X),
+       icFtoD(pHdr->illuminant.Y),
+       icFtoD(pHdr->illuminant.Z));
+
+// Spectral PCS (let it pass, log if garbage)
+printf("Spectral PCS:       %s\n", Fmt.GetSpectralColorSigName(pHdr->spectralPCS));
+
+if (pHdr->spectralRange.start || pHdr->spectralRange.end || pHdr->spectralRange.steps)
+    printf("Spectral PCS Range: start=%.1fnm, end=%.1fnm, steps=%d\n",
+           icF16toF(pHdr->spectralRange.start),
+           icF16toF(pHdr->spectralRange.end),
+           pHdr->spectralRange.steps);
+else
+    printf("Spectral PCS Range: Not Defined\n");
+
+if (pHdr->biSpectralRange.start || pHdr->biSpectralRange.end || pHdr->biSpectralRange.steps)
+    printf("BiSpectral Range:     start=%.1fnm, end=%.1fnm, steps=%d\n",
+           icF16toF(pHdr->biSpectralRange.start),
+           icF16toF(pHdr->biSpectralRange.end),
+           pHdr->biSpectralRange.steps);
+else
+    printf("BiSpectral Range:   Not Defined\n");
+
+if (pHdr->mcs)
+    printf("MCS Color Space:    %s\n", Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
+else
+    printf("MCS Color Space:    Not Defined\n");
+
+printf("\nProfile Tags\n");
+printf("------------\n");
+
+printf("%28s    ID    %8s\t%8s\t%8s\n", "Tag", "Offset", "Size", "Pad");
+printf("%28s  ------  %8s\t%8s\t%8s\n", "----", "------", "----", "---");
+
 
     int n, closest, pad;
     TagEntryList::iterator i, j;

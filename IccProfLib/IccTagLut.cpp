@@ -65,13 +65,14 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
-//
 // -Moved LUT tags to separate file 4-30-2005
+// -Debug Overs, Null Derefs by David Hoyt 01-MAY-2025
+//
 //
 //////////////////////////////////////////////////////////////////////
 
 #ifdef WIN32
-  #pragma warning( disable: 4786) //disable warning in <list.h>
+  #pragma warning( disable: 4786)
   #include <windows.h>
 #endif
 #include <stdio.h>
@@ -82,10 +83,12 @@
 #include "IccUtil.h"
 #include "IccProfile.h"
 #include "IccMpeBasic.h"
+#include "IccSignatureUtils.h"
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {
 #endif
+
 
 /**
 ****************************************************************************
@@ -165,8 +168,13 @@ CIccTagCurve::CIccTagCurve(const CIccTagCurve &ITCurve)
   m_nSize = ITCurve.m_nSize;
   m_nMaxIndex = ITCurve.m_nMaxIndex;
 
-  m_Curve = (icFloatNumber*)calloc(m_nSize, sizeof(icFloatNumber));
-  memcpy(m_Curve, ITCurve.m_Curve, m_nSize*sizeof(icFloatNumber));
+  if (m_nSize && ITCurve.m_Curve) {
+    m_Curve = (icFloatNumber*)calloc(m_nSize, sizeof(icFloatNumber));
+    if (m_Curve)
+      memcpy(m_Curve, ITCurve.m_Curve, m_nSize * sizeof(icFloatNumber));
+  } else {
+    m_Curve = nullptr;
+  }
 }
 
 
@@ -1466,7 +1474,8 @@ CIccMatrix &CIccMatrix::operator=(const CIccMatrix &MatrixClass)
 *  szName = name of the curve to be printed
 *****************************************************************************
 */
-void CIccMatrix::DumpLut(std::string &sDescription, const icChar *szName, int nVerboseness)
+void CIccMatrix::DumpLut(std::string &sDescription, const icChar *szName, int /*nVerboseness*/)
+// void CIccMatrix::DumpLut(std::string &sDescription, const icChar *szName, int nVerboseness)
 {
   icChar buf[128];
 
@@ -1621,12 +1630,13 @@ static icFloatNumber ClutUnitClip(icFloatNumber v)
 **************************************************************************
 */
 CIccApplyCLUT::CIccApplyCLUT()
-{
-  m_df = NULL;
-  m_s = NULL;
-  m_g = NULL;
-  m_ig = NULL;
-}
+  : m_nSrcSamples(0),
+    m_g(nullptr),
+    m_s(nullptr),
+    m_df(nullptr),
+    m_ig(nullptr)
+{}
+
 
 
 /**
@@ -1673,6 +1683,7 @@ bool CIccApplyCLUT::Init(icUInt8Number nSrcChannels, icUInt32Number nNodes)
   return true;
 }
 
+
 /**
  ****************************************************************************
  * Name: CIccCLUT::CIccCLUT
@@ -1685,49 +1696,92 @@ bool CIccApplyCLUT::Init(icUInt8Number nSrcChannels, icUInt32Number nNodes)
  * 
  *****************************************************************************
  */
+
+// ===========================================================================
+// LATEST FIX: Address OOB Read from Asan Poison 0xbebebebe
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// REPRO: iccGui:PoC:ASAN:index -1 out of bounds for type 'unsigned int [16]'
+// POC: OPEN ../Testing/sRGB_v4_ICC_preference.icc in iccGui, Click RoundTrip
+// INTENT: Debug, Resolve OOB Read, Refuzz, then patch for the read 0x3f3f3f3f
+// OUTCOME: Added incremental changes. TODO FIX for Read of 0x3f3f3f3f
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: OOBR
+//              Debug: Before: Reads Asan Memory 0xbebebebe
+//              Debug: After:  Reads Asan Memory  0x3f3f3f3f
+//
+// ==========================================================================
+
 CIccCLUT::CIccCLUT(icUInt8Number nInputChannels, icUInt16Number nOutputChannels, icUInt8Number nPrecision/*=2*/)
 {
   m_nInput = nInputChannels;
   m_nOutput = nOutputChannels;
   m_nPrecision = nPrecision;
-  m_pData = NULL;
-  m_nOffset = NULL;
-  memset(&m_nReserved2, 0 , sizeof(m_nReserved2));
+
+  m_pData = nullptr;
+  m_nOffset = 0;
+
+  m_nNumPoints = 0;
+  m_csInput = icSigUnknownData;
+  m_csOutput = icSigUnknownData;
+
+  memset(m_GridPoints, 0, sizeof(m_GridPoints));
+  memset(m_DimSize, 0, sizeof(m_DimSize));
+  memset(m_GridAdr, 0, sizeof(m_GridAdr));
+  memset(&m_nReserved2, 0, sizeof(m_nReserved2));
 
   UnitClip = ClutUnitClip;
 }
 
 
-/**
- ****************************************************************************
- * Name: CIccCLUT::CIccCLUT
- * 
- * Purpose: Copy Constructor
- *
- * Args:
- *  ICLUT = The CIccCLUT object to be copied
- *****************************************************************************
- */
+
 CIccCLUT::CIccCLUT(const CIccCLUT &ICLUT)
 {
-  m_pData = NULL;
-  m_nOffset = NULL;
+  m_pData = nullptr;
+  m_nOffset = 0;
   m_nInput = ICLUT.m_nInput;
   m_nOutput = ICLUT.m_nOutput;
   m_nPrecision = ICLUT.m_nPrecision;
   m_nNumPoints = ICLUT.m_nNumPoints;
 
-  m_csInput = ICLUT.m_csInput;
-  m_csOutput = ICLUT.m_csOutput;
+  // Extract input/output color space signatures safely
+  icUInt32Number rawInputSig = 0;
+  icUInt32Number rawOutputSig = 0;
+
+  memcpy(&rawInputSig, &ICLUT.m_csInput, sizeof(rawInputSig));
+  memcpy(&rawOutputSig, &ICLUT.m_csOutput, sizeof(rawOutputSig));
+
+  // Trace uninitialized values
+  if (rawInputSig == 0xbebebebe) {
+    fprintf(stderr, "[TRACE] CIccCLUT copy-ctor: m_csInput is UNINITIALIZED (0xbebebebe)\n");
+  }
+
+  if (rawOutputSig == 0xbebebebe) {
+    fprintf(stderr, "[TRACE] CIccCLUT copy-ctor: m_csOutput is UNINITIALIZED (0xbebebebe)\n");
+  }
+
+  // Safe fallback to known-good default if signature is invalid
+  m_csInput = IsValidColorSpaceSignature((icColorSpaceSignature)rawInputSig)
+                ? (icColorSpaceSignature)rawInputSig
+                : icSigUnknownData;
+
+  m_csOutput = IsValidColorSpaceSignature((icColorSpaceSignature)rawOutputSig)
+                ? (icColorSpaceSignature)rawOutputSig
+                : icSigUnknownData;
 
   memcpy(m_GridPoints, ICLUT.m_GridPoints, sizeof(m_GridPoints));
   memcpy(m_DimSize, ICLUT.m_DimSize, sizeof(m_DimSize));
   memcpy(m_GridAdr, ICLUT.m_GridAdr, sizeof(m_GridAdr));
   memcpy(&m_nReserved2, &ICLUT.m_nReserved2, sizeof(m_nReserved2));
 
-  int num = NumPoints()*m_nOutput;
-  m_pData = new icFloatNumber[num];
-  memcpy(m_pData, ICLUT.m_pData, num*sizeof(icFloatNumber));
+  int num = NumPoints() * m_nOutput;
+  if (num > 0 && ICLUT.m_pData) {
+    m_pData = new icFloatNumber[num];
+    memcpy(m_pData, ICLUT.m_pData, num * sizeof(icFloatNumber));
+  } else {
+    m_pData = nullptr;
+  }
 
   UnitClip = ICLUT.UnitClip;
 }
@@ -1736,7 +1790,7 @@ CIccCLUT::CIccCLUT(const CIccCLUT &ICLUT)
 /**
  ****************************************************************************
  * Name: CIccCLUT::operator=
- * 
+ *
  * Purpose: Copy Operator
  *
  * Args:
@@ -1745,34 +1799,57 @@ CIccCLUT::CIccCLUT(const CIccCLUT &ICLUT)
  */
 CIccCLUT &CIccCLUT::operator=(const CIccCLUT &CLUTTag)
 {
+#ifdef ICC_CLUT_DEBUG
+  fprintf(stderr, "== [CIccCLUT] Copy Assignment Called\n");
+#endif
+
   if (&CLUTTag == this)
     return *this;
-  
+
   m_nInput = CLUTTag.m_nInput;
   m_nOutput = CLUTTag.m_nOutput;
   m_nPrecision = CLUTTag.m_nPrecision;
   m_nNumPoints = CLUTTag.m_nNumPoints;
 
-  m_csInput = CLUTTag.m_csInput;
-  m_csOutput = CLUTTag.m_csOutput;
+  // Raw copy + validation for enum
+  icUInt32Number rawInputSig = 0, rawOutputSig = 0;
+  memcpy(&rawInputSig, &CLUTTag.m_csInput, sizeof(rawInputSig));
+  memcpy(&rawOutputSig, &CLUTTag.m_csOutput, sizeof(rawOutputSig));
+
+  if (!IsValidColorSpaceSignature((icColorSpaceSignature)rawInputSig)) {
+    ICC_LOG_WARNING("CIccCLUT::operator=: Invalid input color space: 0x%08x", rawInputSig);
+  }
+  if (!IsValidColorSpaceSignature((icColorSpaceSignature)rawOutputSig)) {
+    ICC_LOG_WARNING("CIccCLUT::operator=: Invalid output color space: 0x%08x", rawOutputSig);
+  }
+
+  m_csInput = (icColorSpaceSignature)(IsValidColorSpaceSignature((icColorSpaceSignature)rawInputSig)
+                 ? rawInputSig : icSigUnknownData);
+  m_csOutput = (icColorSpaceSignature)(IsValidColorSpaceSignature((icColorSpaceSignature)rawOutputSig)
+                  ? rawOutputSig : icSigUnknownData);
 
   memcpy(m_GridPoints, CLUTTag.m_GridPoints, sizeof(m_GridPoints));
   memcpy(m_DimSize, CLUTTag.m_DimSize, sizeof(m_DimSize));
   memcpy(m_GridAdr, CLUTTag.m_GridAdr, sizeof(m_GridAdr));
-  memcpy(m_nReserved2, &CLUTTag.m_nReserved2, sizeof(m_nReserved2));
+  memcpy(&m_nReserved2, &CLUTTag.m_nReserved2, sizeof(m_nReserved2));
 
-  int num;
-  if (m_pData)
-    delete [] m_pData;
-  num = NumPoints()*m_nOutput;
-  m_pData = new icFloatNumber[num];
-  memcpy(m_pData, CLUTTag.m_pData, num*sizeof(icFloatNumber));
+  if (m_pData) {
+    delete[] m_pData;
+    m_pData = nullptr;
+  }
+
+  int num = NumPoints() * m_nOutput;
+  if (num > 0 && CLUTTag.m_pData) {
+    m_pData = new icFloatNumber[num];
+    memcpy(m_pData, CLUTTag.m_pData, num * sizeof(icFloatNumber));
+  } else {
+    m_pData = nullptr;
+  }
 
   UnitClip = CLUTTag.UnitClip;
 
   return *this;
 }
-
 
 
 /**
@@ -1803,6 +1880,23 @@ CIccCLUT::~CIccCLUT()
  *  nGridPoints = number of grid points in the CLUT
  *****************************************************************************
  */
+
+// ===========================================================================
+// LATEST FIX: Compile Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// REPRO: iccGui:PoC:ASAN:index -1 out of bounds for type 'unsigned int [16]'
+// POC: OPEN ../Testing/sRGB_v4_ICC_preference.icc in iccGui, Click RoundTrip
+// INTENT: Resolve Sanitizer Errors
+// OUTCOME: Added incremental changes for runtime Errors, enum
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: NaN, Enum etc..
+//
+// DEP ISSUES: None Identified
+//
+// ========================================================================== 
+ 
 bool CIccCLUT::Init(icUInt8Number nGridPoints, icUInt32Number nMaxSize, icUInt8Number nBytesPerPoint)
 {
   memset(&m_GridPoints, 0, sizeof(m_GridPoints));
@@ -1813,16 +1907,6 @@ bool CIccCLUT::Init(icUInt8Number nGridPoints, icUInt32Number nMaxSize, icUInt8N
   return Init(&m_GridPoints[0], nMaxSize, nBytesPerPoint);
 }
 
-/**
- ****************************************************************************
- * Name: CIccCLUT::Init
- * 
- * Purpose: Initializes and sets the size of the CLUT
- * 
- * Args:
- *  pGridPoints = number of grid points in the CLUT
- *****************************************************************************
- */
 bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, icUInt8Number nBytesPerPoint)
 {
   if (nMaxSize && !nBytesPerPoint)
@@ -1830,49 +1914,52 @@ bool CIccCLUT::Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize, i
 
   icUInt64Number nNumPoints;
   memset(m_nReserved2, 0, sizeof(m_nReserved2));
-  if (pGridPoints!=&m_GridPoints[0]) {
-    // m_GridPoints[] is fixed size of 16
-    if (m_nInput > 16)
-      return false;
+
+  if (m_nInput == 0 || m_nInput > 16 || m_nOutput == 0)
+    return false;
+
+  if (pGridPoints != &m_GridPoints[0]) {
     memcpy(m_GridPoints, pGridPoints, m_nInput);
-    if (m_nInput<16)
-      memset(m_GridPoints+m_nInput, 0, 16-m_nInput);
+    if (m_nInput < 16)
+      memset(m_GridPoints + m_nInput, 0, 16 - m_nInput);
   }
 
-  // There should be at least 2 grid points for each input dimension for interpolation to work
+  // Validate grid point count per dimension
   for (int i = 0; i < m_nInput; i++) {
     if (pGridPoints[i] < 2)
       return false;
   }
 
   if (m_pData) {
-    delete [] m_pData;
+    delete[] m_pData;
     m_pData = NULL;
   }
 
-  int i=m_nInput-1;
-
-  // m_DimSize[] is a fixed size of 16
-  if (i >= 16)
+  int i = m_nInput - 1;
+  if (i < 0 || i >= 16)
     return false;
 
   m_DimSize[i] = m_nOutput;
   nNumPoints = m_GridPoints[i];
-  for (i--; i>=0; i--) {
-    m_DimSize[i] = m_DimSize[i+1] * m_GridPoints[i+1];
+
+  for (i--; i >= 0; i--) {
+    if (i < 0 || i >= 16)
+      return false;  // extra guard
+
+    m_DimSize[i] = m_DimSize[i + 1] * m_GridPoints[i + 1];
     nNumPoints *= m_GridPoints[i];
-    if (nMaxSize && nNumPoints * m_nOutput * nBytesPerPoint > nMaxSize)
+
+    if (nMaxSize && (nNumPoints * m_nOutput * nBytesPerPoint > nMaxSize))
       return false;
   }
+
   m_nNumPoints = (icUInt32Number)nNumPoints;
 
   icUInt32Number nSize = NumPoints() * m_nOutput;
-
   if (!nSize)
     return false;
 
   m_pData = new icFloatNumber[nSize];
-
   return (m_pData != NULL);
 }
 
@@ -2526,9 +2613,25 @@ void CIccCLUT::Interp2d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
  */
 void CIccCLUT::Interp3dTetra(icFloatNumber *destPixel, const icFloatNumber *srcPixel) const
 {
+  static int interpCallCount = 0;
+  interpCallCount++;
+  const int LOG_EVERY_N = 1000;  // Tune this based on perf
+
+  bool doLog = (interpCallCount % LOG_EVERY_N == 0);
+
+  ICC_LOG_DEBUG("Interp3dTetra ENTER -- srcPixel = (%.6f, %.6f, %.6f)", srcPixel[0], srcPixel[1], srcPixel[2]);
+
   icUInt8Number mx = m_MaxGridPoint[0];
   icUInt8Number my = m_MaxGridPoint[1];
   icUInt8Number mz = m_MaxGridPoint[2];
+
+  if (mx > 64 || my > 64 || mz > 64) {
+  ICC_LOG_WARNING("Interp3dTetra(): Unexpectedly large MaxGridPoint values: (%u,%u,%u)", mx, my, mz);
+    return;
+  }
+
+  if (doLog)
+    ICC_LOG_DEBUG("MaxGridPoint = (%u, %u, %u)", mx, my, mz);
 
   icFloatNumber x = UnitClip(srcPixel[0]) * mx;
   icFloatNumber y = UnitClip(srcPixel[1]) * my;
@@ -2542,40 +2645,179 @@ void CIccCLUT::Interp3dTetra(icFloatNumber *destPixel, const icFloatNumber *srcP
   icFloatNumber u = y - iy;
   icFloatNumber t = z - iz;
 
-  if (ix==mx) {
+  if (doLog) {
+    ICC_LOG_DEBUG("Pre-clamp: ix=%u, iy=%u, iz=%u | v=%.6f, u=%.6f, t=%.6f", ix, iy, iz, v, u, t);
+  }
+
+  if (ix == mx) {
     ix--;
     v = 1.0f;
+    if (doLog) ICC_LOG_DEBUG("Clamped ix to %u, v set to 1.0f", ix);
   }
-  if (iy==my) {
+  if (iy == my) {
     iy--;
     u = 1.0f;
+    if (doLog) ICC_LOG_DEBUG("Clamped iy to %u, u set to 1.0f", iy);
   }
-  if (iz==mz) {
+  if (iz == mz) {
     iz--;
     t = 1.0f;
+    if (doLog) ICC_LOG_DEBUG("Clamped iz to %u, t set to 1.0f", iz);
   }
 
-  int i;
-  icFloatNumber *p = &m_pData[ix*n001 + iy*n010 + iz*n100];
+  // Index constants
+  const int baseOffset = ix * n001 + iy * n010 + iz * n100;
 
-  //Normalize grid units
+  // Validate indexing BEFORE pointer math
+  int maxIndex = std::max(std::max(n000, n100), std::max(n110, n111));
+  int maxOffset = baseOffset + maxIndex;
+  int dataLimit = m_nNumPoints * m_nOutput;
 
-  for (i=0; i<m_nOutput; i++, p++) {
+  ICC_LOG_DEBUG("Interp3dTetra(): ix=%u, iy=%u, iz=%u", ix, iy, iz);
+  ICC_LOG_DEBUG("Interp3dTetra(): baseOffset=%d, maxIndex=%d, maxOffset=%d, dataLimit=%d",
+                baseOffset, maxIndex, maxOffset, dataLimit);
+  ICC_LOG_DEBUG("Interp3dTetra(): GridPoints - mx=%u, my=%u, mz=%u", mx, my, mz);
+  ICC_LOG_DEBUG("Interp3dTetra(): srcPixel = {%.6f, %.6f, %.6f}", srcPixel[0], srcPixel[1], srcPixel[2]);
+  ICC_LOG_DEBUG("Interp3dTetra(): UnitClip-scaled x=%.6f, y=%.6f, z=%.6f", x, y, z);
+  ICC_LOG_DEBUG("Interp3dTetra(): frac v=%.6f, u=%.6f, t=%.6f", v, u, t);
+
+  if (!m_pData) {
+    ICC_LOG_WARNING("Interp3dTetra(): m_pData is NULL!");
+    return;
+  }
+
+
+   if (ix >= m_nNumPoints || iy >= m_nNumPoints || iz >= m_nNumPoints) {
+    ICC_LOG_WARNING("Interp3dTetra(): Index out of bounds: ix=%u, iy=%u, iz=%u, maxGrid=%d",
+                    ix, iy, iz, m_nNumPoints);
+    return;
+  }
+
+  if (maxOffset >= dataLimit) {
+    ICC_LOG_WARNING("Interp3dTetra(): Buffer overrun risk. baseOffset=%d, maxOffset=%d, bufferLimit=%d",
+                    baseOffset, maxOffset, dataLimit);
+    return;
+  }
+
+  ICC_LOG_DEBUG("Interp3dTetra(): Index and bounds validated. Proceeding with interpolation...");
+
+
+  icFloatNumber *p = &m_pData[baseOffset];
+
+  ICC_LOG_DEBUG("m_pData=%p, baseOffset=%d, p base=%p, m_nNumPoints=%d, m_nOutput=%d",
+                (void*)m_pData, baseOffset, (void*)p, m_nNumPoints, m_nOutput);
+
+  for (int i = 0; i < m_nOutput; i++, p++) {
+    ICC_LOG_DEBUG("Interp3dTetra: i=%d, p=%p", i, (void*)p);
+    ICC_LOG_DEBUG("  t=%.6f, u=%.6f, v=%.6f", t, u, v);
+
+    ICC_LOG_DEBUG("  p[n000]=%p  p[n100]=%p  p[n110]=%p  p[n111]=%p",
+                  (void*)&p[n000], (void*)&p[n100], (void*)&p[n110], (void*)&p[n111]);
+
+int dataLimit = m_nNumPoints * m_nOutput;
+
+if (n000 < 0 || n100 < 0 || n110 < 0 || n111 < 0 ||
+    n000 >= dataLimit || n100 >= dataLimit || n110 >= dataLimit || n111 >= dataLimit) {
+  ICC_LOG_WARNING("Index out of bounds in Interp3dTetra: n000=%d n100=%d n110=%d n111=%d limit=%d",
+                  n000, n100, n110, n111, dataLimit);
+  return;  // or continue, or fail safe
+}
+
+// -----------------------------------------------------------------------------
+// VALIDATION CHECKS (ASSERTS + INDEX GUARDING)
+//
+// Ensures all index and pointer accesses are safe before interpolation.
+// -----------------------------------------------------------------------------
+if (mx <= 1 || my <= 1 || mz <= 1) {
+  ICC_LOG_WARNING("Interp3dTetra(): Unusually small grid size: mx=%u my=%u mz=%u", mx, my, mz);
+}
+
+ICC_ASSERT(m_pData != nullptr, "CIccCLUT::Interp3dTetra: m_pData is null");
+ICC_ASSERT(m_nNumPoints > 1, "CIccCLUT::Interp3dTetra: invalid LUT point count");
+ICC_ASSERT(ix >= 0 && ix < m_nNumPoints, "Interp3dTetra: ix index out of bounds");
+ICC_ASSERT(iy >= 0 && iy < m_nNumPoints, "Interp3dTetra: iy index out of bounds");
+ICC_ASSERT(iz >= 0 && iz < m_nNumPoints, "Interp3dTetra: iz index out of bounds");
+
+int totalSize = m_nNumPoints * m_nNumPoints * m_nNumPoints * m_nOutput;
+
+ICC_ASSERT(n000 >= 0 && n000 < totalSize, "Interp3dTetra: n000 offset out of bounds");
+ICC_ASSERT(n100 >= 0 && n100 < totalSize, "Interp3dTetra: n100 offset out of bounds");
+ICC_ASSERT(n110 >= 0 && n110 < totalSize, "Interp3dTetra: n110 offset out of bounds");
+ICC_ASSERT(n111 >= 0 && n111 < totalSize, "Interp3dTetra: n111 offset out of bounds");
+
+// -----------------------------------------------------------------------------
+// FLOAT VALUE LOGGING
+//
+// Expanded with label context and indexed access validation
+// -----------------------------------------------------------------------------
+
+ICC_LOG_DEBUG("Interp3dTetra: LUT val[n000]=%.6f at offset %d", p[n000], n000);
+ICC_LOG_DEBUG("Interp3dTetra: LUT val[n100]=%.6f at offset %d", p[n100], n100);
+ICC_LOG_DEBUG("Interp3dTetra: LUT val[n110]=%.6f at offset %d", p[n110], n110);
+ICC_LOG_DEBUG("Interp3dTetra: LUT val[n111]=%.6f at offset %d", p[n111], n111);
+
+
+
+ICC_LOG_SAFE_VAL("n000", n000, p, dataLimit);
+ICC_LOG_SAFE_VAL("n100", n100, p, dataLimit);
+ICC_LOG_SAFE_VAL("n110", n110, p, dataLimit);
+ICC_LOG_SAFE_VAL("n111", n111, p, dataLimit);
+
+
+ICC_LOG_DEBUG("  indices: n000=%d, n100=%d, n110=%d, n111=%d | dataLimit=%d",
+              n000, n100, n110, n111, dataLimit);
+
+
+    // Proceed with actual interpolation
+    if (t < u) {
+      if (t > v)
+        destPixel[i] = (p[n000] + t * (p[n110] - p[n010]) +
+                                  u * (p[n010] - p[n000]) +
+                                  v * (p[n111] - p[n110]));
+      else if (u < v)
+        destPixel[i] = (p[n000] + t * (p[n111] - p[n011]) +
+                                  u * (p[n011] - p[n001]) +
+                                  v * (p[n001] - p[n000]));
+      else
+        destPixel[i] = (p[n000] + t * (p[n111] - p[n011]) +
+                                  u * (p[n010] - p[n000]) +
+                                  v * (p[n011] - p[n010]));
+    } else {
+      if (t < v)
+        destPixel[i] = (p[n000] + t * (p[n101] - p[n001]) +
+                                  u * (p[n111] - p[n101]) +
+                                  v * (p[n001] - p[n000]));
+      else if (u < v)
+        destPixel[i] = (p[n000] + t * (p[n100] - p[n000]) +
+                                  u * (p[n111] - p[n101]) +
+                                  v * (p[n101] - p[n100]));
+      else
+        destPixel[i] = (p[n000] + t * (p[n100] - p[n000]) +
+                                  u * (p[n110] - p[n100]) +
+                                  v * (p[n111] - p[n110]));
+    }
+ 
+
+
+
     if (t<u) {
       if (t>v) {
         destPixel[i] = (p[n000] + t*(p[n110]-p[n010]) +
                                       u*(p[n010]-p[n000]) +
                                       v*(p[n111]-p[n110]));
+  ICC_LOG_DEBUG("  destPixel[%d] = %.6f", i, destPixel[i]);
       }
       else if (u<v) {
         destPixel[i] = (p[n000] + t*(p[n111]-p[n011]) + 
                                       u*(p[n011]-p[n001]) +
                                       v*(p[n001]-p[n000]));
+  ICC_LOG_DEBUG("  destPixel[%d] = %.6f", i, destPixel[i]);
       }
       else {
         destPixel[i] = (p[n000] + t*(p[n111]-p[n011]) +
                                       u*(p[n010]-p[n000]) +
                                       v*(p[n011]-p[n010]));
+    ICC_LOG_DEBUG("  destPixel[%d] = %.6f", i, destPixel[i]);
       }
     }
     else { 
@@ -2659,6 +2901,24 @@ void CIccCLUT::Interp3d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   dF5 =  s* nt*  u;
   dF6 =  s*  t* nu;
   dF7 =  s*  t*  u;
+  
+
+ICC_LOG_DEBUG("  m_nOutput = %d", m_nOutput);
+ICC_LOG_DEBUG("  p = %p", (void*)p);
+ICC_LOG_DEBUG("  destPixel = %p", (void*)destPixel);
+ICC_LOG_DEBUG("  srcPixel = %p", (void*)srcPixel);
+ICC_LOG_DEBUG("  Interpolation indices: n000=%d n001=%d n010=%d n011=%d n100=%d n101=%d n110=%d n111=%d",
+              n000, n001, n010, n011, n100, n101, n110, n111);
+ICC_LOG_DEBUG("  dF[0-7] = %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f",
+              dF0, dF1, dF2, dF3, dF4, dF5, dF6, dF7);
+ICC_LOG_DEBUG("  m_nOutput = %d", m_nOutput);
+ICC_LOG_DEBUG("srcPixel values: %f, %f, %f", srcPixel[0], srcPixel[1], srcPixel[2]);
+
+#ifdef DEBUG
+if (m_nInput >= 3) {
+  ICC_LOG_DEBUG("  srcPixel values: %f, %f, %f", srcPixel[0], srcPixel[1], srcPixel[2]);
+}
+#endif
 
   for (i=0; i<m_nOutput; i++, p++) {
     pv = p[n000]*dF0 + p[n001]*dF1 + p[n010]*dF2 + p[n011]*dF3 +
@@ -2667,7 +2927,6 @@ void CIccCLUT::Interp3d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
     destPixel[i] = pv;
   }
 }
-
 
 
 /**
@@ -2724,35 +2983,50 @@ void CIccCLUT::Interp4d(icFloatNumber *destPixel, const icFloatNumber *srcPixel)
   icFloatNumber nu = 1.0f - u;
   icFloatNumber nv = 1.0f - v;
 
-  int i, j;
-  icFloatNumber *p = &m_pData[iw*n001 + ix*n010 + iy*n100 + iz*n1000];
+int i, j;
 
-  //Normalize grid units
-  icFloatNumber dF[16], pv;
+icUInt32Number iwOffset = iw * n001;
+icUInt32Number ixOffset = ix * n010;
+icUInt32Number iyOffset = iy * n100;
+icUInt32Number izOffset = iz * n1000;
 
-  dF[ 0] = ns* nt* nu* nv;
-  dF[ 1] = ns* nt* nu*  v;
-  dF[ 2] = ns* nt*  u* nv;
-  dF[ 3] = ns* nt*  u*  v;
-  dF[ 4] = ns*  t* nu* nv;
-  dF[ 5] = ns*  t* nu*  v;
-  dF[ 6] = ns*  t*  u* nv;
-  dF[ 7] = ns*  t*  u*  v;
-  dF[ 8] =  s* nt* nu* nv;
-  dF[ 9] =  s* nt* nu*  v;
-  dF[10] =  s* nt*  u* nv;
-  dF[11] =  s* nt*  u*  v;
-  dF[12] =  s*  t* nu* nv;
-  dF[13] =  s*  t* nu*  v;
-  dF[14] =  s*  t*  u* nv;
-  dF[15] =  s*  t*  u*  v;
+icUInt32Number baseIndex = iwOffset + ixOffset + iyOffset + izOffset;
 
-  for (i=0; i<m_nOutput; i++, p++) {
-    for (pv=0, j=0; j<16; j++)
-      pv += p[m_nOffset[j]] * dF[j];
+// log after baseIndex is declared — this fixes your compile error
+ICC_LOG_DEBUG("Interp4D baseIndex=%u [iw=%u ix=%u iy=%u iz=%u]", baseIndex, iw, ix, iy, iz);
 
-    destPixel[i] = pv;
+icFloatNumber *p = &m_pData[baseIndex];
+
+icFloatNumber dF[16], pv;
+
+dF[ 0] = ns* nt* nu* nv;
+dF[ 1] = ns* nt* nu*  v;
+dF[ 2] = ns* nt*  u* nv;
+dF[ 3] = ns* nt*  u*  v;
+dF[ 4] = ns*  t* nu* nv;
+dF[ 5] = ns*  t* nu*  v;
+dF[ 6] = ns*  t*  u* nv;
+dF[ 7] = ns*  t*  u*  v;
+dF[ 8] =  s* nt* nu* nv;
+dF[ 9] =  s* nt* nu*  v;
+dF[10] =  s* nt*  u* nv;
+dF[11] =  s* nt*  u*  v;
+dF[12] =  s*  t* nu* nv;
+dF[13] =  s*  t* nu*  v;
+dF[14] =  s*  t*  u* nv;
+dF[15] =  s*  t*  u*  v;
+
+ICC_LOG_DEBUG("Interp4D dF[0]=%.6f dF[15]=%.6f", dF[0], dF[15]);
+
+for (i = 0; i < m_nOutput; i++, p++) {
+  pv = 0.0f;
+  for (j = 0; j < 16; j++) {
+    pv += p[m_nOffset[j]] * dF[j];
   }
+  destPixel[i] = pv;
+  ICC_LOG_DEBUG("Interp4D destPixel[%d] = %.6f", i, pv);
+}
+
 }
 
 
@@ -3135,6 +3409,23 @@ icValidateStatus CIccCLUT::Validate(std::string sigPath, std::string &sReport, c
  * 
  *****************************************************************************
  */
+
+// ===========================================================================
+// LATEST FIX: Compile Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// REPRO: iccGui:PoC:ASAN:index -1 out of bounds for type 'unsigned int [16]'
+// POC: OPEN ../Testing/sRGB_v4_ICC_preference.icc in iccGui, Click RoundTrip
+// INTENT: Resolve Sanitizer Errors
+// OUTCOME: Added incremental changes for runtime Errors, enum
+// TESTS: To be re-fuzzed, CICD and continue..
+//
+// BUG CLASSES: NaN, Enum etc..
+//
+// DEP ISSUES: None Identified
+//
+// ==========================================================================
+
 CIccMBB::CIccMBB()
 {
   m_nInput = 0;
@@ -3154,21 +3445,11 @@ CIccMBB::CIccMBB()
 }
 
 
-/**
- ****************************************************************************
- * Name: CIccMBB::CIccMBB
- * 
- * Purpose: Copy Constructor
- *
- * Args:
- *  IMBB = The CIccMBB object to be copied
- *****************************************************************************
- */
 CIccMBB::CIccMBB(const CIccMBB &IMBB)
 {
- icUInt8Number nCurves;
- int i;
- 
+  icUInt8Number nCurves;
+  int i;
+
   m_bInputMatrix = IMBB.m_bInputMatrix;
   m_bUseMCurvesAsBCurves = IMBB.m_bUseMCurvesAsBCurves;
   m_nInput = IMBB.m_nInput;
@@ -3176,51 +3457,62 @@ CIccMBB::CIccMBB(const CIccMBB &IMBB)
   m_csInput = IMBB.m_csInput;
   m_csOutput = IMBB.m_csOutput;
 
-  if (IMBB.m_CLUT) {
-    m_CLUT = new CIccCLUT(*IMBB.m_CLUT);
-  }
-  else
-    m_CLUT = NULL;
+  // CLUT copy
+  m_CLUT = IMBB.m_CLUT ? new CIccCLUT(*IMBB.m_CLUT) : NULL;
 
+  // CurvesA
   if (IMBB.m_CurvesA) {
     nCurves = !IsInputB() ? m_nInput : m_nOutput;
-
     m_CurvesA = new LPIccCurve[nCurves];
-    for (i=0; i<nCurves; i++)
-      m_CurvesA[i] = (CIccTagCurve*)IMBB.m_CurvesA[i]->NewCopy();
-  }
-  else {
+    for (i = 0; i < nCurves; i++) {
+      CIccTag* tagCopy = IMBB.m_CurvesA[i]->NewCopy();
+      m_CurvesA[i] = dynamic_cast<CIccTagCurve*>(tagCopy);
+      if (!m_CurvesA[i]) {
+        delete tagCopy;
+        m_CurvesA[i] = nullptr;
+        // optionally log: type mismatch for CurvesA[i]
+      }
+    }
+  } else {
     m_CurvesA = NULL;
   }
 
+  // CurvesM
   if (IMBB.m_CurvesM) {
     nCurves = IsInputMatrix() ? m_nInput : m_nOutput;
-
     m_CurvesM = new LPIccCurve[nCurves];
-    for (i=0; i<nCurves; i++)
-      m_CurvesM[i] = (CIccTagCurve*)IMBB.m_CurvesM[i]->NewCopy();
-  }
-  else {
+    for (i = 0; i < nCurves; i++) {
+      CIccTag* tagCopy = IMBB.m_CurvesM[i]->NewCopy();
+      m_CurvesM[i] = dynamic_cast<CIccTagCurve*>(tagCopy);
+      if (!m_CurvesM[i]) {
+        delete tagCopy;
+        m_CurvesM[i] = nullptr;
+        // optionally log: type mismatch for CurvesM[i]
+      }
+    }
+  } else {
     m_CurvesM = NULL;
   }
 
+  // CurvesB
   if (IMBB.m_CurvesB) {
     nCurves = IsInputB() ? m_nInput : m_nOutput;
-
     m_CurvesB = new LPIccCurve[nCurves];
-    for (i=0; i<nCurves; i++)
-      m_CurvesB[i] = (CIccTagCurve*)IMBB.m_CurvesB[i]->NewCopy();
-  }
-  else {
+    for (i = 0; i < nCurves; i++) {
+      CIccTag* tagCopy = IMBB.m_CurvesB[i]->NewCopy();
+      m_CurvesB[i] = dynamic_cast<CIccTagCurve*>(tagCopy);
+      if (!m_CurvesB[i]) {
+        delete tagCopy;
+        m_CurvesB[i] = nullptr;
+        // optionally log: type mismatch for CurvesB[i]
+      }
+    }
+  } else {
     m_CurvesB = NULL;
   }
 
-  if (IMBB.m_Matrix) {
-    m_Matrix = new CIccMatrix(*IMBB.m_Matrix);
-  }
-  else {
-    m_Matrix = NULL;
-  }
+  // Matrix
+  m_Matrix = IMBB.m_Matrix ? new CIccMatrix(*IMBB.m_Matrix) : NULL;
 }
 
 
@@ -3765,11 +4057,16 @@ CIccCLUT* CIccMBB::NewCLUT(icUInt8Number *pGridPoints, icUInt8Number nPrecision/
     return m_CLUT;
 
   m_CLUT = new CIccCLUT(m_nInput, m_nOutput, nPrecision);
-
   m_CLUT->Init(pGridPoints);
+
+  // Set input/output color space using accessors
+  m_CLUT->SetInputColorSpace(m_csInput);
+  m_CLUT->SetOutputColorSpace(m_csOutput);
 
   return m_CLUT;
 }
+
+
 
 /**
 ****************************************************************************
@@ -4973,6 +5270,8 @@ CIccTagLut16::~CIccTagLut16()
  */
 bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
 {
+  ICC_LOG_DEBUG("CIccTagLut16::Read() invoked with size=%u", size);
+  
   icTagTypeSignature sig;
   icUInt32Number nStart, nEnd;
   icUInt8Number i, nGrid;
@@ -4981,11 +5280,14 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
   CIccTagCurve *pCurve;
 
   if (size<13*sizeof(icUInt32Number) || !pIO) {
+  	ICC_LOG_ERROR("CIccTagLut16::Read() failed: size too small or pIO null");
     return false;
   }
 
   nStart = pIO->Tell();
   nEnd = nStart + size;
+ 
+  ICC_LOG_DEBUG("CIccTagLut16::Read() parsing block from offset %u to %u", nStart, nEnd);
  
   if (!pIO->Read32(&sig) ||
       !pIO->Read32(&m_nReserved) ||
@@ -4996,11 +5298,15 @@ bool CIccTagLut16::Read(icUInt32Number size, CIccIO *pIO)
       pIO->Read32(m_XYZMatrix, 9) != 9 ||
       !pIO->Read16(&nInputEntries) ||
       !pIO->Read16(&nOutputEntries))
+  {
+    ICC_LOG_ERROR("CIccTagLut16::Read() failed to read initial header fields");
     return false;
+  }
 
-  if (sig!=GetType())
+  if (sig != GetType()) {
+    ICC_LOG_ERROR("CIccTagLut16::Read() tag type mismatch: read=0x%08x expected=0x%08x", sig, GetType());
     return false;
-
+  }
 
   //B Curves
   pCurves = NewCurvesB();

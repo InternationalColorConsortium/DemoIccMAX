@@ -65,6 +65,7 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 1-30-2006
+// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -150,45 +151,88 @@ CIccFormulaCurveSegment::CIccFormulaCurveSegment(const CIccFormulaCurveSegment &
  * 
  * Return: 
  ******************************************************************************/
-CIccFormulaCurveSegment &CIccFormulaCurveSegment::operator=(const CIccFormulaCurveSegment &seg)
+
+// ===========================================================================
+// TODO: Attempt to Debug UB Issues, Null the Danglers
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Add aids to debugging and logging to address TC, UB, Leaks etc..
+// OUTCOME: Refuzz
+//
+//
+// BUG CLASSES: UB, Memory Safety, Leaks
+// PoC: iccDumpProfile ../contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
+// DEP ISSUES: None Identified
+//
+// ===========================================================================
+
+CIccFormulaCurveSegment& CIccFormulaCurveSegment::operator=(const CIccFormulaCurveSegment& seg)
 {
-  if (m_params)
-    free(m_params);
+    if (this == &seg)
+        return *this;
 
-  m_nReserved = seg.m_nReserved;
-  m_nReserved2 = seg.m_nReserved2;
-  m_startPoint = seg.m_startPoint;
-  m_endPoint = seg.m_endPoint;
+    if (m_params) {
+        free(m_params);
+        m_params = nullptr;
+    }
 
-  m_nFunctionType = seg.m_nFunctionType;
-  m_nShortcutType = seg.m_nShortcutType;
-  m_nParameters = seg.m_nParameters;
-  if (seg.m_params) {
-    m_params = (icFloatNumber*)malloc(m_nParameters*sizeof(icFloatNumber));
-    if (m_params)
-      memcpy(m_params, seg.m_params, m_nParameters*sizeof(icFloatNumber));
-  }
-  else
-    m_params = NULL;
+    m_nReserved = seg.m_nReserved;
+    m_nReserved2 = seg.m_nReserved2;
+    m_startPoint = seg.m_startPoint;
+    m_endPoint = seg.m_endPoint;
+    m_nFunctionType = seg.m_nFunctionType;
+    m_nShortcutType = seg.m_nShortcutType;
+    m_nParameters = seg.m_nParameters;
 
-  return (*this);
+    if (seg.m_params && m_nParameters > 0) {
+        m_params = (icFloatNumber*)malloc(m_nParameters * sizeof(icFloatNumber));
+        if (m_params)
+            memcpy(m_params, seg.m_params, m_nParameters * sizeof(icFloatNumber));
+        else
+            m_nParameters = 0;
+    }
+    else {
+        m_params = nullptr;
+    }
+
+    return *this;
 }
 
 /**
  ******************************************************************************
  * Name: CIccFormulaCurveSegment::~CIccFormulaCurveSegment
- * 
- * Purpose: 
- * 
- * Args: 
- * 
- * Return: 
+ *
+ * Purpose:
+ *   Releases any dynamic memory associated with the curve segment.
+ *
+ * Args:
+ *   None
+ *
+ * Return:
+ *   None
  ******************************************************************************/
+
+// ===========================================================================
+// TODO: Attempt to Debug UB Issues, Null the Danglers
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Add aids to debugging and logging to address TC, UB, Leaks etc..
+// OUTCOME: Refuzz
+//
+//
+// BUG CLASSES: UB, Memory Safety, Leaks
+// PoC: iccDumpProfile ../contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
+// DEP ISSUES: None Identified
+//
+// ===========================================================================
+
+
 CIccFormulaCurveSegment::~CIccFormulaCurveSegment()
 {
-  if (m_params) {
-    free(m_params);
-  }
+    if (m_params) {
+        free(m_params);
+        m_params = nullptr;
+    }
 }
 
 /**
@@ -1961,45 +2005,64 @@ CIccSampledCalculatorCurve::CIccSampledCalculatorCurve(const CIccSampledCalculat
 *
 * Return:
 ******************************************************************************/
-CIccSampledCalculatorCurve &CIccSampledCalculatorCurve::operator=(const CIccSampledCalculatorCurve &curve)
+
+// ===========================================================================
+// TODO: Attempt to Debug UB Issues, Null the Danglers, Address Runtime Errors
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Add aids to debugging and logging to address TC, UB, Leaks etc..
+// OUTCOME: Refuzz
+//
+//
+// BUG CLASSES: UB, Memory Safety, Leaks
+// PoC: iccDumpProfile ../contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
+// DEP ISSUES: None Identified
+//
+// ===========================================================================
+
+CIccSampledCalculatorCurve& CIccSampledCalculatorCurve::operator=(const CIccSampledCalculatorCurve& curve)
 {
-  if (m_pCalc)
-    delete m_pCalc;
+    if (this == &curve)
+        return *this;
 
-  if (m_pSamples)
-    free(m_pSamples);
+    if (m_pCalc) {
+        delete m_pCalc;
+        m_pCalc = nullptr;
+    }
 
-  m_nReserved = curve.m_nReserved;
-  m_nReserved2 = curve.m_nReserved2;
+    if (m_pSamples) {
+        free(m_pSamples);
+        m_pSamples = nullptr;
+    }
 
-  m_nCount = curve.m_nCount;
+    m_nReserved = curve.m_nReserved;
+    m_nReserved2 = curve.m_nReserved2;
+    m_nCount = curve.m_nCount;
+    m_nDesiredSize = curve.m_nDesiredSize;
+    m_extensionType = curve.m_extensionType;
 
-  m_nDesiredSize = curve.m_nDesiredSize;
+    m_pCalc = curve.m_pCalc ? curve.m_pCalc->NewCopy() : nullptr;
 
-  m_extensionType = curve.m_extensionType;
+    if (m_nCount && curve.m_pSamples) {
+        m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
+        if (m_pSamples)
+            memcpy(m_pSamples, curve.m_pSamples, m_nCount * sizeof(icFloatNumber));
+        else
+            m_nCount = 0;
+    }
+    else {
+        m_pSamples = nullptr;
+    }
 
-  if (curve.m_pCalc)
-    m_pCalc = curve.m_pCalc->NewCopy();
+    m_firstEntry = curve.m_firstEntry;
+    m_lastEntry = curve.m_lastEntry;
 
-  if (m_nCount) {
-    m_pSamples = (icFloatNumber*)malloc(m_nCount * sizeof(icFloatNumber));
-    if (m_pSamples)
-      memcpy(m_pSamples, curve.m_pSamples, m_nCount * sizeof(icFloatNumber));
-    else
-      m_nCount = 0;
-  }
-  else {
-    m_pSamples = NULL;
-  }
+    m_loIntercept = curve.m_loIntercept;
+    m_loSlope = curve.m_loSlope;
+    m_hiIntercept = curve.m_hiIntercept;
+    m_hiSlope = curve.m_hiSlope;
 
-  m_firstEntry = curve.m_firstEntry;
-  m_lastEntry = curve.m_lastEntry;
-
-  m_loIntercept = curve.m_loIntercept;
-  m_loSlope = curve.m_loSlope;
-  m_hiIntercept = curve.m_hiIntercept;
-  m_hiSlope = curve.m_hiSlope;
-  return (*this);
+    return *this;
 }
 
 /**
@@ -3540,21 +3603,44 @@ CIccMpeTintArray::CIccMpeTintArray(const CIccMpeTintArray &tintArray)
  * 
  * Return: 
  ******************************************************************************/
-CIccMpeTintArray &CIccMpeTintArray::operator=(const CIccMpeTintArray &tintArray)
+
+// ===========================================================================
+// TODO: Attempt to Debug UB Issues
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Add aids to debugging and logging to address TC, UB, Leaks etc..
+// OUTCOME: Refuzz
+//
+//
+// BUG CLASSES: UB, Memory Safety, Leaks
+//
+// DEP ISSUES: None Identified
+//
+// ===========================================================================
+ 
+CIccMpeTintArray& CIccMpeTintArray::operator=(const CIccMpeTintArray& tintArray)
 {
-  m_nReserved = m_nReserved;
+    if (this == &tintArray)
+        return *this;
 
-  if (m_Array) {
-    delete m_Array;
-  }
+    m_nReserved = tintArray.m_nReserved;
 
-  m_nInputChannels = tintArray.m_nInputChannels;
-  m_nOutputChannels = tintArray.m_nOutputChannels;
+    // Delete existing data
+    if (m_Array) {
+        delete m_Array;
+        m_Array = nullptr;
+    }
 
-  if (tintArray.m_Array)
-    m_Array = (CIccTagNumArray*)tintArray.m_Array->NewCopy();
+    m_nInputChannels = tintArray.m_nInputChannels;
+    m_nOutputChannels = tintArray.m_nOutputChannels;
 
-  return *this;
+    // Deep-copy the source array if present
+    if (tintArray.m_Array)
+        m_Array = (CIccTagNumArray*)tintArray.m_Array->NewCopy();
+    else
+        m_Array = nullptr;
+
+    return *this;
 }
 
 /**
@@ -4564,6 +4650,21 @@ bool CIccMpeToneMap::Read(icUInt32Number size, CIccIO* pIO)
  *
  * Return:
  ******************************************************************************/
+
+// ===========================================================================
+// TODO: Attempt to Debug UB Issues
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Add aids to debugging and logging to address TC, UB, Leaks etc..
+// OUTCOME: Refuzz
+//
+//
+// BUG CLASSES: UB, Memory Safety, Leaks
+//
+// DEP ISSUES: None Identified
+//
+// ===========================================================================
+ 
 bool CIccMpeToneMap::Write(CIccIO* pIO)
 {
   if (!m_pLumCurve || !m_pToneFuncs || !m_nOutputChannels)
@@ -4613,28 +4714,50 @@ bool CIccMpeToneMap::Write(CIccIO* pIO)
   lumPos.size = pIO->Tell() - (lumPos.offset + nTagStartPos);
 
   //Keep track of tone function positions
+  if (m_nOutputChannels == 0)
+    return false;
+
   icPositionNumber* funcPos = new icPositionNumber[m_nOutputChannels];
   if (!funcPos)
     return false;
 
   //write out first tone function
   int j;
+
+  if (!m_pToneFuncs[0]) {
+    delete[] funcPos;
+    return false;
+  }
+
   funcPos[0].offset = pIO->Tell() - nTagStartPos;
+
   if (!m_pToneFuncs[0]->Write(pIO)) {
     delete[] funcPos;
     return false;
   }
+
   funcPos[0].size = pIO->Tell() - (funcPos[0].offset + nTagStartPos);
 
   //write out additional non-copied tone functions
   for (int i = 1; i < m_nOutputChannels; i++) {
-    for (j = 0; j < i; j++)
+    for (j = 0; j < i; j++) {
+      if (!m_pToneFuncs[j] || !m_pToneFuncs[i]) {
+        delete[] funcPos;
+        return false;
+      }
       if (m_pToneFuncs[j] == m_pToneFuncs[i])
         break;
+    }
+
     if (j < i) {
       funcPos[i] = funcPos[j];
     }
     else {
+      if (!m_pToneFuncs[i]) {
+        delete[] funcPos;
+        return false;
+      }
+
       funcPos[i].offset = pIO->Tell() - nTagStartPos;
       if (!m_pToneFuncs[i]->Write(pIO)) {
         delete[] funcPos;
