@@ -16,16 +16,23 @@
 #
 # 
 #
-## Makefile.icctoXml.afl
-## Builds AFL++ instrumented iccRoundTrip binary with ASan (no coverage/profile)
+#
+## Makefile for building afl-instrumented iccRoundTrip with ASan + LLVM coverage
 
-# === CONFIG ===
-CXX := afl-clang++
-CXXFLAGS := -O0 -g -fno-inline -fno-omit-frame-pointer -fsanitize=address
+AFL ?= 1
+
+ifeq ($(AFL),1)
+    CXX := afl-clang++
+    CXXFLAGS := -O0 -g -fno-inline -fno-omit-frame-pointer -fsanitize=address -fprofile-instr-generate -fcoverage-mapping
+    BIN := iccRoundTrip_afl
+else
+    CXX := clang++
+    CXXFLAGS := -O0 -g -fprofile-instr-generate -fcoverage-mapping
+    BIN := iccRoundTrip_test
+endif
 
 INCLUDES := -I../../../../../IccXML/IccLibXML \
             -I../../../../../IccProfLib \
-            -I../../../../../IccXML/CmdLine/IccToXml \
             -I/usr/include/libxml2
 
 LDFLAGS := -fsanitize=address \
@@ -33,18 +40,13 @@ LDFLAGS := -fsanitize=address \
            -lxml2
 
 SRC := ../../../../../Tools/CmdLine/IccRoundTrip/iccRoundTrip.cpp
-BIN := iccRoundTrip_afl
 
 .PHONY: all clean
 
-# === BUILD AFL FUZZ TARGET ===
 all: $(BIN)
 
 $(BIN): $(SRC)
-	@echo "[AFL] Building silo fuzz target with ASan"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
-# === CLEAN ===
 clean:
-	@echo "[CLEAN] Removing AFL fuzzing binary"
-	rm -f $(BIN)
+	rm -f iccRoundTrip_afl iccRoundTrip_test iccRoundTrip.profraw iccRoundTrip.profdata coverage_iccRoundTrip.txt

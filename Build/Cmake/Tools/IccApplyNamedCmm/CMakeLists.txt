@@ -1,36 +1,48 @@
-#
+# 
 # IccApplyNamedCmm CMakeLists.txt | DemoIccMAX Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
+# 
+#
+# Last Updated: 01-AUGUST-2025 at 0500Z by David Hoyt
+#
+# Changes: 	Remove hardcoded build args and debugging output from my prior commit
+#						
+#						
+# TODO: Refactor Debug, Release, Asan 
+# 			Collapse 3-tier CMakeLists.txt, Housekeeping
+#				Refactor Base Configs & logging to .mk's 
 #
 #
-# Last Updated: 09-APRIL-2025 at 1300 EDT by David Hoyt
-#
-# Changes:      Added JSON Dependency
-#               Adjusted Cross Platform Build Args
 #
 #
 #
 #
 #
 
-# Check if the target is already defined before adding it
-if(NOT TARGET iccApplyNamedCmm)
-  set(SRC_PATH ../../../..)
+# cmake_minimum_required(VERSION 3.5)
+project(iccApplyNamedCmm)
+set(TARGET_NAME iccApplyNamedCmm)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-  set(SOURCES
-    ${SRC_PATH}/Tools/CmdLine/IccApplyNamedCmm/iccApplyNamedCmm.cpp
-    ${SRC_PATH}/Tools/CmdLine/IccCommon/IccCmmConfig.cpp
-    ${SRC_PATH}/Tools/CmdLine/IccCommon/IccJsonUtil.cpp
-  )
+find_package(nlohmann_json REQUIRED)
 
-  set(TARGET_NAME iccApplyNamedCmm)
+set(SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/iccApplyNamedCmm.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../IccCommon/IccJsonUtil.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../IccCommon/IccCmmConfig.cpp
+)
 
-  include_directories(${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/)
+add_executable(iccApplyNamedCmm ${SOURCES})
 
-  add_executable(${TARGET_NAME} ${SOURCES})
-  target_link_libraries(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})
+# Only add these if you have actual directories or options to specify
+# target_include_directories(iccApplyNamedCmm PRIVATE <include_dir>)
+# target_link_directories(iccApplyNamedCmm PRIVATE <lib_dir>)
+# target_compile_options(iccApplyNamedCmm PRIVATE <options>)
+# target_link_options(iccApplyNamedCmm PRIVATE <options>)
 
-  if(ENABLE_INSTALL_RIM)
-    install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
-  endif()
-endif()
+target_link_libraries(iccApplyNamedCmm PRIVATE
+  IccProfLib2
+  IccXML2
+  nlohmann_json::nlohmann_json
+)

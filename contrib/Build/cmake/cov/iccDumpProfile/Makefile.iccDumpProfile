@@ -22,7 +22,7 @@
 CXX := clang++
 CXXFLAGS := -O0 -g -fprofile-instr-generate -fcoverage-mapping
 INCLUDES := -I../../../../../IccXML/IccLibXML -I../../../../../IccProfLib -I../../../../../Tools/CmdLine/IccDumpProfile -I/usr/include/libxml2
-LDFLAGS := -Wl,--whole-archive ../iccxml/libIccXML2.a ../iccproflib/libIccProfLib2.a -Wl,--no-whole-archive -lxml2
+LDFLAGS := -Wl,--whole-archive ../iccXmlLib/libIccXML2.a ../iccProfLib/libIccProfLib2.a -Wl,--no-whole-archive -lxml2
 
 SRC := ../../../../../Tools/CmdLine/IccDumpProfile/iccDumpProfile.cpp
 BIN := iccDumpProfile_test

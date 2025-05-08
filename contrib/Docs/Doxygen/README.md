@@ -1,7 +1,7 @@
 # Doxygen Config File
 
 ## Read
-Doxygen Documentation URL https://xss.cx/public/docs/IccMAX/
+Doxygen Documentation URL https://xss.cx/public/docs/iccdev
 
 ## Create
 Copy the Doxyfile to the Project Root

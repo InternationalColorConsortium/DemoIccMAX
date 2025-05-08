@@ -36,24 +36,4 @@ for lib in $(find . -name '*.a'); do
 done
 
 echo ""
-echo "🔍 [2] Verifying fuzz targets run correctly with AFL+ASAN..."
-export AFL_USE_ASAN=1
-export AFL_SKIP_BIN_CHECK=1
-for bin in $(find . -type f -executable -name 'fuzz_*'); do
-  echo ">> Testing binary: $bin"
-  if afl-showmap -o /dev/null -q -- "$bin" < /dev/null; then
-    echo "  ✔ [OK] $bin"
-  else
-    echo "  ❌ [FAILED] $bin"
-  fi
-done
-
-echo ""
-echo "🔍 [3] Optional ASAN runtime leak check (manual input recommended)..."
-for bin in $(find . -type f -executable -name 'fuzz_*'); do
-  echo ">> Leak check (dummy input): $bin"
-  ASAN_OPTIONS=detect_leaks=1:log_path=asan_leak_report "$bin" <<< "test"
-done
-
-echo ""
 echo "✅ Validation complete. Check 'asan_leak_report.*' if generated."

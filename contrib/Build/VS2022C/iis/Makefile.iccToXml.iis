@@ -1,0 +1,100 @@
+# ========================================================
+# Makefile for iccToXmlServiceEndpoint_iis.cpp Endpoint for iis
+# Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+# Copy iccProf and iccXML Libs to cwd or mod -I and -L options
+# Source: IccServiceEndpoint for iccToXmlServiceEndpoint_iis.cpp
+# Target Platform: Windows (MSVC or clang-cl)
+# Toolchain: nmake + C++17
+# Written by David Hoyt 
+# Date: 16-MAY-2025 0900 EDT
+# Branch: PR129  
+# Note: Does not compile on `research` branch by design
+# Intent: Build iis endpoint services for iccToXml
+# Production: TRUE
+# Runner: TRUE
+# Intent:  NOT FOR COMMERCIAL USE (OR INTERNET FACING USE) 
+#          IIS Listener on Locahost:Port
+#          This Tooling is part of the iccMAX CICD Pipeline
+# Use Cases: Convert XML<->ICC, BurpSuite Pro, AFL, Fuzzing
+# STUB IIS Listener on Locahost:Port for Fuzzing via Burp Suite Pro, CLI Tooling
+# ========================================================
+
+# --------------------------------------------------------
+# Compiler Setup (clang-cl by default, override with CXX=cl)
+# --------------------------------------------------------
+!IFNDEF CXX
+CXX = clang-cl
+!ENDIF
+
+# --------------------------------------------------------
+# Compiler Flags
+#   /Od      - Disable optimizations (debug builds)
+#   /Zi      - Enable full debug info (PDB)
+#   /std:c++17 - Use C++17 standard
+#   /MD      - Link against MSVC DLL runtime
+#   /EHsc    - Enable C++ exceptions
+# --------------------------------------------------------
+CXXFLAGS = /Od /Zi /std:c++17 /MD /EHsc
+
+# --------------------------------------------------------
+# Include Directories
+#   Note: Never include trailing backslashes inside quotes
+# --------------------------------------------------------
+INCLUDES = \
+  /I "." \
+  /I ..\..\IccXML\IccLibXML \
+  /I ..\..\IccProfLib \
+  /I ..\..\IccXML\CmdLine\IccToXml \
+  /I "F:\pr125\repro1\DemoIccMAX\IccProfLib" \
+  /I "C:\test\vcpkg\installed\x64-windows\include" \
+  /I "C:\test\vcpkg\installed\x64-windows\include\cpprest"
+
+# --------------------------------------------------------
+# Linker Libraries
+#   - cpprest_2_10.lib: C++ REST SDK (Casablanca)
+#   - libxml2.lib: XML parsing
+#   - ws2_32.lib, bcrypt.lib: Windows networking/crypto
+#   - IccProfLib2-static.lib, IccXML2-static.lib: ICC color libraries
+# --------------------------------------------------------
+LDFLAGS = /link \
+  /LIBPATH:"/" \
+  /LIBPATH:"C:\test\vcpkg\installed\x64-windows\lib" \
+#  /LIBPATH:"..\..\Build\Release" \
+  /LIBPATH:"F:\pr125\repro1\DemoIccMAX\Build\t\build_Debug\IccProfLib\Debug\" \
+  /LIBPATH:"F:\pr125\repro1\DemoIccMAX\Build\t\build_Debug\IccXmlLib\Debug\" \
+  IccXML2-static.lib \
+  cpprest_2_10.lib \
+  libxml2.lib \
+  ws2_32.lib \
+  bcrypt.lib \
+  IccProfLib2-static.lib
+
+# --------------------------------------------------------
+# Source File, Object File, and Final Binary Target
+# --------------------------------------------------------
+SRC = iccToXml_iis-endpoint.cpp
+OBJ = IccToXmlServiceEndpoint.obj
+BIN = iccToXml_http_service.exe
+
+# --------------------------------------------------------
+# Default Build Target
+# --------------------------------------------------------
+all: $(BIN)
+
+# --------------------------------------------------------
+# Compile Object File
+# --------------------------------------------------------
+$(OBJ): $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) /c $(SRC) /Fo$(OBJ)
+
+# --------------------------------------------------------
+# Link Final Executable
+# --------------------------------------------------------
+$(BIN): $(OBJ)
+	$(CXX) $(OBJ) $(LDFLAGS) /OUT:$(BIN)
+
+# --------------------------------------------------------
+# Clean Rule: Removes built files
+# --------------------------------------------------------
+clean:
+	del /Q $(OBJ) $(BIN)

@@ -1,14 +1,19 @@
 {
   "name": "iccmax",
-  "version": "2.1.25",
+  "version": "2.2.61",
   "builtin-baseline": "35c4249523ecc2ade23826f120d3f9f6a07a697c",
+  "summary": "Developer tools for ICC color profiles",
+  "description": "Open-source libraries and tools for creating, interacting with, and applying iccMAX and legacy ICC color profiles.",
+  "homepage": "https://github.com/InternationalColorConsortium/DemoIccMAX",
+  "documentation": "https://www.color.org/iccmax/index.xalter",
+  "supports": "windows | linux | osx",
   "dependencies": [
     "libpng",
     "wxwidgets",
     "tiff",
     "libxml2",
-    "nlohmann-json"
+    "nlohmann-json",
+    "libjpeg-turbo"
   ],
-  "overrides": [
-  ]
+  "overrides": []
 }

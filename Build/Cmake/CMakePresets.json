@@ -1,0 +1,229 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "vs2022-x64",
+      "inherits": "default-base",
+      "displayName": "Windows MSVC (VS2022)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2022-x64",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}"
+      }
+    },
+    {
+      "name": "vs2022-enterprise-x64",
+      "inherits": "default-base",
+      "displayName": "Windows MSVC (VS2022 Enterprise)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2022-enterprise-x64",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}"
+      }
+    },
+    {
+      "name": "vs2022-x64-asan",
+      "inherits": "default-base",
+      "displayName": "Windows MSVC (VS2022 ASan)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2022-x64-asan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "/fsanitize=address /Zi /Od",
+        "CMAKE_CXX_FLAGS": "/fsanitize=address /Zi /Od",
+        "CMAKE_EXE_LINKER_FLAGS": "/INCREMENTAL:NO",
+        "CMAKE_SHARED_LINKER_FLAGS": "/INCREMENTAL:NO"
+      }
+    },
+    {
+      "name": "vs2022-clangcl-x64-ubsan",
+      "inherits": "default-base",
+      "displayName": "Windows ClangCL (VS2022 UBSan)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "toolset": "ClangCL",
+      "binaryDir": "${sourceDir}/build/vs2022-clangcl-x64-ubsan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=undefined -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=undefined -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=undefined",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=undefined"
+      }
+    },
+    {
+      "name": "mingw-x64",
+      "inherits": "default-base",
+      "displayName": "Windows MinGW x64",
+      "binaryDir": "${sourceDir}/build/mingw-x64",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "x86_64-w64-mingw32-gcc",
+        "CMAKE_CXX_COMPILER": "x86_64-w64-mingw32-g++"
+      }
+    },
+    {
+      "name": "linux-gcc",
+      "inherits": "default-base",
+      "displayName": "Linux GCC",
+      "binaryDir": "${sourceDir}/build/linux-gcc",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "linux-clang",
+      "inherits": "default-base",
+      "displayName": "Linux Clang",
+      "binaryDir": "${sourceDir}/build/linux-clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "linux-clang-asan",
+      "inherits": "linux-clang",
+      "displayName": "Linux Clang (ASan)",
+      "binaryDir": "${sourceDir}/build/linux-clang-asan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=address"
+      }
+    },
+    {
+      "name": "linux-clang-ubsan",
+      "inherits": "linux-clang",
+      "displayName": "Linux Clang (UBSan)",
+      "binaryDir": "${sourceDir}/build/linux-clang-ubsan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=undefined -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=undefined -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=undefined",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=undefined"
+      }
+    },
+    {
+      "name": "macos-xcode",
+      "inherits": "default-base",
+      "displayName": "macOS (Xcode)",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/build/macos-xcode"
+    },
+    {
+      "name": "macos-xcode-asan",
+      "inherits": "macos-xcode",
+      "displayName": "macOS (Xcode ASan)",
+      "binaryDir": "${sourceDir}/build/macos-xcode-asan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=address"
+      }
+    },
+    {
+      "name": "macos-xcode-ubsan",
+      "inherits": "macos-xcode",
+      "displayName": "macOS (Xcode UBSan)",
+      "binaryDir": "${sourceDir}/build/macos-xcode-ubsan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=undefined -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=undefined -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=undefined",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=undefined"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-release",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "build-debug",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-linux-asan",
+      "configurePreset": "linux-clang-asan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-linux-ubsan",
+      "configurePreset": "linux-clang-ubsan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-macos-asan",
+      "configurePreset": "macos-xcode-asan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-macos-ubsan",
+      "configurePreset": "macos-xcode-ubsan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-windows-asan",
+      "configurePreset": "vs2022-x64-asan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-windows-ubsan",
+      "configurePreset": "vs2022-clangcl-x64-ubsan",
+      "configuration": "Debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "test-default",
+      "configurePreset": "vs2022-x64"
+    },
+    {
+      "name": "test-linux-asan",
+      "configurePreset": "linux-clang-asan"
+    },
+    {
+      "name": "test-linux-ubsan",
+      "configurePreset": "linux-clang-ubsan"
+    },
+    {
+      "name": "test-macos-asan",
+      "configurePreset": "macos-xcode-asan"
+    },
+    {
+      "name": "test-macos-ubsan",
+      "configurePreset": "macos-xcode-ubsan"
+    },
+    {
+      "name": "test-windows-asan",
+      "configurePreset": "vs2022-x64-asan"
+    },
+    {
+      "name": "test-windows-ubsan",
+      "configurePreset": "vs2022-clangcl-x64-ubsan"
+    }
+  ]
+}

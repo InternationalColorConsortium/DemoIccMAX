@@ -1,0 +1,115 @@
+## Makefile.licc
+#
+##
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt
+## Date: 15-APRIL-2025 2000 EDT
+#
+# Branch: research
+# Intent: Builds instrumented licc binary with ASan/UBSan and generates LLVM coverage data
+# Production: TRUE
+# Runner: TRUE
+#
+#
+# Updates:  Coverage Scope
+#
+#
+#
+#
+## Builds instrumented licc binary with ASan/UBSan and generates LLVM coverage data
+
+# --- Default AFL Mode ---
+AFL ?= 1
+
+# --- System Detection ---
+UNAME_S := $(shell uname -s)
+ARCH    := $(shell uname -m)
+
+# --- Platform Gating ---
+ifeq ($(OS),Windows_NT)
+  $(error Windows is not supported. Only Linux and macOS (XNU) platforms are currently supported.)
+endif
+
+# --- Toolchain Setup ---
+ifeq ($(AFL),0)
+  CXX := clang++
+else
+  ifeq ($(UNAME_S),Darwin)
+    CXX := clang++
+  else
+    CXX := g++
+  endif
+endif
+
+# --- Platform Definitions ---
+ifeq ($(UNAME_S),Darwin)
+  STD_LIB_FLAG := -stdlib=libc++
+  OS_DEFS      := -DPLATFORM_MACOS
+else
+  STD_LIB_FLAG :=
+  OS_DEFS      := -DPLATFORM_LINUX
+endif
+
+ifeq ($(ARCH),arm64)
+  ARCH_DEFS := -DARCH_ARM64
+else
+  ARCH_DEFS := -DARCH_X64
+endif
+
+# --- Paths ---
+INCLUDES := \
+  -I../../../../../IccProfLib \
+  -I../../../../../IccXML/IccLibXML \
+  -I/usr/local/include
+
+LIB_DIRS := \
+  -L/usr/local/lib \
+  -L../iccProfLib \
+  -L../iccXmlLib
+
+LIBS := \
+  -lIccProfLib2 -lIccXML2 -llcms2 -lz -lm
+
+# macOS libc++ and profiling support
+ifeq ($(STD_LIB_FLAG),-stdlib=libc++)
+  LIBS += -lc++abi
+endif
+
+# --- LLVM Coverage Flags ---
+COVERAGE_FLAGS :=
+ifeq ($(AFL),0)
+  COVERAGE_FLAGS := -fcoverage-mapping -fprofile-instr-generate
+  ifeq ($(UNAME_S),Darwin)
+    # Adjust path if you're on Apple Silicon + Homebrew (/opt/homebrew/)
+    LIB_DIRS += -L/usr/local/opt/llvm/lib
+    LIBS += -lclang_rt.profile_osx
+  endif
+endif
+
+# --- Compilation and Linking Flags ---
+CXXFLAGS := \
+  $(STD_LIB_FLAG) \
+  -fsanitize=address,undefined \
+  -fno-omit-frame-pointer \
+  -fno-optimize-sibling-calls \
+  $(COVERAGE_FLAGS) \
+  -g3 -O1 \
+  -W \
+  $(INCLUDES) $(OS_DEFS) $(ARCH_DEFS)
+
+LDFLAGS := $(STD_LIB_FLAG) $(LIB_DIRS) $(LIBS) $(COVERAGE_FLAGS)
+
+# --- Target Definitions ---
+TARGET := licc
+SRC    := licc.cpp
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+clean:
+	rm -f $(TARGET) *.profraw *.profdata

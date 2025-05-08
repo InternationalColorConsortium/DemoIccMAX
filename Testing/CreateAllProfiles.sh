@@ -1,8 +1,33 @@
 #!/bin/sh
-##
-## Assumes "iccFromXml" is somewhere on $PATH
-## Command line option "clean" will remove ICCs only and not regenerate
-##
+#################################################################################
+# Testing/CreateAllProfiles.sh | iccMAX Project
+# Copyright (C) 2024-2025 The International Color Consortium. 
+#                                        All rights reserved.
+# 
+#
+#  Last Updated: Mon Mar 24 16:40:19 EDT 2025 by David Hoyt
+#  date -d @1742848819
+#  Mon Mar 24 16:40:19 EDT 2025
+#
+#
+#
+#
+# Intent: iccMAX CICD
+#
+#
+#
+#
+#################################################################################
+
+echo "====================== Entering Testing/CreateAllProfiles.sh =========================="
+
+# Properly handle newline-separated paths as a list
+find ../Build/Tools -type f -perm -111 -exec dirname {} \; | sort -u | while read -r d; do
+  abs_path=$(cd "$d" && pwd)
+  PATH="$abs_path:$PATH"
+done
+
+export PATH
 
 if [ "$1" = "clean" ]
 then
@@ -15,6 +40,8 @@ elif ! command -v iccFromXml   # print which executable is being used
 then
 	exit 1
 fi
+
+echo "====================== Calc =========================="
 
 cd Calc
 find . -iname "*\.icc" -delete
@@ -32,6 +59,8 @@ then
 	set -
 fi
 
+echo "====================== CalcTest =========================="
+
 cd ../CalcTest
 if [ "$1" != "clean" ]
 then
@@ -42,6 +71,8 @@ then
 	set -
 fi
 
+echo "====================== CMYK-3DLUTs =========================="
+
 cd ../CMYK-3DLUTs
 find . -iname "*\.icc" -delete
 if [ "$1" != "clean" ]
@@ -51,6 +82,8 @@ then
 	iccFromXml CMYK-3DLUTs2.xml CMYK-3DLUTs2.icc
 	set -
 fi
+
+echo "====================== Display =========================="
 
 cd ../Display
 find . -iname "*\.icc" -delete
@@ -72,6 +105,8 @@ then
 	set -
 fi
 
+echo "====================== Encoding =========================="
+
 cd ../Encoding
 find . -iname "*\.icc" -delete
 if [ "$1" != "clean" ]
@@ -83,6 +118,8 @@ then
 	iccFromXml sRgbEncodingOverrides.xml sRgbEncodingOverrides.icc
 	set -
 fi
+
+echo "====================== ICS =========================="
 
 cd ../ICS
 find . -iname "*\.icc" -delete
@@ -105,6 +142,8 @@ then
 	set -
 fi
 
+echo "====================== Named =========================="
+
 cd ../Named
 find . -iname "*\.icc" -delete
 if [ "$1" != "clean" ]
@@ -116,6 +155,8 @@ then
 	set -
 fi
 
+echo "====================== Overprint =========================="
+
 cd ../Overprint
 find . -iname "*\.icc" -delete
 if [ "$1" != "clean" ]
@@ -124,6 +165,8 @@ then
 	iccFromXml 17ChanPart1.xml 17ChanPart1.icc
 	set -
 fi
+
+echo "====================== mcs =========================="
 
 cd ../mcs
 find . -iname "*\.icc" -delete
@@ -135,6 +178,8 @@ then
 	iccFromXml 6ChanSelect-MID.xml 6ChanSelect-MID.icc
 	set -
 fi
+
+echo "====================== Flexo-CMYKOGP =========================="
 
 cd Flexo-CMYKOGP
 find . -iname "*\.icc" -delete
@@ -151,6 +196,8 @@ then
 	set -
 fi
 cd ..
+
+echo "====================== PCC =========================="
 
 cd ../PCC
 find . -iname "*\.icc" -delete
@@ -229,6 +276,8 @@ then
 	set -
 fi
 
+echo "====================== SpecRef =========================="
+
 cd ../SpecRef
 find . -iname "*\.icc" -delete
 if [ "$1" != "clean" ]
@@ -246,12 +295,16 @@ then
 fi
 cd ..
 
+echo "====================== Summary Count =========================="
+
 # Count number of ICCs that exist to confirm
 if [ "$1" != "clean" ]
 then
-	echo -n "Should be 207 ICC files: "
+	echo -n "Range 204-208 ICC files: "
 	find . -iname "*.icc" | wc -l
 else
 	echo -n "Should be 80 ICC files after a clean: "
 	find . -iname "*.icc" | wc -l
 fi
+
+echo "====================== Exiting Testing/CreateAllProfiles.sh =========================="

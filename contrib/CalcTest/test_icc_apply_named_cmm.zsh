@@ -1,4 +1,23 @@
 #!/bin/zsh
+#################################################################################
+# check_profiles.zsh | iccMAX Project
+# Copyright (C) 2024-2025 The International Color Consortium. 
+#                                        All rights reserved.
+# 
+#
+#  Last Updated: 24-APRIL-2025 16:00 EDT 2025 by David Hoyt
+#
+#
+#
+#
+#
+# run from Build/
+#
+#  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/CalcTest/test_icc_apply_named_cmm.zsh)"
+#
+#
+#
+#################################################################################
 
 # Set relative path to the tool and test files
 TOOL_PATH="Tools/IccApplyNamedCmm/iccApplyNamedCmm"
