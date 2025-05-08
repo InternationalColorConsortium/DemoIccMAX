@@ -4,7 +4,7 @@
 
 ## `CIccCLUT::Interp2d`
 
-
+```
 lldb -- ../../../iccApplyNamedCmm/iccApplyNamedcmm_test -debugcalc rgbExercise8bit.txt 0 1 calcExercizeOps.icc 1
 
 (lldb) target create "../../../iccApplyNamedCmm/iccApplyNamedcmm_test"
@@ -23,3 +23,4 @@ Process 6000 stopped
    2512     destPixel[i] = pv;
    2513   }
 (lldb)
+```

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ICC WASM UI</title>
+</head>
+<body>
+  <h1>ICC Profile WebAssembly Interface</h1>
+  <input type="file" id="fileInput" />
+  <button id="loadBtn">Load Profile</button>
+  <pre id="output"></pre>
+
+  <!-- Correct script inclusion -->
+  <script src="icc.js"></script>
+  <script>
+    let wasmModule;
+
+    // Wait for WASM module to load
+    IccWasm().then(Module => {
+      wasmModule = Module;
+    });
+
+    document.getElementById('loadBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const output = document.getElementById('output');
+      output.textContent = '';
+
+      if (!wasmModule) {
+        output.textContent = 'WASM module is still loading...';
+        return;
+      }
+
+      if (!fileInput.files.length) {
+        output.textContent = 'No file selected.';
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const buffer = new Uint8Array(await file.arrayBuffer());
+
+      const ptr = wasmModule._malloc(buffer.length);
+      wasmModule.HEAPU8.set(buffer, ptr);
+
+      const profile = new wasmModule.ICCProfileJS();
+      const success = profile.readFromBuffer(ptr, buffer.length);
+
+      output.textContent = `Read success: ${success}\n`;
+      if (success) {
+        const descTag = 0x64657363; // 'desc'
+        const hasDesc = profile.hasTag(descTag);
+        output.textContent += `Has 'desc' tag: ${hasDesc}\n`;
+      }
+
+      wasmModule._free(ptr);
+    });
+  </script>
+</body>
+</html>
