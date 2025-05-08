@@ -1,0 +1,16 @@
+{
+  "name": "iccmax",
+  "version-string": "2.1.26",
+  "description": "Demonstration Implementation for iccMAX",
+  "homepage": "https://github.com/InternationalColorConsortium/DemoIccMAX",
+  "license": "MIT",
+  "dependencies": [
+    "libjpeg-turbo",
+    "libpng",
+    "nlohmann-json",
+    "tiff",
+    "vcpkg-cmake",
+    "vcpkg-cmake-config",
+    "wxwidgets"
+  ]
+}

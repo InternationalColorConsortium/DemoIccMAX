@@ -1,0 +1,208 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "wasm-release",
+      "displayName": "WebAssembly (Emscripten)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../wasm",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_TOOLS": "ON",
+        "ENABLE_STATIC_LIBS": "ON",
+        "LIBXML2_INCLUDE_DIR": "${sourceDir}/../third_party/libxml2/out/include/libxml2",
+        "LIBXML2_LIBRARY": "${sourceDir}/../third_party/libxml2/out/lib/libxml2.a",
+        "TIFF_INCLUDE_DIR": "${sourceDir}/../third_party/libtiff/out/include",
+        "TIFF_LIBRARY": "${sourceDir}/../third_party/libtiff/out/lib/libtiff.a",
+        "JPEG_INCLUDE_DIR": "${sourceDir}/../third_party/libjpeg/out/include",
+        "JPEG_LIBRARY": "${sourceDir}/../third_party/libjpeg/out/lib/libjpeg.a",
+        "PNG_INCLUDE_DIR": "${sourceDir}/../third_party/libpng/out/include",
+        "PNG_LIBRARY": "${sourceDir}/../third_party/libpng/out/lib/libpng16.a",
+        "ZLIB_INCLUDE_DIR": "${sourceDir}/../third_party/zlib",
+        "ZLIB_LIBRARY": "${sourceDir}/../third_party/zlib/out/lib/libz.a",
+        "CMAKE_CXX_FLAGS": "-I${sourceDir}/../third_party/libtiff/out/include -I${sourceDir}/../third_party/libjpeg/out/include -I${sourceDir}/../third_party/libpng/out/include -I${sourceDir}/../third_party/zlib -I${sourceDir}/../third_party/nlohmann/json/include",
+        "CMAKE_EXE_LINKER_FLAGS": "-s INITIAL_MEMORY=128MB -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE=1 -s EXPORT_NAME=createModule -s EXPORTED_RUNTIME_METHODS=['FS','callMain']"
+      }
+    },
+    {
+      "name": "wasm-debug",
+      "displayName": "WebAssembly (Emscripten)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../wasm",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_TOOLS": "ON",
+        "ENABLE_STATIC_LIBS": "ON",
+        "LIBXML2_INCLUDE_DIR": "${sourceDir}/../third_party/libxml2/out/include/libxml2",
+        "LIBXML2_LIBRARY": "${sourceDir}/../third_party/libxml2/out/lib/libxml2.a",
+        "TIFF_INCLUDE_DIR": "${sourceDir}/../third_party/libtiff/out/include",
+        "TIFF_LIBRARY": "${sourceDir}/../third_party/libtiff/out/lib/libtiff.a",
+        "JPEG_INCLUDE_DIR": "${sourceDir}/../third_party/libjpeg/out/include",
+        "JPEG_LIBRARY": "${sourceDir}/../third_party/libjpeg/out/lib/libjpeg.a",
+        "PNG_INCLUDE_DIR": "${sourceDir}/../third_party/libpng/out/include",
+        "PNG_LIBRARY": "${sourceDir}/../third_party/libpng/out/lib/libpng16.a",
+        "ZLIB_INCLUDE_DIR": "${sourceDir}/../third_party/zlib",
+        "ZLIB_LIBRARY": "${sourceDir}/../third_party/zlib/out/lib/libz.a",
+        "CMAKE_CXX_FLAGS": "-I${sourceDir}/../third_party/libtiff/out/include -I${sourceDir}/../third_party/libjpeg/out/include -I${sourceDir}/../third_party/libpng/out/include -I${sourceDir}/../third_party/zlib -I${sourceDir}/../third_party/nlohmann/json/include",
+        "CMAKE_EXE_LINKER_FLAGS": "-s INITIAL_MEMORY=128MB -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE=1 -s EXPORT_NAME=createModule -s EXPORTED_RUNTIME_METHODS=['FS','callMain']"
+      }
+    },
+{
+  "name": "wasm-ubsan",
+  "displayName": "WebAssembly (UBSan)",
+  "generator": "Ninja",
+  "binaryDir": "${sourceDir}/../wasm-ubsan",
+  "cacheVariables": {
+    "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+    "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+    "ENABLE_TOOLS": "ON",
+    "ENABLE_STATIC_LIBS": "ON",
+
+    "LIBXML2_INCLUDE_DIR": {
+      "type": "PATH",
+      "value": "${sourceDir}/../third_party/libxml2/out/include/libxml2"
+    },
+    "LIBXML2_LIBRARY": {
+      "type": "FILEPATH",
+      "value": "${sourceDir}/../third_party/libxml2/out/lib/libxml2.a"
+    },
+    "TIFF_INCLUDE_DIR": {
+      "type": "PATH",
+      "value": "${sourceDir}/../third_party/libtiff/out/include"
+    },
+    "TIFF_LIBRARY": {
+      "type": "FILEPATH",
+      "value": "${sourceDir}/../third_party/libtiff/out/lib/libtiff.a"
+    },
+    "JPEG_INCLUDE_DIR": {
+      "type": "PATH",
+      "value": "${sourceDir}/../third_party/libjpeg/out/include"
+    },
+    "JPEG_LIBRARY": {
+      "type": "FILEPATH",
+      "value": "${sourceDir}/../third_party/libjpeg/out/lib/libjpeg.a"
+    },
+    "PNG_INCLUDE_DIR": {
+      "type": "PATH",
+      "value": "${sourceDir}/../third_party/libpng/out/include"
+    },
+    "PNG_LIBRARY": {
+      "type": "FILEPATH",
+      "value": "${sourceDir}/../third_party/libpng/out/lib/libpng16.a"
+    },
+    "ZLIB_INCLUDE_DIR": {
+      "type": "PATH",
+      "value": "${sourceDir}/../third_party/zlib"
+    },
+    "ZLIB_LIBRARY": {
+      "type": "FILEPATH",
+      "value": "${sourceDir}/../third_party/zlib/out/lib/libz.a"
+    },
+
+    "CMAKE_CXX_FLAGS": "-fsanitize=undefined -I${sourceDir}/../third_party/libjpeg/out/include -I${sourceDir}/../third_party/libpng/out/include -I${sourceDir}/../third_party/zlib -I${sourceDir}/../third_party/libxml2/out/include/libxml2 -I${sourceDir}/../third_party/libtiff/out/include",
+    "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=undefined -s INITIAL_MEMORY=128MB -s ALLOW_MEMORY_GROWTH=1"
+  }
+},
+    {
+      "name": "vs2022-x64",
+      "inherits": "default-base",
+      "displayName": "Windows MSVC (VS2022)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2022-x64",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}"
+      }
+    },
+    {
+      "name": "mingw-x64",
+      "inherits": "default-base",
+      "displayName": "Windows MinGW x64",
+      "binaryDir": "${sourceDir}/build/mingw-x64",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "x86_64-w64-mingw32-gcc",
+        "CMAKE_CXX_COMPILER": "x86_64-w64-mingw32-g++"
+      }
+    },
+    {
+      "name": "linux-gcc",
+      "inherits": "default-base",
+      "displayName": "Linux GCC",
+      "binaryDir": "${sourceDir}/build/linux-gcc",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "linux-clang",
+      "inherits": "default-base",
+      "displayName": "Linux Clang",
+      "binaryDir": "${sourceDir}/build/linux-clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "macos-xcode",
+      "inherits": "default-base",
+      "displayName": "macOS (Xcode)",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/build/macos-xcode"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "wasm-release",
+      "configurePreset": "wasm-release",
+      "description": "Build WASM using Emscripten",
+      "jobs": 16
+    },
+    {
+      "name": "wasm-debug",
+      "configurePreset": "wasm-debug",
+      "description": "Build WASM using Emscripten",
+      "jobs": 16
+    },
+    {
+      "name": "wasm-ubsan",
+      "configurePreset": "wasm-ubsan",
+      "description": "Build WASM with UBSan (Undefined Behavior Sanitizer)",
+      "jobs": 16
+    },
+    {
+      "name": "build-release",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "build-debug",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "test-default",
+      "configurePreset": "vs2022-x64"
+    }
+  ]
+}

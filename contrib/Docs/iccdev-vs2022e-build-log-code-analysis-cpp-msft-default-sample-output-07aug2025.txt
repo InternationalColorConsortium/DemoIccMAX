@@ -1,0 +1,1007 @@
+Rebuild started at 8:38 AM...
+1>------ Skipped Rebuild All: Project: uninstall, Configuration: Debug x64 ------
+1>Project not selected to build for this solution configuration 
+2>------ Skipped Rebuild All: Project: dist-bin, Configuration: Debug x64 ------
+2>Project not selected to build for this solution configuration 
+3>------ Rebuild All started: Project: IccProfLib2-static, Configuration: Debug x64 ------
+4>------ Rebuild All started: Project: IccProfLib2, Configuration: Debug x64 ------
+3>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+3>Copyright (C) Microsoft Corporation.  All rights reserved.
+3>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"IccProfLib2-static.dir\Debug\\" /Fd"E:\pr155\repro5\DemoIccMAX\IccProfLib\Debug\IccProfLib2-static.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\IccProfLib" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\IccProfLib\IccApplyBPC.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccArrayBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccArrayFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCAM.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEncoding.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEnvVar.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEval.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccIO.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMatrixMath.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeACS.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPrmg.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSolve.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccStructBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccStructFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagDict.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagEmbedIcc.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagMPE.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagProfSeqId.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccUtil.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccXformFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMD5.cpp
+4>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+4>Copyright (C) Microsoft Corporation.  All rights reserved.
+4>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _WINDLL /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /D IccProfLib2_EXPORTS /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"IccProfLib2.dir\Debug\\" /Fd"IccProfLib2.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\IccProfLib" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\IccProfLib\IccApplyBPC.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccArrayBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccArrayFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCAM.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEncoding.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEnvVar.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEval.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccIO.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMatrixMath.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeACS.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPrmg.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSolve.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccStructBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccStructFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagDict.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagEmbedIcc.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagMPE.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagProfSeqId.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccUtil.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccXformFactory.cpp E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMD5.cpp
+3>IccApplyBPC.cpp
+4>IccApplyBPC.cpp
+4>IccArrayBasic.cpp
+3>IccArrayBasic.cpp
+4>IccArrayFactory.cpp
+3>IccArrayFactory.cpp
+4>IccCAM.cpp
+3>IccCAM.cpp
+4>IccCmm.cpp
+3>IccCmm.cpp
+3>IccConvertUTF.cpp
+4>IccConvertUTF.cpp
+4>IccEncoding.cpp
+3>IccEncoding.cpp
+3>IccEnvVar.cpp
+4>IccEnvVar.cpp
+4>IccEval.cpp
+3>IccEval.cpp
+4>IccIO.cpp
+3>IccIO.cpp
+4>IccMatrixMath.cpp
+3>IccMatrixMath.cpp
+4>IccMpeACS.cpp
+3>IccMpeACS.cpp
+4>IccMpeBasic.cpp
+3>IccMpeBasic.cpp
+4>IccMpeCalc.cpp
+3>IccMpeCalc.cpp
+4>IccMpeFactory.cpp
+3>IccMpeFactory.cpp
+4>IccMpeSpectral.cpp
+3>IccMpeSpectral.cpp
+3>IccPrmg.cpp
+4>IccPrmg.cpp
+3>IccPcc.cpp
+4>IccPcc.cpp
+3>IccProfile.cpp
+4>IccProfile.cpp
+3>IccSolve.cpp
+4>IccSolve.cpp
+3>Running Code Analysis for C/C++...
+4>Running Code Analysis for C/C++...
+4>Generating Code...
+3>Generating Code...
+4>Compiling...
+4>IccSparseMatrix.cpp
+3>Compiling...
+3>IccSparseMatrix.cpp
+4>IccStructBasic.cpp
+3>IccStructBasic.cpp
+3>IccStructFactory.cpp
+4>IccStructFactory.cpp
+4>IccTagBasic.cpp
+3>IccTagBasic.cpp
+3>IccTagComposite.cpp
+4>IccTagComposite.cpp
+3>IccTagDict.cpp
+4>IccTagDict.cpp
+3>IccTagEmbedIcc.cpp
+4>IccTagEmbedIcc.cpp
+4>IccTagFactory.cpp
+3>IccTagFactory.cpp
+3>IccTagLut.cpp
+4>IccTagLut.cpp
+3>IccTagMPE.cpp
+4>IccTagMPE.cpp
+3>IccTagProfSeqId.cpp
+4>IccTagProfSeqId.cpp
+3>IccUtil.cpp
+4>IccUtil.cpp
+3>IccXformFactory.cpp
+4>IccXformFactory.cpp
+3>IccMD5.cpp
+3>Running Code Analysis for C/C++...
+4>IccMD5.cpp
+4>Running Code Analysis for C/C++...
+3>Generating Code...
+4>Generating Code...
+3>IccProfLib2-static.vcxproj -> E:\pr155\repro5\DemoIccMAX\IccProfLib\Debug\IccProfLib2-static.lib
+4>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.h(145): warning C26495: Variable 'IIccArray::m_pTagArray' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccArrayBasic.cpp(216): warning C26495: Variable 'CIccArrayNamedColor::m_csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(436): warning C26495: Variable 'CIccXform::m_PCSScale' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(873): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(853): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(2491): warning C28182: Dereferencing NULL pointer. 'ptr.ptr' contains the same NULL value as 'pStep' did. See line 2481 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(720): warning C26495: Variable 'CIccPcsLabStep::m_xyzWhite' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(7332): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(7312): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(7276): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(8099): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(11046): warning C6011: Dereferencing NULL pointer 'last'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nCacheSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nDstSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nSrcSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nTotalSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nTotalSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nDstSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nSrcSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nCacheSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nDstSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nTotalSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nSrcSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nCacheSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(356): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(357): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(358): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(419): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(420): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(421): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(425): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(426): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(427): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(454): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(455): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(466): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(511): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(512): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(513): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(514): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(515): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(581): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(582): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(583): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(584): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(585): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(662): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(663): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(664): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(708): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(709): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(710): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(714): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(715): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(716): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(745): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(746): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(747): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(748): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(749): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(804): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(805): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(806): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(807): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(808): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEval.cpp(164): warning C6385: Reading invalid data from 'steps':  the readable size is 'ndim1*4' bytes, but '8' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEval.cpp(166): warning C6386: Buffer overrun while writing to 'steps':  the writable size is 'ndim1*4' bytes, but 'ndim' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.h(122): warning C26495: Variable 'CIccCurveSegment::m_nReserved' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.h(122): warning C26495: Variable 'CIccCurveSegment::m_endPoint' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.h(122): warning C26495: Variable 'CIccCurveSegment::m_startPoint' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(546): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1298): warning C26495: Variable 'CIccSingleSampledCurve::m_last' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_storageType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_range' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_last' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_nDesiredSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_storageType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_range' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_last' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_pCalc' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(2721): warning C6385: Reading invalid data from 'breakpoints':  the readable size is '_Param_(1)*_Param_(2)' bytes, but '8' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(3015): warning C6011: Dereferencing NULL pointer 'm_curve'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(2995): warning C26495: Variable 'CIccMpeCurveSet::m_position' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(3059): warning C6011: Dereferencing NULL pointer 'm_curve'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(3521): warning C26495: Variable 'CIccMpeTintArray::m_Array' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4154): warning C26495: Variable 'CIccMpeToneMap::m_pLumCurve' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4829): warning C26495: Variable 'CIccMpeMatrix::m_bApplyConstants' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4829): warning C26495: Variable 'CIccMpeMatrix::m_type' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4860): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4868): warning C6387: 'm_pConstants' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4849): warning C26495: Variable 'CIccMpeMatrix::m_type' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4900): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4911): warning C6387: 'm_pConstants' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(608): warning C26498: The function 'std::numeric_limits<float>::infinity' is constexpr, mark variable 'V' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(618): warning C26498: The function 'std::numeric_limits<float>::infinity' is constexpr, mark variable 'V' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(628): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'V' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(1529): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'nan' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(1574): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'nan' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(1601): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'nan' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2643): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2645): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2649): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2651): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2688): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2776): warning C6387: 'm_Op' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2805): warning C6387: 'm_Op' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(3312): warning C6011: Dereferencing NULL pointer 'm_Op'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(3312): warning C6386: Buffer overrun while writing to 'm_Op':  the writable size is '_Param_(1)*_Param_(2)' bytes, but '48' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(4760): warning C6011: Dereferencing NULL pointer 'pApply->m_SubElem'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(4993): warning C26495: Variable 'CIccApplyMpeCalculator::m_pCmmEnvVarLookup' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(101): warning C26495: Variable 'CIccMpeSpectralMatrix::m_xyzOffset' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(143): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(151): warning C6387: 'm_pOffset' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(159): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(129): warning C26495: Variable 'CIccMpeSpectralMatrix::m_xyzOffset' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(194): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(205): warning C6387: 'm_pOffset' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(216): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(795): warning C26495: Variable 'CIccMpeSpectralCLUT::m_interpType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(838): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(824): warning C26495: Variable 'CIccMpeSpectralCLUT::m_interpType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(885): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1658): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzw' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1658): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzscale' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1658): warning C26495: Variable 'CIccMpeSpectralObserver::m_flags' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1694): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1682): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzw' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1682): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzscale' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1682): warning C26495: Variable 'CIccMpeSpectralObserver::m_flags' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1727): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_bValidIllumXYZ' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_mediaXYZ' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_illuminantXYZLum' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_illuminantXYZ' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp(1261): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp(2516): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp(2685): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp(49): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp(26): warning C26495: Variable 'CIccSparseMatrix::m_Data' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp(97): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.h(119): warning C26495: Variable 'IIccStruct::m_pTagStruct' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(189): warning C26495: Variable 'CIccTagUnknown::m_nSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(366): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(383): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(404): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(711): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(728): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(749): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1514): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1531): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1552): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1916): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1920): warning C6011: Dereferencing NULL pointer 'm_uzUnicodeText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1951): warning C6387: 'm_szText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1956): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1961): warning C6387: 'm_uzUnicodeText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1966): warning C6011: Dereferencing NULL pointer 'm_uzUnicodeText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2000): warning C6387: 'm_szText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2005): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2012): warning C6387: 'm_uzUnicodeText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2017): warning C6011: Dereferencing NULL pointer 'm_uzUnicodeText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2724): warning C6387: 'm_NamedColor' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2759): warning C6387: 'm_NamedColor' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3531): warning C6387: 'm_XYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3556): warning C6387: 'm_XYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3769): warning C26495: Variable 'CIccTagChromaticity::m_nColorantType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3793): warning C6387: 'm_xy' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3817): warning C6387: 'm_xy' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nMatrixCoefficients' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nVideoFullRangeFlag' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nColorPrimaries' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nTransferCharacteristics' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4448): warning C6387: 'm_RawData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4475): warning C6387: 'm_RawData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6957): warning C6011: Dereferencing NULL pointer 'm_pBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6954): warning C26495: Variable 'CIccLocalizedUnicode::m_nCountryCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6954): warning C26495: Variable 'CIccLocalizedUnicode::m_nLanguageCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6977): warning C6387: 'm_pBuf' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6978): warning C6011: Dereferencing NULL pointer 'm_pBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7313): warning C6385: Reading invalid data from 'sszUnicode16Text':  the readable size is '2' bytes, but '4' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7808): warning C26495: Variable 'CIccTagData::m_nDataFlag' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7833): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7858): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8353): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8377): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8615): warning C26495: Variable 'CIccTagColorantTable::m_PCS' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8641): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8666): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_deviceMfg' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_technology' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_attributes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_deviceModel' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9790): warning C26495: Variable 'CIccResponseCurveStruct::m_measurementUnitSig' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9833): warning C6387: 'm_maxColorantXYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9863): warning C6387: 'm_maxColorantXYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.h(1607): warning C26495: Variable 'CIccResponseCurveSetIter::inited' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10325): warning C6386: Buffer overrun while writing to 'nOffset':  the writable size is 'nCountMeasmntTypes*4' bytes, but '8' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10823): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved2' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10823): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved3' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10860): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved2' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10860): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved3' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11309): warning C6011: Dereferencing NULL pointer 'rv'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11314): warning C6387: 'rv' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11734): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11762): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(12052): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(12078): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5165): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5190): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5624): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5647): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6231): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6254): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(129): warning C26495: Variable 'CIccTagStruct::m_sigStructType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(129): warning C26495: Variable 'CIccTagStruct::m_tagStart' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(129): warning C26495: Variable 'CIccTagStruct::m_tagSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(146): warning C26495: Variable 'CIccTagStruct::m_tagStart' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(146): warning C26495: Variable 'CIccTagStruct::m_tagSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(1030): warning C26495: Variable 'CIccTagArray::m_nSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(1030): warning C26495: Variable 'CIccTagArray::m_TagVals' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(1077): warning C6386: Buffer overrun while writing to 'm_TagVals':  the writable size is 'tagAry.m_nSize*8' bytes, but '16' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(143): warning C26495: Variable 'CIccTagCurve::m_nMaxIndex' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(169): warning C6387: 'm_Curve' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(194): warning C6387: 'm_Curve' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1623): warning C26495: Variable 'CIccApplyCLUT::m_nSrcSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_GridPoints' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n1000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_nPower' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_GridAdr' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n001' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_fGridAdr' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_pOutText' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_nNumPoints' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_MaxGridPoint' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n100' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n101' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n011' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n10000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_pVal' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_csOutput' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n100000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_nNodes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n111' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n110' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_csInput' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_DimSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n010' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1859): warning C6386: Buffer overrun while writing to 'this->m_DimSize':  the writable size is '64' bytes, but '-4' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1860): warning C6385: Reading invalid data from 'this->m_GridPoints':  the readable size is '16' bytes, but '-1' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(2157): warning C6262: Function uses '200092' bytes of stack.  Consider moving some data to heap.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(2308): warning C6386: Buffer overrun while writing to 'm_nOffset':  the writable size is 'm_nNodes*4' bytes, but '8' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(2310): warning C6385: Reading invalid data from 'm_nOffset':  the readable size is 'm_nNodes*4' bytes, but '12' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagMPE.cpp(722): warning C26495: Variable 'CIccTagMultiProcessElement::m_nBufChannels' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagMPE.cpp(1157): warning C6386: Buffer overrun while writing to 'm_position':  the writable size is '_Param_(1)*_Param_(2)' bytes, but '16' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagProfSeqId.cpp(579): warning C6386: Buffer overrun while writing to 'pos':  the writable size is 'count*8' bytes, but '16' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagProfSeqId.cpp(582): warning C6385: Reading invalid data from 'pos':  the readable size is 'count*8' bytes, but '16' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccUtil.cpp(1289): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccUtil.cpp(1297): warning C6031: Return value ignored: 'sscanf'.
+3>Aliasing IccProfLib2-static.lib to IccProfLib2.lib for MSVC compatibility
+4>IccProfLib2.vcxproj -> E:\pr155\repro5\DemoIccMAX\IccProfLib\Debug\IccProfLib2.dll
+3>Done building project "IccProfLib2-static.vcxproj".
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.h(145): warning C26495: Variable 'IIccArray::m_pTagArray' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccArrayBasic.cpp(216): warning C26495: Variable 'CIccArrayNamedColor::m_csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(436): warning C26495: Variable 'CIccXform::m_PCSScale' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(873): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(853): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(2491): warning C28182: Dereferencing NULL pointer. 'ptr.ptr' contains the same NULL value as 'pStep' did. See line 2481 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(720): warning C26495: Variable 'CIccPcsLabStep::m_xyzWhite' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(7332): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(7312): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(7276): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(8099): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(11046): warning C6011: Dereferencing NULL pointer 'last'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nSrcSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nDstSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nTotalSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<float>::m_nCacheSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nCacheSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nTotalSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nDstSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned char>::m_nSrcSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nSrcSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nTotalSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nCacheSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.cpp(10915): warning C26495: Variable 'CIccMruCache<unsigned short>::m_nDstSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(356): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(357): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(358): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(419): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(420): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(421): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(425): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(426): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(427): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(454): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(455): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(466): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(511): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(512): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(513): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(514): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(515): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(581): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(582): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(583): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(584): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(585): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(662): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(663): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(664): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(708): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(709): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(710): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(714): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(715): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(716): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(745): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(746): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(747): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(748): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(749): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(804): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(805): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(806): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(807): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccConvertUTF.cpp(808): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEval.cpp(164): warning C6385: Reading invalid data from 'steps':  the readable size is 'ndim1*4' bytes, but '8' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccEval.cpp(166): warning C6386: Buffer overrun while writing to 'steps':  the writable size is 'ndim1*4' bytes, but 'ndim' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.h(122): warning C26495: Variable 'CIccCurveSegment::m_nReserved' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.h(122): warning C26495: Variable 'CIccCurveSegment::m_endPoint' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.h(122): warning C26495: Variable 'CIccCurveSegment::m_startPoint' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(546): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1298): warning C26495: Variable 'CIccSingleSampledCurve::m_last' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_storageType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_range' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_last' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1883): warning C26495: Variable 'CIccSampledCalculatorCurve::m_nDesiredSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_storageType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_range' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_last' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(1920): warning C26495: Variable 'CIccSampledCalculatorCurve::m_pCalc' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(2721): warning C6385: Reading invalid data from 'breakpoints':  the readable size is '_Param_(1)*_Param_(2)' bytes, but '8' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(3015): warning C6011: Dereferencing NULL pointer 'm_curve'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(2995): warning C26495: Variable 'CIccMpeCurveSet::m_position' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(3059): warning C6011: Dereferencing NULL pointer 'm_curve'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(3521): warning C26495: Variable 'CIccMpeTintArray::m_Array' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4154): warning C26495: Variable 'CIccMpeToneMap::m_pLumCurve' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4829): warning C26495: Variable 'CIccMpeMatrix::m_type' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4829): warning C26495: Variable 'CIccMpeMatrix::m_bApplyConstants' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4860): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4868): warning C6387: 'm_pConstants' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4849): warning C26495: Variable 'CIccMpeMatrix::m_type' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4900): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeBasic.cpp(4911): warning C6387: 'm_pConstants' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(608): warning C26498: The function 'std::numeric_limits<float>::infinity' is constexpr, mark variable 'V' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(618): warning C26498: The function 'std::numeric_limits<float>::infinity' is constexpr, mark variable 'V' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(628): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'V' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(1529): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'nan' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(1574): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'nan' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(1601): warning C26498: The function 'std::numeric_limits<float>::quiet_NaN' is constexpr, mark variable 'nan' constexpr if compile-time evaluation is desired (con.5).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2643): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2645): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2649): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2651): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2688): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2776): warning C6387: 'm_Op' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(2805): warning C6387: 'm_Op' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(3312): warning C6011: Dereferencing NULL pointer 'm_Op'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(3312): warning C6386: Buffer overrun while writing to 'm_Op':  the writable size is '_Param_(1)*_Param_(2)' bytes, but '48' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(4760): warning C6011: Dereferencing NULL pointer 'pApply->m_SubElem'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeCalc.cpp(4993): warning C26495: Variable 'CIccApplyMpeCalculator::m_pCmmEnvVarLookup' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(101): warning C26495: Variable 'CIccMpeSpectralMatrix::m_xyzOffset' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(143): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(151): warning C6387: 'm_pOffset' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(159): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(129): warning C26495: Variable 'CIccMpeSpectralMatrix::m_xyzOffset' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(194): warning C6387: 'm_pMatrix' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(205): warning C6387: 'm_pOffset' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(216): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(795): warning C26495: Variable 'CIccMpeSpectralCLUT::m_interpType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(838): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(824): warning C26495: Variable 'CIccMpeSpectralCLUT::m_interpType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(885): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1658): warning C26495: Variable 'CIccMpeSpectralObserver::m_flags' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1658): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzw' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1658): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzscale' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1694): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1682): warning C26495: Variable 'CIccMpeSpectralObserver::m_flags' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1682): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzw' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1682): warning C26495: Variable 'CIccMpeSpectralObserver::m_xyzscale' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccMpeSpectral.cpp(1727): warning C6387: 'm_pWhite' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_bValidIllumXYZ' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_mediaXYZ' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_illuminantXYZLum' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccPcc.cpp(313): warning C26495: Variable 'CIccCombinedConnectionConditions::m_illuminantXYZ' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp(1261): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp(2516): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccProfile.cpp(2685): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp(49): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp(26): warning C26495: Variable 'CIccSparseMatrix::m_Data' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccSparseMatrix.cpp(97): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.h(119): warning C26495: Variable 'IIccStruct::m_pTagStruct' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(189): warning C26495: Variable 'CIccTagUnknown::m_nSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(366): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(383): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(404): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(711): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(728): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(749): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1514): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1531): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1552): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1916): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1920): warning C6011: Dereferencing NULL pointer 'm_uzUnicodeText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1951): warning C6387: 'm_szText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1956): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1961): warning C6387: 'm_uzUnicodeText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(1966): warning C6011: Dereferencing NULL pointer 'm_uzUnicodeText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2000): warning C6387: 'm_szText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2005): warning C6011: Dereferencing NULL pointer 'm_szText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2012): warning C6387: 'm_uzUnicodeText' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2017): warning C6011: Dereferencing NULL pointer 'm_uzUnicodeText'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2724): warning C6387: 'm_NamedColor' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(2759): warning C6387: 'm_NamedColor' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3531): warning C6387: 'm_XYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3556): warning C6387: 'm_XYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3769): warning C26495: Variable 'CIccTagChromaticity::m_nColorantType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3793): warning C6387: 'm_xy' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(3817): warning C6387: 'm_xy' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nMatrixCoefficients' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nVideoFullRangeFlag' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nTransferCharacteristics' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4127): warning C26495: Variable 'CIccTagCicp::m_nColorPrimaries' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4448): warning C6387: 'm_RawData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(4475): warning C6387: 'm_RawData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6957): warning C6011: Dereferencing NULL pointer 'm_pBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6954): warning C26495: Variable 'CIccLocalizedUnicode::m_nCountryCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6954): warning C26495: Variable 'CIccLocalizedUnicode::m_nLanguageCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6977): warning C6387: 'm_pBuf' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6978): warning C6011: Dereferencing NULL pointer 'm_pBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7313): warning C6385: Reading invalid data from 'sszUnicode16Text':  the readable size is '2' bytes, but '4' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7808): warning C26495: Variable 'CIccTagData::m_nDataFlag' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7833): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(7858): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8353): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8377): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8615): warning C26495: Variable 'CIccTagColorantTable::m_PCS' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8641): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(8666): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_technology' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_deviceModel' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_attributes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9410): warning C26495: Variable 'CIccProfileDescStruct::m_deviceMfg' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9790): warning C26495: Variable 'CIccResponseCurveStruct::m_measurementUnitSig' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9833): warning C6387: 'm_maxColorantXYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(9863): warning C6387: 'm_maxColorantXYZ' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.h(1607): warning C26495: Variable 'CIccResponseCurveSetIter::inited' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10325): warning C6386: Buffer overrun while writing to 'nOffset':  the writable size is 'nCountMeasmntTypes*4' bytes, but '8' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10823): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved2' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10823): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved3' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10860): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved2' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(10860): warning C26495: Variable 'CIccTagSpectralViewingConditions::m_reserved3' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11309): warning C6011: Dereferencing NULL pointer 'rv'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11314): warning C6387: 'rv' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11734): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(11762): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(12052): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(12078): warning C6387: 'm_pData' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5165): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5190): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5624): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(5647): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6231): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagBasic.cpp(6254): warning C6387: 'm_Num' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(129): warning C26495: Variable 'CIccTagStruct::m_sigStructType' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(129): warning C26495: Variable 'CIccTagStruct::m_tagStart' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(129): warning C26495: Variable 'CIccTagStruct::m_tagSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(146): warning C26495: Variable 'CIccTagStruct::m_tagStart' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(146): warning C26495: Variable 'CIccTagStruct::m_tagSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(1030): warning C26495: Variable 'CIccTagArray::m_TagVals' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(1030): warning C26495: Variable 'CIccTagArray::m_nSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagComposite.cpp(1077): warning C6386: Buffer overrun while writing to 'm_TagVals':  the writable size is 'tagAry.m_nSize*8' bytes, but '16' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(143): warning C26495: Variable 'CIccTagCurve::m_nMaxIndex' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(169): warning C6387: 'm_Curve' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(194): warning C6387: 'm_Curve' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1623): warning C26495: Variable 'CIccApplyCLUT::m_nSrcSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_GridPoints' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n1000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_nPower' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_GridAdr' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n001' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_DimSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_fGridAdr' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_pOutText' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_MaxGridPoint' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n100' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n011' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_pVal' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n101' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_nNumPoints' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n111' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n100000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_nNodes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_csOutput' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n110' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::m_csInput' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n10000' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1688): warning C26495: Variable 'CIccCLUT::n010' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1859): warning C6386: Buffer overrun while writing to 'this->m_DimSize':  the writable size is '64' bytes, but '-4' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(1860): warning C6385: Reading invalid data from 'this->m_GridPoints':  the readable size is '16' bytes, but '-1' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(2157): warning C6262: Function uses '200092' bytes of stack.  Consider moving some data to heap.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(2308): warning C6386: Buffer overrun while writing to 'm_nOffset':  the writable size is 'm_nNodes*4' bytes, but '8' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagLut.cpp(2310): warning C6385: Reading invalid data from 'm_nOffset':  the readable size is 'm_nNodes*4' bytes, but '12' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagMPE.cpp(722): warning C26495: Variable 'CIccTagMultiProcessElement::m_nBufChannels' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagMPE.cpp(1157): warning C6386: Buffer overrun while writing to 'm_position':  the writable size is '_Param_(1)*_Param_(2)' bytes, but '16' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagProfSeqId.cpp(579): warning C6386: Buffer overrun while writing to 'pos':  the writable size is 'count*8' bytes, but '16' bytes might be written.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccTagProfSeqId.cpp(582): warning C6385: Reading invalid data from 'pos':  the readable size is 'count*8' bytes, but '16' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccUtil.cpp(1289): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccUtil.cpp(1297): warning C6031: Return value ignored: 'sscanf'.
+4>Done building project "IccProfLib2.vcxproj".
+5>------ Rebuild All started: Project: iccV5DspObsToV4Dsp, Configuration: Debug x64 ------
+6>------ Rebuild All started: Project: iccTiffDump, Configuration: Debug x64 ------
+7>------ Rebuild All started: Project: iccSpecSepToTiff, Configuration: Debug x64 ------
+8>------ Rebuild All started: Project: iccRoundTrip, Configuration: Debug x64 ------
+9>------ Rebuild All started: Project: iccPngDump, Configuration: Debug x64 ------
+10>------ Rebuild All started: Project: iccJpegDump, Configuration: Debug x64 ------
+11>------ Rebuild All started: Project: iccFromCube, Configuration: Debug x64 ------
+12>------ Rebuild All started: Project: iccDumpProfileGui, Configuration: Debug x64 ------
+13>------ Rebuild All started: Project: iccDumpProfile, Configuration: Debug x64 ------
+14>------ Rebuild All started: Project: iccApplyToLink, Configuration: Debug x64 ------
+15>------ Rebuild All started: Project: IccXML2-static, Configuration: Debug x64 ------
+16>------ Rebuild All started: Project: IccXML2, Configuration: Debug x64 ------
+17>------ Rebuild All started: Project: DemoIccMAXCmm, Configuration: Debug x64 ------
+8>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+8>Copyright (C) Microsoft Corporation.  All rights reserved.
+6>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+6>Copyright (C) Microsoft Corporation.  All rights reserved.
+12>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+12>Copyright (C) Microsoft Corporation.  All rights reserved.
+11>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+11>Copyright (C) Microsoft Corporation.  All rights reserved.
+9>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+9>Copyright (C) Microsoft Corporation.  All rights reserved.
+13>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+13>Copyright (C) Microsoft Corporation.  All rights reserved.
+14>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+14>Copyright (C) Microsoft Corporation.  All rights reserved.
+5>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+5>Copyright (C) Microsoft Corporation.  All rights reserved.
+7>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+7>Copyright (C) Microsoft Corporation.  All rights reserved.
+8>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccRoundTrip.dir\Debug\\" /Fd"iccRoundTrip.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccRoundTrip" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccRoundTrip\iccRoundTrip.cpp
+8>iccRoundTrip.cpp
+12>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccDumpProfileGui.dir\Debug\\" /Fd"iccDumpProfileGui.dir\Debug\vc143.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\wxProfileDump" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/lib/mswu" /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\wxWidget\wxProfileDump\wxProfileDump.cpp
+12>wxProfileDump.cpp
+6>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include" /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\IccTiffDump\..\..\..\..\Tools\CmdLine\IccApplyProfiles /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccTiffDump.dir\Debug\\" /Fd"iccTiffDump.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccTiffDump" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccTiffDump\iccTiffDump.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp
+6>iccTiffDump.cpp
+11>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccFromCube.dir\Debug\\" /Fd"iccFromCube.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccFromCube" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccFromCube\iccFromCube.cpp
+11>iccFromCube.cpp
+9>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include" /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\IccPngDump\..\..\..\..\Tools\CmdLine\IccPngDump /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\IccPngDump\..\..\..\..\Libraries\IccProfLib /I\usr\include /I\usr\local\include /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccPngDump.dir\Debug\\" /Fd"iccPngDump.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccPngDump" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccPngDump\iccPngDump.cpp
+9>iccPngDump.cpp
+14>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccApplyToLink.dir\Debug\\" /Fd"iccApplyToLink.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccApplyToLink" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyToLink\iccApplyToLink.cpp
+14>iccApplyToLink.cpp
+5>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccV5DspObsToV4Dsp.dir\Debug\\" /Fd"iccV5DspObsToV4Dsp.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccV5DspObsToV4Dsp" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccV5DspObsToV4Dsp\IccV5DspObsToV4Dsp.cpp
+5>IccV5DspObsToV4Dsp.cpp
+7>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include" /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\IccSpecSepToTiff\..\..\..\..\Tools\CmdLine\IccApplyProfiles /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccSpecSepToTiff.dir\Debug\\" /Fd"iccSpecSepToTiff.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccSpecSepToTiff" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccSpecSepToTiff\iccSpecSepToTiff.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp
+7>iccSpecSepToTiff.cpp
+13>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccDumpProfile.dir\Debug\\" /Fd"iccDumpProfile.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccDumpProfile" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccDumpProfile\iccDumpProfile.cpp
+13>iccDumpProfile.cpp
+10>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+10>Copyright (C) Microsoft Corporation.  All rights reserved.
+10>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include" /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\IccJpegDump\..\..\..\..\Tools\CmdLine\IccJpegDump /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\IccJpegDump\..\..\..\..\Libraries\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccJpegDump.dir\Debug\\" /Fd"iccJpegDump.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccJpegDump" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccJpegDump\iccJpegDump.cpp
+10>iccJpegDump.cpp
+16>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+16>Copyright (C) Microsoft Corporation.  All rights reserved.
+16>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _WINDLL /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /D IccXML2_EXPORTS /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"IccXML2.dir\Debug\\" /Fd"IccXML2.dir\Debug\vc143.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\IccXML" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include/libxml2" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /fsanitize=address E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccIoXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXmlFactory.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXmlFactory.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp
+16>IccIoXml.cpp
+15>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+15>Copyright (C) Microsoft Corporation.  All rights reserved.
+15>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"IccXML2-static.dir\Debug\\" /Fd"E:\pr155\repro5\DemoIccMAX\IccXML\Debug\IccXML2-static.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\IccXML" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include/libxml2" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /fsanitize=address E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccIoXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXmlFactory.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXmlFactory.cpp E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp
+15>IccIoXml.cpp
+17>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+17>Copyright (C) Microsoft Corporation.  All rights reserved.
+17>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include" /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\DemoIccMAXCmm\..\..\..\..\Tools\Winnt\DemoIccMAXCmm /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\DemoIccMAXCmm\..\..\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _WINDLL /D _MBCS /D WIN32 /D _WINDOWS /D _USRDLL /D DemoIccMAXCmm_EXPORTS /D _MBCS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Yc"stdafx.h" /Fp"E:/pr155/repro5/DemoIccMAX/Tools/DemoIccMAXCmm/x64/Debug/DemoIccMAXCmm.pch" /Fo"DemoIccMAXCmm.dir\Debug\\" /Fd"DemoIccMAXCmm.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\DemoIccMAXCmm" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\stdafx.cpp
+17>stdafx.cpp
+15>IccMpeXml.cpp
+16>IccMpeXml.cpp
+6>TiffImg.cpp
+6>Running Code Analysis for C/C++...
+7>TiffImg.cpp
+7>Running Code Analysis for C/C++...
+17>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+17>Copyright (C) Microsoft Corporation.  All rights reserved.
+15>IccMpeXmlFactory.cpp
+17>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include" /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\DemoIccMAXCmm\..\..\..\..\Tools\Winnt\DemoIccMAXCmm /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\Tools\DemoIccMAXCmm\..\..\IccProfLib /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _WINDLL /D _MBCS /D WIN32 /D _WINDOWS /D _USRDLL /D DemoIccMAXCmm_EXPORTS /D _MBCS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Yu"stdafx.h" /Fp"E:/pr155/repro5/DemoIccMAX/Tools/DemoIccMAXCmm/x64/Debug/DemoIccMAXCmm.pch" /Fo"DemoIccMAXCmm.dir\Debug\\" /Fd"DemoIccMAXCmm.dir\Debug\vc143.pdb" /external:W1 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\DemoIccMAXCmm" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp
+17>DemoIccMAXCmm.cpp
+16>IccMpeXmlFactory.cpp
+15>IccProfileXml.cpp
+8>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+16>IccProfileXml.cpp
+11>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+5>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+6>Generating Code...
+6>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+8>iccRoundTrip.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccRoundTrip\Debug\iccRoundTrip.exe
+11>iccFromCube.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccFromCube\Debug\iccFromCube.exe
+5>iccV5DspObsToV4Dsp.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccV5DspObsToV4Dsp\Debug\iccV5DspObsToV4Dsp.exe
+13>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+15>IccTagXml.cpp
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+6>iccTiffDump.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccTiffDump\Debug\iccTiffDump.exe
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_bRead' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerSample' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nPhoto' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nPlanar' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCompress' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_fXRes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_fYRes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nRowsPerStrip' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripsPerSample' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerStripLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCurLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCurStrip' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_pProfile' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nProfileLength' is uninitialized. Always initialize a member variable (type.6).
+9>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+16>IccTagXml.cpp
+7>Generating Code...
+13>iccDumpProfile.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccDumpProfile\Debug\iccDumpProfile.exe
+7>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+14>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+9>iccPngDump.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccPngDump\Debug\iccPngDump.exe
+14>iccApplyToLink.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccApplyToLink\Debug\iccApplyToLink.exe
+7>iccSpecSepToTiff.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccSpecSepToTiff\Debug\iccSpecSepToTiff.exe
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_bRead' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerSample' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nPhoto' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nPlanar' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCompress' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_fXRes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_fYRes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nRowsPerStrip' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripsPerSample' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerStripLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCurLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCurStrip' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_pProfile' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nProfileLength' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccPngDump\iccPngDump.cpp(241): warning C6387: 'fp' could be '0':  this does not adhere to the specification for the function 'fread'. 
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccPngDump\iccPngDump.cpp(282): warning C6387: 'fp' could be '0':  this does not adhere to the specification for the function 'fclose'. See line 241 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyToLink\iccApplyToLink.cpp(259): warning C26495: Variable 'CDevLinkWriter::m_nOutSamples' is uninitialized. Always initialize a member variable (type.6).
+17>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+6>Done building project "iccTiffDump.vcxproj".
+15>IccTagXmlFactory.cpp
+17>DemoIccMAXCmm.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\DemoIccMAXCmm\x64\Debug\DemoIccMAXCmm.dll
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(328): warning C28251: Inconsistent annotation for 'CMCheckColors': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1071). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(328): warning C6101: Returning uninitialized memory '*lpaResult'.  A successful path through the function does not set the named _Out_ parameter. Annotate this function with _Success_(return) if returning FALSE indicates failure.
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(401): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(405): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(409): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(439): warning C28251: Inconsistent annotation for 'CMCheckColorsInGamut': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1160). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(439): warning C6101: Returning uninitialized memory '*lpaResult'.  A successful path through the function does not set the named _Out_ parameter. Annotate this function with _Success_(return) if returning FALSE indicates failure.
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(838): warning C28251: Inconsistent annotation for 'CMCreateMultiProfileTransform': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1114). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1200): warning C28251: Inconsistent annotation for 'CMDeleteTransform': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1211). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1249): warning C28251: Inconsistent annotation for 'CMIsProfileValid': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1248). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1281): warning C28251: Inconsistent annotation for 'CMTranslateColors': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1253). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1281): warning C6101: Returning uninitialized memory '*lpaOutputColors'.  A successful path through the function does not set the named _Out_ parameter. Annotate this function with _Success_(return) if returning FALSE indicates failure.
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1360): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1364): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1368): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1437): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1441): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1445): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1463): warning C28251: Inconsistent annotation for 'CMTranslateRGB': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1172). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(1463): warning C6101: Returning uninitialized memory '*lpColorRef'.  A successful path through the function does not set the named _Out_ parameter. Annotate this function with _Success_(return) if returning FALSE indicates failure.
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(2200): warning C28251: Inconsistent annotation for 'CMConvertColorNameToIndex': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1091). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(2200): warning C6101: Returning uninitialized memory '*paIndex'.  A successful path through the function does not set the named _Out_ parameter. Annotate this function with _Success_(return) if returning FALSE indicates failure.
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(2244): warning C28251: Inconsistent annotation for 'CMConvertIndexToColorName': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1098). 
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(2244): warning C6101: Returning uninitialized memory '*paColorName'.  A successful path through the function does not set the named _Out_ parameter. Annotate this function with _Success_(return) if returning FALSE indicates failure.
+E:\pr155\repro5\DemoIccMAX\Tools\Winnt\DemoIccMAXCmm\DemoIccMAXCmm.cpp(2289): warning C28251: Inconsistent annotation for 'CMGetNamedProfileInfo': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\icm.h(1219). 
+16>IccTagXmlFactory.cpp
+10>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+10>iccJpegDump.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccJpegDump\Debug\iccJpegDump.exe
+15>IccUtilXml.cpp
+16>IccUtilXml.cpp
+14>Done building project "iccApplyToLink.vcxproj".
+13>Done building project "iccDumpProfile.vcxproj".
+9>Done building project "iccPngDump.vcxproj".
+5>Done building project "iccV5DspObsToV4Dsp.vcxproj".
+7>Done building project "iccSpecSepToTiff.vcxproj".
+17>Done building project "DemoIccMAXCmm.vcxproj".
+15>Running Code Analysis for C/C++...
+16>Running Code Analysis for C/C++...
+10>Done building project "iccJpegDump.vcxproj".
+8>Done building project "iccRoundTrip.vcxproj".
+11>Done building project "iccFromCube.vcxproj".
+12>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+12>iccDumpProfileGui.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\wxProfileDump\Debug\iccDumpProfileGui.exe
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\unichar.h(350): warning C26439: This kind of function should not throw. Declare it 'noexcept' (f.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\list.h(1164): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\list.h(1213): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\gdicmn.h(727): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\msw\gdiimage.h(26): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\datetime.h(1628): warning C6235: (<non-zero constant> || <expression>) is always a non-zero constant.
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\variant.h(101): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\any.h(1145): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\window.h(153): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\module.h(27): warning C26495: Variable 'wxModule::m_state' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_LZBuf' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_maxCode1' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_EOFCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_runningBits' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_pixelCount' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_clearCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_runningCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_crntShiftState' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_crntShiftDWord' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\imaggif.h(34): warning C26495: Variable 'wxGIFHandler::m_crntCode' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\menu.h(36): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\menu.h(37): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\dataobj.h(259): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\tbarbase.h(278): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\wx\sizer.h(516): warning C6011: Dereferencing NULL pointer 'm_node'. 
+E:\pr155\repro5\DemoIccMAX\Tools\wxWidget\wxProfileDump\wxProfileDump.cpp(118): warning C28251: Inconsistent annotation for 'WinMain': this instance has no annotations. See c:\program files (x86)\windows kits\10\include\10.0.26100.0\um\winbase.h(1062). 
+12>Done building project "iccDumpProfileGui.vcxproj".
+16>Generating Code...
+15>Generating Code...
+16>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+15>IccXML2-static.vcxproj -> E:\pr155\repro5\DemoIccMAX\IccXML\Debug\IccXML2-static.lib
+16>IccXML2.vcxproj -> E:\pr155\repro5\DemoIccMAX\IccXML\Debug\IccXML2.dll
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.h(304): warning C26495: Variable 'CIccMpeXmlCalculator::m_nNextVar' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.h(304): warning C26495: Variable 'CIccMpeXmlCalculator::m_nNextMpe' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.cpp(1613): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.cpp(2584): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(454): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(665): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(713): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(793): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(521): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(460): warning C6385: Reading invalid data from 'buf':  the readable size is 'fileLength' bytes, but '67' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(738): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4061): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4591): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4636): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4874): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(1488): warning C6011: Dereferencing NULL pointer 'fbuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(93): warning C6387: 'm_str' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(104): warning C6011: Dereferencing NULL pointer 'szDest'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(105): warning C6011: Dereferencing NULL pointer 'm_str'. See line 104 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(126): warning C6387: 'm_str' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(352): warning C6011: Dereferencing NULL pointer 'szDest'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(355): warning C6387: 'szBuf' could be '0':  this does not adhere to the specification for the function 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::='. See line 352 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(382): warning C6011: Dereferencing NULL pointer 'szUnicodeBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(384): warning C6387: 'szUnicodeBuf' could be '0':  this does not adhere to the specification for the function 'WideCharToMultiByte'. See line 382 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(385): warning C6011: Dereferencing NULL pointer 'szBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(387): warning C6387: 'szBuf' could be '0':  this does not adhere to the specification for the function 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::='. See line 385 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(407): warning C6011: Dereferencing NULL pointer 'szUnicodeBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(409): warning C6387: 'szUnicodeBuf' could be '0':  this does not adhere to the specification for the function 'WideCharToMultiByte'. See line 407 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(410): warning C6011: Dereferencing NULL pointer 'szBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(412): warning C6387: 'szBuf' could be '0':  this does not adhere to the specification for the function 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::='. See line 410 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(562): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(1331): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(1370): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(1061): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(897): warning C6054: String 'str' might not be zero-terminated.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(897): warning C6001: Using uninitialized memory 'str'.
+15>Aliasing IccXML2-static.lib to IccXML2.lib for MSVC compatibility
+15>Done building project "IccXML2-static.vcxproj".
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.h(304): warning C26495: Variable 'CIccMpeXmlCalculator::m_nNextVar' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.h(304): warning C26495: Variable 'CIccMpeXmlCalculator::m_nNextMpe' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.cpp(1613): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccMpeXml.cpp(2584): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(454): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(665): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(713): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccProfileXml.cpp(793): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(521): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(460): warning C6385: Reading invalid data from 'buf':  the readable size is 'fileLength' bytes, but '67' bytes may be read.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(738): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4061): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4591): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4636): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(4874): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccTagXml.cpp(1488): warning C6011: Dereferencing NULL pointer 'fbuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(93): warning C6387: 'm_str' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(104): warning C6011: Dereferencing NULL pointer 'szDest'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(105): warning C6011: Dereferencing NULL pointer 'm_str'. See line 104 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(126): warning C6387: 'm_str' could be '0':  this does not adhere to the specification for the function 'memcpy'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(352): warning C6011: Dereferencing NULL pointer 'szDest'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(355): warning C6387: 'szBuf' could be '0':  this does not adhere to the specification for the function 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::='. See line 352 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(382): warning C6011: Dereferencing NULL pointer 'szUnicodeBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(384): warning C6387: 'szUnicodeBuf' could be '0':  this does not adhere to the specification for the function 'WideCharToMultiByte'. See line 382 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(385): warning C6011: Dereferencing NULL pointer 'szBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(387): warning C6387: 'szBuf' could be '0':  this does not adhere to the specification for the function 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::='. See line 385 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(407): warning C6011: Dereferencing NULL pointer 'szUnicodeBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(409): warning C6387: 'szUnicodeBuf' could be '0':  this does not adhere to the specification for the function 'WideCharToMultiByte'. See line 407 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(410): warning C6011: Dereferencing NULL pointer 'szBuf'. 
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(412): warning C6387: 'szBuf' could be '0':  this does not adhere to the specification for the function 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::='. See line 410 for an earlier location where this can occur
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(562): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(1331): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(1370): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(1061): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(897): warning C6054: String 'str' might not be zero-terminated.
+E:\pr155\repro5\DemoIccMAX\IccXML\IccLibXML\IccUtilXml.cpp(897): warning C6001: Using uninitialized memory 'str'.
+16>Done building project "IccXML2.vcxproj".
+18>------ Rebuild All started: Project: iccToXml, Configuration: Debug x64 ------
+19>------ Rebuild All started: Project: iccFromXml, Configuration: Debug x64 ------
+20>------ Rebuild All started: Project: iccApplyProfiles, Configuration: Debug x64 ------
+21>------ Rebuild All started: Project: iccApplyNamedCmm, Configuration: Debug x64 ------
+21>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+21>Copyright (C) Microsoft Corporation.  All rights reserved.
+20>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+20>Copyright (C) Microsoft Corporation.  All rights reserved.
+18>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+18>Copyright (C) Microsoft Corporation.  All rights reserved.
+19>Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35214 for x64
+19>Copyright (C) Microsoft Corporation.  All rights reserved.
+18>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccToXml.dir\Debug\\" /Fd"iccToXml.dir\Debug\vc143.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccToXml" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include/libxml2" /fsanitize=address E:\pr155\repro5\DemoIccMAX\IccXML\CmdLine\IccToXml\IccToXml.cpp
+18>IccToXml.cpp
+20>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccApplyProfiles.dir\Debug\\" /Fd"iccApplyProfiles.dir\Debug\vc143.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccApplyProfiles" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include/libxml2" /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\iccApplyProfiles.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccCommon\IccJsonUtil.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccCommon\IccCmmConfig.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp
+20>iccApplyProfiles.cpp
+21>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccApplyNamedCmm.dir\Debug\\" /Fd"iccApplyNamedCmm.dir\Debug\vc143.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccApplyNamedCmm" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include/libxml2" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /fsanitize=address E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyNamedCmm\iccApplyNamedCmm.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccCommon\IccJsonUtil.cpp E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccCommon\IccCmmConfig.cpp
+21>iccApplyNamedCmm.cpp
+19>cl /c /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccProfLib /IE:\pr155\repro5\DemoIccMAX\Build\Cmake\..\..\IccXML\IccLibXML /I"E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\share\nlohmann_json" /Zi /W1 /WX- /diagnostics:column /fsanitize=address /Od /Ob0 /Oy- /D CODE_ANALYSIS /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"iccFromXml.dir\Debug\\" /Fd"iccFromXml.dir\Debug\vc143.pdb" /external:W0 /Gd /TP /analyze /analyze:projectdirectory"E:\pr155\repro5\DemoIccMAX\Tools\IccFromXml" /analyze:rulesetdirectory";C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\\Rule Sets;" /analyze:ruleset"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset" /analyze:quiet /analyze:plugin"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\EspXEngine.dll" /errorReport:prompt  /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include" /external:I "E:/pr155/repro5/DemoIccMAX/vcpkg_installed/x64-windows/include/libxml2" /fsanitize=address E:\pr155\repro5\DemoIccMAX\IccXML\CmdLine\IccFromXml\IccFromXml.cpp
+19>IccFromXml.cpp
+18>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+19>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+18>iccToXml.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccToXml\Debug\iccToXml.exe
+20>IccJsonUtil.cpp
+21>IccJsonUtil.cpp
+19>iccFromXml.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccFromXml\Debug\iccFromXml.exe
+18>Done building project "iccToXml.vcxproj".
+19>Done building project "iccFromXml.vcxproj".
+20>IccCmmConfig.cpp
+21>IccCmmConfig.cpp
+20>TiffImg.cpp
+20>Running Code Analysis for C/C++...
+21>Running Code Analysis for C/C++...
+20>Generating Code...
+21>Generating Code...
+20>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+21>LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+20>iccApplyProfiles.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccApplyProfiles\Debug\iccApplyProfiles.exe
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+21>iccApplyNamedCmm.vcxproj -> E:\pr155\repro5\DemoIccMAX\Tools\IccApplyNamedCmm\Debug\iccApplyNamedCmm.exe
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\iccApplyProfiles.cpp(400): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\nlohmann\detail\input\lexer.hpp(869): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\nlohmann\detail\input\lexer.hpp(906): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccCommon\IccCmmConfig.cpp(1014): warning C6031: Return value ignored: 'sscanf'.
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_bRead' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerSample' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nPhoto' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nPlanar' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCompress' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_fXRes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_fYRes' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nRowsPerStrip' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripSize' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripSamples' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nStripsPerSample' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nBytesPerStripLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCurLine' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nCurStrip' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_pProfile' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccApplyProfiles\TiffImg.cpp(87): warning C26495: Variable 'CTiffImg::m_nProfileLength' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csDevice' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\IccProfLib\IccCmm.h(225): warning C26495: Variable 'CIccCreateNamedColorXformHint::csPcs' is uninitialized. Always initialize a member variable (type.6).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\nlohmann\detail\input\lexer.hpp(869): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\vcpkg_installed\x64-windows\include\nlohmann\detail\input\lexer.hpp(906): warning C26819: Unannotated fallthrough between switch labels (es.78).
+E:\pr155\repro5\DemoIccMAX\Tools\CmdLine\IccCommon\IccCmmConfig.cpp(1014): warning C6031: Return value ignored: 'sscanf'.
+21>Done building project "iccApplyNamedCmm.vcxproj".
+22>------ Rebuild All started: Project: check, Configuration: Debug x64 ------
+22>Generating test
+20>Done building project "iccApplyProfiles.vcxproj".
+23>------ Rebuild All started: Project: ALL_BUILD, Configuration: Debug x64 ------
+22>Test iccApplyNamedCmm and iccFromXml.
+22>ECHO is on.
+22>C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): warning MSB8065: Custom build for item "E:\pr155\repro5\DemoIccMAX\CMakeFiles\a74975b8c0b086fa9f7d5d47c7de86dc\test.rule" succeeded, but specified output "e:\pr155\repro5\demoiccmax\testing\test" has not been created. This may cause incremental build to work incorrectly.
+22>The vcpkg manifest was disabled, but we found a manifest file in E:\pr155\repro5\DemoIccMAX\. You may want to enable vcpkg manifests in your properties page or pass /p:VcpkgEnableManifest=true to the msbuild invocation.
+22>Done building project "check.vcxproj".
+24>------ Skipped Rebuild All: Project: dist-bin2, Configuration: Debug x64 ------
+24>Project not selected to build for this solution configuration 
+23>The vcpkg manifest was disabled, but we found a manifest file in E:\pr155\repro5\DemoIccMAX\. You may want to enable vcpkg manifests in your properties page or pass /p:VcpkgEnableManifest=true to the msbuild invocation.
+25>------ Skipped Rebuild All: Project: INSTALL, Configuration: Debug x64 ------
+25>Project not selected to build for this solution configuration 
+========== Rebuild All: 21 succeeded, 0 failed, 4 skipped ==========
+========== Rebuild completed at 8:40 AM and took 01:51.084 minutes ==========
