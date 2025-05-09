@@ -45,3 +45,14 @@ Additionally, examples of 6 channel abridged spectral encoding is provided.
 ## Note:
 The CreateAllProfiles.bat/.sh files use `iccFromXML` to create ICC profiles
 from each of the XML files in these folders.
+
+### Create Profiles | Unix
+
+```
+cd Testing/
+for d in ../Build/Tools/*; do
+ [ -d "$d" ] && export PATH="$(realpath "$d"):$PATH"
+done
+sh CreateAllProfiles.sh
+```
+
