@@ -21,8 +21,8 @@
 set -e
 
 echo "[*] Building static libraries..."
-make -C iccProfLib -f Makefile.iccProfLib clean all AFL=1
-make -C iccXmlLib -f Makefile.iccXmlLib clean all AFL=1
+make -C iccProfLib -f Makefile.iccProfLib clean all AFL=0
+make -C iccXmlLib -f Makefile.iccXmlLib clean all AFL=0
 
 echo "[*] Verifying static lib instrumentation..."
 cd iccProfLib
@@ -35,11 +35,11 @@ echo "[*] Building coverage-enabled tools..."
 make -C iccToXml -f Makefile.iccToXml.asan clean all AFL=0
 make -C iccFromXml -f Makefile.iccFromXml clean all AFL=0
 make -C iccDumpProfile -f Makefile.iccDumpProfile clean all AFL=0
-# make -C iccPngDump -f Makefile.iccPngDump clean all AFL=1
+# make -C iccPngDump -f Makefile.iccPngDump clean all AFL=0
 make -C iccRoundTrip -f Makefile.iccRoundTrip clean all AFL=0
-# make -C iccTiffDump -f Makefile.IccTiffDump clean all AFL=1
-# make -C iccApplyNamedCmm -f Makefile.iccApplyNamedCmm clean all AFL=1
-# make -C iccApplyProfiles -f Makefile.iccApplyProfiles clean all AFL=1
+# make -C iccTiffDump -f Makefile.IccTiffDump clean all AFL=0
+# make -C iccApplyNamedCmm -f Makefile.iccApplyNamedCmm clean all AFL=0
+# make -C iccApplyProfiles -f Makefile.iccApplyProfiles clean all AFL=0
 
 echo "[*] Verifying tool instrumentation..."
 for tool in iccToXml iccFromXml iccDumpProfile; do
