@@ -65,7 +65,6 @@ Copyright:  (c) see ICC Software License
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
-// -Research Issue 113 by David Hoyt  08-MAY-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -134,32 +133,10 @@ icStatusCMM CIccEvalCompare::EvaluateProfile(CIccProfile *pProfile, icUInt8Numbe
   int ndim = icGetSpaceSamples(pProfile->m_Header.colorSpace);
   int ndim1 = ndim+1;
 
-
-// =============================================================================================
-// WHO:         David Hoyt
-// DATE:        08-MAY-2025
-// BUG CLASS:   Type Confusion, Use After Free, Overflow, NaN 
-// INTENT:      Research TC, DR from Issue 113
-// PoC:         iccRoundTrip Coated_Fogra39L_VIGC_300-runner.icc
-// ASAN:        runtime error: downcast of address 0x50b0000000f0
-//              which does not point to an object of type 'CIccTagLutAtoB'
-// OUTCOME:     REVERT initial attempt, confirm the runtime error is expect outcome 
-// MATCH ON:    IccEval.cpp:141:28: runtime error: downcast of address 0x50b0000000f0 
-//              which does not point to an object of type 'CIccTagLutAtoB'
-//              0x50b0000000f0: note: object is of type 'CIccTagLut16'
-//
-// NEXT:        Add Instrumentation
-// 
-// TEST: Fail | Unable to perform round trip on '../Testing/Issue113/sRGB2014-runner.icc'
-// TEST: Research in progress 11-MAY-2025
-// HEAD: Original Code 
-// =============================================================================================
   // determine granularity
   if (!nGran)
   {
-  icTagSignature sig = (icTagSignature)(icSigAToB0Tag + (nIntent == icAbsoluteColorimetric ? icRelativeColorimetric : nIntent)); 
-	 CIccTagLut16* pTag = dynamic_cast<CIccTagLut16*>(pProfile->FindTag(sig));
-
+    CIccTagLutAtoB* pTag = (CIccTagLutAtoB*)pProfile->FindTag(icSigAToB0Tag+(nIntent==icAbsoluteColorimetric ? icRelativeColorimetric : nIntent));
     if (!pTag || ndim==3)
     {
       nGran = 33;

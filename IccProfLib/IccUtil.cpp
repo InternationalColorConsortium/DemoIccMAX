@@ -65,7 +65,6 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
-// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -81,8 +80,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include "IccDefs.h"
-#include "IccSignatureUtils.h"
 
 #define PI 3.1415926535897932384626433832795
 
@@ -529,104 +526,56 @@ static inline icFloatNumber icSq(icFloatNumber x)
 
 icFloatNumber icDeltaE(const icFloatNumber *lab1, const icFloatNumber *lab2)
 {
-  icFloatNumber dL = lab1[0] - lab2[0];
-  icFloatNumber dA = lab1[1] - lab2[1];
-  icFloatNumber dB = lab1[2] - lab2[2];
-
-  ICC_TRACE_NAN(dL, "icDeltaE:dL");
-  ICC_TRACE_NAN(dA, "icDeltaE:dA");
-  ICC_TRACE_NAN(dB, "icDeltaE:dB");
-
-  return (icFloatNumber)sqrt(icSq(dL) + icSq(dA) + icSq(dB));
+  return (icFloatNumber)sqrt(icSq(lab1[0]-lab2[0]) + icSq(lab1[1]-lab2[1]) + icSq(lab1[2]-lab2[2]));
 }
 
 icFloatNumber icRmsDif(const icFloatNumber *v1, const icFloatNumber *v2, icUInt32Number nSample)
 {
-  icFloatNumber sum = 0.0f;
-
-  for (icUInt32Number i = 0; i < nSample; i++) {
-    icFloatNumber diff = v1[i] - v2[i];
-    ICC_TRACE_NAN(diff, "icRmsDif:diff");
-    sum += icSq(diff);
+  icFloatNumber sum=0;
+  icUInt32Number i;
+  for (i=0; i<nSample; i++) {
+    sum += icSq(v1[i] - v2[i]);
   }
-
-  if (nSample > 0)
+  if (nSample)
     sum /= nSample;
-
-  ICC_TRACE_NAN(sum, "icRmsDif:sum");
 
   return (icFloatNumber)sqrt(sum);
 }
 
 icS15Fixed16Number icDtoF(icFloatNumber num)
 {
-  if (std::isnan(num)) {
-    union { float f; uint32_t u; } raw;
-    raw.f = static_cast<float>(num);
-    ICC_LOG_WARNING("NaN detected in icDtoF(): input=NaN [bits=0x%08x]", raw.u);
-    ICC_LOG_WARNING("NaN Trace: label=icDtoF, file=%s, line=%d", __FILE__, __LINE__);
-    TRACE_CALLER();
-    num = 0.0f;
-  }
+  icS15Fixed16Number rv;
 
-  ICC_LOG_DEBUG("icDtoF: input=%.8f", num);
+  if (num<-32768.0)
+    num = -32768.0;
+  else if (num>32767.0)
+    num = 32767.0;
 
-  if (num < -32768.0f) {
-    ICC_LOG_WARNING("icDtoF: input clamped to -32768.0");
-    num = -32768.0f;
-  } else if (num > 32767.0f) {
-    ICC_LOG_WARNING("icDtoF: input clamped to 32767.0");
-    num = 32767.0f;
-  }
+  rv = (icS15Fixed16Number)icRoundOffset((double)num*65536.0);
 
-  double scaled = (double)num * 65536.0;
-  ICC_LOG_DEBUG("icDtoF: scaled=%.8f", scaled);
-
-  return (icS15Fixed16Number)icRoundOffset(scaled);
+  return rv;
 }
 
 icFloatNumber icFtoD(icS15Fixed16Number num)
 {
   icFloatNumber rv = (icFloatNumber)((double)num / 65536.0);
 
-  if (std::isnan(rv)) {
-    ICC_LOG_WARNING("NaN generated in icFtoD(): input=0x%08x → result=NaN", (uint32_t)num);
-    ICC_LOG_WARNING("NaN Trace: label=icFtoD, file=%s, line=%d", __FILE__, __LINE__);
-    TRACE_CALLER();
-    rv = 0.0f; // fallback to prevent further corruption
-  } else {
-    ICC_LOG_DEBUG("icFtoD: input=0x%08x → result=%.8f", (uint32_t)num, rv);
-  }
-
   return rv;
 }
 
-
 icU16Fixed16Number icDtoUF(icFloatNumber num)
 {
-  if (std::isnan(num)) {
-    union { float f; uint32_t u; } raw;
-    raw.f = static_cast<float>(num);
-    ICC_LOG_WARNING("NaN detected in icDtoUF(): input=NaN [bits=0x%08x]", raw.u);
-    ICC_LOG_WARNING("NaN Trace: label=icDtoUF, file=%s, line=%d", __FILE__, __LINE__);
-    TRACE_CALLER();
-    num = 0.0f; // safe fallback
-  }
+  icU16Fixed16Number rv;
 
-  if (num < 0.0f) {
-    ICC_LOG_WARNING("icDtoUF: input clamped to 0.0");
-    num = 0.0f;
-  } else if (num > 65535.0f) {
-    ICC_LOG_WARNING("icDtoUF: input clamped to 65535.0");
-    num = 65535.0f;
-  }
+  if (num<0)
+    num = 0;
+  else if (num>65535.0)
+    num = 65535.0;
 
-  double scaled = (double)num * 65536.0;
-  ICC_LOG_DEBUG("icDtoUF: scaled=%.8f", scaled);
+  rv = (icU16Fixed16Number)icRoundOffset((double)num*65536.0);
 
-  return (icU16Fixed16Number)icRoundOffset(scaled);
+  return rv;
 }
-
 
 icFloatNumber icUFtoD(icU16Fixed16Number num)
 {
@@ -1915,7 +1864,7 @@ const icChar *CIccInfo::GetPlatformSigName(icPlatformSignature sig)
     return "Unknown";
 
   default:
-    return "UnknownPlatformSig";
+    return GetUnknownName(sig);
   }
 }
 

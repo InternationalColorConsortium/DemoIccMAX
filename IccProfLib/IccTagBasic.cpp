@@ -83,7 +83,6 @@
 #include "IccConvertUTF.h"
 #include "IccSparseMatrix.h"
 #include "IccCmm.h"
-#include "IccSignatureUtils.h"
 
 #ifdef ICC_USE_ZLIB
 #include "zlib.h"
@@ -3591,32 +3590,34 @@ CIccTagXYZ::~CIccTagXYZ()
  */
 bool CIccTagXYZ::Read(icUInt32Number size, CIccIO *pIO)
 {
-  ICC_LOG_DEBUG("CIccTagXYZ::Read() called with size=%u", size);
+  icTagTypeSignature sig;
 
-  if (!pIO || size < sizeof(icXYZNumber)) {
-    ICC_LOG_WARNING("CIccTagXYZ::Read() failed: invalid IO or size too small");
+  if (sizeof(icTagTypeSignature) + 
+      sizeof(icUInt32Number) + 
+      sizeof(icXYZNumber) > size)
+    return false;
+
+  if (!pIO) {
     return false;
   }
 
-  if (!m_XYZ) {
-    m_XYZ = (icXYZNumber*)calloc(1, sizeof(icXYZNumber));
-    if (!m_XYZ) {
-      ICC_LOG_INFO("CIccTagXYZ::Read() failed: memory allocation failed");
-      return false;
-    }
-  }
-
-  if (!pIO->Read8(m_XYZ, sizeof(icXYZNumber))) {
-    ICC_LOG_WARNING("CIccTagXYZ::Read() failed to read icXYZNumber");
+  if (!pIO->Read32(&sig))
     return false;
-  }
 
-  ICC_LOG_DEBUG("CIccTagXYZ::Read() read XYZ: X=%d, Y=%d, Z=%d",
-                m_XYZ->X, m_XYZ->Y, m_XYZ->Z);
+  if (!pIO->Read32(&m_nReserved))
+    return false;
+
+  icUInt32Number nNum=((size-2*sizeof(icUInt32Number)) / sizeof(icXYZNumber));
+  icUInt32Number nNum32 = nNum*sizeof(icXYZNumber)/sizeof(icUInt32Number);
+
+  if (!SetSize(nNum))
+    return false;
+
+  if (pIO->Read32(m_XYZ, nNum32) != (icInt32Number)nNum32 )
+    return false;
 
   return true;
 }
-
 
 
 /**

@@ -61,13 +61,6 @@
  * 
  */
 
-//////////////////////////////////////////////////////////////////////
-//
-// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
-//
-//////////////////////////////////////////////////////////////////////
-
-
 #include <time.h>
 #include "IccUtilXml.h"
 #include "IccConvertUTF.h"
@@ -964,14 +957,6 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseTextCountNum(const char *szText, 
   return n;
 }
 
-////////////////////////////////////////////////////////////////////// 
-// OBSERVATION: This entire Code Segment is prone to Corruption
-// LATEST FIX: Runtime Errors: 24-April-2025 by David Hoyt
-// TODO: Rip out this code and start fresh
-//
-//
-//////////////////////////////////////////////////////////////////////
-
 template <class T, icTagTypeSignature Tsig>
 icUInt32Number CIccXmlArrayType<T, Tsig>::ParseTextCount(const char *szText)
 {
@@ -1002,49 +987,45 @@ icUInt32Number CIccXmlArrayType<T, Tsig>::ParseTextCount(const char *szText)
 
 template <class T, icTagTypeSignature Tsig>
 icUInt32Number CIccXmlArrayType<T, Tsig>::ParseText(T* pBuf, icUInt32Number nSize, const char *szText)
-{
+{	
   icUInt32Number n = 0, b = 0;
   bool bInNum = false;
   char num[256] = {0};
 
-  while (*szText) {
-    if (icIsNumChar(*szText)) {
+  while (*szText && n<nSize) {	  
+	  if (icIsNumChar(*szText)) {
       if (!bInNum) {
         bInNum = true;
-        b = 0;
+        b=0;
       }
-
-      if (b + 1 < sizeof(num)) {
-        num[b++] = *szText;
-      }
+      num[b] = *szText;
+ 
+      if (b+2<sizeof(num))
+        b++;
     }
     else if (bInNum) {
       num[b] = 0;
-      if (n < nSize) {
-        if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
-          pBuf[n] = (T)nanf(num);
-        } else {
-          pBuf[n] = (T)atof(num);
-        }
-        n++;
+      if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
+        pBuf[n] = (T)nanf(num);
       }
+      else {
+        pBuf[n] = (T)atof(num);
+      }
+      n++;
       bInNum = false;
     }
     szText++;
-
-    // Exit early if we've written all allowed values
-    if (n >= nSize) break;
   }
-
-  if (bInNum && n < nSize) {
+  if (bInNum) {
     num[b] = 0;
     if (!strncmp(num, "nan", 3) || !strncmp(num, "-nan", 4)) {
       pBuf[n] = (T)nanf(num);
-    } else {
+    }
+    else {
       pBuf[n] = (T)atof(num);
     }
     n++;
-  }
+  } 
 
   return n;
 }

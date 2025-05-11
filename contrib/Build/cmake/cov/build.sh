@@ -32,11 +32,11 @@ ar -x libIccXML2.a && for f in *.o; do llvm-objdump -h "$f" | grep -q __llvm_prf
 cd ..
 
 echo "[*] Building coverage-enabled tools..."
-make -C iccToXml -f Makefile.iccToXml.asan clean all AFL=1
-make -C iccFromXml -f Makefile.iccFromXml clean all AFL=1
-make -C iccDumpProfile -f Makefile.iccDumpProfile clean all AFL=1
+make -C iccToXml -f Makefile.iccToXml.asan clean all AFL=0
+make -C iccFromXml -f Makefile.iccFromXml clean all AFL=0
+make -C iccDumpProfile -f Makefile.iccDumpProfile clean all AFL=0
 # make -C iccPngDump -f Makefile.iccPngDump clean all AFL=1
-# make -C iccRoundTrip -f Makefile.iccRoundTrip clean all AFL=1
+make -C iccRoundTrip -f Makefile.iccRoundTrip clean all AFL=0
 # make -C iccTiffDump -f Makefile.IccTiffDump clean all AFL=1
 # make -C iccApplyNamedCmm -f Makefile.iccApplyNamedCmm clean all AFL=1
 # make -C iccApplyProfiles -f Makefile.iccApplyProfiles clean all AFL=1

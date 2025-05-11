@@ -21,16 +21,20 @@
 
 CXX := clang++
 CXXFLAGS := -O0 -g -fprofile-instr-generate -fcoverage-mapping
-INCLUDES := -I../../../../../IccXML/IccLibXML -I../../../../../IccProfLib -I../../../../../Tools/CmdLine/IccDumpProfile -I/usr/include/libxml2
+INCLUDES := -I../../../../../IccXML/IccLibXML \
+            -I../../../../../IccProfLib \
+            -I../../../../../Tools/CmdLine/IccDumpProfile \
+            -I/usr/include/libxml2
 LDFLAGS := -Wl,--whole-archive ../iccXmlLib/libIccXML2.a ../iccProfLib/libIccProfLib2.a -Wl,--no-whole-archive -lxml2
 
 SRC := ../../../../../Tools/CmdLine/IccDumpProfile/iccDumpProfile.cpp
 BIN := iccDumpProfile_test
-RAW := iccDumpProfile.profraw
+RAW := default.profraw
 PROFDATA := iccDumpProfile.profdata
-COV := coverage_iccdumpprofile.txt
+TEXTCOV := coverage_iccdumpprofile.txt
+HTMLDIR := htmlcov
 
-.PHONY: all clean run profile report
+.PHONY: all clean run profile report htmlcov
 
 all: $(BIN)
 
@@ -44,8 +48,16 @@ profile: run
 	llvm-profdata merge -sparse $(RAW) -o $(PROFDATA)
 
 report: profile
-	llvm-cov show ./$(BIN) -instr-profile=$(PROFDATA) > $(COV)
-	@echo "[+] Coverage written to $(COV)"
+	llvm-cov show ./$(BIN) -instr-profile=$(PROFDATA) > $(TEXTCOV)
+	@echo "[+] Coverage written to $(TEXTCOV)"
+
+htmlcov: profile
+	llvm-cov show ./$(BIN) \
+	  -instr-profile=$(PROFDATA) \
+	  -format=html \
+	  -output-dir=$(HTMLDIR)
+	@echo "[+] HTML coverage output at $(HTMLDIR)/index.html"
 
 clean:
-	rm -f $(BIN) $(RAW) $(PROFDATA) $(COV)
+	rm -f $(BIN) $(RAW) $(PROFDATA) $(TEXTCOV)
+	rm -rf $(HTMLDIR)

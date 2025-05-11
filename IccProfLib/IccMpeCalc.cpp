@@ -65,7 +65,6 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 1-30-2006
-// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -4532,20 +4531,6 @@ bool CIccMpeCalculator::Read(icUInt32Number size, CIccIO *pIO)
     return false;
   }
 
-// ===========================================================================
-// TODO: Attempt to Debug UB Issues
-// WHO: David Hoyt
-// DATE: 30 APRIL 2025 1800 EDT
-// INTENT: Fix Overflow, Memory Ops, Housekeeping
-// OUTCOME: Refuzz
-//
-//
-// BUG CLASSES: UB, Memory Safety, Leaks
-//
-// PoC: iccDumpProfile ../contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
-//
-// ===========================================================================
-
   pos = &posvals[1];
   if (nSubElem) {
     icElemTypeSignature elemSig;
@@ -4572,20 +4557,13 @@ bool CIccMpeCalculator::Read(icUInt32Number size, CIccIO *pIO)
 
       pIO->Seek(startPos + pos->offset, icSeekSet);
       if (!pElem->Read(pos->size, pIO)) {
-        delete pElem;
         free(posvals);
         return false;
       }
-      CIccMpeCalculator *pCalc = dynamic_cast<CIccMpeCalculator*>(pElem);
-      if (!pCalc) {
-        delete pElem;
-        free(posvals);
-        return false;
-      }
-      SetSubElem((icUInt16Number)n, pCalc);
+      SetSubElem((icUInt16Number)n, (CIccMpeCalculator*)pElem);
       pos++;
     }
-  } 
+  }  
 
   m_calcFunc = new CIccCalculatorFunc(this);
   pos = posvals;
@@ -5098,3 +5076,6 @@ bool CIccApplyMpeCalculator::GetEnvVar(icSigCmmEnvVar sigEnv, icFloatNumber &val
   }
   return m_pCmmEnvVarLookup->GetEnvVar(sigEnv, val);
 }
+
+
+

@@ -62,7 +62,7 @@ Copyright:  (c) see ICC Software License
 */
 
 ////////////////////////////////////////////////////////////////////////
-// Contributor: David H Hoyt LLC.
+// Contributor: David H Hoyt LLC
 // FILE: IccSignatureUtils.h
 //
 // DESCRIPTION:
