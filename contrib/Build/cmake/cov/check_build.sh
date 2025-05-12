@@ -1,16 +1,16 @@
 #!/bin/bash
 ## 
-## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
-##
-## Written by David Hoyt 
-## Date: 15-APRIL-2025 2000 EDT
+# The ICC Software License, Version 0.2
+# Copyright (c) 2003-2012 The International Color Consortium. All rights reserved.
+# Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
 #
-# Branch: PR124
-# Intent: Makefile for building instrumented Libs + Tools and checking LLVM coverage symbols
+# Contributed by David Hoyt
+# Date: 15-MAY-2025 2000 EDT
+#
+# Branch: research
+# Intent: Public Domain
 # Production: TRUE
 # Runner: TRUE
-#
-#
 # Updates:  Makefile for building instrumented Libs + Tools and checking LLVM coverage symbols
 #          
 #

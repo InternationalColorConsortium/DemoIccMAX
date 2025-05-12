@@ -1,7 +1,7 @@
 ## Makefile.licc
 #
-##
-## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+# Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
+# Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
 ##
 ## Written by David Hoyt
 ## Date: 15-APRIL-2025 2000 EDT
@@ -95,8 +95,7 @@ CXXFLAGS := \
   -fno-optimize-sibling-calls \
   $(COVERAGE_FLAGS) \
   -g3 -O1 \
-  -Wall -Wextra -Wpedantic \
-  -Wno-unused-parameter -Wno-type-limits -Wno-overloaded-virtual \
+  -W \
   $(INCLUDES) $(OS_DEFS) $(ARCH_DEFS)
 
 LDFLAGS := $(STD_LIB_FLAG) $(LIB_DIRS) $(LIBS) $(COVERAGE_FLAGS)

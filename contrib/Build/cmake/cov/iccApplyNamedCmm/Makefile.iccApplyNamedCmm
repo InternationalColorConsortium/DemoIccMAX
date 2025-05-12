@@ -1,22 +1,22 @@
 ## Makefile.iccApplyNamedCmm.afl
-## Builds iccApplyNamedCmm binary instrumented for AFL++ fuzzing 
-## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
-##
-## Written by David Hoyt 
-## Date: 15-APRIL-2025 2000 EDT
+## Builds iccApplyNamedCmm binary instrumented for AFL++ fuzzing
+# The ICC Software License, Version 0.2
+# Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
+# Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
 #
-# Branch: PR124
-# Intent: Makefile for building instrumented Makefile.iccApplyNamedCmm.afl
+# Contributed by David Hoyt
+# Date: 15-MAY-2025 2000 EDT
+#
+# Branch: research
+# Intent: Public Domain
 # Production: TRUE
 # Runner: TRUE
-#
-#
 # Updates:  Coverage Scope
-#          
 #
-# 
-# 
-#  
+#
+#
+#
+#
 ## Makefile for building instrumented Makefile.iccApplyNamedCmm.afl with TIFF, LLVM coverage, and AFL fuzzing support
 
 ## Makefile for building iccApplyNamedCmm with AFL++ and LLVM coverage support
@@ -50,9 +50,9 @@ LDFLAGS := -fsanitize=address \
            -lxml2 -ltiff -lm -lstdc++
 
 SRC := ../../../../../Tools/CmdLine/IccApplyNamedCmm/iccApplyNamedCmm.cpp \
-       ../../../../../Tools/CmdLine/IccApplyProfiles/TiffImg.cpp \
-       ../../../../../Tools/CmdLine/IccCommon/IccCmmConfig.cpp \
-       ../../../../../Tools/CmdLine/IccCommon/IccJsonUtil.cpp
+        ../../../../../Tools/CmdLine/IccApplyProfiles/TiffImg.cpp \
+        ../../../../../Tools/CmdLine/IccCommon/IccCmmConfig.cpp \
+        ../../../../../Tools/CmdLine/IccCommon/IccJsonUtil.cpp
 
 RAW := iccApplyNamedCmm.profraw
 PROFDATA := iccApplyNamedCmm.profdata

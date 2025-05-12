@@ -1,10 +1,10 @@
-## Makefile.icctoxml.asan
+# Makefile.icctoxml.asan
 #
-## 
-## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
-##
-## Written by David Hoyt 
-## Date: 15-APRIL-2025 2000 EDT
+# 
+# Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
+# Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
+# Written by David Hoyt 
+# Date: 15-APRIL-2025 2000 EDT
 #
 # Branch: PR124
 # Intent: Builds instrumented iccToXml binary with ASan/UBSan and generates LLVM coverage data
@@ -17,7 +17,7 @@
 #
 # 
 #  
-## Builds instrumented icctoXml binary with ASan/UBSan and generates LLVM coverage data
+# Builds instrumented icctoXml binary with ASan/UBSan and generates LLVM coverage data
 
 # === CONFIG ===
 CXX := clang++

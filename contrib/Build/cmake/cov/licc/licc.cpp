@@ -2,18 +2,18 @@
 #
 # Copyright(c) 1998 - 2025 Marti Maria Saguer - scan.c
 # Copyright(c) 2003 - 2025 International Color Consortium - IccDumpProfile.cpp
-# Copyright(c) 1994 - 2025 David H Hoyt LLC - Debug Header
+# Copyright(c) 1994 - 2025 David H Hoyt LLC - IccSignatureUtils.h - UCI Profiler
 #
 #
 # Compile: g++ -I../../../../IccProfLib/     -I../../../../IccXML/IccLibXML/     -I/usr/local/include     -L/usr/local/lib     -fsanitize=address     -fno-omit-frame-pointer     -g3 -O1     -Wall -Wextra -Wpedantic     -o licc licc.c     -llcms2 -lstdc++ -lz -lm     -Wno-unused-parameter     -Wno-type-limits     -Wno-overloaded-virtual
 #
-# Last Modified: 11-MAY-2025 2000 EDT David Hoyt
-# Latest: Add Dependency on iccMAX, commit to research
+# Last Modified: 13-MAY-2025 1100 EDT David Hoyt
+# Latest: Add Dependency on iccMAX, commit to research, GC
 #
 #
-# Intent: Initial Commit mashup to research branch, demo implementation for IccSignatureUtils.h
-#
-#
+# Intent: Demo implementation for IccSignatureUtils.h
+# Little ICC Scanner [licc] demonstrates a measurement and analysis toolchain for ICC profiles
+# Bug Class: Profile Bleed | https://srd.cx/cve-2022-26730
 #
 #
 #
@@ -151,7 +151,7 @@ static
 int Help()
 {
 
-       fprintf(stderr, "\nLittle ICC Scanner: Performs measurement and analysis of ICC Profiles.\n");
+       fprintf(stderr, "\nLittle ICC Scanner demonstrates a toolchain for measurement and analysis of ICC Profiles.\n");
 
        fprintf(stderr, "\n");
        fprintf(stderr, "usage: licc [flags] <profile>\n\n");
@@ -160,9 +160,7 @@ int Help()
 
        fprintf(stderr,
            "\n"
-           "This program is intended to be a demo of the LittleCMS\n"
-           "engine combined with iccMAX. It is intended for research and\n"
-           "diagnostic purposes only, and is provided without support.\n"
+           "Little ICC Scanner demonstrates a toolchain for measurement and analysis of ICC Profiles.\n"
            "\n");
 
 
@@ -867,8 +865,6 @@ void checkProfileInformation(cmsHPROFILE h)
     checkColorantTable(h, cmsSigColorantTableOutTag, "Output colorant table");
 }
 
-
-
 static
 void checkDir(const char* dir)
 {
@@ -993,14 +989,11 @@ int main(int argc, char* argv[])
     // ---- Version & attribution banner ----
     fprintf(stderr,
         "\n"
-        "Little ICC Profile Scanner [LittleCMS %.2f, IccProfLib %s, IccLibXML %s]\n"
-        "David H Hoyt LLC  https://srd.cx/\n"
+        "ICC Profile Scanner v.01 [LittleCMS %.2f, IccProfLib %s, IccLibXML %s]\n"
+        "Copyright (c) 2022-2025 David H Hoyt LLC - IccSignatureUtilities.h\n"
+        "Copyright (c) 1998-2015 Marti Maria Saguer - Little CMS2 Library\n"
+        "Copyright (c) 2003-2025 International Color Consortium - iccMAX Library\n"
         "\n"
-        "Copyright (c) 1998-2015 Marti Maria Saguer\n"
-        "Copyright (c) 2003-2025 International Color Consortium (ICC)\n"
-        "Copyright (c) 2024-2025 David H Hoyt LLC\n"
-        "\n"
-        "Licensed under the MIT License (see source headers for full details).\n"
         "\n",
         LCMS_VERSION / 1000.0,
         ICCPROFLIBVER,
