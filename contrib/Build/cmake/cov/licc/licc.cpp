@@ -1,4 +1,4 @@
-﻿/*
+/*
 #
 # Copyright(c) 1998 - 2025 Marti Maria Saguer - scan.c
 # Copyright(c) 2003 - 2025 International Color Consortium - IccDumpProfile.cpp
@@ -7,8 +7,8 @@
 #
 # Compile: g++ -I../../../../IccProfLib/     -I../../../../IccXML/IccLibXML/     -I/usr/local/include     -L/usr/local/lib     -fsanitize=address     -fno-omit-frame-pointer     -g3 -O1     -Wall -Wextra -Wpedantic     -o licc licc.c     -llcms2 -lstdc++ -lz -lm     -Wno-unused-parameter     -Wno-type-limits     -Wno-overloaded-virtual
 #
-# Last Modified: 13-MAY-2025 1100 EDT David Hoyt
-# Latest: Add Dependency on iccMAX, commit to research, GC
+# Last Modified: 15-MAY-2025 1830 EDT David Hoyt
+# Latest: Add iccDumpProfile Output Report Section, Test
 #
 #
 # Intent: Demo implementation for IccSignatureUtils.h
@@ -19,7 +19,12 @@
 #
 */
 
+#include <cassert>
+#include <stdio.h>
+#include <cstring>
+
 #include <time.h>
+#include "IccDefs.h"
 #include "IccProfile.h"
 #include "IccUtil.h"
 #include "IccTagBasic.h"
@@ -804,41 +809,184 @@ void checkProfileInformation(cmsHPROFILE h)
     fprintf(stderr, "\nHeader\n");
     fprintf(stderr, "------\n");
 
-    fprintf(stderr, "Attributes:         %s\n", "Media-independent (unknown)");
-    fprintf(stderr, "Cmm:                [not available]\n");
-    fprintf(stderr, "Creation Date:      [not available]\n");
-    fprintf(stderr, "Creator:            [not available]\n");
-    fprintf(stderr, "Device Manufacturer:[not available]\n");
+CIccInfo Fmt;
+CIccProfile icc;
+CIccFileIO file;
+if (!file.Open(ProfileName, "rb") || !icc.Read(&file)) {
+    ICC_LOG_ERROR("Failed to open ICC profile using ICCMAX stack: %s", ProfileName);
+    return;
+}
+icHeader* pHdr = &icc.m_Header;
+char buf[64];
 
-    fprintf(stderr, "Data Color Space:   %s\n", sig2char(cmsGetColorSpace(h)));
-    fprintf(stderr, "Flags:              [not available]\n");
-    fprintf(stderr, "PCS Color Space:    %s\n", sig2char(cmsGetPCS(h)));
-    fprintf(stderr, "Platform:           [not available]\n");
+if (Fmt.IsProfileIDCalculated(&pHdr->profileID)) {
+    printf("Profile ID:         %s\n", Fmt.GetProfileID(&pHdr->profileID));
+} else {
+    printf("Profile ID:         Profile ID not calculated.\n");
+}
 
-    fprintf(stderr, "Rendering Intent:   %s\n",
-        intent == INTENT_PERCEPTUAL ? "Perceptual" :
-        intent == INTENT_RELATIVE_COLORIMETRIC ? "Relative Colorimetric" :
-        intent == INTENT_SATURATION ? "Saturation" :
-        intent == INTENT_ABSOLUTE_COLORIMETRIC ? "Absolute Colorimetric" :
-        "Unknown");
+printf("Size:               %u (0x%X) bytes\n",
+       (unsigned)pHdr->size, (unsigned)pHdr->size);
 
-    fprintf(stderr, "Profile Class:      %s\n", sig2char(cmsGetDeviceClass(h)));
-    fprintf(stderr, "Profile SubClass:   Not Defined\n");
-    fprintf(stderr, "Version:            %d.%02d\n", (version >> 16) & 0xff, (version >> 8) & 0xff);
-    fprintf(stderr, "Illuminant:         [not available]\n");
-    fprintf(stderr, "Spectral PCS:       Not Defined\n");
-    fprintf(stderr, "Spectral PCS Range: Not Defined\n");
-    fprintf(stderr, "BiSpectral Range:   Not Defined\n");
+printf("\nHeader\n");
+printf("------\n");
 
-    fprintf(stderr, "MCS Color Space:    Not Defined\n");
+printf("Attributes:         %s\n", Fmt.GetDeviceAttrName(pHdr->attributes));
 
-    // Optional white point info
-    if (cmsIsTag(h, cmsSigMediaWhitePointTag)) {
-        wp = (cmsCIEXYZ*)cmsReadTag(h, cmsSigMediaWhitePointTag);
-        if (wp) {
-            fprintf(stderr, "Media White Point:  X=%.4f Y=%.4f Z=%.4f\n", wp->X, wp->Y, wp->Z);
-        }
-    }
+// -------------------------------
+// CMM Signature Check
+// -------------------------------
+if (pHdr->cmmId >= 0x20202020 && pHdr->cmmId <= 0x7A7A7A7A) {
+    printf("Cmm:                %s\n", Fmt.GetCmmSigName((icCmmSignature)pHdr->cmmId));
+} else {
+    printf("Cmm:                InvalidCmm (0x%08X)\n", (unsigned)pHdr->cmmId);
+}
+
+// -------------------------------
+// Date
+// -------------------------------
+printf("Creation Date:      %d/%d/%d (M/D/Y)  %02u:%02u:%02u\n",
+       pHdr->date.month, pHdr->date.day, pHdr->date.year,
+       pHdr->date.hours, pHdr->date.minutes, pHdr->date.seconds);
+
+// -------------------------------
+// Creator / Manufacturer Tags
+// -------------------------------
+// char buf[64] = {0};
+
+printf("Creator:            %s\n", icGetSig(buf, pHdr->creator));
+printf("Device Manufacturer:%s\n", icGetSig(buf, pHdr->manufacturer));
+
+// ------------------------------
+// ICC HEADER FUZZ DIAGNOSTICS
+// ------------------------------
+
+uint8_t sentinelBlock[32];
+memset(sentinelBlock, 0xEE, sizeof(sentinelBlock)); // Fill with marker before parsing
+
+// Trace: CMM Signature field
+ICC_TRACE_INPUT_FIELD("cmmId", offsetof(icHeader, cmmId), &pHdr->cmmId, 4);
+
+// Trace: Expected ICC Magic 'acsp' at offset 0x24 (36)
+ICC_TRACE_INPUT_FIELD("magic", 0x24, ((uint8_t*)pHdr) + 0x24, 4);
+uint8_t expectedMagic[4] = { 'a', 'c', 's', 'p' };
+ICC_IIB_TAG_GUARD("Profile Magic", ((uint8_t*)pHdr) + 0x24, 4, expectedMagic);
+
+// Dirty Write Detection: Copy 32 bytes after header to compare against sentinel
+memcpy(sentinelBlock, ((uint8_t*)pHdr) + 0x50, sizeof(sentinelBlock));
+for (size_t idx = 0; idx < sizeof(sentinelBlock); ++idx) {
+  ICC_DIRTY_WRITE_CHECK("HeaderPad", sentinelBlock, idx, sizeof(sentinelBlock), 0xEE);
+}
+
+// Trace: Manufacturer field
+ICC_TRACE_INPUT_FIELD("manufacturer", offsetof(icHeader, manufacturer), &pHdr->manufacturer, 4);
+
+// Signature Evaluation: Color space decoding
+uint32_t sigTest = pHdr->colorSpace;
+DebugColorSpaceMeta(sigTest);          // Logs name, raw bytes, known status
+ICC_SANITY_CHECK_SIGNATURE(sigTest, "colorSpaceSignature");
+
+// -------------------------------
+// PCS Color Space
+// -------------------------------
+switch (pHdr->pcs) {
+  case icSigLabData:
+  case icSigXYZData:
+    printf("PCS Color Space:    %s\n", Fmt.GetColorSpaceSigName(pHdr->pcs));
+    break;
+  default:
+    printf("PCS Color Space:    InvalidPCS (0x%08X)\n", (unsigned)pHdr->pcs);
+    break;
+}
+
+// -------------------------------
+// Data Color Space
+// -------------------------------
+printf("Data Color Space:   %s\n", Fmt.GetColorSpaceSigName(pHdr->colorSpace));
+
+// -------------------------------
+// Profile Flags
+// -------------------------------
+printf("Flags:              %s\n", Fmt.GetProfileFlagsName(pHdr->flags));
+
+// Platform Signature (strict enum validation to prevent UBSan fault)
+icUInt32Number platformValue;
+memcpy(&platformValue, &pHdr->platform, sizeof(icUInt32Number));
+printf("Raw Platform Value: 0x%08X\n", platformValue);
+
+
+const char *platformName = nullptr;
+icUInt32Number rawPlatform;
+memcpy(&rawPlatform, &pHdr->platform, sizeof(icUInt32Number));
+if (rawPlatform == 0x4150504C)      // 'APPL'
+  platformName = "Macintosh";
+else if (rawPlatform == 0x4D534654) // 'MSFT'
+  platformName = "Microsoft";
+else if (rawPlatform == 0x53554E20) // 'SUN '
+  platformName = "Solaris";
+else if (rawPlatform == 0x53474920) // 'SGI '
+  platformName = "SGI";
+else if (rawPlatform == 0x54474C20) // 'TGL '
+  platformName = "Taligent";
+else if (rawPlatform == 0x00000000) // icSigUnknownPlatform
+  platformName = "Unknown";
+
+
+if (platformName)
+  printf("Platform:           %s\n", platformName);
+else
+  printf("Platform:           UnknownPlatformSig (0x%08X)\n", rawPlatform);
+
+// Rendering Intent (range: 0–3)
+if (pHdr->renderingIntent <= icAbsoluteColorimetric)
+    printf("Rendering Intent:   %s\n", Fmt.GetRenderingIntentName((icRenderingIntent)pHdr->renderingIntent));
+else
+    printf("Rendering Intent:   InvalidIntent (%u)\n", (unsigned)pHdr->renderingIntent);
+
+// Profile Class (basic signature range check)
+printf("Profile Class:      %s\n", Fmt.GetProfileClassSigName(pHdr->deviceClass));
+
+if (pHdr->deviceSubClass)
+    printf("Profile SubClass:   %s\n", icGetSig(buf, pHdr->deviceSubClass));
+else
+    printf("Profile SubClass:   Not Defined\n");
+
+printf("Version:            %s\n", Fmt.GetVersionName(pHdr->version));
+
+if (pHdr->version >= icVersionNumberV5 && pHdr->deviceSubClass)
+    printf("SubClass Version:   %s\n", Fmt.GetSubClassVersionName(pHdr->version));
+
+printf("Illuminant:         X=%.4lf, Y=%.4lf, Z=%.4lf\n",
+       icFtoD(pHdr->illuminant.X),
+       icFtoD(pHdr->illuminant.Y),
+       icFtoD(pHdr->illuminant.Z));
+
+// Spectral PCS (let it pass, log if garbage)
+printf("Spectral PCS:       %s\n", Fmt.GetSpectralColorSigName(pHdr->spectralPCS));
+
+if (pHdr->spectralRange.start || pHdr->spectralRange.end || pHdr->spectralRange.steps)
+    printf("Spectral PCS Range: start=%.1fnm, end=%.1fnm, steps=%d\n",
+           icF16toF(pHdr->spectralRange.start),
+           icF16toF(pHdr->spectralRange.end),
+           pHdr->spectralRange.steps);
+else
+    printf("Spectral PCS Range: Not Defined\n");
+
+if (pHdr->biSpectralRange.start || pHdr->biSpectralRange.end || pHdr->biSpectralRange.steps)
+    printf("BiSpectral Range:     start=%.1fnm, end=%.1fnm, steps=%d\n",
+           icF16toF(pHdr->biSpectralRange.start),
+           icF16toF(pHdr->biSpectralRange.end),
+           pHdr->biSpectralRange.steps);
+else
+    printf("BiSpectral Range:   Not Defined\n");
+
+if (pHdr->mcs)
+    printf("MCS Color Space:    %s\n", Fmt.GetColorSpaceSigName((icColorSpaceSignature)pHdr->mcs));
+else
+    printf("MCS Color Space:    Not Defined\n");
+
+// Optional white point (not exposed in icHeader)
+fprintf(stderr, "Media White Point:  [not available]\n");
 
     fprintf(stderr, "\nProfile Tags\n");
     fprintf(stderr, "------------\n");
