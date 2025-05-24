@@ -1,5 +1,5 @@
 /*
-    File:       IccApplyNamedCmm.cpp
+    File:       iccApplySearch.cpp
 
     Contains:   Console app that applies profiles to text data geting test results
 
@@ -12,7 +12,7 @@
  * The ICC Software License, Version 0.2
  *
  *
- * Copyright (c) 2003-2023 The International Color Consortium. All rights
+ * Copyright (c) 2003-2025 The International Color Consortium. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,20 +64,19 @@
  ////////////////////////////////////////////////////////////////////// 
  // HISTORY:
  //
- // -Initial implementation by Max Derhak 5-15-2003
- // -Modification to support iccMAX by Max Derhak in 2014
- // -Addition of JSON configuraiton by Max Derhak in 2024
+ // -Initial implementation by Max Derhak 5-20-2025
  //
  //////////////////////////////////////////////////////////////////////
 
 
-#include "IccCmm.h"
+#include "IccCmmSearch.h"
 #include "IccUtil.h"
 #include "IccDefs.h"
 #include "IccApplyBPC.h"
 #include "IccEnvVar.h"
 #include "IccMpeCalc.h"
 #include "IccProfLibVer.h"
+#include "IccSearch.h"
 #include "../IccCommon/IccCmmConfig.h"
 
 
@@ -184,11 +183,11 @@ typedef std::list<CIccProfile*> IccProfilePtrList;
 
 void Usage()
 {
-  printf("iccApplyNamedCmm built with IccProfLib version " ICCPROFLIBVER "\n\n");
+  printf("iccApplySearch built with IccProfLib version " ICCPROFLIBVER "\n\n");
 
-  printf("Usage 1: iccApplyNamedCmm -cfg config_file_path\n");
+  printf("Usage 1: iccApplySearch -cfg config_file_path\n");
   printf("  Where config_file_path is a json formatted ICC profile application configuration file\n\n");
-  printf("Usage 2: iccApplyNamedCmm {-debugcalc} data_file_path final_data_encoding{:FmtPrecision{:FmtDigits}} interpolation {{-ENV:Name value} profile_file_path Rendering_intent {-PCC connection_conditions_path}}\n\n");
+  printf("Usage 2: iccApplySearch {-debugcalc} data_file_path encoding[:precision[:digits]] interpolation {-ENV:tag value} profile1_path intent1 {{-ENV:tag value} middle_profile_path mid_intent} {-ENV:tag value} profile2_path intent2 -INIT init_intent2 {pcc_path1 weight1 ...}\n\n");
   printf("Built with IccProfLib version " ICCPROFLIBVER "\n");
   
   printf("  For final_data_encoding:\n");
@@ -207,25 +206,16 @@ void Usage()
   printf("    0 - Linear\n");
   printf("    1 - Tetrahedral\n\n");
 
-  printf("  For Rendering_intent:\n");
+  printf("  For init_intent/intent1/intent2/mid_intent:\n");
   printf("     0 - Perceptual\n");
   printf("     1 - Relative\n");
   printf("     2 - Saturation\n");
   printf("     3 - Absolute\n");
   printf("     10 + Intent - without D2Bx/B2Dx\n");
-  printf("     20 + Intent - Preview\n");
-  printf("     30 - Gamut\n");
-  printf("     33 - Gamut Absolute\n");
   printf("     40 + Intent - with BPC\n");
-  printf("     50 - BDRF Model\n");
-  printf("     60 - BDRF Light\n");
-  printf("     70 - BDRF Output\n");
-  printf("     80 - MCS connection\n");
   printf("     90 + Intent - Colorimetric Only\n");
   printf("    100 + Intent - Spectral Only\n");
-  printf("  +1000 - Use Luminance based PCS adjustment\n");
   printf(" +10000 - Use V5 sub-profile if present\n");
-  printf("+100000 - Use HToS tag if present\n");
 }
 
 
@@ -240,7 +230,7 @@ int main(int argc, const char* argv[])
   }
 
   CIccCfgDataApply cfgApply;
-  CIccCfgProfileSequence cfgProfiles;
+  CIccCfgSearchApply cfgSearchApply;
   CIccCfgColorData cfgData;
 
   if (argc > 2 && !stricmp(argv[1], "-cfg")) {
@@ -255,7 +245,7 @@ int main(int argc, const char* argv[])
       return -1;
     }
 
-    if (cfg.find("profileSequence") == cfg.end() || !cfgProfiles.fromJson(cfg["profileSequence"])) {
+    if (cfg.find("searchApply") == cfg.end() || !cfgSearchApply.fromJson(cfg["searchApply"])) {
       printf("Unable to parse profileSequence configuration from '%s'\n", argv[2]);
       return -1;
     }
@@ -294,7 +284,7 @@ int main(int argc, const char* argv[])
     argv += nArg;
     argc -= nArg;
 
-    nArg = cfgProfiles.fromArgs(&argv[0], argc);
+    nArg = cfgSearchApply.fromArgs(&argv[0], argc);
     if (!nArg) {
       printf("Unable to parse profile sequence arguments\n");
       return -1;
@@ -305,6 +295,12 @@ int main(int argc, const char* argv[])
       return -1;
     }
   }
+
+  if (cfgSearchApply.m_profiles.size() != 2 && cfgSearchApply.m_profiles.size() != 3) {
+    printf("Only sequences of 2 or 3 profiles are supported\n");
+    return -1;
+  }
+
   LogDebuggerPtr pDebugger;
   
   if (cfgApply.m_debugCalc) {
@@ -322,25 +318,16 @@ int main(int argc, const char* argv[])
   
   icColorSpaceSignature SrcspaceSig = cfgData.m_srcSpace;
 
-  //If first profile colorspace is PCS and it matches the source data space then treat as input profile
-  bool bInputProfile = !IsSpacePCS(SrcspaceSig);
-  if (!bInputProfile) {
-    CIccProfile *pProf = OpenIccProfile(cfgProfiles.m_profiles[0]->m_iccFile.c_str());
-    if (pProf) {
-      if (pProf->m_Header.deviceClass!=icSigAbstractClass && IsSpacePCS(pProf->m_Header.colorSpace))
-        bInputProfile = true;
-      delete pProf;
-    }
-  }
-
   //Allocate a CIccCmm to use to apply profiles
-  CIccNamedColorCmm namedCmm(SrcspaceSig, icSigUnknownData, bInputProfile);
+  CIccCmmSearch cmm;
   IccProfilePtrList pccList;
 
   icCmmEnvSigMap sigMap;
   bool bUseSubProfile = false;
 
-  for (auto pProfIter = cfgProfiles.m_profiles.begin(); pProfIter != cfgProfiles.m_profiles.end(); pProfIter++) {
+  icStatusCMM stat;
+
+  for (auto pProfIter = cfgSearchApply.m_profiles.begin(); pProfIter != cfgSearchApply.m_profiles.end(); pProfIter++) {
     CIccCfgProfile* pProfCfg = pProfIter->get();
 
     if (!pProfCfg)
@@ -350,12 +337,6 @@ int main(int argc, const char* argv[])
 
     //Adjust type and hint information based on rendering intent
     CIccCreateXformHintManager Hint;
-    if (pProfCfg->m_useBPC)
-      Hint.AddHint(new CIccApplyBPCHint());
-
-    if (pProfCfg->m_adjustPcsLuminance) {
-      Hint.AddHint(new CIccLuminanceMatchingHint());
-    }
 
     if (pProfCfg->m_pccFile.size()) {
       pPccProfile = OpenIccProfile(pProfCfg->m_pccFile.c_str());
@@ -377,23 +358,49 @@ int main(int argc, const char* argv[])
     }
 
     //Read profile from path and add it to namedCmm
-    if (namedCmm.AddXform(pProfCfg->m_iccFile.c_str(),
-                          pProfCfg->m_intent<0 ? icUnknownIntent : (icRenderingIntent)pProfCfg->m_intent,
-                          pProfCfg->m_interpolation,
-                          pPccProfile,
-                          pProfCfg->m_transform,
-                          pProfCfg->m_useD2BxB2Dx,
-                          &Hint,
-                          pProfCfg->m_useV5SubProfile)) {
-      printf("Invalid Profile:  %s\n", pProfCfg->m_iccFile.c_str());
+    stat = cmm.CIccCmm::AddXform(pProfCfg->m_iccFile.c_str(),
+                        pProfCfg->m_intent<0 ? icUnknownIntent : (icRenderingIntent)pProfCfg->m_intent,
+                        pProfCfg->m_interpolation,
+                        pPccProfile,
+                        pProfCfg->m_transform,
+                        pProfCfg->m_useD2BxB2Dx,
+                        &Hint,
+                        pProfCfg->m_useV5SubProfile);
+    if (stat!=icCmmStatOk) {
+      printf("Unable to add profile (%s) to cmm - status %d\n", pProfCfg->m_iccFile.c_str(), stat);
       return -1;
     }
   }
 
-  icStatusCMM stat;
+  if (cfgSearchApply.isInitialized()) {
+    CIccCfgProfile* pProfCfg = cfgSearchApply.m_profiles.rbegin()->get();
 
+    CIccProfile* pProfile = OpenIccProfile(pProfCfg->m_iccFile.c_str(), cfgSearchApply.m_useV5SubProfileInitial);
+    CIccProfile* pPccProfile = nullptr;
+
+    //Adjust type and hint information based on rendering intent
+    CIccCreateXformHintManager Hint;
+
+    if (pProfCfg->m_pccFile.size()) {
+      pPccProfile = OpenIccProfile(pProfCfg->m_pccFile.c_str());
+      if (!pPccProfile) {
+        printf("Unable to open Profile Connections Conditions from '%s'\n", pProfCfg->m_pccFile.c_str());
+        return -1;
+      }
+      //Keep track of pPccProfile for until after cmm.Begin is called
+      pccList.push_back(pPccProfile);
+    }
+
+    cmm.SetDstInitProfile(pProfile,
+                          cfgSearchApply.m_intentInitial,
+                          pProfCfg->m_interpolation,
+                          pPccProfile,
+                          cfgSearchApply.m_transformInitial,
+                          cfgSearchApply.m_useD2BxB2DxInitial);
+  }
+ 
   //All profiles have been added to CMM.  Tell CMM that we are ready to begin applying colors/pixels
-  if((stat=namedCmm.Begin())) {
+  if((stat=cmm.Begin())) {
     printf("Error %d - Unable to begin profile application - Possibly invalid or incompatible profiles\n", stat);
     return -1;
   }
@@ -409,12 +416,12 @@ int main(int argc, const char* argv[])
   pccList.clear();
 
   //Get and validate the source color space from namedCmm.
-  SrcspaceSig = namedCmm.GetSourceSpace();
+  SrcspaceSig = cmm.GetSourceSpace();
   int nSrcSamples = icGetSpaceSamples(SrcspaceSig);
 
   bool bClip = true;
   //We don't want to interpret device data as pcs encoded data
-  if (bInputProfile && IsSpacePCS(SrcspaceSig)) {
+  if (IsSpacePCS(SrcspaceSig)) {
     if (SrcspaceSig == icSigXYZPcsData)
       SrcspaceSig = icSigDevXYZData;
     else if (SrcspaceSig == icSigLabPcsData)
@@ -425,11 +432,10 @@ int main(int argc, const char* argv[])
   }
 
   //Get and validate the destination color space from namedCmm.
-  icColorSpaceSignature DestspaceSig = namedCmm.GetDestSpace();
+  icColorSpaceSignature DestspaceSig = cmm.GetDestSpace();
   int nDestSamples = icGetSpaceSamples(DestspaceSig);
   
   //Allocate pixel buffers for performing encoding transformations
-  char SrcNameBuf[256], DestNameBuf[256];
   CIccPixelBuf SrcPixel(nSrcSamples+16), DestPixel(nDestSamples+16), Pixel(icIntMax(nSrcSamples, nDestSamples)+16);
 
   CIccCfgColorData outData;
@@ -437,14 +443,10 @@ int main(int argc, const char* argv[])
   outData.m_space = DestspaceSig;
 
   destEncoding = cfgApply.m_dstEncoding;
-  if(DestspaceSig==icSigNamedData)
-    destEncoding = icEncodeValue;
   outData.m_encoding = destEncoding;
 
   outData.m_srcSpace = SrcspaceSig;
 
-  if(SrcspaceSig==icSigNamedData)
-    srcEncoding = icEncodeValue;
   outData.m_srcEncoding = srcEncoding;
 
   //Apply profiles to each input color
@@ -464,103 +466,35 @@ int main(int argc, const char* argv[])
     out->m_srcName = pData->m_name;
     out->m_srcValues = pData->m_srcValues;
 
-    //Are names coming is as an input?
-    if(SrcspaceSig ==icSigNamedData) {
-
-      const char* szName = pData->m_name.c_str();
-      icFloatNumber tint;
-      
-      if (pData->m_values.size())
-        tint = pData->m_values[0];
-      else
-        tint = 1.0;
-
-      switch(namedCmm.GetInterface()) {
-        case icApplyNamed2Pixel:
-          {
-
-            if(namedCmm.Apply(DestPixel, szName, tint)) {
-              printf("Profile application failed.\n");
-              return -1;
-            }
-
-            if(CIccCmm::FromInternalEncoding(DestspaceSig, destEncoding, DestPixel, DestPixel, destEncoding!=icEncodeFloat)) {
-              printf("Invalid final data encoding\n");
-              return -1;
-            }
-
-            for(i = 0; i<nDestSamples; i++) {
-              out->m_values.push_back(DestPixel[i]);
-            }
-            break;
-          }
-        case icApplyNamed2Named:
-          {
-            if(namedCmm.Apply(DestNameBuf, SrcNameBuf, tint)) {
-              printf("Profile application failed.\n");
-              return -1;
-            }
-
-            out->m_name = DestNameBuf;
-            break;
-          }
-        case icApplyPixel2Pixel:
-        case icApplyPixel2Named:
-        default:
-          printf("Incorrect interface.\n");
-          return -1;
-      }      
+    
+    for (i = 0; i < nSrcSamples && i < pData->m_values.size(); i++) {
+      Pixel[i] = pData->m_values[i];
     }
-    else {
-      for (i = 0; i < nSrcSamples && i < pData->m_values.size(); i++) {
-        Pixel[i] = pData->m_values[i];
-      }
 
-      out->m_srcValues = pData->m_values;
+    out->m_srcValues = pData->m_values;
 
-      if(CIccCmm::ToInternalEncoding(SrcspaceSig, srcEncoding, SrcPixel, Pixel, bClip)) {
-        printf("Invalid source data encoding\n");
+    if(CIccCmm::ToInternalEncoding(SrcspaceSig, srcEncoding, SrcPixel, Pixel, bClip)) {
+      printf("Invalid source data encoding\n");
+      return -1;
+    }
+
+    if (pMruCmm) {
+      if (pMruCmm->Apply(DestPixel, SrcPixel)) {
+        printf("Profile application failed.\n");
         return -1;
       }
+    }
+    else if(cmm.Apply(DestPixel, SrcPixel)) {
+      printf("Profile application failed.\n");
+      return -1;
+    }
+    if(CIccCmm::FromInternalEncoding(DestspaceSig, destEncoding, DestPixel, DestPixel)) {
+      printf("Invalid final data encoding\n");
+      return -1;
+    }
 
-      switch(namedCmm.GetInterface()) {
-        case icApplyPixel2Pixel:
-          {
-            if (pMruCmm) {
-              if (pMruCmm->Apply(DestPixel, SrcPixel)) {
-                printf("Profile application failed.\n");
-                return -1;
-              }
-            }
-            else if(namedCmm.Apply(DestPixel, SrcPixel)) {
-              printf("Profile application failed.\n");
-              return -1;
-            }
-            if(CIccCmm::FromInternalEncoding(DestspaceSig, destEncoding, DestPixel, DestPixel)) {
-              printf("Invalid final data encoding\n");
-              return -1;
-            }
-
-            for(i = 0; i<nDestSamples; i++) {
-              out->m_values.push_back(DestPixel[i]);
-            }
-            break;
-          }
-        case icApplyPixel2Named:
-          {
-            if(namedCmm.Apply(DestNameBuf, SrcPixel)) {
-              printf("Profile application failed.\n");
-              return -1;
-            }
-            out->m_name = DestNameBuf;
-            break;
-          }
-        case icApplyNamed2Pixel:
-        case icApplyNamed2Named:
-        default:
-          printf("Incorrect interface.\n");
-          return -1;
-      }      
+    for(i = 0; i<nDestSamples; i++) {
+      out->m_values.push_back(DestPixel[i]);
     }
 
     if (pDebugger)
@@ -576,12 +510,12 @@ int main(int argc, const char* argv[])
 //   cfgApply.m_debugCalc = false;
 
   if (cfgApply.m_dstType == icCfgLegacy) {
-    outData.toLegacy(cfgApply.m_dstFile.c_str(), cfgProfiles.m_profiles, cfgApply.m_dstDigits, cfgApply.m_dstPrecision, cfgApply.m_debugCalc);
+    outData.toLegacy(cfgApply.m_dstFile.c_str(), cfgSearchApply.m_profiles, cfgApply.m_dstDigits, cfgApply.m_dstPrecision, cfgApply.m_debugCalc);
   }
   else if (cfgApply.m_dstType == icCfgColorData) {
     json out;
     json seq;
-    cfgProfiles.toJson(seq);
+    cfgSearchApply.toJson(seq);
     if (seq.is_object())
       out["appliedProfileSequence"] = seq;
 

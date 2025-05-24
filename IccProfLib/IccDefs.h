@@ -130,6 +130,3 @@ typedef enum {
 #endif
 
 #endif /* _ICCDEFS_H */
-
-
-

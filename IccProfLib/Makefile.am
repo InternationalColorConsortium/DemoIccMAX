@@ -5,6 +5,7 @@ lib_LTLIBRARIES = libSampleICC.la
 libSampleICC_la_SOURCES = \
 	IccApplyBPC.cpp \
 	IccCmm.cpp \
+	IccCmmSearch.cmm
 	IccConvertUTF.cpp \
 	IccEval.cpp \
 	IccXformFactory.cpp \
@@ -30,6 +31,7 @@ libSampleICCincludedir = $(includedir)/SampleICC
 libSampleICCinclude_HEADERS = \
 	IccApplyBPC.h \
 	IccCmm.h \
+	IccCmmSearch.h \
 	IccConvertUTF.h \
 	IccEval.h \
 	IccXformFactory.h \
@@ -42,6 +44,7 @@ libSampleICCinclude_HEADERS = \
 	IccProfLibConf.h \
 	IccProfLibVer.h \
 	IccProfile.h \
+	IccSearch.h \
 	IccTag.h \
 	IccTagBasic.h \
 	IccTagDict.h \
