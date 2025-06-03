@@ -7974,7 +7974,7 @@ icStatusCMM CIccCmm::AddXform(icUInt8Number *pProfileMem,
 {
   CIccMemIO *pFile = new CIccMemIO;
 
-  if (!pFile || !pFile->Attach(pProfileMem, nProfileLen, bUseSubProfile))
+  if (!pFile || !pFile->Attach(pProfileMem, nProfileLen))
     return icCmmStatCantOpenProfile;
 
   CIccProfile *pProfile = new CIccProfile;
@@ -7982,7 +7982,7 @@ icStatusCMM CIccCmm::AddXform(icUInt8Number *pProfileMem,
   if (!pProfile)
     return icCmmStatCantOpenProfile;
 
-  if (!pProfile->Attach(pFile)) {
+  if (!pProfile->Attach(pFile, bUseSubProfile)) {
     delete pFile;
     delete pProfile;
     return icCmmStatCantOpenProfile;

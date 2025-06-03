@@ -237,10 +237,18 @@ bool CIccProfileXml::ToXmlWithBlanks(std::string &xml, std::string blanks)
             }
             xml += blanks + line;
             // PrivateType - a type that does not belong to the list in the icc specs - custom for vendor.
-            if (!strcmp("PrivateType", tagSig))
-              sprintf(line, "<PrivateType type=\"%s\">\n", icFixXml(fix, icGetSigStr(buf, pTag->GetType())));
-            else
-              sprintf(line, "<%s>\n", tagSig); //parent node is the tag type
+            if (pTag->m_nReserved) {
+              if (!strcmp("PrivateType", tagSig))
+                sprintf(line, "<PrivateType type=\"%s\" reserved=\"%08x\">\n", icFixXml(fix, icGetSigStr(buf, pTag->GetType())), pTag->m_nReserved);
+              else
+                sprintf(line, "<%s reserved=\"%08x\">\n", tagSig, pTag->m_nReserved); //parent node is the tag type
+            }
+            else {
+              if (!strcmp("PrivateType", tagSig))
+                sprintf(line, "<PrivateType type=\"%s\">\n", icFixXml(fix, icGetSigStr(buf, pTag->GetType())));
+              else
+                sprintf(line, "<%s>\n", tagSig); //parent node is the tag type
+            }
 
             xml += line;
             j = i;
@@ -662,7 +670,7 @@ bool CIccProfileXml::ParseTag(xmlNode *pNode, std::string &parseStr)
 
         if (pXmlTag->ParseXml(pTypeNode->children, parseStr)) {
           if ((attr = icXmlFindAttr(pTypeNode, "reserved"))) {
-            sscanf(icXmlAttrValue(attr), "%u", &pTag->m_nReserved);
+            sscanf(icXmlAttrValue(attr), "%x", &pTag->m_nReserved);
           }
           AttachTag(sigTag, pTag);
         }
