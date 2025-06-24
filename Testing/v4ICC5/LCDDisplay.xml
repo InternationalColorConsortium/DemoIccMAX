@@ -10,7 +10,8 @@
     <PrimaryPlatform></PrimaryPlatform>
     <ProfileFlags EmbeddedInFile="false" UseWithEmbeddedDataOnly="false"/>
     <DeviceManufacturer>DICC</DeviceManufacturer>
-    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy"
+                      MediaPolarity="positive" MediaColour="colour"/>
     <RenderingIntent>Perceptual</RenderingIntent>
     <PCSIlluminant>
       <XYZNumber X="0.96420288" Y="1.00000000" Z="0.82490540"/>
@@ -22,7 +23,6 @@
     <profileDescriptionTag> <multiLocalizedUnicodeType>
       <LocalizedText LanguageCountry="enUS"><![CDATA[LCDDisplay]]></LocalizedText>
     </multiLocalizedUnicodeType> </profileDescriptionTag>
-
     <copyrightTag> <multiLocalizedUnicodeType>
       <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright ICC, 2025]]></LocalizedText>
     </multiLocalizedUnicodeType> </copyrightTag>
@@ -34,11 +34,9 @@
     <redColorantTag> <XYZArrayType>
       <XYZNumber X="0.461133442828" Y="0.249930591883" Z="0.004494501450"/>
     </XYZArrayType> </redColorantTag>
-
     <greenColorantTag> <XYZArrayType>
       <XYZNumber X="0.305006769937" Y="0.654071437705" Z="0.088969116566"/>
     </XYZArrayType> </greenColorantTag>
-
     <blueColorantTag> <XYZArrayType>
       <XYZNumber X="0.184282014141" Y="0.095997970412" Z="0.994990483427"/>
     </XYZArrayType> </blueColorantTag>
@@ -79,7 +77,6 @@
          63376 63703 64024 64338 64647 64950 65246 65535
       </Curve>
     </curveType> </redTRCTag>
-
     <greenTRCTag> <curveType>
       <Curve>
          0 1 2 3 4 7 12 19
@@ -116,7 +113,6 @@
          62719 63130 63539 63945 64347 64747 65142 65535
       </Curve>
     </curveType> </greenTRCTag>
-
     <blueTRCTag> <curveType>
       <Curve>
          0 1 2 3 4 8 13 20
@@ -180,12 +176,11 @@
         <ProfileID>1</ProfileID>
       </Header>
       <Tags>
-        <multiLocalizedUnicodeType>
-          <TagSignature>desc</TagSignature>
+        <profileDescriptionTag> <multiLocalizedUnicodeType>
           <LocalizedText LanguageCountry="enUS"><![CDATA[Spectral Characterization of LCD Display]]></LocalizedText>
-        </multiLocalizedUnicodeType>
-        <multiProcessElementType>
-          <TagSignature>A2B1</TagSignature>
+        </multiLocalizedUnicodeType> </profileDescriptionTag>
+
+        <AToB1Tag> <multiProcessElementType>
           <MultiProcessElements InputChannels="3" OutputChannels="3">
             <CurveSetElement InputChannels="3" OutputChannels="3">
               <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
@@ -303,9 +298,9 @@
               </MatrixData>
             </EmissionMatrixElement>
           </MultiProcessElements>
-        </multiProcessElementType>
-        <multiProcessElementType>
-          <TagSignature>B2A1</TagSignature>
+        </multiProcessElementType> </AToB1Tag>
+        
+        <BToA1Tag> <multiProcessElementType>
           <MultiProcessElements InputChannels="3" OutputChannels="3">
             <InvEmissionMatrixElement InputChannels="3" OutputChannels="3">
               <Wavelengths start="380.00000000" end="780.00000000" steps="401"/>
@@ -318,7 +313,7 @@
                 0.00000440 0.00000652 0.00000910 0.00001165 0.00001634 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000010 0.00000021 0.00000042 0.00000065 0.00000047 0.00000031 0.00000122 0.00000229 0.00002103 0.00003109 0.00004115 0.00005890 0.00007665 0.00009388 0.00011108 0.00012210 0.00013313 0.00014983 0.00016654 0.00020034 0.00023414 0.00029899 0.00036385 0.00046638 0.00056891 0.00071212 0.00085533 0.00105257 0.00124981 0.00153683 0.00182386 0.00213543 0.00244700 0.00280700 0.00316697 0.00353734 0.00390768 0.00440675 0.00490584 0.00568382 0.00646183 0.00827635 0.01009088 0.01214473 0.01419861 0.01486505 0.01553151 0.01474915 0.01396676 0.01274596 0.01152516 0.01121325 0.01090133 0.01115203 0.01140272 0.01163183 0.01186094 0.01203389 0.01220681 0.01223996 0.01227312 0.01231466 0.01235620 0.01235352 0.01235083 0.01232454 0.01229824 0.01213191 0.01196558 0.01184351 0.01172143 0.01152948 0.01133754 0.01110300 0.01086849 0.01066555 0.01046260 0.01021295 0.00996328 0.00962648 0.00928965 0.00903049 0.00877132 0.00847935 0.00818738 0.00788894 0.00759047 0.00741518 0.00723986 0.00729920 0.00735855 0.00779141 0.00822428 0.00885978 0.00949531 0.00999731 0.01049935 0.01047269 0.01044605 0.00996695 0.00948785 0.00868008 0.00787234 0.00709972 0.00632714 0.00565987 0.00499262 0.00441550 0.00383838 0.00333531 0.00283220 0.00241396 0.00199571 0.00169493 0.00139412 0.00123542 0.00107676 0.00097055 0.00086435 0.00078538 0.00070641 0.00064572 0.00058502 0.00052679 0.00046860 0.00042283 0.00037709 0.00033933 0.00030154 0.00027084 0.00024014 0.00021551 0.00019091 0.00017198 0.00015306 0.00014008 0.00012711 0.00012036 0.00011360 0.00011376 0.00011389 0.00012497 0.00013604 0.00017128 0.00020652 0.00031903 0.00043156 0.00066495 0.00089836 0.00125766 0.00161695 0.00197275 0.00232852 0.00248312 0.00263773 0.00240979 0.00218185 0.00180712 0.00143238 0.00111499 0.00079761 0.00061129 0.00042497 0.00032526 0.00022557 0.00016260 0.00009966 0.00007120 0.00004272 0.00003127 0.00001983 0.00001420 0.00000855 0.00000521 0.00000188 0.00000070 0.00000008 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000013 0.00000130 0.00000404 0.00000993 0.00001582 0.00002210 0.00002841 0.00003292 0.00003745 0.00003988 0.00004232 0.00004305 0.00004378 0.00004248 0.00004118 0.00003737 0.00003357 0.00002825 0.00002293 0.00001642 0.00000993 0.00000461 0.00000065 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000175 0.00001011 0.00002095 0.00003180 0.00003526 0.00003870 0.00003456 0.00003039 0.00002270 0.00001499 0.00001089 0.00000683 0.00000532 0.00000381 0.00000201 0.00000109 0.00000036 0.00000003 0.00000000 0.00000000 0.00000000 0.00000010 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000003 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000003 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000018 0.00000052 0.00000013 0.00000000 0.00000000 0.00000000 0.00000000 0.00000039 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000034 0.00000096 0.00000526 0.00001280 0.00001965 0.00002648 0.00002515 0.00002382 0.00001196 0.00000143 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000057 0.00000149 0.00000057 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
               </MatrixData>
             </InvEmissionMatrixElement>
-              <CurveSetElement InputChannels="3" OutputChannels="3">
+            <CurveSetElement InputChannels="3" OutputChannels="3">
                 <SingleSampledCurve Start="-infinity" End="+infinity" FirstEntry="0.00000000" LastEntry="1.00000000" StorageType="0" ExtensionType="0">
                     0.00000000 0.07987434 0.10808717 0.12892176 0.14600061 0.16071257 0.17375150 0.18551449
                     0.19626649 0.20619515 0.21543856 0.22410154 0.23226562 0.23999633 0.24735500 0.25439548
@@ -423,9 +418,9 @@
                 </SingleSampledCurve>
               </CurveSetElement>
           </MultiProcessElements>
-        </multiProcessElementType>
-        <multiProcessElementType>
-          <TagSignature>c2sp</TagSignature>
+        </multiProcessElementType> </BToA1Tag>
+        
+        <customToStandardPccTag> <multiProcessElementType>
           <MultiProcessElements InputChannels="3" OutputChannels="3">
             <MatrixElement InputChannels="3" OutputChannels="3">
               <MatrixData>
@@ -435,9 +430,8 @@
               </MatrixData>
             </MatrixElement>
           </MultiProcessElements>
-        </multiProcessElementType>
-        <multiProcessElementType>
-          <TagSignature>s2cp</TagSignature>
+        </multiProcessElementType> </customToStandardPccTag>
+        <standardToCustomPccTag> <multiProcessElementType>
           <MultiProcessElements InputChannels="3" OutputChannels="3">
             <MatrixElement InputChannels="3" OutputChannels="3">
               <MatrixData>
@@ -447,26 +441,21 @@
               </MatrixData>
             </MatrixElement>
           </MultiProcessElements>
-        </multiProcessElementType>
-        <spectralViewingConditionsType>
+        </multiProcessElementType> </standardToCustomPccTag>
+        <spectralViewingConditionsTag> <spectralViewingConditionsType>
           <TagSignature>svcn</TagSignature>
           <StdObserver>CIE 1931 (two degree) standard observer</StdObserver>
           <IlluminantXYZ X="152.067556304812" Y="160.00000000000" Z="174.152656230914"/>
           <StdIlluminant>Illuminant D65</StdIlluminant>
           <ColorTemperature>6500</ColorTemperature>
           <SurroundXYZ X="152.067556304812" Y="160.00000000000" Z="174.152656230914"/>
-        </spectralViewingConditionsType>
-        <XYZType>
+        </spectralViewingConditionsType> </spectralViewingConditionsTag>
+
+        <mediaWhitePointTag> <XYZType>
           <TagSignature>wtpt</TagSignature>
           <XYZNumber X="0.950422226905" Y="1.00000000" Z="1.088454101443"/>
-        </XYZType>
-        <spectralDataInfoType>
-          <TagSignature>smwi</TagSignature>
-          <SpectralSpace>656D0191h</SpectralSpace>
-          <SpectralRange>
-            <Wavelengths start="400.000000" end="700.000000" steps="31"/>
-          </SpectralRange>
-        </spectralDataInfoType>
+        </XYZType> </mediaWhitePointTag>
+
       </Tags>
     </IccProfile> </embeddedProfileType> </embeddedV5ProfileTag>
 
