@@ -8374,7 +8374,13 @@ icStatusCMM CIccCmm::AddXform(CIccProfile &Profile,
   if (!pProfile) 
     return icCmmStatAllocErr;
 
+  //borrow the caller's AttachIO to perform the AddXform
+  pProfile->m_pAttachIO = Profile.m_pAttachIO;
+
  icStatusCMM stat = AddXform(pProfile, nIntent, nInterp, pPcc, nLutType, bUseD2BxB2DxTags, pHintManager);
+
+ //Now that we have added the xform disconnect from the callers AttachIO
+ pProfile->m_pAttachIO = nullptr;
 
   if (stat != icCmmStatOk)
     delete pProfile;
@@ -8951,6 +8957,7 @@ icStatusCMM CIccCmm::ToInternalEncoding(icColorSpaceSignature nSpace, icFloatCol
           }
         
         case icEncodeFloat:
+        case icEncodeUnitFloat:
           {
             if (bClip) {
               for(i=0; i<nSamples; i++) {

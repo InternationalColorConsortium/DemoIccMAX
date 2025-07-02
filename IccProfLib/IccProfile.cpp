@@ -1065,6 +1065,17 @@ bool CIccProfile::ReadProfileID(icProfileID &profileID)
   return true;
 }
 
+
+bool CIccProfile::ReadPccTags()
+{
+  FindTag(icSigStandardToCustomPccTag);
+  FindTag(icSigCustomToStandardPccTag);
+  FindTag(icSigSpectralViewingConditionsTag);
+
+  return true;
+}
+
+
 /**
  ******************************************************************************
  * Name: CIccProfile::InitHeader

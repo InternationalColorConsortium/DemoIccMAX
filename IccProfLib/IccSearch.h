@@ -19,7 +19,7 @@ namespace refIccMAX {
       val.resize(n, 0);
     }
     CIccSearchVec(std::initializer_list<icFloatNumber> c) {
-      n = c.size();
+      n = (unsigned int)c.size();
       val.resize(n);
       std::copy(c.begin(), c.end(), val.begin());
     }
@@ -29,7 +29,7 @@ namespace refIccMAX {
     }
     CIccSearchVec(const icFloatVector& lhs) {
       val = lhs;
-      n = lhs.size();
+      n = (unsigned int)lhs.size();
     }
     icFloatNumber operator()(unsigned int idx) const {
       if (idx >= n) {
@@ -52,7 +52,7 @@ namespace refIccMAX {
 
     CIccSearchVec operator=(const icFloatVector& rhs) {
       val = rhs;
-      n = rhs.size();
+      n = (unsigned int)rhs.size();
       return *this;
     }
 
@@ -158,10 +158,10 @@ namespace refIccMAX {
     unsigned int   n;
   };
 
-  class CIccSearch {
+  class CIccMinSearch {
   public:
-    CIccSearch() {}
-    virtual ~CIccSearch() {}
+    CIccMinSearch() {}
+    virtual ~CIccMinSearch() {}
 
     //Override costFunction to implement search
     virtual icFloatNumber costFunc(CIccSearchVec &point) = 0;
@@ -174,7 +174,7 @@ namespace refIccMAX {
       };
 
       // Getting the dimension of function input
-      unsigned int nDimension = startingPoint.size();
+      unsigned int nDimension = (unsigned int)startingPoint.size();
       if (nDimension <= 0)
         throw std::invalid_argument(
           "A starting point must have at least one dimension.");
@@ -183,16 +183,16 @@ namespace refIccMAX {
       icFloatNumber alpha, beta, gamma, delta;
       if (bAdaptive) {
         // Using the results of doi:10.1007/s10589-010-9329-3
-        alpha = 1;
-        beta = 1 + 2 / nDimension;
-        gamma = 0.75 - 1 / (2 * nDimension);
-        delta = 1 - 1 / nDimension;
+        alpha = 1.0f;
+        beta = 1.0f + 2.0f / nDimension;
+        gamma = 0.75f - 1.0f / (2.0f * nDimension);
+        delta = 1.0f - 1.0f / nDimension;
       }
       else {
-        alpha = 1;
-        beta = 2;
-        gamma = 0.5;
-        delta = 0.5;
+        alpha = 1.0f;
+        beta = 2.0f;
+        gamma = 0.5f;
+        delta = 0.5f;
       }
 
       // Generate initial simplex
@@ -201,7 +201,7 @@ namespace refIccMAX {
         simplex[0] = startingPoint;
         for (unsigned int i = 1; i <= nDimension; i++) {
           CIccSearchVec p(startingPoint);
-          icFloatNumber tau = (p(i - 1) < 1e-6 && p(i - 1) > -1e-6) ? 0.00025 : 0.05;
+          icFloatNumber tau = (p(i - 1) < 1e-6f && p(i - 1) > -1e-6f) ? 0.00025f : 0.05f;
           p(i - 1) += tau;
           simplex[i] = p;
 
@@ -259,11 +259,11 @@ namespace refIccMAX {
             val = valueCache[i].second;
           }
           if (val > valBiggest) {
-            idxBiggest = i;
+            idxBiggest = (unsigned int)i;
             valBiggest = val;
           }
           else if (val < valSmallest) {
-            idxSmallest = i;
+            idxSmallest = (unsigned int)i;
             valSmallest = val;
           }
         }
@@ -300,7 +300,7 @@ namespace refIccMAX {
           if (i != idxBiggest)
             xCenter += simplex[i];
         }
-        xCenter /= nDimension;
+        xCenter /= (icFloatNumber)nDimension;
 
         // Calculate the reflection point
         CIccSearchVec xReflect = xCenter + alpha * (xCenter - simplex[idxBiggest]);
@@ -370,8 +370,8 @@ namespace refIccMAX {
 
     protected:
       bool bAdaptive = false;
-      icFloatNumber funcTolerance = 1e-8;
-      icFloatNumber valTolerance = 1e-8;
+      icFloatNumber funcTolerance = 1e-8f;
+      icFloatNumber valTolerance = 1e-8f;
       unsigned int maxIterations = 1000000;
       unsigned int maxFuncEvals = 100000;
 
@@ -379,6 +379,7 @@ namespace refIccMAX {
       icFloatVector minBound;
       icFloatVector maxBound;
   };
+
 
 #ifdef USEREFICCMAXNAMESPACE
 }; // namespace refIccMAX {

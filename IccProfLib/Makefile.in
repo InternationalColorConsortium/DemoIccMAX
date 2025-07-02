@@ -72,7 +72,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libSampleICCincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libSampleICC_la_LIBADD =
-am_libSampleICC_la_OBJECTS = IccApplyBPC.lo IccCmm.lo IccConvertUTF.lo \
+am_libSampleICC_la_OBJECTS = IccApplyBPC.lo IccCmm.lo IccCmmSearch.lo IccConvertUTF.lo \
 	IccEval.lo IccXformFactory.lo IccIO.lo IccMpeACS.lo \
 	IccMpeBasic.lo IccMpeFactory.lo IccPrmg.lo IccProfile.lo \
 	IccTagBasic.lo IccTagDict.lo IccTagFactory.lo IccTagLut.lo \
@@ -236,6 +236,7 @@ lib_LTLIBRARIES = libSampleICC.la
 libSampleICC_la_SOURCES = \
 	IccApplyBPC.cpp \
 	IccCmm.cpp \
+	IccCmmSearch.cpp \
 	IccConvertUTF.cpp \
 	IccEval.cpp \
 	IccXformFactory.cpp \
@@ -259,6 +260,7 @@ libSampleICCincludedir = $(includedir)/SampleICC
 libSampleICCinclude_HEADERS = \
 	IccApplyBPC.h \
 	IccCmm.h \
+	IccCmmSearch.h
 	IccConvertUTF.h \
 	IccEval.h \
 	IccXformFactory.h \
@@ -271,6 +273,7 @@ libSampleICCinclude_HEADERS = \
 	IccProfLibConf.h \
 	IccProfLibVer.h \
 	IccProfile.h \
+	IccSearch.h \
 	IccTag.h \
 	IccTagBasic.h \
 	IccTagDict.h \
@@ -360,6 +363,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IccApplyBPC.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IccCmm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IccCmmSearch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IccConvertUTF.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IccEval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IccIO.Plo@am__quote@

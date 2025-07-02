@@ -107,6 +107,7 @@ typedef enum {
   icCmmStatBadTintXform       = 15,
   icCmmStatTooManySamples     = 16,
   icCmmStatBadMCSLink         = 17,
+  icCmmStatUnsupported        = 18,
 } icStatusCMM;
 
 /// CMM Interpolation types
@@ -1634,7 +1635,8 @@ public:
                                icRenderingIntent nIntent=icUnknownIntent, 
                                icXformInterp nInterp=icInterpLinear,
                                IIccProfileConnectionConditions *pPcc=NULL,
-                               icXformLutType nLutType=icXformLutColor, bool bUseD2BxB2DxTags =true,
+                               icXformLutType nLutType=icXformLutColor,
+                               bool bUseD2BxB2DxTags =true,
                                CIccCreateXformHintManager *pHintManager=NULL,
                                bool bUseSubProfile=false);
   virtual icStatusCMM AddXform(CIccProfile *pProfile, 
