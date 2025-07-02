@@ -19,7 +19,7 @@
 
 ..\iccTiffDump.exe Data\smCows380_5_780.tif
 
-..\iccApplyICC.exe Data\smCows380_5_780.tif Results\MS_smCows.tif 2 1 0 1 1 -embedded 3 ICC\MultSpectralRGB.icc 10003
+..\iccApplyProfiles.exe Data\smCows380_5_780.tif Results\MS_smCows.tif 2 1 0 1 1 -embedded 3 ICC\MultSpectralRGB.icc 10003
 
 ..\iccTiffDump.exe Results\MS_smCows.tif
 
@@ -27,8 +27,8 @@
 @ECHO Apply PCC's to the spectral images to get colorimetric renderings
 @ECHO *****************************************************************
 
-..\iccApplyICC.exe Data\smCows380_5_780.tif Results\cowsA_fromRef.tif 1 1 0 1 1 -embedded 3 -pcc ICC\Spec400_10_700-illumA_2deg-Abs.icc ..\sRGB_v4_ICC_preference.icc 1
-..\iccApplyICC.exe Results\MS_smCows.tif Results\cowsA_fromMS.tif 1 1 0 1 1 -embedded 10003 -pcc ICC\Spec400_10_700-illumA_2deg-Abs.icc ..\sRGB_v4_ICC_preference.icc 1
+..\iccApplyProfiles.exe Data\smCows380_5_780.tif Results\cowsA_fromRef.tif 1 1 0 1 1 -embedded 3 -pcc ICC\Spec400_10_700-illumA_2deg-Abs.icc ..\sRGB_v4_ICC_preference.icc 1
+..\iccApplyProfiles.exe Results\MS_smCows.tif Results\cowsA_fromMS.tif 1 1 0 1 1 -embedded 10003 -pcc ICC\Spec400_10_700-illumA_2deg-Abs.icc ..\sRGB_v4_ICC_preference.icc 1
 
 @ECHO *****************************************************************
 @ECHO Do some spectral color management from an extended print ICC
