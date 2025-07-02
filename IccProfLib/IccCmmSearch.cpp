@@ -84,11 +84,12 @@ CIccApplyCmmSearch::CIccApplyCmmSearch(CIccCmm* pBaseCmm) : CIccApplyCmm(pBaseCm
   }
   m_mid_data.resize(m_nApply);
   m_nSamples = pCmm->m_dst_to_mid[0]->GetDestSamples();
+  icUInt16Number nSrcSamples = pCmm->m_dst_to_mid[0]->GetSourceSamples();
   for (size_t i = 0; i < m_nApply; i++) {
     m_mid_data[i].resize(m_nSamples);
   }
   m_pixel.resize(m_nSamples);
-  m_startPixel.resize(m_nSamples);
+  m_startPixel.resize(nSrcSamples);
 }
 
 CIccApplyCmmSearch::~CIccApplyCmmSearch()
@@ -124,7 +125,7 @@ icStatusCMM CIccApplyCmmSearch::Apply(icFloatNumber* DstPixel, const icFloatNumb
 
   icFloatVector result = findMin(m_startPixel);
 
-  memcpy(DstPixel, &result, result.size() * sizeof(icFloatNumber));
+  memcpy(DstPixel, &result[0], result.size() * sizeof(icFloatNumber));
 
   return icCmmStatOk;
 }
@@ -208,6 +209,8 @@ icStatusCMM CIccCmmSearch::AddXform(CIccProfile* pProfile,
     return icCmmStatInvalidProfile;
   }
 
+  m_nAttached++;
+
   return icCmmStatOk;
 }
 
@@ -219,10 +222,11 @@ void CIccCmmSearch::SetDstInitProfile(CIccProfile* pProfile,
   bool bUseD2BxB2DxTags)
 {
   m_pDstInitProfile = pProfile;
-  m_nDstIntent = nIntent;
-  m_nDstInterp = nInterp;
-  m_nDstLutType = nLutType;
-  m_bDstUseD2BxB2DxTags = bUseD2BxB2DxTags;
+  m_nDstInitIntent = nIntent;
+  m_nDstInitInterp = nInterp;
+  m_pDstInitPcc = pPcc;
+  m_nDstInitLutType = nLutType;
+  m_bDstInitUseD2BxB2DxTags = bUseD2BxB2DxTags;
 }
 
 
@@ -312,6 +316,8 @@ icStatusCMM CIccCmmSearch::Begin(bool bAllocNewApply, bool bUsePcsConversion)
     m_mid_to_dst = cmm;
 
     if (m_pcc.size()) {
+      m_nSrcSpace = icSigUnknownData;
+
       for (auto pcc : m_pcc) {
         //dst_to_mid
         cmm = CIccCmmPtr(new CIccCmm);
@@ -336,8 +342,18 @@ icStatusCMM CIccCmmSearch::Begin(bool bAllocNewApply, bool bUsePcsConversion)
         rv = cmm->Begin();
         checkCmmStatus(rv);
         m_src_to_mid.push_back(cmm);
+
+        if (m_nSrcSpace == icSigUnknownData)
+          m_nSrcSpace = cmm->GetSourceSpace();
       }
     }
+    else {  //We must have PCC entries if we have a middle profile
+      return icCmmStatBadConnection;
+    }
+
+    m_nDestSpace = m_mid_to_dst->GetDestSpace();
+    m_nLastIntent = m_mid_to_dst->GetLastIntent();
+    m_nLastSpace = m_mid_to_dst->GetLastSpace();
   }
 
   m_pApply = new CIccApplyCmmSearch(this);

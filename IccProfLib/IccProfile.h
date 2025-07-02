@@ -148,6 +148,7 @@ typedef enum {
  */
 class ICCPROFLIB_API CIccProfile : public IIccProfileConnectionConditions 
 {
+  friend class CIccCmm;
 public:
   CIccProfile();
   CIccProfile(const CIccProfile &Profile);
@@ -180,6 +181,8 @@ public:
   bool Write(CIccIO *pIO, icProfileIDSaveMethod nWriteId=icVersionBasedID);
 
   bool ReadProfileID(icProfileID &profileID); //works if HasIO() is true 
+
+  bool ReadPccTags();
 
   void InitHeader();
   icValidateStatus Validate(std::string &sReport, std::string sSigPath="", const CIccProfile *pParentProfile=NULL) const;

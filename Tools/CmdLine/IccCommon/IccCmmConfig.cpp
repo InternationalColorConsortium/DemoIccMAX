@@ -995,6 +995,10 @@ int CIccCfgSearchApply::fromArgs(const char** args, int nArg, bool bReset)
     m_intentInitial = (icRenderingIntent)nIntent;
     m_transformInitial = (icXformLutType)nType;
     m_interpolationInitial = interpolation;
+
+    args += 2;
+    nArg -= 2;
+    nUsed += 2;
   }
   
   while (nArg >= 2) {
@@ -1003,6 +1007,10 @@ int CIccCfgSearchApply::fromArgs(const char** args, int nArg, bool bReset)
     pPccWeight->m_dWeight = (icFloatNumber)atof(args[1]);
 
     m_pccWeights.push_back(pPccWeight);
+
+    args += 2;
+    nArg -= 2;
+    nUsed += 2;
   }
 
   return m_profiles.size() > 0 ? nUsed : 0;

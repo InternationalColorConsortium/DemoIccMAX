@@ -372,6 +372,28 @@ int main(int argc, const char* argv[])
     }
   }
 
+  for (auto pPccIter = cfgSearchApply.m_pccWeights.begin(); pPccIter != cfgSearchApply.m_pccWeights.end(); pPccIter++) {
+    CIccCfgPccWeight* pPccWeight = pPccIter->get();
+
+    if (!pPccWeight)
+      continue;
+
+    CIccProfile* pPcc = OpenIccProfile(pPccWeight->m_pccPath.c_str());
+
+    if (!pPcc || !pPcc->ReadPccTags()) {
+      printf("Unable to read PCC profile (%s)", pPccWeight->m_pccPath.c_str());
+      return -1;
+    }
+
+    pPcc->Detach();
+
+    stat = cmm.AttachPCC(pPcc, pPccWeight->m_dWeight);
+    if (stat != icCmmStatOk) {
+      printf("Unable to add profile (%s) to cmm - status %d\n", pPccWeight->m_pccPath.c_str(), stat);
+        return -1;
+    }
+  }
+
   if (cfgSearchApply.isInitialized()) {
     CIccCfgProfile* pProfCfg = cfgSearchApply.m_profiles.rbegin()->get();
 
