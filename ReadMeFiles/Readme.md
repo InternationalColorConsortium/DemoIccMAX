@@ -1,53 +1,43 @@
-﻿![Demo ICC Max Logo](DemoIccMAX-Logo.png)
-# DemoIccMAX
+﻿[![color.org logo](ReadMeFiles/icc-logo.svg)](https://color.org)
+
+# iccdev
 ## Introduction
 
-The DemoIccMAX project (formally known as RefIccMAX) provides an open
-source set of libraries and tools that allow for the interaction,
-manipulation, and application of iccMAX based color management profiles
-based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter)
-in addition to legacy ICC profiles defined by [earlier ICC profile
-specifications](http://www.color.org/icc_specs2.xalter).
+The iccdev project (formally known as RefIccMAX, or DemoIccMAX) provides an 
+open source set of libraries and tools that allow for the interaction, manipulation,
+and application of ICC based color management profiles based on the 
+[ICC profile specification](http://www.color.org/icc_specs2.xalter) and 
+[iccMAX profile specification](http://www.color.org/iccmax.xalter).
 
-iccMAX is not intended as a replacement for legacy ICC.1
-based profiles, the existing architecture, but as an extension or alternative
-where requirements cannot be fully met by ICC.1. Some of the areas covered by
-iccMAX include: Multi-spectral, Medical Imaging, Image Capture/Digital
-Photography, Package Printing, Color Management on Internet, Fine Art,
-and Color Information Archiving. A more full description of
-capabilities and functionality can be found on the ICC web site,
-http://www.color.org/iccmax.xalter.
 
-Note: The code in DemoIccMAX was initially based on the
+The code in iccdev was initially based on the
 [SampleICC](https://sourceforge.net/projects/sampleicc/) and
 [IccXML](https://sourceforge.net/projects/iccxml/) open source projects, and
-therefore concepts, files and data structures within DemoIccMAX may have
+therefore concepts, files and data structures within iccdev may have
 similarities (as well as various differences) to those in the SampleICC and
 IccXML projects.
 
 ## Overview
 
-Within the DemoIccMAX project are several libraries and tools as follows:
+Within the iccdev project are several libraries and tools as follows:
 
-* Libraries that allow applications to interact with iccMAX profiles
+* Libraries that allow applications to interact with ICC profiles
 
-  * IccProfLib - The DemoIccMAX IccProfLib project represents an open source &
+  * IccProfLib - The IccProfLib library represents an open source &
     cross platform reference implementation of a C++ library for reading,
-    writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
-    profile specification](http://www.color.org/iccmax.xalter). Class and object
-    interaction documentation for IccProfLib can be found at ().
+    writing, applying, manipulating ICC color profiles defined by the ICC specifications.
 
-    * There are no intentional discrepancies between the DemoIccMAX
+    * There are no intentional discrepancies between the iccdev
       implementation and the iccMAX specification. If any should occur then this
-      should be brought to the attention of and resolved by the DemoIccMAX project
+      should be brought to the attention of and resolved by the iccdev project
       team within the Architecture Working Group of the ICC organization.
 
       Though SampleICC provides a sample implementation, it does NOT
-      represent a reference implementation of ICC.1 color management.
+      represent a reference implementation of ICC color management.
 
-  * IccLibXML - The DemoIccMAX IccLibXML project contains a parallel C++
+  * IccLibXML - The IccLibXML library contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
-    objects defined by IccProfLib using an XML representation thus allowing iccMAX
+    objects defined by IccProfLib using an XML representation thus allowing ICC
     profiles to be expressed as or created from text based XML files. The
     IccLibXML project has a dependencies on the [libxml](http://www.xmlsoft.org/)
     project (which also has a dependency on iconv which must be separately
@@ -58,41 +48,33 @@ Within the DemoIccMAX project are several libraries and tools as follows:
   For command line arguments running the application without any arguments
   will display help information about command line options.
 
-  * IccToXML is a cross platform command line tool that allows both legacy ICC
+  * IccToXML is a cross platform command line tool that allows both ICC
     and iccMAX profiles to be expressed using an XML representation. This allows
     for profiles to be converted to a textual representation that can be directly
-    edited using a text editor and then converted back to ICC/iccMAX profile
+    edited using a text editor and then converted back to ICC and iccMAX profile
     formats using IccFromXML.
 
-    * This tool is dependent upon the IccLibXML project (above) as well as
-      libXML and iconv.
-
-  * IccFromXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be created from the same XML representation provided by
+  * IccFromXML is a cross platform command line tool that allows both ICC
+    and iccMAX profile formats to be created from the same XML representation provided by
     IccToXML. A schema for iccXML files is forthcoming but can be determined using
     the FromXML() and ToXML() member functions defined in IccLibXML. The
     IccFromXML tool provides a simple direct method to create and manipulate
-    iccMAX based profiles.
-
-    * This tool is dependent upon the IccLibXML project (above) as well as
-      libXML2 and iconv.
+    ICC and iccMAX profiles.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
-    sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
-    in a text based input profile outputting the results to the console, and can
+    sequence of ICC profile formats and/or iccMAX profile formats to be applied to colors
+    defined in a text based input profile outputting the results to the console, and can
     be redirected to a output text file. Example source text files can be found in
     Testing/ApplyDataFiles. The IccApplyNamedCmm application provides a basis for
     testing various features of iccMAX.
 
   * IccApplyProfiles is a cross platform command line tool that allows a sequence of
-    legacy and/or iccMAX profiles to a source TIFF image resulting in a destination
-    TIFF image. The final destination profile can optionally be embedded in the
-    resulting TIFF image.
-
-    * This tool has a dependency on the [LibTIFF](http://www.libtiff.org/) project.
+    ICC profiles mat and/or iccMAX profiles to a source TIFF image resulting in a
+    destination TIFF image. The final destination profile can optionally be embedded
+    in the resulting TIFF image.
 
   * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console. Data
+    from a ICC profile and/or a iccMAX profile to be output to the console. Data
     with non-printable values are replaced with '?'. Output from this tool is
     not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
     given platform.
@@ -103,8 +85,7 @@ Within the DemoIccMAX project are several libraries and tools as follows:
 
     ```bash
     grep --text -A 3 "^Validation Report" out.txt
-    ```
-
+    
 
   * IccRoundTrip is a cross platform command line tool that allows round trip
     colorimetric processing characteristics of rendering intent of a profile to be
@@ -130,10 +111,10 @@ Within the DemoIccMAX project are several libraries and tools as follows:
     within the ColorSync environment.
 
     * Many features of iccMAX based profiles are not accessible due to the
-      limitation in support for only legacy ICC concepts within ColorSync.
+     ICC v4 format support within ColorSync.
 
   * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
-    iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
+    iccMAX and ICC profile inspector tool. The code for this tool is based on
     wxWidgets 2.x, and is therefore dependent on this version of wxWidgets. At
     present only Windows based testing has been performed on this (though wxWidgets
     is a cross-platform development environment).
@@ -195,7 +176,7 @@ abridged spectral encoding is provided.
 
 ### Dependencies
 
-The DemoIccMAX project relies on the following libraries. Ensure they are installed before building the project:
+The iccdev project depends on the following libraries. Ensure they are installed before building the project:
 
 1. **[libxml2](http://xmlsoft.org/)**  
    - **Purpose:** Provides XML parsing and serialization for the IccXML2 library and tools.  
@@ -316,7 +297,7 @@ these folders not set up before running the BuildAll.sh script).
 
 The BuildAll.sh script file will make a copy of the libIccProfLib.a and
 libIccXML.a library binaries into the Build/XCode/lib folder. The libraries in
-Build/XCode/lib are then referenced by the rest of the projects in DemoIccMAX.
+Build/XCode/lib are then referenced by the rest of the projects iccdev.
 Executables for the various tools will be placed into the Testing folder after a
 successful run of `BuildAll.sh`.
 

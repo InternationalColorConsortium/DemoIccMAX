@@ -1,25 +1,28 @@
-[![color.org logo](ReadMeFiles/ICC_header.png "color.org")](https://color.org)
+[![color.org logo](ReadMeFiles/icc-logo.svg)](https://color.org)
 
-# IccMAX
+# iccdev
 
-`brew install iccmax`
+`brew install iccdev`
 
 ## Introduction
 
-The IccMAX project (formally known as RefIccMAX, or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX based color management profiles based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
+The iccdev project (formally known as RefIccMAX, or DemoIccMAX) provides an
+open source set of libraries and tools that allow for the interaction, manipulation,
+and application of ICC based color management profiles based on the 
+[ICC profile specification](http://www.color.org/icc_specs2.xalter) and 
+[iccMAX profile specification](http://www.color.org/iccmax.xalter).
 
 Within the project are several libraries and tools as follows:
 
-* Libraries that allow applications to interact with iccMAX profiles
+* Libraries that allow applications to interact with ICC profiles
 
-  * IccProfLib - The IccMAX IccProfLib project represents an open source &
+  * IccProfLib - The IccProfLib library represents an open source &
     cross platform reference implementation of a C++ library for reading,
-    writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
-    profile specification](http://www.color.org/iccmax.xalter).
+    writing, applying, manipulating ICC color profiles defined by the ICC specifications.
 
-  * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
+  * IccLibXML - The IccLibXML library contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
-    objects defined by IccProfLib using an XML representation thus allowing iccMAX
+    objects defined by IccProfLib using an XML representation thus allowing ICC
     profiles to be expressed as or created from text based XML files.
 
 
@@ -28,33 +31,33 @@ Within the project are several libraries and tools as follows:
   For command line arguments running the application without any arguments
   will display help information about command line options.
 
-  * IccToXML is a cross platform command line tool that allows both legacy ICC
+  * IccToXML is a cross platform command line tool that allows both ICC
     and iccMAX profiles to be expressed using an XML representation. This allows
     for profiles to be converted to a textual representation that can be directly
-    edited using a text editor and then converted back to ICC/iccMAX profile
+    edited using a text editor and then converted back to ICC and iccMAX profile
     formats using IccFromXML.
 
-  * IccFromXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be created from the same XML representation provided by
+  * IccFromXML is a cross platform command line tool that allows both ICC
+    and iccMAX profile formats to be created from the same XML representation provided by
     IccToXML. A schema for iccXML files is forthcoming but can be determined using
     the FromXML() and ToXML() member functions defined in IccLibXML. The
     IccFromXML tool provides a simple direct method to create and manipulate
-    iccMAX based profiles.
+    ICC and iccMAX profiles.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
-    sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
-    in a text based input profile outputting the results to the console, and can
+    sequence of ICC profile formats and/or iccMAX profile formats to be applied to colors
+    defined in a text based input profile outputting the results to the console, and can
     be redirected to a output text file. Example source text files can be found in
     Testing/ApplyDataFiles. The IccApplyNamedCmm application provides a basis for
     testing various features of iccMAX.
 
   * IccApplyProfiles is a cross platform command line tool that allows a sequence of
-    legacy and/or iccMAX profiles to a source TIFF image resulting in a destination
-    TIFF image. The final destination profile can optionally be embedded in the
-    resulting TIFF image.
+    ICC profiles mat and/or iccMAX profiles to a source TIFF image resulting in a
+    destination TIFF image. The final destination profile can optionally be embedded
+    in the resulting TIFF image.
 
   * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console. Data
+    from a ICC profile and/or a iccMAX profile to be output to the console. Data
     with non-printable values are replaced with '?'. Output from this tool is
     not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
     given platform.
@@ -66,7 +69,6 @@ Within the project are several libraries and tools as follows:
     ```bash
     grep --text -A 3 "^Validation Report" out.txt
     ```
-
 
   * IccRoundTrip is a cross platform command line tool that allows round trip
     colorimetric processing characteristics of rendering intent of a profile to be
@@ -90,7 +92,7 @@ Within the project are several libraries and tools as follows:
     embedded ICC profile information about a JPG image to the console. 
 
   * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
-    iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
+    ICC and iccMAX profile inspector tool. The code for this tool is based on
     wxWidgets 3.2.
 
 
@@ -146,8 +148,8 @@ abridged spectral encoding is provided.
 
 ### Quick Start
 
-- [iccMAX Release Binaries](https://github.com/InternationalColorConsortium/DemoIccMAX/releases/tag/v2.1.26) 
-- `brew install iccmax`
+- [iccdev Release Binaries](https://github.com/InternationalColorConsortium/iccdev/releases/tag/v2.1.26) 
+- `brew install iccdev`
 - [Build](BUILD.md)
 
 
