@@ -1,20 +1,20 @@
 #################################################################################
-# Cmake Project Configuration| iccMAX Project
-# Copyright (C) 2024-2025 The International Color Consortium. 
+# Cmake Project Configuration| Color Bleed Research
+# Copyright (C) 2024-2025 David H Hoyt LLC
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: Sat Apr 19 14:00:59 EDT 2025 by David Hoyt
-#  date -r 1745085659
-# 
+#  Last Updated: 06-MAY-2025 0658 EDT by David Hoyt
 #
-#  Changes: 
-#           Added to CMakelists.txt: IccJpegDump
-#           Adjusted Cross Platform Build Args, Add Jpeg Dep
-#						
-#  TODO:    Refactor Debug, Release, Asan, subproject pathing issues
-#           Collapse 3-tier CMakeLists.txt, Housekeeping
-#           Refactor Base Configs & logging to .mk's 
+#
+#
+#  Changes: Runners, research
+#
+#
+#
+#
+#
+#
 #
 #
 #################################################################################
@@ -48,7 +48,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)  # Modern minimum for policy sa
 set(CMAKE_WARN_DEPRECATED TRUE)
 
 # Optional: clean up obsolete warnings (only enable if really needed)
-# set(CMAKE_POLICY_WARNING_CMP0012 TRUE)
+set(CMAKE_POLICY_WARNING_CMP0012 TRUE)
 
 # Suppress redundant regeneration messages (less CLI noise)
 set(CMAKE_SUPPRESS_REGENERATION ON)
@@ -60,7 +60,8 @@ set(CMAKE_SUPPRESS_REGENERATION ON)
 string(TIMESTAMP CURRENT_DATETIME "%Y-%m-%d %H:%M:%S")
 message(STATUS "")
 message(STATUS "##########################################################################")
-message(STATUS "## Starting to Configure the IccMAX Project at ${CURRENT_DATETIME}") 
+message(STATUS "## Configuring for the Color Bleed Research Project at ${CURRENT_DATETIME}")
+message(STATUS "## David H Hoyt LLC | The Color Bleed Bug | https://srd.cx/cve-2022-26730/")  
 message(STATUS "##########################################################################")
 message(STATUS "")
 
@@ -91,7 +92,7 @@ set(PROJECT_DOWN_NAME "reficcmax")  # All-lowercase variant for packaging
 # Version Components
 set(${PROJECT_UP_NAME}_MAJOR_VERSION 2)
 set(${PROJECT_UP_NAME}_MINOR_VERSION 1)
-set(${PROJECT_UP_NAME}_MICRO_VERSION 26)
+set(${PROJECT_UP_NAME}_MICRO_VERSION "30.research")
 set(${PROJECT_UP_NAME}_VERSION
   "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}.${${PROJECT_UP_NAME}_MICRO_VERSION}"
 )
@@ -108,7 +109,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Descriptive metadata (for packaging, install, CI)
 set(PACKAGE_NAME "${PROJECT_DOWN_NAME}")
 set(PACKAGE_DESCRIPTION
-  "The IccMAX project provides an open source set of libraries and tools for iccMAX-based profiles."
+  "Debug Instrumented Build from research Branch. David H Hoyt LLC."
 )
 
 # ----------------------------------------------------------------------
@@ -136,12 +137,12 @@ set(PROJECT_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 # Print key info for reproducibility and debugging
 message(STATUS "")
 message(STATUS "===  Build Environment Diagnostics ===")
-message(STATUS "  Source Directory       : ${CMAKE_SOURCE_DIR}")
-message(STATUS "  Project Root Directory : ${PROJECT_ROOT_DIR}")
-message(STATUS "   System Name           : ${CMAKE_SYSTEM_NAME}")
-message(STATUS "  System Version        : ${CMAKE_SYSTEM_VERSION}")
-message(STATUS "  Processor Architecture : ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "  Build Host             : $ENV{COMPUTERNAME} ($ENV{USERNAME})")
+message(STATUS "Source Directory       : ${CMAKE_SOURCE_DIR}")
+message(STATUS "Project Root Directory : ${PROJECT_ROOT_DIR}")
+message(STATUS "System Name           : ${CMAKE_SYSTEM_NAME}")
+message(STATUS "System Version         : ${CMAKE_SYSTEM_VERSION}")
+message(STATUS "Processor Architecture : ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "Build Host             : $ENV{COMPUTERNAME} ($ENV{USERNAME})")
 message(STATUS "=========================================")
 message(STATUS "")
 
@@ -154,25 +155,6 @@ foreach(flag_var IN ITEMS
     CMAKE_MODULE_LINKER_FLAGS)
   string(REPLACE "/LF:" "/LIBPATH:" ${flag_var} "${${flag_var}}")
 endforeach()
-
-# ----------------------------------------------------------------------
-# AddressSanitizer / Fuzzing Configuration
-# ----------------------------------------------------------------------
-
-option(ENABLE_ASAN "Enable AddressSanitizer (requires compatible compiler)" OFF)
-option(ENABLE_FUZZING "Enable Fuzzing Sanitizer (requires clang/libfuzzer)" OFF)
-
-if(ENABLE_ASAN OR CMAKE_CXX_FLAGS MATCHES "-fsanitize=address")
-  message(STATUS "[SANITIZER] ASAN detected - disabling /INCREMENTAL for MSVC.")
-  if(MSVC)
-    add_link_options(/INCREMENTAL:NO)
-  endif()
-endif()
-
-if(ENABLE_FUZZING)
-  message(STATUS "[SANITIZER] Fuzzing enabled - applying fuzzer flags.")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=fuzzer")
-endif()
 
 # ----------------------------------------------------------------------
 # Spectre Variant 1 Mitigation (Optional Hardening)
@@ -216,10 +198,10 @@ message(STATUS "CMAKE_MODULE_PATH        : ${CMAKE_MODULE_PATH}")
 
 message(STATUS "")
 message(STATUS "### Compiler & Toolchain Info ###")
-message(STATUS " C++ Compiler           : ${CMAKE_CXX_COMPILER}")
+message(STATUS "C++ Compiler            : ${CMAKE_CXX_COMPILER}")
 message(STATUS "C++ Compiler ID         : ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "C++ Compiler Version    : ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS " C Compiler             : ${CMAKE_C_COMPILER}")
+message(STATUS "C Compiler              : ${CMAKE_C_COMPILER}")
 message(STATUS "C Compiler Version      : ${CMAKE_C_COMPILER_VERSION}")
 message(STATUS "Linker                  : ${CMAKE_LINKER}")
 
@@ -230,7 +212,7 @@ message(STATUS "Linker                  : ${CMAKE_LINKER}")
 if(APPLE)
   message(STATUS "")
   message(STATUS "### macOS Specific Details ###")
-  message(STATUS " macOS SDK Path         : ${CMAKE_OSX_SYSROOT}")
+  message(STATUS "macOS SDK Path         : ${CMAKE_OSX_SYSROOT}")
   message(STATUS "Deployment Target       : ${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif()
 
@@ -242,7 +224,7 @@ if(WIN32)
   if(DEFINED ENV{MSBUILD_PATH})
     message(STATUS "MSBuild Path            : $ENV{MSBUILD_PATH}")
   else()
-    message(WARNING " MSBuild Path is not defined in environment variables.")
+    message(WARNING "MSBuild Path is not defined in environment variables.")
   endif()
 
   message(STATUS "Linker Flags            : ${CMAKE_EXE_LINKER_FLAGS}")
@@ -256,8 +238,8 @@ if(UNIX AND NOT APPLE)
     OUTPUT_VARIABLE LINUX_SYSTEM_INFO
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-  message(STATUS " System Info            : ${LINUX_SYSTEM_INFO}")
-  message(STATUS " C++ Compiler           : ${CMAKE_CXX_COMPILER}")
+  message(STATUS "System Info            : ${LINUX_SYSTEM_INFO}")
+  message(STATUS "C++ Compiler           : ${CMAKE_CXX_COMPILER}")
   message(STATUS "Linker Flags            : ${CMAKE_EXE_LINKER_FLAGS}")
 endif()
 
@@ -270,7 +252,7 @@ message(STATUS "### Cross-Platform Debugging ###")
 message(STATUS "Build Type              : ${CMAKE_BUILD_TYPE}")
 message(STATUS "Install Prefix          : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "Build Generator         : ${CMAKE_GENERATOR}")
-message(STATUS " Build Tool             : ${CMAKE_MAKE_PROGRAM}")
+message(STATUS "Build Tool              : ${CMAKE_MAKE_PROGRAM}")
 
 # ----------------------------------------------------------------------
 # Build Configuration Summary
@@ -283,17 +265,6 @@ message(STATUS "C++ Standard            : C++${CMAKE_CXX_STANDARD}")
 message(STATUS "C++ Flags               : ${CMAKE_CXX_FLAGS}")
 message(STATUS "C Flags                 : ${CMAKE_C_FLAGS}")
 message(STATUS "Active Config Flags     : ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
-
-# ----------------------------------------------------------------------
-# Feature Flag Configuration
-# ----------------------------------------------------------------------
-
-message(STATUS "")
-message(STATUS "### Feature Flags ###")
-message(STATUS "Enable Tools            : ${ENABLE_TOOLS}")
-message(STATUS "Enable Tests            : ${ENABLE_TESTS}")
-message(STATUS "Enable Shared Libraries : ${ENABLE_SHARED_LIBS}")
-message(STATUS "Enable Static Libraries : ${ENABLE_STATIC_LIBS}")
 
 # ----------------------------------------------------------------------
 # Third-Party Dependencies
@@ -312,7 +283,7 @@ message(STATUS "nlohmann_json          : ${nlohmann_json_DIR} (version: ${nlohma
 
 # --- TIFF ---
 find_package(TIFF REQUIRED)
-message(STATUS " TIFF                  : ${TIFF_LIBRARIES} (version: ${TIFF_VERSION})")
+message(STATUS "TIFF                   : ${TIFF_LIBRARIES} (version: ${TIFF_VERSION})")
 message(STATUS "TIFF Include Directory : ${TIFF_INCLUDE_DIR}")
 
 # --- PNG ---
@@ -320,7 +291,7 @@ message(STATUS "Checking for PNG...")
 find_package(PNG REQUIRED)
 
 if(PNG_FOUND)
-  message(STATUS " PNG Library           : ${PNG_LIBRARIES}")
+  message(STATUS "PNG Library            : ${PNG_LIBRARIES}")
   message(STATUS "PNG Include Directory  : ${PNG_INCLUDE_DIRS}")
   message(STATUS "PNG Version            : ${PNG_VERSION}")
 else()
@@ -331,7 +302,7 @@ endif()
 message(STATUS "Checking for JPEG...")
 find_package(JPEG REQUIRED)
 if(JPEG_FOUND)
-  message(STATUS " JPEG Library          : ${JPEG_LIBRARIES}")
+  message(STATUS "JPEG Library           : ${JPEG_LIBRARIES}")
   message(STATUS "JPEG Include Directory : ${JPEG_INCLUDE_DIR}")
 else()
   message(FATAL_ERROR " JPEG not found. Please install libjpeg-dev or install via vcpkg.")
@@ -362,8 +333,8 @@ message(STATUS "Fallback               : /usr/local/lib")
 
 message(STATUS "")
 message(STATUS "### Debug Library Paths ###")
-message(STATUS " IccProfLib Debug Path : ${PROJECT_ROOT_DIR}/Build/IccProfLib")
-message(STATUS " IccXML Debug Path     : ${PROJECT_ROOT_DIR}/Build/IccXML")
+message(STATUS "IccProfLib Debug Path : ${PROJECT_ROOT_DIR}/Build/IccProfLib")
+message(STATUS "IccXML Debug Path     : ${PROJECT_ROOT_DIR}/Build/IccXML")
 
 # ----------------------------------------------------------------------
 # CI/CD Environment Detection
@@ -373,7 +344,7 @@ message(STATUS "")
 message(STATUS "### CI/CD Integration ###")
 
 if(DEFINED ENV{CI})
-  message(STATUS " CI/CD Detected")
+  message(STATUS "CI/CD Detected")
   message(STATUS "Build Number           : $ENV{BUILD_NUMBER}")
   message(STATUS "Branch Name            : $ENV{BRANCH_NAME}")
   message(STATUS "Commit Hash            : $ENV{GIT_COMMIT}")
@@ -387,11 +358,30 @@ endif()
 # ----------------------------------------------------------------------
 
 message(STATUS "")
-message(STATUS " Initializing Install Paths with GNUInstallDirs...")
+message(STATUS "Initializing Install Paths with GNUInstallDirs...")
 include(GNUInstallDirs)
 message(STATUS "GNU Install Include Dir: ${CMAKE_INSTALL_INCLUDEDIR}")
 message(STATUS "GNU Install Library Dir: ${CMAKE_INSTALL_LIBDIR}")
 message(STATUS "GNU Install CMake Dir  : ${CMAKE_INSTALL_DATAROOTDIR}/cmake")
+
+# ----------------------------------------------------------------------
+# AddressSanitizer / Fuzzing Configuration
+# ----------------------------------------------------------------------
+
+option(ENABLE_ASAN "Enable AddressSanitizer (requires compatible compiler)" OFF)
+option(ENABLE_FUZZING "Enable Fuzzing Sanitizer (requires clang/libfuzzer)" OFF)
+
+if(ENABLE_ASAN OR CMAKE_CXX_FLAGS MATCHES "-fsanitize=address")
+  message(STATUS "[SANITIZER] ASAN detected - disabling /INCREMENTAL for MSVC.")
+  if(MSVC)
+    add_link_options(/INCREMENTAL:NO)
+  endif()
+endif()
+
+if(ENABLE_FUZZING)
+  message(STATUS "[SANITIZER] Fuzzing enabled - applying fuzzer flags.")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=fuzzer")
+endif()
 
 # ----------------------------------------------------------------------
 # Build Feature Toggles
@@ -400,17 +390,80 @@ message(STATUS "GNU Install CMake Dir  : ${CMAKE_INSTALL_DATAROOTDIR}/cmake")
 message(STATUS "")
 message(STATUS "### Build Options ###")
 
-option(ENABLE_TESTS           "Build tests (requires static libs)" ON)
-option(ENABLE_TOOLS           "Build tools (command-line + GUI)"   ON)
-option(ENABLE_SHARED_LIBS     "Build dynamic link libraries"       ON)
-option(ENABLE_STATIC_LIBS     "Build static libraries"             ON)
-option(ENABLE_ICCXML          "Build IccXML library support"       ON)
+# Build and feature flags
+option(ENABLE_TESTS               "Build tests (requires static libs)"                  ON)
+option(ENABLE_TOOLS               "Build tools (command-line + GUI)"                    ON)
+option(ENABLE_SHARED_LIBS         "Build dynamic link libraries"                        ON)
+option(ENABLE_STATIC_LIBS         "Build static libraries"                              ON)
+option(ENABLE_ICCXML              "Build IccXML library support"                        ON)
+option(ICC_TRACE_NAN_ENABLED      "Enable tracing NaN inputs in debug builds"           ON)
+option(ICC_CLUT_DEBUG             "Enable CLUT debugging support"                       ON)
+option(ICC_ENABLE_ASSERTS         "Enable ICC_ASSERT traps and debug assertions"        ON)
+option(ICC_LOG_SAFE               "Enable ICC_LOG_SAFE_VAL bounds-checked logging"      ON)
+option(ENABLE_SANITIZERS          "Enable runtime sanitizers (ASan, UBSan, etc.)"       ON)
+option(ENABLE_FUZZING             "Enable fuzzing instrumentation (libFuzzer)"          OFF)
+option(ENABLE_SPECTRE_MITIGATION  "Enable /Qspectre on MSVC for Spectre V1 mitigation"  OFF)
+option(ENABLE_USEREFICCMAXNAMESPACE "Use refIccMAX namespace wrapping"                  OFF)
 
-message(STATUS "ENABLE_TESTS            = ${ENABLE_TESTS}")
-message(STATUS " ENABLE_TOOLS            = ${ENABLE_TOOLS}")
-message(STATUS "ENABLE_SHARED_LIBS      = ${ENABLE_SHARED_LIBS}")
-message(STATUS "ENABLE_STATIC_LIBS      = ${ENABLE_STATIC_LIBS}")
-message(STATUS "ENABLE_ICCXML           = ${ENABLE_ICCXML}")
+if(ENABLE_USEREFICCMAXNAMESPACE)
+  message(STATUS ">>> Namespace wrapping enabled (refIccMAX)")
+  add_compile_definitions(USEREFICCMAXNAMESPACE=1)
+endif()
+
+# Apply compile definitions for feature toggles
+if(ICC_TRACE_NAN_ENABLED)
+  add_compile_definitions(ICC_TRACE_NAN_ENABLED=1)
+endif()
+
+if(ICC_CLUT_DEBUG)
+  add_compile_definitions(ICC_CLUT_DEBUG=1)
+endif()
+
+if(ICC_ENABLE_ASSERTS)
+  add_compile_definitions(ICC_ENABLE_ASSERTS=1)
+endif()
+
+if(ICC_LOG_SAFE)
+  add_compile_definitions(ICC_LOG_SAFE=1)
+endif()
+
+# ----------------------------------------------------------------------
+# Build Status Output
+# ----------------------------------------------------------------------
+
+message(STATUS "ENABLE_TESTS               = ${ENABLE_TESTS}")
+message(STATUS "ENABLE_TOOLS               = ${ENABLE_TOOLS}")
+message(STATUS "ENABLE_SHARED_LIBS         = ${ENABLE_SHARED_LIBS}")
+message(STATUS "ENABLE_STATIC_LIBS         = ${ENABLE_STATIC_LIBS}")
+message(STATUS "ENABLE_ICCXML              = ${ENABLE_ICCXML}")
+message(STATUS "ICC_TRACE_NAN_ENABLED      = ${ICC_TRACE_NAN_ENABLED}")
+message(STATUS "ICC_CLUT_DEBUG             = ${ICC_CLUT_DEBUG}")
+message(STATUS "ICC_ENABLE_ASSERTS         = ${ICC_ENABLE_ASSERTS}")
+message(STATUS "ICC_LOG_SAFE               = ${ICC_LOG_SAFE}")
+message(STATUS "ENABLE_SANITIZERS          = ${ENABLE_SANITIZERS}")
+message(STATUS "ENABLE_FUZZING             = ${ENABLE_FUZZING}")
+message(STATUS "ENABLE_SPECTRE_MITIGATION  = ${ENABLE_SPECTRE_MITIGATION}")
+message(STATUS "")
+
+# Compose sanitizer flags only once
+set(SANITIZER_FLAGS "")
+if(ENABLE_FUZZING)
+  message(STATUS ">>> Fuzzing instrumentation enabled (libFuzzer + ASan + UBSan)")
+  list(APPEND SANITIZER_FLAGS "-fsanitize=fuzzer,address,undefined")
+elseif(ENABLE_SANITIZERS)
+  message(STATUS ">>> Sanitizers enabled: AddressSanitizer and UndefinedBehaviorSanitizer active")
+  list(APPEND SANITIZER_FLAGS "-fsanitize=address,undefined")
+endif()
+
+# Apply sanitizer flags if any are set
+if(SANITIZER_FLAGS)
+  list(APPEND SANITIZER_FLAGS "-g" "-O1" "-fno-omit-frame-pointer")
+  string(JOIN " " FINAL_SAN_FLAGS ${SANITIZER_FLAGS})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FINAL_SAN_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FINAL_SAN_FLAGS}")
+  message(STATUS ">>> Final sanitizer flags: ${FINAL_SAN_FLAGS}")
+endif()
+
 
 # ----------------------------------------------------------------------
 # Build Context Detection: Top-Level vs Subproject
@@ -445,7 +498,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
   message(STATUS "No build type specified. Defaulting to: ${CMAKE_BUILD_TYPE}")
 else()
-  message(STATUS " Build type explicitly set to: ${CMAKE_BUILD_TYPE}")
+  message(STATUS "Build type explicitly set to: ${CMAKE_BUILD_TYPE}")
 endif()
 
 # ----------------------------------------------------------------------
@@ -500,22 +553,6 @@ elseif(WIN32)
   message(STATUS "Windows build: Compiler flags set to C++17 with MSVC-specific flags.")
 else()
   message(FATAL_ERROR "Unsupported platform!")
-endif()
-
-message(STATUS "Debug Configuration")
-# Debug configuration
-if(CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
-  message("-- Info: Debug build \"${CMAKE_BUILD_TYPE}\"")
-  set(DEBUG 1)
-  add_definitions(-D_DEBUG)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-endif()
-
-message(STATUS "Sanitizer Configuration")
-# Sanitizer support (Optional, for Linux/Unix-like systems)
-if(UNIX AND NOT APPLE AND CMAKE_BUILD_TYPE MATCHES "[Dd][Ee][Bb][Uu][Gg]")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -fno-omit-frame-pointer")
-  message(STATUS "Sanitizers enabled for Debug build.")
 endif()
 
 # Prevent old-style path-based linking
@@ -728,15 +765,6 @@ endif()
   endif()
 
 ENDIF(ENABLE_TOOLS)
-
-
-# Optionally add a description for the option
-option(ENABLE_FUZZING "Enable fuzzing sanitizer" OFF)
-
-if(ENABLE_FUZZING)
-    message(STATUS "Fuzzing enabled")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=fuzzer")
-endif()
 
 IF( ENABLE_TESTS )
   ADD_SUBDIRECTORY( Testing )

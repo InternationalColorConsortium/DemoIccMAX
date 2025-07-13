@@ -1,6 +1,7 @@
 // File: test_icctoxml.cpp
-// Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
+//
 // Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+//
 // Written by David Hoyt 
 // Date: 30-MAR-2025 1400 EDT
 //
@@ -8,7 +9,6 @@
 // Intent: Makefile for building gtest instrumented iccToXml and checking LLVM coverage symbols
 // Production: TRUE
 // Runner: TRUE
-//
 //
 //
 // Updates:  Makefile for building gtest instrumented iccToXml and checking LLVM coverage symbols

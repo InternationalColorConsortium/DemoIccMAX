@@ -1,4 +1,4 @@
-/*
+﻿/*
 #
 # Copyright(c) 1998 - 2025 Marti Maria Saguer - scan.c
 # Copyright(c) 2003 - 2025 International Color Consortium - IccDumpProfile.cpp
@@ -184,7 +184,7 @@ char* sig2char(int sig)
     str[3] = (char)((cmsUInt32Number)(sig & 0x000000ff));
     str[4] = '\0';
 
-    ICC_LOG_DEBUG("sig2char(): sig=0x%08x → '%s'", (cmsUInt32Number)sig, str);
+//    ICC_LOG_DEBUG("sig2char(): sig=0x%08x → '%s'", (cmsUInt32Number)sig, str);
     return str;
 }
 
@@ -661,8 +661,8 @@ void checkAllIntents(cmsHPROFILE hProfile)
     {
         Bypass = TRUE;
         PrintTimestamp(stderr);
-        ICC_LOG_WARNING("Skipping unsupported DeviceClass='%s'", dc_str);
-        Message("*** Bypassing this profile because unsupported device class '%s'", dc_str);
+        ICC_LOG_WARNING("Skipping unsupported DeviceClass='%s'\n", dc_str);
+        Message("*** Bypassing this profile because unsupported device class '%s'\n", dc_str);
         return;
     }
 
@@ -683,18 +683,18 @@ void checkAllIntents(cmsHPROFILE hProfile)
         Bypass = TRUE;
         PrintTimestamp(stderr);
         ICC_LOG_WARNING("Skipping unsupported ColorSpace='%s'", cs_str);
-        Message("*** Bypassing this profile because unsupported Color Space '%s'", cs_str);
+        Message("*** Bypassing this profile because unsupported Color Space '%s'\n", cs_str);
         return;
     }
 
     // Report scan result
     if (PossibleExploit) {
-        Message("*** WARNING: Profile may contain exploit characteristics");
-        ICC_LOG_WARNING("Heuristic exploit indicator flagged");
+        Message("*** WARNING: Profile may contain matching heuristics\n");
+        ICC_LOG_WARNING("Heuristic match indicator flagged\n");
     }
     else if (ErrorState) {
         Message("*** WARNING: Profile has errors");
-        ICC_LOG_WARNING("Profile failed validation with known errors");
+        ICC_LOG_WARNING("Profile failed validation with known errors\n");
     }
 }
 
@@ -789,25 +789,6 @@ void checkProfileInformation(cmsHPROFILE h)
     cmsUInt32Number intent = cmsGetHeaderRenderingIntent(h);
     cmsUInt8Number id[16] = { 0 };
     cmsGetHeaderProfileID(h, id);
-
-    // Get profile size (for display only)
-    struct stat st;
-    cmsUInt32Number fileSize = 0;
-    if (stat(ProfileName, &st) == 0) {
-        fileSize = (cmsUInt32Number)st.st_size;
-    }
-
-    // Print Profile metadata summary
-    fprintf(stderr, "Profile:            '%s'\n", ProfileName);
-    fprintf(stderr, "Profile ID:         ");
-    for (int i = 0; i < 16; ++i) {
-        fprintf(stderr, "%02x", id[i]);
-    }
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Size:               %u (0x%x) bytes\n", fileSize, fileSize);
-
-    fprintf(stderr, "\nHeader\n");
-    fprintf(stderr, "------\n");
 
 CIccInfo Fmt;
 CIccProfile icc;
@@ -985,8 +966,31 @@ if (pHdr->mcs)
 else
     printf("MCS Color Space:    Not Defined\n");
 
-// Optional white point (not exposed in icHeader)
-fprintf(stderr, "Media White Point:  [not available]\n");
+
+printf("\niccMAX Profile Tags\n");
+printf("------------\n");
+
+printf("%28s    ID    %8s\t%8s\t%8s\n", "Tag", "Offset", "Size", "Pad");
+printf("%28s  ------  %8s\t%8s\t%8s\n", "----", "------", "----", "---");
+printf("------------\n");
+
+fprintf(stderr, "\nLittle CMS Outputs\n");
+fprintf(stderr, "Version:            %d.%02d\n", (version >> 16) & 0xff, (version >> 8) & 0xff);
+
+    fprintf(stderr, "Rendering Intent:   %s\n",
+        intent == INTENT_PERCEPTUAL ? "Perceptual" :
+        intent == INTENT_RELATIVE_COLORIMETRIC ? "Relative Colorimetric" :
+        intent == INTENT_SATURATION ? "Saturation" :
+        intent == INTENT_ABSOLUTE_COLORIMETRIC ? "Absolute Colorimetric" :
+        "Unknown");
+
+    // Optional white point info
+    if (cmsIsTag(h, cmsSigMediaWhitePointTag)) {
+        wp = (cmsCIEXYZ*)cmsReadTag(h, cmsSigMediaWhitePointTag);
+        if (wp) {
+            fprintf(stderr, "Media White Point:  X=%.4f Y=%.4f Z=%.4f\n", wp->X, wp->Y, wp->Z);
+        }
+    }
 
     fprintf(stderr, "\nProfile Tags\n");
     fprintf(stderr, "------------\n");

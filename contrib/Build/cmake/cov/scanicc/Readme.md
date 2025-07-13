@@ -1,6 +1,6 @@
 # Port to Linux for scanicc.c
 - Copyright (c) 1998-2015 Marti Maria Saguer
-- Copyright (c) David H Hoyt LLC
+- Copyright (c) 2025 David H Hoyt LLC
 
 **Last Updated:** 15-MAY-2025 0600 EDT
 

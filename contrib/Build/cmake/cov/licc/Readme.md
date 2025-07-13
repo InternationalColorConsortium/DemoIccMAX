@@ -16,7 +16,7 @@
 ## 🛠 Build Instructions
 
 ```
-cd contrib/Build/cmake/cov/licc
+cd contrib/Build/cmake/cov/lic
 make -f Makefile.licc clean all AFL=0
 ```
 

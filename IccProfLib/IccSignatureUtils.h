@@ -1,68 +1,5 @@
-/** @file
-File:       IccSignatureUtils.h
-
-Contains:   Implementation of definitions and macros for ICC signature logging.
-
-Version:    V1
-
-Copyright:  (c) see ICC Software License
-*/
-
-/*
-* The ICC Software License, Version 0.2
-*
-*
-* Copyright (c) 2003-2012 The International Color Consortium. All rights 
-* reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer. 
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. In the absence of prior written permission, the names "ICC" and "The
-*    International Color Consortium" must not be used to imply that the
-*    ICC organization endorses or promotes products derived from this
-*    software.
-*
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COLOR CONSORTIUM OR
-* ITS CONTRIBUTING MEMBERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*
-* This software consists of voluntary contributions made by many
-* individuals on behalf of the The International Color Consortium. 
-*
-*
-* Membership in the ICC is encouraged when this software is used for
-* commercial purposes. 
-*
-*  
-* For more information on The International Color Consortium, please
-* see <http://www.color.org/>.
-*  
-* 
-*/
-
 ////////////////////////////////////////////////////////////////////////
-// Contributor: David H Hoyt LLC
+// Copyright (C) 2024-2025 David H Hoyt LLC. All Rights Reserved.
 // FILE: IccSignatureUtils.h
 //
 // DESCRIPTION:
@@ -79,7 +16,7 @@ Copyright:  (c) see ICC Software License
 // HISTORY:
 //   - Initial implementation by David Hoyt on 01-MAR-2025 at 1800 EST.
 //
-//
+// Apache License, Version 2.0
 ////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -101,6 +38,14 @@ inline bool IsSpaceSpectralPCS(icColorSpaceSignature sig)
 {
   return sig == icSigSpectralPcsData;
 }
+
+// -----------------------------------------------------------------------------
+// LOGGING MACROS
+//
+// If USE_WX_LOGGING is defined, use wxWidgets logging facilities.
+// Otherwise, fallback to standard stderr output. All logs include
+// [file:line] for traceability. Portable variadic macro pattern.
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // LOGGING MACROS
@@ -470,3 +415,54 @@ inline void DebugColorSpaceMeta(icUInt32Number sig) {
 
 
 #endif // ICC_SIGNATURE_UTILS_H
+
+///////////////////////////////////////////////////////////////////////////////
+// SECTION: ICC_HEADER_FUZZ_HELPERS
+//
+// PURPOSE:
+//   Add instrumentation utilities for proxy-layer tracing and mutation
+//   detection during ICC header parsing, data ingestion, or external fuzzing.
+//
+// USE CASES:
+//   - Field-level IIB detection
+//   - Header mutation feedback
+//   - Dirty Write diagnostics
+//   - Patch validation under fuzz input
+///////////////////////////////////////////////////////////////////////////////
+
+#define ICC_TRACE_INPUT_FIELD(tag, offset, rawPtr, size)                        \
+  do {                                                                          \
+    const size_t __trace_sz = (size_t)(size);                                  \
+    const uint8_t *__trace_ptr = (const uint8_t *)(rawPtr);                    \
+    ICC_LOG_INFO("[TRACE] Field '%s': offset=%zu size=%zu",                    \
+                 tag, (size_t)(offset), __trace_sz);                           \
+    size_t __dump_len = (__trace_sz > 16 ? 16 : __trace_sz);                   \
+    for (size_t __i = 0; __i < __dump_len; ++__i) {                            \
+      fprintf(stderr, "  [%02zu] = 0x%02x\n", __i, __trace_ptr[__i]);          \
+    }                                                                          \
+    if (__trace_sz > 16) {                                                     \
+      fprintf(stderr, "  [..] (truncated, total %zu bytes)\n", __trace_sz);    \
+    }                                                                          \
+  } while (0)
+
+#define ICC_DIRTY_WRITE_CHECK(name, base, idx, len, sentinel)                  \
+  do {                                                                          \
+    size_t __idx = (size_t)(idx);                                               \
+    size_t __len = (size_t)(len);                                               \
+    if (__idx < __len) {                                                        \
+      uint8_t __val = ((const uint8_t *)(base))[__idx];                         \
+      if (__val != (uint8_t)(sentinel)) {                                       \
+        ICC_LOG_WARNING("Potential Dirty Write: field=%s offset=%zu "          \
+                        "val=0x%02x (expected=0x%02x)",                         \
+                        name, __idx, __val, (uint8_t)(sentinel));              \
+      }                                                                         \
+    }                                                                           \
+  } while (0)
+
+#define ICC_IIB_TAG_GUARD(label, raw, size, expected)                          \
+  do {                                                                          \
+    if (memcmp((raw), (expected), (size_t)(size)) != 0) {                       \
+      ICC_LOG_WARNING("Potential Input Pollution: %s mismatch", label);        \
+      TRACE_CALLER();                                                           \
+    }                                                                           \
+  } while (0)

@@ -75,6 +75,7 @@
 #include <list>
 #include <string>
 #include "IccDefs.h"
+#include "IccSignatureUtils.h"
 
 #ifdef USEREFICCMAXNAMESPACE
 namespace refIccMAX {

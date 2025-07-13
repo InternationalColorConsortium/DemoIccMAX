@@ -1,23 +1,23 @@
 #!/bin/bash
-#
-# The ICC Software License, Version 0.2
-# Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
-# Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
-#
-# Contributed by David Hoyt
-# Date: 15-MAY-2025 2000 EDT
+##
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt
+## Date: 12-MAY-2025 2000 EDT
 #
 # Branch: research
-# Intent: Public Domain
+# Intent: GC
 # Production: TRUE
 # Runner: TRUE
 #
+#
 # Updates:  Makefile for building instrumented Libs + Tools and checking LLVM coverage symbols
 #
-# TODO: SWAP the Copyright, License, Branding for ICC 
 #
 #
-#  Makefile for building instrumented Libs + Tools and checking LLVM coverage symbols
+#
+#
+##  Makefile for building instrumented Libs + Tools and checking LLVM coverage symbols
 
 # Runners are manual compile atm, wip
 
@@ -62,19 +62,3 @@ echo "[*] Building coverage-enabled iccPngDump..."
 make -C iccPngDump -f Makefile.iccPngDump clean all AFL=0
 echo "[*] Building coverage-enabled iccRoundTrip..."
 make -C iccRoundTrip -f Makefile.iccRoundTrip clean all AFL=0
-make -C  licc -f Makefile.licc clean all AFL=0
-# make -C iccTiffDump -f Makefile.IccTiffDump clean all AFL=0
-# make -C iccApplyNamedCmm -f Makefile.iccApplyNamedCmm clean all AFL=0
-# make -C iccApplyProfiles -f Makefile.iccApplyProfiles clean all AFL=0
-
-echo "[*] Verifying tool instrumentation..."
-for tool in iccToXml iccFromXml iccDumpProfile iccRoundTrip iccPngDump; do
-  BIN="$tool/${tool}_test"
-  if [[ -f "$BIN" ]]; then
-    llvm-objdump -t "$BIN" | grep __llvm_profile > /dev/null && echo "[PASS] $BIN is instrumented" || echo "[FAIL] $BIN not instrumented"
-  else
-    echo "[FAIL] $BIN not found"
-  fi
-done
-
-licc/licc

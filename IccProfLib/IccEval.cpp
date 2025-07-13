@@ -136,7 +136,10 @@ icStatusCMM CIccEvalCompare::EvaluateProfile(CIccProfile *pProfile, icUInt8Numbe
   // determine granularity
   if (!nGran)
   {
-    CIccTagLutAtoB* pTag = (CIccTagLutAtoB*)pProfile->FindTag(icSigAToB0Tag+(nIntent==icAbsoluteColorimetric ? icRelativeColorimetric : nIntent));
+//    CIccTagLutAtoB* pTag = (CIccTagLutAtoB*)pProfile->FindTag(icSigAToB0Tag+(nIntent==icAbsoluteColorimetric ? icRelativeColorimetric : nIntent));
+icTagSignature sig = (icTagSignature)(icSigAToB0Tag + (nIntent == icAbsoluteColorimetric ? icRelativeColorimetric : nIntent));
+CIccTagLut16* pTag = dynamic_cast<CIccTagLut16*>(pProfile->FindTag(sig));
+
     if (!pTag || ndim==3)
     {
       nGran = 33;

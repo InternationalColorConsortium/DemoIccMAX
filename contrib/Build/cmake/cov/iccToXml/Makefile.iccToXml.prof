@@ -1,9 +1,10 @@
 #
+## 
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
 ##
-# Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
-# Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
-# Written by David Hoyt 
-# Date: 15-APRIL-2025 2000 EDT
+## Written by David Hoyt 
+## Date: 15-APRIL-2025 2000 EDT
+#
 # Branch: PR124
 # Intent: Makefile for building instrumented iccToXml and checking LLVM coverage symbols
 # Production: TRUE
@@ -15,9 +16,8 @@
 #
 # 
 # 
-#
 #  
-#  Makefile for building instrumented iccToXml and checking LLVM coverage symbols
+##  Makefile for building instrumented iccToXml and checking LLVM coverage symbols
 
 CXX := clang++
 CXXFLAGS := -O0 -g -fprofile-instr-generate -fcoverage-mapping

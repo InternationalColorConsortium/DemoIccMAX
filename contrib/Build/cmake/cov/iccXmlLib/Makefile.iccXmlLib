@@ -1,16 +1,16 @@
 #
 ##
-# The ICC Software License, Version 0.2
-# Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
-# Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
-#
-# Contributed by David Hoyt
-# Date: 15-MAY-2025 2000 EDT
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
+##
+## Written by David Hoyt
+## Date: 14-MAY-2025 1000 EDT
 #
 # Branch: research
-# Intent: Public Domain
+# Intent: Makefile for building instrumented libIccXML2.a and checking LLVM coverage symbols
 # Production: TRUE
 # Runner: TRUE
+#
+#
 # Updates:  Coverage Scope
 #
 #

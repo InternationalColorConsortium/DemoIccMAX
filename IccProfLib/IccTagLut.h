@@ -66,8 +66,11 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 5-15-2003
-//
 // -Moved LUT tags to separate file 4-30-2005
+//
+// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
+// TODO Refactor, see note below
+//
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -315,6 +318,7 @@ protected:
 };
 
 
+
 /**
 ****************************************************************************
 * Class: CIccCLUT
@@ -329,6 +333,12 @@ public:
   CIccCLUT(const CIccCLUT &ICLUT);
   CIccCLUT &operator=(const CIccCLUT &CLUTClass);
   virtual ~CIccCLUT();
+    // Accessors and mutators for color space signatures
+  icColorSpaceSignature GetInputColorSpace() const { return m_csInput; }
+  icColorSpaceSignature GetOutputColorSpace() const { return m_csOutput; }
+  void SetInputColorSpace(icColorSpaceSignature cs) { m_csInput = cs; }
+  void SetOutputColorSpace(icColorSpaceSignature cs) { m_csOutput = cs; }
+
 
   bool Init(icUInt8Number nGridPoints, icUInt32Number nMaxSize = 0, icUInt8Number nBytesPerPoint = 4);
   bool Init(const icUInt8Number *pGridPoints, icUInt32Number nMaxSize=0, icUInt8Number nBytesPerPoint=4);
@@ -345,7 +355,22 @@ public:
 
   icFloatNumber& operator[](int index) { return m_pData[index]; }
   icFloatNumber* GetData(int index) { return &m_pData[index]; }
-  icUInt32Number NumPoints() const { return m_nNumPoints; }
+
+// ===========================================================================
+// TODO: Attempt to Debug UB Issues
+// WHO: David Hoyt
+// DATE: 30 APRIL 2025 1800 EDT
+// INTENT: Fix Overflow, Memory Ops, Housekeeping
+// OUTCOME: This still causes Runtime Corruption, but Overflow has not re-fuzzed to surface 
+// Issue: icUInt32Number NumPoints() const  { return (m_nNumPoints != 0) ? m_nNumPoints : 0; }
+// Refactor: This will need more work, above and below, this whole segment needs to be modernized
+// BUG CLASSES: UB, Memory Safety, Leaks
+//
+// PoC: iccDumpProfile ../contrib/UnitTest/icPlatformSignature-ubsan-poc.icc
+//
+// ===========================================================================
+
+  icUInt32Number NumPoints() const  { return (m_nNumPoints != 0) ? m_nNumPoints : 0; }
   icUInt8Number GridPoints() const { return m_GridPoints[0]; }
   icUInt8Number GridPoint(int index) const { return m_GridPoints[index]; }
   const icUInt8Number* GridPointArray() const {return &m_GridPoints[0]; }

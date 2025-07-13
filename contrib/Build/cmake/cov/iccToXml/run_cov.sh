@@ -1,7 +1,6 @@
 #!/bin/bash
 ## 
-## Copyright (c) 2003-2025 The International Color Consortium. All rights reserved.
-## Copyright (c) 2024-2025 David H Hoyt LLC. All rights reserved.
+## Copyright (c) 2024-2025. David H Hoyt LLC. All rights reserved.
 ##
 ## Written by David Hoyt 
 ## Date: 20-MAR-2025 1400 EDT
@@ -15,6 +14,7 @@
 # Updates:   iccToXml_test | ICC Coverage Harness with Directory Mirroring, Profile Injection & Reporting
 #          
 #
+# 
 # 
 #  
 ##   iccToXml_test | ICC Coverage Harness with Directory Mirroring, Profile Injection & Reportings
