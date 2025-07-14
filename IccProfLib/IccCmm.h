@@ -1051,6 +1051,8 @@ protected:
   icStatusCMM Optimize();
 
   void pushRouteMcs(CIccTagArray *pSrcChannels, CIccTagArray *pDstChannels, CIccTagNumArray *pDefaults);
+  void pushLab2ToLab();
+  void pushLabToLab2();
   void pushLab2ToXyz(IIccProfileConnectionConditions *pPCC);
   void pushXyzToLab2(IIccProfileConnectionConditions *pPCC);
   void pushLabToXyz(IIccProfileConnectionConditions *pPCC);
