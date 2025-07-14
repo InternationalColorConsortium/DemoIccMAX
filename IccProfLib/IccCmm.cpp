@@ -2360,6 +2360,10 @@ icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignatur
       else
         pushXyzToLab(pToXform->m_pConnectionConditions);
     }
+    else if (pToXform->UseLegacyPCS() && !pToXform->IsInput() && srcSpace == icSigLabData) {
+      pushLabToLab2();
+    }
+
   }
 
 
@@ -2414,6 +2418,12 @@ icStatusCMM CIccPcsXform::ConnectLast(CIccXform* pFromXform, icColorSpaceSignatu
       pushLabToXyz(pFromXform->m_pConnectionConditions);
     if (pFromXform->IsInput())
       pushXyzToXyzIn();
+  }
+  else if (pFromXform->IsInput() && srcSpace == icSigXYZData && dstSpace == icSigXYZData) {
+    pushXyzToXyzIn();
+  }
+  else if (pFromXform->UseLegacyPCS() && pFromXform->IsInput() && srcSpace == icSigLabData && dstSpace == icSigLabData) {
+    pushLab2ToLab();
   }
 
   icStatusCMM rv = Optimize();
@@ -2594,6 +2604,40 @@ void CIccPcsXform::pushRouteMcs(CIccTagArray *pSrcChannels, CIccTagArray *pDstCh
   CIccPcsStepPtr ptr;
 
   ptr.ptr = new CIccPcsStepRouteMcs(pSrcChannels, pDstChannels, pDefaults);
+  m_list->push_back(ptr);
+}
+
+
+/**
+ **************************************************************************
+ * Name: CIccPcsXform::pushLab2ToLab
+ *
+ * Purpose:
+ *  Insert PCS step that converts from V2 Lab internal to actual XYZ
+ **************************************************************************
+ */
+void CIccPcsXform::pushLab2ToLab()
+{
+  CIccPcsStepPtr ptr;
+
+  ptr.ptr = new CIccPcsStepLab2ToLab();
+  m_list->push_back(ptr);
+}
+
+
+/**
+ **************************************************************************
+ * Name: CIccPcsXform::pushXyzToLab2
+ *
+ * Purpose:
+ *  Insert PCS step that converts from actual XYZ to V2 Lab internal
+ **************************************************************************
+ */
+void CIccPcsXform::pushLabToLab2()
+{
+  CIccPcsStepPtr ptr;
+
+  ptr.ptr = new CIccPcsStepLabToLab2();
   m_list->push_back(ptr);
 }
 
@@ -8404,7 +8448,7 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
     next++;
 
     icColorSpaceSignature lastSpace = last->ptr->GetSrcSpace();
-    if (!last->ptr->IsInput() && IsSpaceColorimetricPCS(lastSpace) && GetSourceSpace() !=lastSpace) {
+    if (!last->ptr->IsInput() && IsSpaceColorimetricPCS(lastSpace) && (GetSourceSpace() !=lastSpace || last->ptr->UseLegacyPCS())) {
       CIccPcsXform* pPcs = new CIccPcsXform();
 
       if (!pPcs) {
@@ -8464,7 +8508,7 @@ icStatusCMM CIccCmm::CheckPCSConnections(bool bUsePCSConversions/*=false*/)
 
     lastSpace = last->ptr->GetDstSpace();
     if (last->ptr->IsInput() && IsSpaceColorimetricPCS(lastSpace) && 
-        (last->ptr->NeedAdjustPCS() || GetDestSpace() != lastSpace)) {
+        (last->ptr->NeedAdjustPCS() || GetDestSpace() != lastSpace || last->ptr->UseLegacyPCS())) {
       CIccPcsXform* pPcs = new CIccPcsXform();
 
       if (!pPcs) {
