@@ -26,27 +26,27 @@
       <MultiProcessElements InputChannels="3" OutputChannels="3">
         <CurveSetElement InputChannels="3" OutputChannels="3">
           <SegmentedCurve>
-            <FormulaSegment Start="-infinity" End="0.018053968510807" FunctionType="0">
-              1.0 4.5 0.00000000 0.00000000 
+            <FormulaSegment Start="-infinity" End="0.0812428582986315" FunctionType="0">
+              1.0 0.222222222222222 0.0 0.0
             </FormulaSegment>
-            <FormulaSegment Start="0.018053968510807" End="+infinity" FunctionType="3">
-              0.45 1.09929682680944 1.0 0.0 -0.0992968268094401
-            </FormulaSegment>
-          </SegmentedCurve>
-          <SegmentedCurve>
-            <FormulaSegment Start="-infinity" End="0.018053968510807" FunctionType="0">
-              1.0 4.5 0.00000000 0.00000000 
-            </FormulaSegment>
-            <FormulaSegment Start="0.018053968510807" End="+infinity" FunctionType="3">
-              0.45 1.09929682680944 1.0 0.0 -0.0992968268094401
+            <FormulaSegment Start="0.0812428582986315" End="+infinity" FunctionType="3">
+              2.22222222222222 1.0 0.909672415686275 0.0903275843137250 0.0
             </FormulaSegment>
           </SegmentedCurve>
           <SegmentedCurve>
-            <FormulaSegment Start="-infinity" End="0.018053968510807" FunctionType="0">
-              1.0 4.5 0.00000000 0.00000000 
+            <FormulaSegment Start="-infinity" End="0.0812428582986315" FunctionType="0">
+              1.0 0.222222222222222 0.0 0.0
             </FormulaSegment>
-            <FormulaSegment Start="0.018053968510807" End="+infinity" FunctionType="3">
-              0.45 1.09929682680944 1.0 0.0 -0.0992968268094401
+            <FormulaSegment Start="0.0812428582986315" End="+infinity" FunctionType="3">
+              2.22222222222222 1.0 0.909672415686275 0.0903275843137250 0.0
+            </FormulaSegment>
+          </SegmentedCurve>
+          <SegmentedCurve>
+            <FormulaSegment Start="-infinity" End="0.0812428582986315" FunctionType="0">
+              1.0 0.222222222222222 0.0 0.0
+            </FormulaSegment>
+            <FormulaSegment Start="0.0812428582986315" End="+infinity" FunctionType="3">
+              2.22222222222222 1.0 0.909672415686275 0.0903275843137250 0.0
             </FormulaSegment>
           </SegmentedCurve>
         </CurveSetElement>
@@ -71,27 +71,27 @@
         </MatrixElement>
         <CurveSetElement InputChannels="3" OutputChannels="3">
           <SegmentedCurve>
-            <FormulaSegment Start="-infinity" End="0.0812428582986315" FunctionType="0">
-              1.0 0.222222222222222 0.0 0.0
+            <FormulaSegment Start="-infinity" End="0.018053968510807" FunctionType="0">
+              1.0 4.5 0.00000000 0.00000000 
             </FormulaSegment>
-            <FormulaSegment Start="0.0812428582986315" End="+infinity" FunctionType="3">
-              2.22222222222222 1.0 0.909672415686275 0.0903275843137250 0.0
-            </FormulaSegment>
-          </SegmentedCurve>
-          <SegmentedCurve>
-            <FormulaSegment Start="-infinity" End="0.0812428582986315" FunctionType="0">
-              1.0 0.222222222222222 0.0 0.0
-            </FormulaSegment>
-            <FormulaSegment Start="0.0812428582986315" End="+infinity" FunctionType="3">
-              2.22222222222222 1.0 0.909672415686275 0.0903275843137250 0.0
+            <FormulaSegment Start="0.018053968510807" End="+infinity" FunctionType="3">
+              0.45 1.09929682680944 1.0 0.0 -0.0992968268094401
             </FormulaSegment>
           </SegmentedCurve>
           <SegmentedCurve>
-            <FormulaSegment Start="-infinity" End="0.0812428582986315" FunctionType="0">
-              1.0 0.222222222222222 0.0 0.0
+            <FormulaSegment Start="-infinity" End="0.018053968510807" FunctionType="0">
+              1.0 4.5 0.00000000 0.00000000 
             </FormulaSegment>
-            <FormulaSegment Start="0.0812428582986315" End="+infinity" FunctionType="3">
-              2.22222222222222 1.0 0.909672415686275 0.0903275843137250 0.0
+            <FormulaSegment Start="0.018053968510807" End="+infinity" FunctionType="3">
+              0.45 1.09929682680944 1.0 0.0 -0.0992968268094401
+            </FormulaSegment>
+          </SegmentedCurve>
+          <SegmentedCurve>
+            <FormulaSegment Start="-infinity" End="0.018053968510807" FunctionType="0">
+              1.0 4.5 0.00000000 0.00000000 
+            </FormulaSegment>
+            <FormulaSegment Start="0.018053968510807" End="+infinity" FunctionType="3">
+              0.45 1.09929682680944 1.0 0.0 -0.0992968268094401
             </FormulaSegment>
           </SegmentedCurve>
         </CurveSetElement>
