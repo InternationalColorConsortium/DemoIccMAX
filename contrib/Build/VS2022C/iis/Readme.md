@@ -33,7 +33,7 @@ RESTful service for bidirectional conversion between ICC XML and .icc using iccM
 
 ### Environment Setup
 
-WIP - this section will be updated soon.
+VS2022 Community
 
 ---
 
@@ -42,17 +42,21 @@ WIP - this section will be updated soon.
 1. Open a `x64 Native Tools Command Prompt for VS 2022`
 2. Navigate to the project directory
 
-WIP - this section will be updated soon.
+Run the endpoint .exe files or double click in Explorer.
+`iccFromXml_http_service.exe`
+
+Expected output:
+```
+=============================================
+[+] ICC Service Starting... NOT FOR COMMERCIAL USE (OR INTERNET FACING USE)... (c) David H Hoyt LLC 2020-2025
+    Timestamp   : 2025-07-16T01:38:52Z
+    Endpoint    : http://localhost:8182/iccfromxml
+    Thread ID   : 27004
+=============================================
+[+] Service listening at: http://localhost:8182/
+```
 
 ---
-
-## 🚀 Usage
-
-### Run the Service
-
-```bash
-iccFromXml_http_service.exe
-```
 
 ### Send a Request
 
@@ -77,7 +81,7 @@ curl -X POST http://localhost:8182/iccfromxml --data-binary "@example.icc.xml" -
 
 ---
 
-## 🧪 Fuzzing-Ready
+## Fuzzing-Ready
 
 This service is ready for fuzzing with:
 
@@ -124,8 +128,8 @@ XML successfully created
 
 ---
 
-## 🧾 License
+## License
 
-`Copyright (c) 2024-2025 David H Hoyt LLC`
+`Copyright (c) 2024-2025 David H Hoyt LLC` 
 
 NOT FOR COMMERCIAL USE | DO NOT EXPOSE TO INTERNET | REMOTE CODE EXECUTION DEMONSTRATION (RCE)
