@@ -1,10 +1,8 @@
-[![color.org logo](ReadMeFiles/ICC_header.png "color.org")](https://color.org)
-
 # Research
 
-**Last Updated:** 11-MAY-2025 1200Z
+**Last Updated:** 15-JULY-2025 0030Z by David Hoyt
 
-**Intent:** Code Coverage & AFL Makefiles
+**Intent:** CICD, Research, Code Coverage, AFL Makefiles
 
 ### Build cov
 
