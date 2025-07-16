@@ -1,0 +1,26 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+
+  <start>
+    <element name="ICCProfile">
+      <zeroOrMore>
+        <ref name="anyElement"/>
+      </zeroOrMore>
+    </element>
+  </start>
+
+  <define name="anyElement">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+        <choice>
+          <attribute>
+            <anyName/>
+          </attribute>
+          <text/>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+</grammar>

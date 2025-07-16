@@ -1,0 +1,34 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <start>
+    <element name="ICCProfile">
+      <element name="Header">
+        <element name="ProfileVersion"><text/></element>
+        <element name="DeviceClass"><text/></element>
+        <element name="ColorSpace"><text/></element>
+        <element name="PCS"><text/></element>
+        <element name="RenderingIntent"><text/></element>
+        <element name="Manufacturer"><text/></element>
+        <element name="Model"><text/></element>
+      </element>
+      <element name="TagList">
+        <zeroOrMore>
+          <element name="Tag">
+            <element name="Sig"><text/></element>
+            <element name="Type"><text/></element>
+            <element name="Data">
+              <choice>
+                <element name="Description"><text/></element>
+                <element name="XYZNumber">
+                  <element name="X"><text/></element>
+                  <element name="Y"><text/></element>
+                  <element name="Z"><text/></element>
+                </element>
+                <text/>
+              </choice>
+            </element>
+          </element>
+        </zeroOrMore>
+      </element>
+    </element>
+  </start>
+</grammar>
