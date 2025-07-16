@@ -1,4 +1,6 @@
-# ICC XML HTTP Service
+# ICC XML HTTP Service - WIP
+
+**Work in Progress**
 
 RESTful service for bidirectional conversion between ICC XML and .icc using iccMAX.
 
@@ -16,7 +18,7 @@ RESTful service for bidirectional conversion between ICC XML and .icc using iccM
 
 ---
 
-## 🛠️ Build Instructions (Windows)
+## 🛠️ Build Overview
 
 ### Prerequisites
 
@@ -31,14 +33,7 @@ RESTful service for bidirectional conversion between ICC XML and .icc using iccM
 
 ### Environment Setup
 
-Make sure the following vcpkg include and lib paths are accessible:
-
-```
-C:\test\vcpkg\installed\x64-windows\include
-C:\test\vcpkg\installed\x64-windows\lib
-```
-
-You can adjust them in `Makefile.icc` under `INCLUDES` and `LDFLAGS`.
+WIP - this section will be updated soon.
 
 ---
 
@@ -46,13 +41,8 @@ You can adjust them in `Makefile.icc` under `INCLUDES` and `LDFLAGS`.
 
 1. Open a `x64 Native Tools Command Prompt for VS 2022`
 2. Navigate to the project directory
-3. Run:
 
-```bash
-nmake -f Makefile.icc
-```
-
-> Output: `icc_http_service.exe`
+WIP - this section will be updated soon.
 
 ---
 
@@ -136,6 +126,6 @@ XML successfully created
 
 ## 🧾 License
 
-`Copyright (c) David H Hoyt LLC`
+`Copyright (c) 2024-2025 David H Hoyt LLC`
 
-PERSONAL USE ONLY | NOT FOR COMMERCIAL USE | 30 DAY EVALUATION LICENSE
+NOT FOR COMMERCIAL USE | DO NOT EXPOSE TO INTERNET | REMOTE CODE EXECUTION DEMONSTRATION (RCE)
