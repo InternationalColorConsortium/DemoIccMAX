@@ -2028,14 +2028,14 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
               pushLab2ToXyz(pFromXform->m_pConnectionConditions);
             else
               pushLabToXyz(pFromXform->m_pConnectionConditions);
-            if (pFromXform->NeedAdjustPCS()) {
+            if (pFromXform->NeedAdjustDstPCS()) {
               pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
               pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
             }
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustSrcPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2052,14 +2052,14 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
               pushLab2ToXyz(pFromXform->m_pConnectionConditions);
             else
               pushLabToXyz(pFromXform->m_pConnectionConditions);
-            if (pFromXform->NeedAdjustPCS()) {
+            if (pFromXform->NeedAdjustSrcPCS()) {
               pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
               pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
             }
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                           pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                           pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2081,14 +2081,14 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
         switch (m_dstSpace) {
           case icSigLabPcsData:
             pushXyzInToXyz();
-            if (pFromXform->NeedAdjustPCS()) {
+            if (pFromXform->NeedAdjustSrcPCS()) {
               pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
               pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
             }
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2102,14 +2102,14 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
 
           case icSigXYZPcsData:
             pushXyzInToXyz();
-            if (pFromXform->NeedAdjustPCS()) {
+            if (pFromXform->NeedAdjustSrcPCS()) {
               pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
               pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
             }
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2135,7 +2135,7 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                                   pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                                   pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2152,7 +2152,7 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2189,7 +2189,7 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2206,7 +2206,7 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2240,7 +2240,7 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2259,7 +2259,7 @@ icStatusCMM CIccPcsXform::Connect(CIccXform *pFromXform, CIccXform *pToXform)
             if ((stat=pushXYZConvert(pFromXform, pToXform))!=icCmmStatOk) {
               return stat;
             }
-            if (pToXform->NeedAdjustPCS()) {
+            if (pToXform->NeedAdjustDstPCS()) {
               pushOffset3(pToXform->m_PCSOffset[0]/pToXform->m_PCSScale[0],
                             pToXform->m_PCSOffset[1]/pToXform->m_PCSScale[1],
                             pToXform->m_PCSOffset[2]/pToXform->m_PCSScale[2]);
@@ -2327,7 +2327,7 @@ icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignatur
 
   if (srcSpace == icSigXYZData) {
     pushXyzInToXyz();
-    if (pToXform->NeedAdjustPCS()) {
+    if (pToXform->NeedAdjustSrcPCS()) {
       pushScale3(pToXform->m_PCSScale[0], pToXform->m_PCSScale[1], pToXform->m_PCSScale[2]);
       pushOffset3(pToXform->m_PCSOffset[0], pToXform->m_PCSOffset[1], pToXform->m_PCSOffset[2]);
     }
@@ -2346,12 +2346,12 @@ icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignatur
 
     if (pToXform->GetSrcSpace() == icSigXYZData) {
       pushLabToXyz(pToXform->m_pConnectionConditions);
-      if (pToXform->NeedAdjustPCS()) {
+      if (pToXform->NeedAdjustSrcPCS()) {
         pushScale3(pToXform->m_PCSScale[0], pToXform->m_PCSScale[1], pToXform->m_PCSScale[2]);
         pushOffset3(pToXform->m_PCSOffset[0], pToXform->m_PCSOffset[1], pToXform->m_PCSOffset[2]);
       }
     }
-    else if (pToXform->NeedAdjustPCS()) {
+    else if (pToXform->NeedAdjustSrcPCS()) {
       pushLabToXyz(pToXform->m_pConnectionConditions);
       pushScale3(pToXform->m_PCSScale[0], pToXform->m_PCSScale[1], pToXform->m_PCSScale[2]);
       pushOffset3(pToXform->m_PCSOffset[0], pToXform->m_PCSOffset[1], pToXform->m_PCSOffset[2]);
@@ -2360,7 +2360,7 @@ icStatusCMM CIccPcsXform::ConnectFirst(CIccXform* pToXform, icColorSpaceSignatur
       else
         pushXyzToLab(pToXform->m_pConnectionConditions);
     }
-    else if (pToXform->UseLegacyPCS() && !pToXform->IsInput() && srcSpace == icSigLabData) {
+    else if (pToXform->UseLegacyPCS() && !pToXform->IsInput()) {
       pushLabToLab2();
     }
 
@@ -2393,18 +2393,20 @@ icStatusCMM CIccPcsXform::ConnectLast(CIccXform* pFromXform, icColorSpaceSignatu
     return icCmmStatBadXform;
   icColorSpaceSignature srcSpace = pFromXform->GetDstSpace();
 
-  if (pFromXform->NeedAdjustPCS() && IsSpaceColorimetricPCS(dstSpace)) {
+  if (pFromXform->NeedAdjustDstPCS() && IsSpaceColorimetricPCS(dstSpace)) {
     if (srcSpace == icSigLabData) {
       if (pFromXform->UseLegacyPCS())
         pushLab2ToXyz(pFromXform->m_pConnectionConditions);
       else
         pushLabToXyz(pFromXform->m_pConnectionConditions);
-
-      pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
-      pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
-
-      srcSpace = icSigXYZData;
     }
+
+    pushScale3(pFromXform->m_PCSScale[0], pFromXform->m_PCSScale[1], pFromXform->m_PCSScale[2]);
+    pushOffset3(pFromXform->m_PCSOffset[0], pFromXform->m_PCSOffset[1], pFromXform->m_PCSOffset[2]);
+
+    pushXyzToXyzIn();
+
+    srcSpace = icSigXYZData;
   }
 
   if (srcSpace == icSigXYZData && dstSpace == icSigLabData) {
@@ -2418,9 +2420,6 @@ icStatusCMM CIccPcsXform::ConnectLast(CIccXform* pFromXform, icColorSpaceSignatu
       pushLabToXyz(pFromXform->m_pConnectionConditions);
     if (pFromXform->IsInput())
       pushXyzToXyzIn();
-  }
-  else if (pFromXform->IsInput() && srcSpace == icSigXYZData && dstSpace == icSigXYZData) {
-    pushXyzToXyzIn();
   }
   else if (pFromXform->UseLegacyPCS() && pFromXform->IsInput() && srcSpace == icSigLabData && dstSpace == icSigLabData) {
     pushLab2ToLab();
