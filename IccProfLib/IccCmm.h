@@ -437,6 +437,8 @@ public:
   void SetSrcPCSConversion(bool bPcsConvert) { m_bSrcPcsConversion = bPcsConvert; }
   void SetDstPCSConversion(bool bPcsConvert) { m_bDstPcsConversion = bPcsConvert; }
   bool NeedAdjustPCS() { return m_bAdjustPCS; }
+  bool NeedAdjustSrcPCS() { return m_bAdjustPCS && !m_bSrcPcsConversion; }
+  bool NeedAdjustDstPCS() { return m_bAdjustPCS && !m_bDstPcsConversion; }
   bool LuminanceMatching() { return m_bLuminanceMatching; }
 
   virtual IIccProfileConnectionConditions *GetConnectionConditions() const { return m_pConnectionConditions; }
