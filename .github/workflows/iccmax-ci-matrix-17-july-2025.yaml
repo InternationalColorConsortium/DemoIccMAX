@@ -141,10 +141,10 @@ jobs:
           cd DemoIccMAX/Build
           make -j$(sysctl -n hw.ncpu)
           echo "✔ Build process completed. Listing generated files..."
-      - name: Upload Linux Artifacts
+      - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: iccmax-linux-${{ matrix.compiler }}
+          name: iccmax-macos-${{ matrix.compiler }}
           path: Build
       - name: Summary Report
         if: always()
