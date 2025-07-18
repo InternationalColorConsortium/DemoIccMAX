@@ -57,7 +57,7 @@ jobs:
             cmake-build-${{ runner.os }}-${{ matrix.build_type }}-
       - name: Install dependencies
         run: |
-          git https://github.com/InternationalColorConsortium/DemoIccMAX.git
+          git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
           cd DemoIccMAX
           vcpkg integrate install
           vcpkg install
