@@ -2,13 +2,13 @@
 
 ## [iccMAX v2.1.26 for Brew](https://github.com/InternationalColorConsortium/DemoIccMAX/releases/tag/v2.1.26)
 
-_Last Updated: 2025-04-28 09:00:43 by David Hoyt_
+_Last Updated: 21-JULY-2025 1200Z by David Hoyt_
 
 ---
 
 ## Overview
 
-This Homebrew formula packages the [International Color Consortium's](https://www.color.org/) **iccMAX** reference implementation tools, version **2.1.26**, for cross-platform color management support.  
+This Homebrew formula packages the [International Color Consortium's](https://www.color.org/) **iccMAX** demonstration implementation tools, version **2.1.26**, for cross-platform color management support.  
 
 It provides command-line tools and libraries used for profile management, XML conversions, and ICC testing.
 

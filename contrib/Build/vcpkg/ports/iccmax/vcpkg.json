@@ -1,7 +1,7 @@
 {
   "name": "iccmax",
   "version-string": "2.1.26",
-  "description": "Reference Implementation for iccMAX",
+  "description": "Demonstration Implementation for iccMAX",
   "homepage": "https://github.com/InternationalColorConsortium/DemoIccMAX",
   "license": "MIT",
   "dependencies": [
