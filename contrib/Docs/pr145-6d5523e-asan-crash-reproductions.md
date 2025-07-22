@@ -7,7 +7,7 @@
 `iccRoundTrip Testing/ICS/Rec2100HlgFull-Part2.icc`
 
 ```
-/home/runner/work/PatchIccMAX/PatchIccMAX/PatchIccMAX/IccProfLib/IccEval.cpp:139:28: runtime error: downcast of address 0x507000000090 which does not point to an object of type 'CIccTagLutAtoB'
+IccProfLib/IccEval.cpp:139:28: runtime error: downcast of address 0x507000000090 which does not point to an object of type 'CIccTagLutAtoB'
 0x507000000090: note: object is of type 'CIccTagMultiProcessElement'
  00 00 00 00  08 cf b8 a5 28 7f 00 00  00 00 00 00 03 00 03 00  20 02 00 00 30 50 00 00  02 00 00 00
               ^~~~~~~~~~~~~~~~~~~~~~~
@@ -16,6 +16,51 @@
 =================================================================
 ==5223==ERROR: LeakSanitizer: detected memory leaks
 ```
+
+
+`Test CalcElement Operations return of zero's indicates that something bad happened`
+
+```
+
+/home/runner/work/PatchIccMAX/PatchIccMAX/PatchIccMAX/IccProfLib/IccMpeCalc.cpp:4563:37: runtime error: downcast of address 0x503000000400 which does not point to an object of type 'CIccMpeCalculator'
+0x503000000400: note: object is of type 'CIccMpeCurveSet'
+ 00 00 00 00  30 6b 98 35 97 7f 00 00  00 00 00 00 03 00 03 00  30 04 00 00 30 50 00 00  60 04 00 00
+              ^~~~~~~~~~~~~~~~~~~~~~~
+              vptr for 'CIccMpeCurveSet'
+
+=================================================================
+==5181==ERROR: LeakSanitizer: detected memory leaks
+```
+
+`Test NamedColor with Illuminant A 10degree`
+
+```
+===========================================================================
+Test Grayscale GSDF Display link profile with ambient luminance of 20cd/m^2
+/home/runner/work/PatchIccMAX/PatchIccMAX/PatchIccMAX/IccProfLib/IccMpeCalc.cpp:4563:37: runtime error: downcast of address 0x503000000790 which does not point to an object of type 'CIccMpeCalculator'
+0x503000000790: note: object is of type 'CIccMpeCurveSet'
+ 00 00 00 00  30 6b b8 24 33 7f 00 00  00 00 00 00 01 00 01 00  30 02 00 00 20 50 00 00  50 02 00 00
+              ^~~~~~~~~~~~~~~~~~~~~~~
+              vptr for 'CIccMpeCurveSet'
+
+=================================================================
+==5204==ERROR: LeakSanitizer: detected memory leaks
+```
+
+`Test RGB GSDF Display link profile with ambient luminant of 30cd/m^2`
+
+
+```
+/home/runner/work/PatchIccMAX/PatchIccMAX/PatchIccMAX/IccProfLib/IccMpeCalc.cpp:4563:37: runtime error: downcast of address 0x5030000007c0 which does not point to an object of type 'CIccMpeCalculator'
+0x5030000007c0: note: object is of type 'CIccMpeCurveSet'
+ 00 00 00 00  30 6b 58 c4 fa 7f 00 00  00 00 00 00 01 00 01 00  10 05 00 00 20 50 00 00  30 05 00 00
+              ^~~~~~~~~~~~~~~~~~~~~~~
+              vptr for 'CIccMpeCurveSet'
+
+=================================================================
+==5206==ERROR: LeakSanitizer: detected memory leaks
+```
+
 
 `iccFromXml CMYK-3DLUTs.xml CMYK-3DLUTs.icc`
 
