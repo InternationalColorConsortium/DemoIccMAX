@@ -4,6 +4,19 @@
 
 ## Reproduction PoC's
 
+`iccRoundTrip Testing/ICS/Rec2100HlgFull-Part2.icc`
+
+```
+/home/runner/work/PatchIccMAX/PatchIccMAX/PatchIccMAX/IccProfLib/IccEval.cpp:139:28: runtime error: downcast of address 0x507000000090 which does not point to an object of type 'CIccTagLutAtoB'
+0x507000000090: note: object is of type 'CIccTagMultiProcessElement'
+ 00 00 00 00  08 cf b8 a5 28 7f 00 00  00 00 00 00 03 00 03 00  20 02 00 00 30 50 00 00  02 00 00 00
+              ^~~~~~~~~~~~~~~~~~~~~~~
+              vptr for 'CIccTagMultiProcessElement'
+
+=================================================================
+==5223==ERROR: LeakSanitizer: detected memory leaks
+```
+
 `iccFromXml CMYK-3DLUTs.xml CMYK-3DLUTs.icc`
 
 ```
