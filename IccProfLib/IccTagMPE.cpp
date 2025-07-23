@@ -65,7 +65,6 @@
 // HISTORY:
 //
 // -Initial implementation by Max Derhak 1-30-2006
-// -Fix Overflow, Memory Ops, Housekeeping by David Hoyt 24-April-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -1696,40 +1695,22 @@ icValidateStatus CIccTagMultiProcessElement::Validate(std::string sigPath, std::
     case icSigBRDFAToB0Tag:
     case icSigBRDFAToB1Tag:
     case icSigBRDFAToB2Tag:
-
-// ===========================================================================
-// TODO: Attempt to Debug UB Issues
-// WHO: David Hoyt
-// DATE: 30 APRIL 2025 1800 EDT
-// INTENT: Add aids to debugging and logging to address TC, UB, Leaks etc..
-// OUTCOME: Refuzz
-//
-//
-// BUG CLASSES: UB, Memory Safety, Leaks
-//
-// DEP ISSUES: None Identified
-//
-// ===========================================================================
-
     case icSigBRDFAToB3Tag:
       {
         switch(icGetFirstSigPathSig(sigPath)) {
           case icSigBrdfTransformMbr:
-            // TODO: Actual transform-based I/O detection pending
-            nInput = 0;
-            nOutput = 0;  // currently unused default
+            //TODO: Initialize input and output
+            nInput = nOutput = 0;
             break;
 
           case icSigBrdfLightTransformMbr:
-            // TODO: Actual transform-based I/O detection pending
-            nInput = 0;
-            nOutput = 0;  // currently unused default
+            //TODO: Initialize input and output
+            nInput = nOutput = 0;
             break;
 
           case icSigBrdfOutputTransformMbr:
-            // TODO: Actual transform-based I/O detection pending
-            nInput = 0;
-            nOutput = 0;  // currently unused default
+            //TODO: Initialize input and output
+            nInput = nOutput = 0;
             break;
 
           default:

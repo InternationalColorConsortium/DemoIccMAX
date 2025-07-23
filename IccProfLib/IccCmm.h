@@ -67,7 +67,6 @@
 // -Initial implementation by Max Derhak 5-15-2003
 // -Added support for Monochrome ICC profile apply by Rohit Patil 12-03-2008
 // -Integrate changes for PCS adjustment by George Pawle 12-09-2008
-// -Fix Compile Errors by David Hoyt 01-MAY-2025
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -438,6 +437,8 @@ public:
   void SetSrcPCSConversion(bool bPcsConvert) { m_bSrcPcsConversion = bPcsConvert; }
   void SetDstPCSConversion(bool bPcsConvert) { m_bDstPcsConversion = bPcsConvert; }
   bool NeedAdjustPCS() { return m_bAdjustPCS; }
+  bool NeedAdjustSrcPCS() { return m_bAdjustPCS && !m_bSrcPcsConversion; }
+  bool NeedAdjustDstPCS() { return m_bAdjustPCS && !m_bDstPcsConversion; }
   bool LuminanceMatching() { return m_bLuminanceMatching; }
 
   virtual IIccProfileConnectionConditions *GetConnectionConditions() const { return m_pConnectionConditions; }
@@ -1052,6 +1053,8 @@ protected:
   icStatusCMM Optimize();
 
   void pushRouteMcs(CIccTagArray *pSrcChannels, CIccTagArray *pDstChannels, CIccTagNumArray *pDefaults);
+  void pushLab2ToLab();
+  void pushLabToLab2();
   void pushLab2ToXyz(IIccProfileConnectionConditions *pPCC);
   void pushXyzToLab2(IIccProfileConnectionConditions *pPCC);
   void pushLabToXyz(IIccProfileConnectionConditions *pPCC);
@@ -1484,40 +1487,22 @@ protected:
  * 
  **************************************************************************
  */
-
-// ===========================================================================
-// LATEST FIX: Compile Errors
-// WHO: David Hoyt
-// DATE: 30 APRIL 2025 1800 EDT
-// INTENT: Push through compile errors by adding necessary fixes
-// OUTCOME: Added incremental changes for enum
-//
-//
-// BUG CLASSES: NaN, Enum etc..
-//
-// DEP ISSUES: None Identified
-//
-// ===========================================================================
-
 class ICCPROFLIB_API CIccPCSUtil
 {
 public:
-    CIccPCSUtil();
-    virtual ~CIccPCSUtil() {}
+  CIccPCSUtil();
+  virtual ~CIccPCSUtil() {}
 
-    static void LabToXyz(icFloatNumber* Dst, const icFloatNumber* Src, bool bNoClip = false);
-    static void XyzToLab(icFloatNumber* Dst, const icFloatNumber* Src, bool bNoClip = false);
-    static void Lab2ToXyz(icFloatNumber* Dst, const icFloatNumber* Src, bool bNoClip = false);
-    static void XyzToLab2(icFloatNumber* Dst, const icFloatNumber* Src, bool bNoClip = false);
-    static icFloatNumber NegClip(icFloatNumber v);
-    static icFloatNumber UnitClip(icFloatNumber v);
+  static void LabToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip=false);
+  static void XyzToLab(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip=false);
+  static void Lab2ToXyz(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip=false);
+  static void XyzToLab2(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoClip=false);
+  static icFloatNumber NegClip(icFloatNumber v);
+  static icFloatNumber UnitClip(icFloatNumber v);
 
-    static void Lab2ToLab4(icFloatNumber* Dst, const icFloatNumber* Src, bool bNoClip = false);
-    static void Lab4ToLab2(icFloatNumber* Dst, const icFloatNumber* Src);
-
-    static void CheckLast(icFloatNumber* Dst, icColorSpaceSignature destSpace, bool bNoClip = false);
+  static void Lab2ToLab4(icFloatNumber *Dst, const icFloatNumber *Src, bool bNoclip=false);
+  static void Lab4ToLab2(icFloatNumber *Dst, const icFloatNumber *Src);
 };
-
 
 
 /**
@@ -1957,21 +1942,6 @@ protected:
 * 
 **************************************************************************
 */
-
-// ===========================================================================
-// LATEST FIX: Add to Class to resolve Compiler Errors
-// WHO: David Hoyt
-// DATE: 30 APRIL 2025 1800 EDT
-// INTENT: Proper Initialization
-// OUTCOME: Added incremental changes for re-fuzzing, first pass attempt
-//
-//
-// BUG CLASSES: Definitions
-//
-// DEP ISSUES: None Identified
-// 
-// ===========================================================================
-
 class ICCPROFLIB_API CIccMruCmm : public CIccCmm
 {
   friend class CIccApplyMruCmm;
@@ -1993,7 +1963,7 @@ public:
   virtual icStatusCMM AddXform(CIccProfile *pProfile, icRenderingIntent nIntent=icUnknownIntent,
     icXformInterp nInterp=icInterpLinear, icXformLutType nLutType=icXformLutColor,
     bool bUseMpeTags=true, CIccCreateXformHintManager *pHintManager=NULL)  { return icCmmStatBad; }
-virtual icStatusCMM AddXform(CIccProfile &Profile, icRenderingIntent nIntent=icUnknownIntent,
+  virtual icStatusCMM AddXform(CIccProfile &Profile, icRenderingIntent nIntent=icUnknownIntent,
     icXformInterp nInterp=icInterpLinear, icXformLutType nLutType=icXformLutColor,
     bool bUseMpeTags=true, CIccCreateXformHintManager *pHintManager=NULL) { return icCmmStatBad; }
 

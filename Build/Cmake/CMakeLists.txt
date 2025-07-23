@@ -1,20 +1,20 @@
 #################################################################################
-# Cmake Project Configuration| Color Bleed Research
-# Copyright (C) 2024-2025 David H Hoyt LLC
+# Cmake Project Configuration| iccMAX Project
+# Copyright (C) 2024-2025 The International Color Consortium.
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: 06-MAY-2025 0658 EDT by David Hoyt
+#  Last Updated: 17-JULY-2025 2055 EDT by David Hoyt
 #
 #
 #
-#  Changes: Runners, research
-#
-#
-#
-#
-#
-#
+#  Changes: Align Version on IccProfLibVer.h, Housekeeping, Debug Options
+#           Dup check on flags etc
+#           Adjusted Cross Platform Build args
+#						
+#  TODO:    Version Headers, Doxygen Config, Exports etc...
+#           Reduce 3-Tier CMakeLists.txt in NamedCmm, IccApplyProfiles
+#           Refactor this to .mk's, add research args, other Housekeeping
 #
 #
 #################################################################################
@@ -48,7 +48,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)  # Modern minimum for policy sa
 set(CMAKE_WARN_DEPRECATED TRUE)
 
 # Optional: clean up obsolete warnings (only enable if really needed)
-set(CMAKE_POLICY_WARNING_CMP0012 TRUE)
+# set(CMAKE_POLICY_WARNING_CMP0012 TRUE)
 
 # Suppress redundant regeneration messages (less CLI noise)
 set(CMAKE_SUPPRESS_REGENERATION ON)
@@ -59,10 +59,10 @@ set(CMAKE_SUPPRESS_REGENERATION ON)
 
 string(TIMESTAMP CURRENT_DATETIME "%Y-%m-%d %H:%M:%S")
 message(STATUS "")
-message(STATUS "##########################################################################")
-message(STATUS "## Configuring for the Color Bleed Research Project at ${CURRENT_DATETIME}")
-message(STATUS "## David H Hoyt LLC | The Color Bleed Bug | https://srd.cx/cve-2022-26730/")  
-message(STATUS "##########################################################################")
+message(STATUS "############################################################")
+message(STATUS "## Demonstration Implementation for iccMAX color profiles ##") 
+message(STATUS "############################################################")
+message(STATUS "## Configuration and Build started at ${CURRENT_DATETIME} ##") 
 message(STATUS "")
 
 # ----------------------------------------------------------------------
@@ -85,22 +85,27 @@ endif()
 # Project Identity and Versioning
 # ----------------------------------------------------------------------
 
-project(RefIccMAX LANGUAGES CXX)
-set(PROJECT_UP_NAME "REFICCMAX")  # All-uppercase variant for internal macros
-set(PROJECT_DOWN_NAME "reficcmax")  # All-lowercase variant for packaging
+project(RefIccMAX LANGUAGES C CXX)
+set(PROJECT_UP_NAME "REFICCMAX")
+set(PROJECT_DOWN_NAME "reficcmax")
 
-# Version Components
+# Version components
 set(${PROJECT_UP_NAME}_MAJOR_VERSION 2)
-set(${PROJECT_UP_NAME}_MINOR_VERSION 1)
-set(${PROJECT_UP_NAME}_MICRO_VERSION "30.research")
+set(${PROJECT_UP_NAME}_MINOR_VERSION 2)
+set(${PROJECT_UP_NAME}_MICRO_VERSION 61)
+
+# Composite versions
 set(${PROJECT_UP_NAME}_VERSION
   "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}.${${PROJECT_UP_NAME}_MICRO_VERSION}"
 )
-
-# Optional derived version (major.minor only)
-set(${PROJECT_NAME}_VERSION_MAJORMINOR
-  "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}"
+set(${PROJECT_UP_NAME}_VERSION_MAJORMINOR
+  "${${PROJECT_UP_NAME}_MAJOR_VERSION}.${${PROJECT_UP_NAME}_MINOR_VERSION}"
 )
+
+# Optional: expose as RefIccMAX_VERSION too
+set(${PROJECT_NAME}_VERSION "${${PROJECT_UP_NAME}_VERSION}")
+set(${PROJECT_NAME}_VERSION_MAJORMINOR "${${PROJECT_UP_NAME}_VERSION_MAJORMINOR}")
+
 
 # Set C++ standard globally
 set(CMAKE_CXX_STANDARD 17)
@@ -109,7 +114,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Descriptive metadata (for packaging, install, CI)
 set(PACKAGE_NAME "${PROJECT_DOWN_NAME}")
 set(PACKAGE_DESCRIPTION
-  "Debug Instrumented Build from research Branch. David H Hoyt LLC."
+  "Demonstration Implementation for iccMAX color profiles."
 )
 
 # ----------------------------------------------------------------------
@@ -135,14 +140,18 @@ set(PROJECT_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 # ----------------------------------------------------------------------
 # Host System Diagnostics
 # Print key info for reproducibility and debugging
+# ----------------------------------------------------------------------
 message(STATUS "")
 message(STATUS "===  Build Environment Diagnostics ===")
 message(STATUS "Source Directory       : ${CMAKE_SOURCE_DIR}")
 message(STATUS "Project Root Directory : ${PROJECT_ROOT_DIR}")
-message(STATUS "System Name           : ${CMAKE_SYSTEM_NAME}")
+message(STATUS "System Name            : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "System Version         : ${CMAKE_SYSTEM_VERSION}")
 message(STATUS "Processor Architecture : ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "Build Host             : $ENV{COMPUTERNAME} ($ENV{USERNAME})")
+execute_process(COMMAND hostname OUTPUT_VARIABLE BUILD_HOST OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND whoami OUTPUT_VARIABLE BUILD_USER OUTPUT_STRIP_TRAILING_WHITESPACE)
+message(STATUS "Build Host             : ${BUILD_HOST} (${BUILD_USER})")
+message(STATUS "MSBuild Path            : $ENV{MSBUILD_PATH}")
 message(STATUS "=========================================")
 message(STATUS "")
 
@@ -182,9 +191,12 @@ string(REPLACE "${PATH_SEPARATOR}" ";" PATH_LIST "$ENV{PATH}")
 list(LENGTH PATH_LIST PATH_LENGTH)
 
 message(STATUS "PATH Entries:")
-foreach(INDEX RANGE 0 [expr ${PATH_LENGTH} - 1])
-  list(GET PATH_LIST ${INDEX} PATH_ENTRY)
-  message(STATUS "  [${INDEX}] ${PATH_ENTRY}")
+foreach(INDEX RANGE 0 ${PATH_LENGTH})
+  math(EXPR IDX "${INDEX} - 1")
+  if(IDX GREATER_EQUAL 0)
+    list(GET PATH_LIST ${IDX} PATH_ENTRY)
+    message(STATUS "  [${IDX}] ${PATH_ENTRY}")
+  endif()
 endforeach()
 
 # Core CMake Environment Variables
@@ -221,12 +233,23 @@ if(WIN32)
   message(STATUS "### Windows Specific Details ###")
   message(STATUS "Windows SDK Version     : ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
 
-  if(DEFINED ENV{MSBUILD_PATH})
-    message(STATUS "MSBuild Path            : $ENV{MSBUILD_PATH}")
-  else()
-    message(WARNING "MSBuild Path is not defined in environment variables.")
+  # ----------------------------------------------------------------------
+  # MSBuild Detection for Windows
+  # ----------------------------------------------------------------------
+  if(NOT DEFINED ENV{MSBUILD_PATH})
+    # Attempt to auto-detect common VS2022+ MSBuild path
+    set(_default_msbuild "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe")
+
+    if(EXISTS "${_default_msbuild}")
+      set(ENV{MSBUILD_PATH} "${_default_msbuild}")
+      message(STATUS "MSBuild path auto-detected and set to: ${_default_msbuild}")
+    else()
+      message(WARNING "MSBuild Path is not defined in environment variables and default path not found.")
+    endif()
   endif()
 
+  # Always print final value
+  message(STATUS "MSBuild Path            : $ENV{MSBUILD_PATH}")
   message(STATUS "Linker Flags            : ${CMAKE_EXE_LINKER_FLAGS}")
 endif()
 
@@ -365,25 +388,6 @@ message(STATUS "GNU Install Library Dir: ${CMAKE_INSTALL_LIBDIR}")
 message(STATUS "GNU Install CMake Dir  : ${CMAKE_INSTALL_DATAROOTDIR}/cmake")
 
 # ----------------------------------------------------------------------
-# AddressSanitizer / Fuzzing Configuration
-# ----------------------------------------------------------------------
-
-option(ENABLE_ASAN "Enable AddressSanitizer (requires compatible compiler)" OFF)
-option(ENABLE_FUZZING "Enable Fuzzing Sanitizer (requires clang/libfuzzer)" OFF)
-
-if(ENABLE_ASAN OR CMAKE_CXX_FLAGS MATCHES "-fsanitize=address")
-  message(STATUS "[SANITIZER] ASAN detected - disabling /INCREMENTAL for MSVC.")
-  if(MSVC)
-    add_link_options(/INCREMENTAL:NO)
-  endif()
-endif()
-
-if(ENABLE_FUZZING)
-  message(STATUS "[SANITIZER] Fuzzing enabled - applying fuzzer flags.")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=fuzzer")
-endif()
-
-# ----------------------------------------------------------------------
 # Build Feature Toggles
 # ----------------------------------------------------------------------
 
@@ -396,11 +400,11 @@ option(ENABLE_TOOLS               "Build tools (command-line + GUI)"            
 option(ENABLE_SHARED_LIBS         "Build dynamic link libraries"                        ON)
 option(ENABLE_STATIC_LIBS         "Build static libraries"                              ON)
 option(ENABLE_ICCXML              "Build IccXML library support"                        ON)
-option(ICC_TRACE_NAN_ENABLED      "Enable tracing NaN inputs in debug builds"           ON)
-option(ICC_CLUT_DEBUG             "Enable CLUT debugging support"                       ON)
-option(ICC_ENABLE_ASSERTS         "Enable ICC_ASSERT traps and debug assertions"        ON)
-option(ICC_LOG_SAFE               "Enable ICC_LOG_SAFE_VAL bounds-checked logging"      ON)
-option(ENABLE_SANITIZERS          "Enable runtime sanitizers (ASan, UBSan, etc.)"       ON)
+option(ICC_TRACE_NAN_ENABLED      "Enable tracing NaN inputs in debug builds"           OFF)
+option(ICC_CLUT_DEBUG             "Enable CLUT debugging support"                       OFF)
+option(ICC_ENABLE_ASSERTS         "Enable ICC_ASSERT traps and debug assertions"        OFF)
+option(ICC_LOG_SAFE               "Enable ICC_LOG_SAFE_VAL bounds-checked logging"      OFF)
+option(ENABLE_SANITIZERS          "Enable runtime sanitizers (ASan, UBSan, etc.)"       OFF)
 option(ENABLE_FUZZING             "Enable fuzzing instrumentation (libFuzzer)"          OFF)
 option(ENABLE_SPECTRE_MITIGATION  "Enable /Qspectre on MSVC for Spectre V1 mitigation"  OFF)
 option(ENABLE_USEREFICCMAXNAMESPACE "Use refIccMAX namespace wrapping"                  OFF)
@@ -524,35 +528,59 @@ elseif(UNIX)
     message(STATUS "Configuring GCC/Clang runtime and flags")
 endif()
 
-# Architecture determination
+# ----------------------------------------------------------------------
+# Architecture and Platform Detection
+# ----------------------------------------------------------------------
+
 if(APPLE)
   message(STATUS "Detected platform: macOS")
+
+  # Detect native architecture (e.g., arm64 or x86_64)
   execute_process(
     COMMAND uname -m
-    COMMAND tr -d '\n'
     OUTPUT_VARIABLE OSX_ARCHITECTURE
+    OUTPUT_STRIP_TRAILING_WHITESPACE
   )
+
   if("${OSX_ARCHITECTURE}" STREQUAL "arm64")
-    message(STATUS "Configuring build for ARM64 architecture.")
+    message(STATUS "Configuring build for Apple Silicon (ARM64).")
     set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architecture")
     add_compile_definitions(ARM64)
+    message(STATUS ">>> Macro 'ARM64' is defined for Apple Silicon targets.")
+
   elseif("${OSX_ARCHITECTURE}" STREQUAL "x86_64")
-    message(STATUS "Configuring build for X86_64 architecture.")
+    message(STATUS "Configuring build for Intel macOS (x86_64).")
     set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "macOS architecture")
+
   else()
-    message(FATAL_ERROR "Unsupported macOS architecture: ${OSX_ARCHITECTURE}")
+    message(FATAL_ERROR "Unsupported macOS architecture detected: '${OSX_ARCHITECTURE}'")
   endif()
-  message(STATUS "Final macOS Architecture: ${CMAKE_OSX_ARCHITECTURES}")
+
+  message(STATUS "Final macOS Architecture set: ${CMAKE_OSX_ARCHITECTURES}")
+
 elseif(UNIX AND NOT APPLE)
   message(STATUS "Detected platform: Linux")
-  add_compile_options(-std=c++17 -Wall -Wextra -Wpedantic)
-  message(STATUS "Linux build: Compiler flags set to C++17 with standard warnings.")
+
+  # Recommended flags for Linux/Clang or GCC
+  add_compile_options(
+    -Wall
+    -Wno-overloaded-virtual
+    -Wno-switch
+    -Wno-unused-parameter
+    -Wno-unused-variable
+    -Wno-missing-field-initializers
+  )
+  message(STATUS "Linux build: Standard warning flags applied.")
+
 elseif(WIN32)
   message(STATUS "Detected platform: Windows")
+
+  # Windows + MSVC flags
   add_compile_options(/std:c++17 /D_WINDOWS /EHsc)
-  message(STATUS "Windows build: Compiler flags set to C++17 with MSVC-specific flags.")
+  message(STATUS "Windows build: Compiler flags set for MSVC with C++17 and exceptions enabled.")
+
 else()
-  message(FATAL_ERROR "Unsupported platform!")
+  message(FATAL_ERROR "Unsupported or unknown platform. Aborting build configuration.")
 endif()
 
 # Prevent old-style path-based linking
@@ -616,20 +644,31 @@ set(TARGET_LIB_ICCPROFLIB IccProfLib2 CACHE INTERNAL "Link target for IccProfLib
 # Optional external dependency: LibXML2
 #
 if(ENABLE_ICCXML)
+  message(STATUS "ICCXML support enabled")
+
   if(USE_SYSTEM_LIBXML2)
-    find_package(LibXML2 REQUIRED)
+    find_package(LibXml2 REQUIRED)
   else()
-    find_package(LibXML2)
+    find_package(LibXml2 QUIET)
   endif()
 
-  if(LIBXML2_FOUND)
-    include_directories(${LIBXML2_INCLUDE_DIR})
-    link_directories(${LIBXML2_LIBRARY_DIRS})
-    set(HAVE_LIBXML2 1)
+  if(LibXml2_FOUND)
+    message(STATUS "Found LibXml2 via system or toolchain integration")
+    set(HAVE_LIBXML2 TRUE)
+
+    # Use imported CMake target if available
+    if(TARGET LibXml2::LibXml2)
+      set(LIBXML2_LIBRARIES LibXml2::LibXml2)
+    else()
+      # Legacy fallback (non-target based CMake find)
+      include_directories(${LIBXML2_INCLUDE_DIR})
+      set(LIBXML2_LIBRARIES ${LIBXML2_LIBRARIES})
+    endif()
   else()
+    message(WARNING "LibXml2 not found; falling back to internal IccXML/libxml2")
+
     set(HAVE_LIBXML2 TRUE)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/IccXML/libxml2)
-    link_directories(${CMAKE_CURRENT_BINARY_DIR}/IccXML/libxml2)
     add_subdirectory(IccXML/libxml2)
     set(LIBXML2_LIBRARIES xml2-static)
   endif()
