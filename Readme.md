@@ -21,33 +21,40 @@ bash build.sh
 |-----------------------------|--------------------------------------------------|----------------------|---------------------------------------|
 | Linux (Ubuntu 24.04 LTS)     | Linux Kernel 6.8.0-31-generic (glibc)   | x86_64           | Hyper-V (Iso) |
 
-### Fuzzing Gates
+## Scan Build Summary
 
-**CICD Research**
+| **Field**              | **Value**                          |
+|------------------------|--------------------------------------|
+| **User**               | xss@xnu.x86                     |
+| **Working Directory**  | /opt/pr145/DemoIccMAX/Build   |
+| **Command Line**       | make -j12                           |
+| **Clang Version**      | Homebrew clang version 20.1.7       |
+| **Date**               | Wed Jul 23 06:53:13 2025            |
 
-	
-| **Bug Type**     | **Sub-Type**                      | **START** | **CURRENT** |
-|------------------|-----------------------------------|--------------------|----------------------|
-| **All Bugs**     |                                   | 86                 | 86                    |
-| **Logic Error**  | Assigned value is garbage         | 1                  | 1                    |
-|                  | Dereference of null pointer       | 1                  | 1                    |
-|                  | Garbage return value              | 1                  | 1                    |
-|                  | Result of op is garbage/undefined | 4                  | 4                    |
-|                  | Uninitialized argument value      | 3                  | 3                    |
-| **Memory Error** | Use of zero allocated             | 1                  | 1                    |
-|                  | Use-after-free                    | 3                  | 3                    |
-| **Unused Code**  | Dead assignment                   | 24                 | 21                   |
-|                  | Dead increment                    | 4                  | 4                    |
-|                  | Dead initialization               | 22                 | 20                   |
-|                  | Dead nested assignment            | 2                  | 2                    |
+## Bug Summary
 
-**Known Bugs**
-
-| **Bug Type**     | **Sub-Type**                      | **START** | **CURRENT** |
-|------------------|-----------------------------------|--------------------|----------------------|
-| **All Bugs**     |                                   | 874                 | 848                 |
-| **Other**        | Code Review, CodeQL Bugs          | 860                 | 840                 |
-| **Heap or Stack**  | Over, Under, Other              | 14                  | 8                   |
+| **Bug Type**                          | **Quantity** |
+|----------------------------------------|--------------|
+| **All Bugs**                           | 77           |
+| **Logic Error**                        |              |
+| Dereference of null pointer            | 1            |
+| Garbage return value                   | 1            |
+| Result of operation is garbage/undefined| 4           |
+| Returning null reference               | 1            |
+| **Memory Error**                       |              |
+| Memory leak                            | 5            |
+| Use of zero allocated                  | 2            |
+| Use-after-free                         | 3            |
+| **Stream Handling Error**              |              |
+| Closed stream                          | 1            |
+| Invalid stream state                   | 2            |
+| Resource leak                          | 3            |
+| Stream already in EOF                  | 2            |
+| **Unused Code**                        |              |
+| Dead assignment                        | 24           |
+| Dead increment                         | 4            |
+| Dead initialization                    | 22           |
+| Dead nested assignment                 | 2            |
 
 ---
 
