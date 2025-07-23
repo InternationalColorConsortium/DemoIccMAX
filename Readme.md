@@ -28,16 +28,14 @@ bash build.sh
 	
 | **Bug Type**     | **Sub-Type**                      | **START** | **CURRENT** |
 |------------------|-----------------------------------|--------------------|----------------------|
-| **All Bugs**     |                                   | 67                 | 47                    |
-| **Logic Error**  | Assigned value is garbage         | 1                  | -                    |
-|                  | Dereference of null pointer       | 1                  | -                    |
-|                  | Garbage return value              | 1                  | -                    |
-|                  | Result of op is garbage/undefined | 4                  | -                    |
-|                  | Uninitialized argument value      | 3                  | -                    |
-| **Memory Error** | Double delete                     | 1                  | -                    |
-|                  | Memory leak                       | 1                  | -                    |
-|                  | Use of zero allocated             | 1                  | -                    |
-|                  | Use-after-free                    | 2                  | -                    |
+| **All Bugs**     |                                   | 86                 | 86                    |
+| **Logic Error**  | Assigned value is garbage         | 1                  | 1                    |
+|                  | Dereference of null pointer       | 1                  | 1                    |
+|                  | Garbage return value              | 1                  | 1                    |
+|                  | Result of op is garbage/undefined | 4                  | 4                    |
+|                  | Uninitialized argument value      | 3                  | 3                    |
+| **Memory Error** | Use of zero allocated             | 1                  | 1                    |
+|                  | Use-after-free                    | 3                  | 3                    |
 | **Unused Code**  | Dead assignment                   | 24                 | 21                   |
 |                  | Dead increment                    | 4                  | 4                    |
 |                  | Dead initialization               | 22                 | 20                   |
