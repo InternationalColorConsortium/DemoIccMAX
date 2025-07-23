@@ -6168,7 +6168,7 @@ void CIccXform4DLut::Apply(CIccApplyXform* pApply, icFloatNumber *DstPixel, cons
   }
 
   if (m_bDstPcsConversion)
-    (DstPixel);
+    CheckDstAbs(DstPixel);
 }
 
 /**
