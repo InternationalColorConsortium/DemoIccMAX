@@ -7,8 +7,8 @@
 #
 ## Intent: iccMAX for Cmake Windows Build
 #
-## Last Updated: 17-JULY-2025 2000Z by David Hoyt 
-#
+## Last Updated: 24-JULY-2025 0000Z by David Hoyt 
+#                Add Permission Block
 ## TODO: Push binary releases, tags etc.. 
 #
 ## Comment: Known good and working from PatchIccMax
@@ -20,6 +20,8 @@
 ###############################################################
 
 name: WindowsCmake
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:

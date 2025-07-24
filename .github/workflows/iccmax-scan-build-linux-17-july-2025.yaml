@@ -7,8 +7,8 @@
 #
 ## Intent: iccMAX Scan Build Runner for Matrix OS
 #
-## Last Updated: 17-JULY-2025 2000Z by David Hoyt 
-#
+## Last Updated: 24-JULY-2025 0000Z by David Hoyt 
+##               Add Read Permission Block
 ## TODO: Push binary releases, tags etc.. 
 #
 ## Comment: Known good and working from PatchIccMax
@@ -28,6 +28,9 @@ jobs:
   build-linux:
     name: Build and Test Linux with scan-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
     strategy:
       fail-fast: false
 
