@@ -1,8 +1,19 @@
-## Ubuntu Runner Outputs for Asan using [6d5523e](https://github.com/InternationalColorConsortium/DemoIccMAX/commit/de9e65e9062ea079a80b4cab948246ab26d5523e)
+## PR148 | Updated Runner Outputs for Asan
 
-**22-July-2025**
+**24-July-2025**
 
 ## Reproduction PoC's
+
+`iccApplyNamedCmm.exe SpecRef\sixChanTest.txt 3 0 SpecRef\SixChanCameraRef.icc 2 -pcc PCC\Spec400_10_700-D93_2deg-Abs.icc PCC\Lab_float-D50_2deg.icc 3`
+
+```
+=================================================================
+==26440==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x11fc54ca0480 at pc 0x7ff613b1440f bp 0x0043acefcdc0 sp 0x0043acefcdc0
+WRITE of size 4 at 0x11fc54ca0480 thread T0
+    #0 0x7ff613b1440e in CIccMpeMatrix::Apply(class CIccApplyMpe *, float *, float const *) const E:\pr148\repro1\DemoIccMAX\IccProfLib\IccMpeBasic.cpp:5302
+    #1 0x7ff61390a260 in CIccApplyMpe::Apply(float *, float const *) E:\pr148\repro1\DemoIccMAX\IccProfLib\IccTagMPE.h:213
+```
+
 
 `iccRoundTrip Testing/ICS/Rec2100HlgFull-Part2.icc`
 
