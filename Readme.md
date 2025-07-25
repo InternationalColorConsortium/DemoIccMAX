@@ -1,4 +1,8 @@
-[![color.org logo](ReadMeFiles/ICC_header.png "color.org")](https://color.org)
+> [!NOTE]
+> **Upcoming Repository Name Change**
+> 
+> This project will be renamed to iccDEV on September 5, 2025. On that date, both the project name and its GitHub repository location will be updated accordingly.
+> Please update any bookmarks or dependencies to reflect this change.
 
 # IccMAX
 
