@@ -1,0 +1,33 @@
+trigger:
+  branches:
+    include:
+    - main
+variables:
+- name: VCPKG_DEFAULT_TRIPLET
+  value: x64-windows
+- name: VCPKG_BINARY_SOURCES
+  value: 'clear;nuget,vcpkg,readwrite'
+stages:
+- stage: __default
+  jobs:
+  - job: Job
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+    - task: CmdLine@2
+      displayName: 'Setup Vcpkg'
+      inputs:
+        script: |
+          git submodule update --init --recursive
+          vcpkg integrate install
+          vcpkg install
+    - task: CmdLine@2
+      displayName: 'Configure and Build'
+      inputs:
+        script: |
+          cmake -B . -S Build/Cmake "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          cmake --build . -- /m /maxcpucount
