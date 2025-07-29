@@ -352,7 +352,7 @@ inline bool IsValidTechnologySignature(icUInt32Number sig)
     case (icUInt32Number)icSigFilmScanner:
     case (icUInt32Number)icSigReflectiveScanner:
     case (icUInt32Number)icSigInkJetPrinter:
-    case (icUInt32Number)icSigThermalPrinter:
+    case (icUInt32Number)icSigThermalWaxPrinter:
     case (icUInt32Number)icSigElectrophotographicPrinter:
     case (icUInt32Number)icSigElectrostaticPrinter:
     case (icUInt32Number)icSigDyeSublimationPrinter:
