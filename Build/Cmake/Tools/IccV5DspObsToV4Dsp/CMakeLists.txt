@@ -1,5 +1,5 @@
 #
-# IccV5DspObsToV4Dsp CMakeLists.txt | DemoIccMAX Project
+# IccV5DspObsToV4Dsp CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 #
 #

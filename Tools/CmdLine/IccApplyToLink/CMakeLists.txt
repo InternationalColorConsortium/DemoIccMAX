@@ -1,5 +1,5 @@
 # 
-# IccApplyToLink CMakeLists.txt | DemoIccMAX Project
+# IccApplyToLink CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #

@@ -12,7 +12,7 @@
   - Legacy (plain text)
   - JSON structured format
   - Embedded ICC configurations
-- Applies ICC profiles using ICCMAX-style CMM
+- Applies ICC profiles using ICCDEV-style CMM
 - Supports named-to-named and pixel-to-named transformations
 - Built-in support for:
   - Luminance PCS matching
