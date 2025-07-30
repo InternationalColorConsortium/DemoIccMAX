@@ -1,4 +1,4 @@
-XML files that can be used to create iccMAX profiles can be found in
+XML files that can be used to create iccDEV profiles can be found in
 the following folders:
 
 ## [Calc](Calc)

@@ -1,5 +1,5 @@
 # 
-# IccApplyProfiles CMakeLists.txt | DemoIccMAX Project
+# IccApplyProfiles CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #

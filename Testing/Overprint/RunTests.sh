@@ -1,6 +1,6 @@
 #!/bin/sh
 #################################################################################
-# Overprint/RunTests.sh | iccMAX Project
+# Overprint/RunTests.sh | iccDEV Project
 # Copyright (C) 2024-2025 The International Color Consortium. 
 #                                        All rights reserved.
 # 
@@ -12,7 +12,7 @@
 #
 #
 #
-# Intent: iccMAX CICD
+# Intent: iccDEV CICD
 #
 #
 #

@@ -1,40 +1,51 @@
-#
-# IccApplyProfiles CMakeLists.txt | DemoIccMAX Project
-# Copyright (©) 2024 The International Color Consortium. All rights reserved.
-#
-#
-# Last Updated: 28-JULY-2025 0100Z  by David Hoyt
-#
-# Changes:      Added JSON Dependency
-#               Adjusted Cross Platform Build Args
-#
-#
-# Found the missing Tiff Include Dep from AFL and Graph - DHOYT
-#
-#
+# Option to enable/disable iccApplyProfiles tool
+option(ENABLE_ICCAPPLYPROFILES "Build iccApplyProfiles tool" ON)
 
-# Check if the target is already defined before adding it
-IF(NOT TARGET iccApplyProfiles)
-  # Define the source path relative to this file
-  SET(SRC_PATH ../../../..)
-  SET(SOURCES ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/iccApplyProfiles.cpp
-              ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/TiffImg.cpp
-              ${SRC_PATH}/Tools/CmdLine/IccCommon/IccJsonUtil.cpp
-              ${SRC_PATH}/Tools/CmdLine/IccCommon/IccCmmConfig.cpp
-              )
-  SET(TARGET_NAME iccApplyProfiles)
+if(ENABLE_ICCAPPLYPROFILES)
+  # Correct JSON include path
+  set(NLOHMANN_JSON_INCLUDE_DIR "${CMAKE_BINARY_DIR}/_deps/nlohmann_json-src/include")
 
-  # Define the executable target
-  ADD_EXECUTABLE(${TARGET_NAME} ${SOURCES})
+  if(EXISTS "${NLOHMANN_JSON_INCLUDE_DIR}/nlohmann/json.hpp")
+    include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 
-  # Link the necessary libraries to the target
-  TARGET_LINK_LIBRARIES(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB}) ${TIFF_LIBRARY} )
+    if(NOT TARGET iccApplyProfiles)
+      set(SRC_PATH ../../../..)
+      set(SOURCES
+        ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/iccApplyProfiles.cpp
+        ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/TiffImg.cpp
+        ${SRC_PATH}/Tools/CmdLine/IccCommon/IccJsonUtil.cpp
+        ${SRC_PATH}/Tools/CmdLine/IccCommon/IccCmmConfig.cpp
+      )
+      set(TARGET_NAME iccApplyProfiles)
 
-  # Optional: Install the executable if enabled
-  IF(ENABLE_INSTALL_RIM)
-    INSTALL(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
-  ENDIF()
-ELSE()
-  # Log a warning if the target already exists
-  MESSAGE(WARNING "Target ${TARGET_NAME} already exists. Skipping duplicate addition.")
-ENDIF()
+      # Add include path for IccJsonUtil.h and related headers
+      include_directories(${SRC_PATH}/Tools/CmdLine/IccCommon)
+
+      add_executable(${TARGET_NAME} ${SOURCES})
+      target_link_libraries(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})
+
+      if(TIFF_LIBRARY)
+        message(STATUS "Linking TIFF_LIBRARY: ${TIFF_LIBRARY}")
+        target_link_libraries(${TARGET_NAME} ${TIFF_LIBRARY})
+      endif()
+
+      if(JPEG_LIBRARY)
+        message(STATUS "Linking JPEG_LIBRARY: ${JPEG_LIBRARY}")
+        target_link_libraries(${TARGET_NAME} ${JPEG_LIBRARY})
+      endif()
+
+      if(ZLIB_LIBRARY)
+        message(STATUS "Linking ZLIB_LIBRARY: ${ZLIB_LIBRARY}")
+        target_link_libraries(${TARGET_NAME} ${ZLIB_LIBRARY})
+      endif()
+
+      if(ENABLE_INSTALL_RIM)
+        install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+      endif()
+    else()
+      message(WARNING "Target ${TARGET_NAME} already exists. Skipping duplicate addition.")
+    endif()
+  else()
+    message(WARNING "Skipping iccApplyProfiles: json.hpp not found in ${NLOHMANN_JSON_INCLUDE_DIR}/nlohmann/")
+  endif()
+endif()

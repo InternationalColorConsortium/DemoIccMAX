@@ -1,5 +1,5 @@
 # 
-# IccApplyNamedCmm CMakeLists.txt | DemoIccMAX Project
+# IccApplyNamedCmm CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #

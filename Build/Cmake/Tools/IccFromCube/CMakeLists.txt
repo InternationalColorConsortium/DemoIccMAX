@@ -1,5 +1,5 @@
 # 
-# IccFromCube CMakeLists.txt | DemoIccMAX Project
+# IccFromCube CMakeLists.txt | iccMAX Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #
