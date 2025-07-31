@@ -392,8 +392,10 @@ static void setDstBool(json &j, const char *szName, icDstBool v)
     j[szName] = true;
   else if (v == icDstBoolFalse)
     j[szName] = false;
-  else if (v = icDstBoolFromSrc)
-    j[szName] = "sameAsSoure";
+  else if (v == icDstBoolFromSrc) // Compare, don't assign
+    j[szName] = "sameAsSource";
+  else
+    j[szName] = nullptr; //  handle unexpected values
 }
 
 bool CIccCfgImageApply::fromJson(json j, bool bReset)

@@ -1,11 +1,16 @@
-[![color.org logo](ReadMeFiles/ICC_header.png "color.org")](https://color.org)
+> [!NOTE]
+> **Upcoming Repository Name Change**
+> 
+> This project will be renamed to iccDEV on September 5, 2025. On that date, both the project name and its GitHub repository location will be updated accordingly.
+> Please update any bookmarks or dependencies to reflect this change.
 
 # IccMAX
+
+`brew install iccmax`
 
 ## Introduction
 
 The IccMAX project (formally known as RefIccMAX, or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX based color management profiles based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
-
 
 Within the project are several libraries and tools as follows:
 
@@ -14,14 +19,12 @@ Within the project are several libraries and tools as follows:
   * IccProfLib - The IccMAX IccProfLib project represents an open source &
     cross platform reference implementation of a C++ library for reading,
     writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
-    profile specification](http://www.color.org/iccmax.xalter). Class and object
-    interaction documentation for IccProfLib in [Doxygen](https://xss.cx/public/docs/IccMAX/).
+    profile specification](http://www.color.org/iccmax.xalter).
 
   * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
     objects defined by IccProfLib using an XML representation thus allowing iccMAX
-    profiles to be expressed as or created from text based XML files. Class and object
-    interaction documentation for IccLibXML in [Doxygen](https://xss.cx/public/docs/IccMAX/).
+    profiles to be expressed as or created from text based XML files.
 
 
 * Tools based upon these libraries
@@ -145,230 +148,12 @@ reflectance using Wpt based spectral estimation (see chapter 7 of
 http://scholarworks.rit.edu/theses/8789/. Additionally, examples of 6 channel
 abridged spectral encoding is provided.
 
----
+### Quick Start
 
-## Quick Start
+- [iccMAX Release Binaries](https://github.com/InternationalColorConsortium/DemoIccMAX/releases/tag/v2.1.26) 
+- `brew install iccmax`
+- [Build](BUILD.md)
 
-[Release Libraries & Binaries](https://github.com/xsscx/PatchIccMAX/releases) 
-
-### [Triples Testing Summary](https://github.com/xsscx/PatchIccMAX/actions)
-
-| **Operating System**       | **Kernel Version**                               | **Architecture**     | **Environment**                       |
-|----------------------------|--------------------------------------------------|----------------------|---------------------------------------|
-| macOS                      | Darwin Kernel Version 24.4.0                     | ARM64                | RELEASE_ARM64_T8103                   |
-| macOS                      | Darwin Kernel Version 24.4.0                     | x86_64               | RELEASE_X86_64                        |
-| WSL2 (Linux)               | 5.15.167.4-microsoft-standard-WSL2               | x86_64               | GNU/Linux                             |
-| Microsoft Windows 11 Pro   | Version	10.0.26100 Build 26100                  | x86_64               | Visual Studio 17.13.6                 |
-
----
-
-### Ubuntu | Build Reproduction | GNU Toolchain
-
-Copy and Paste into your Terminal:
-
-```
-export CXX=g++
-cd ~
-git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
-cd DemoIccMAX/Build
-sudo apt-get install -y libpng-dev libjpeg-dev libwxgtk3.2-dev libwxgtk-media3.2-dev libwxgtk-webview3.2-dev wx-common wx3.2-headers libtiff6 curl git make cmake clang clang-tools libxml2 libxml2-dev nlohmann-json3-dev build-essential
-cmake -DCMAKE_INSTALL_PREFIX="$HOME/.local" -DCMAKE_BUILD_TYPE=Debug -DENABLE_TOOLS=ON -DENABLE_SHARED_LIBS=ON -DENABLE_STATIC_LIBS=ON -DENABLE_TESTS=ON -DENABLE_INSTALL_RIM=ON -DENABLE_ICCXML=ON -Wno-dev -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
-make -j$(nproc)
-find IccProfLib/ IccXML/ Tools/ -type f -executable -exec file {} \; | grep 'ELF' | cut -d: -f1
-cd ..
-```
-
-Create Profiles:
-
-```
-cd Testing/
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
-```
-
-### macOS Build Reproduction | Clang Toolchain
-
-Copy and Paste into your Terminal:
-
-```
-export CXX=clang++
-cd ~
-git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
-cd DemoIccMAX/Build
-brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" -Wno-dev Cmake/
-make -j$(nproc)
-cd ..
-```
-
-Create Profiles:
-
-```
-cd Testing/
-/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/UnitTest/CreateAllProfiles.sh)"
-```
-
----
-
-## Windows Build
-
-- **Build the master branch of the project via powershell**:
-
-   ```
-   iex (iwr -Uri "https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/master/contrib/Build/VS2022C/build.ps1").Content
-   ```
-
-### Windows Cmake Instructions
-
-#### Prerequisites
-
-- Windows 10/11
-- Visual Studio 2022 (with C++ Desktop Development workload)
-- PowerShell
-- Administrator or Developer command prompt
-
----
-
-#### Setup: Environment & Dependencies
-
-This example installs `vcpkg` to `c:\test` to avoid `devenv` pollution.
-
-```
-mkdir C:\test\
-cd C:\test\
-```
-
-### Clone vcpkg and bootstrap
-
-```
-git clone https://github.com/microsoft/vcpkg.git
-cd vcpkg
-.\bootstrap-vcpkg.bat -disableMetrics
-.\vcpkg.exe integrate install
-```
-
-#### Install required libraries (both dynamic and static)
-
-```
-.\vcpkg.exe install `
-  libjpeg-turbo `
-  libpng `
-  nlohmann-json:x64-windows `
-  nlohmann-json:x64-windows-static `
-  libxml2:x64-windows `
-  libxml2:x64-windows-static `
-  tiff:x64-windows `
-  tiff:x64-windows-static `
-  wxwidgets:x64-windows `
-  wxwidgets:x64-windows-static
-```
-
-
-#### Clone and Checkout IccMAX
-
-```
-cd ~
-git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
-cd DemoIccMAX
-```
-
----
-
-#### Configure & Build Example (MinSizeRel)
-
-This example Cmake Configure and Build uses `vcpkg` installed to `c:\test` to avoid `devenv` pollution. 
-
-```
-cd Build
-mkdir win
-cd win
-
-cmake -S ..\Cmake -B . -G "Visual Studio 17 2022" -A x64 `
-  -DCMAKE_BUILD_TYPE=MinSizeRel `
-  -DCMAKE_TOOLCHAIN_FILE=C:/test/vcpkg/scripts/buildsystems/vcpkg.cmake `
-  -DCMAKE_C_FLAGS="/MD /Od /Zi /I C:/test/vcpkg/installed/x64-windows/include" `
-  -DCMAKE_CXX_FLAGS="/MD /Od /Zi /I C:/test/vcpkg/installed/x64-windows/include" `
-  -DCMAKE_SHARED_LINKER_FLAGS="/LIBPATH:C:/test/vcpkg/installed/x64-windows/lib" `
-  -DENABLE_TOOLS=ON `
-  -DENABLE_SHARED_LIBS=ON `
-  -DENABLE_STATIC_LIBS=ON `
-  -DENABLE_TESTS=ON `
-  -DENABLE_INSTALL_RIM=ON `
-  -DENABLE_ICCXML=ON `
-  -DENABLE_SPECTRE_MITIGATION=OFF `
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON `
-  --graphviz=iccMAX-project.dot
-
-cmake --build . --config MinSizeRel -- /m /maxcpucount:32
-```
-
-##### Expected Output
-
-```
-  IccProfLib2-static.vcxproj -> Build\win\IccProfLib\MinSizeRel\IccProfLib2-static.lib
-  IccProfLib2.vcxproj -> Build\win\IccProfLib\MinSizeRel\IccProfLib2.dll
-  Aliasing IccProfLib2-static.lib to IccProfLib2.lib for MSVC compatibility
-  iccFromCube.vcxproj -> Build\win\Tools\IccFromCube\MinSizeRel\iccFromCube.exe
-  iccApplyToLink.vcxproj -> Build\win\Tools\IccApplyToLink\MinSizeRel\iccApplyToLink.exe
-  iccPngDump.vcxproj -> Build\win\Tools\IccPngDump\MinSizeRel\iccPngDump.exe
-  IccXML2-static.vcxproj -> Build\win\IccXML\MinSizeRel\IccXML2-static.lib
-  iccV5DspObsToV4Dsp.vcxproj -> Build\win\Tools\IccV5DspObsToV4Dsp\MinSizeRel\iccV5DspObsToV4Dsp.exe
-  iccDumpProfile.vcxproj -> Build\win\Tools\IccDumpProfile\MinSizeRel\iccDumpProfile.exe
-  iccTiffDump.vcxproj -> Build\win\Tools\IccTiffDump\MinSizeRel\iccTiffDump.exe
-  iccSpecSepToTiff.vcxproj -> Build\win\Tools\IccSpecSepToTiff\MinSizeRel\iccSpecSepToTiff.exe
-  iccRoundTrip.vcxproj -> Build\win\Tools\IccRoundTrip\MinSizeRel\iccRoundTrip.exe
-  Aliasing IccXML2-static.lib to IccXML2.lib for MSVC compatibility
-  IccXML2.vcxproj -> Build\win\IccXML\MinSizeRel\IccXML2.dll
-  iccDumpProfileGui.vcxproj -> Build\win\Tools\wxProfileDump\MinSizeRel\iccDumpProfileGui.exe
-  IccMAXCmm.vcxproj -> Build\win\Tools\IccMAXCmm\x64\MinSizeRel\IccMAXCmm.dll
-  iccFromXml.vcxproj -> Build\win\Tools\IccFromXml\MinSizeRel\iccFromXml.exe
-  iccToXml.vcxproj -> Build\win\Tools\IccToXml\MinSizeRel\iccToXml.exe
-  iccApplyNamedCmm.vcxproj -> Build\win\Tools\IccApplyNamedCmm\MinSizeRel\iccApplyNamedCmm.exe
-  iccApplyProfiles.vcxproj -> Build\win\Tools\IccApplyProfiles\MinSizeRel\iccApplyProfiles.exe
-```
-
-### Dependency Install via vcpkg.json
-
-There is `vcpkg.json` to install and integrate the dependencies:
-
-```
-cd DemoIccMAX
-vcpkg integrate install
-vcpkg install
-```
-
-##### Reproduction
-
-```
-[2025-04-13 11:35:22 F:\pr124\DemoIccMAX]%  vcpkg integrate install
-Applied user-wide integration for this vcpkg root.
-CMake projects should use: "-DCMAKE_TOOLCHAIN_FILE= C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg\scripts\buildsystems\vcpkg.cmake"
-
-All MSBuild C++ projects can now #include any installed libraries. Linking will be handled automatically. Installing new libraries will make them instantly available.
-[2025-04-13 11:35:31 F:\pr124\DemoIccMAX]%
-```
-
-Adjust the Cmake Configure args shown above to use `$vcpkg` instead of `C:/test/vcpkg/`
-
-### Visual Studio Solution
-
-`devenv RefIccMAX.sln`
-
----
-
-## Project PR Preflight Checks
-1. Build on Linux, macOS & Windows
-2. Create ICC Profiles
-3. CICD Runner plus Stub
-
-### Project Dependencies
-- `libxml2`: Required for XML support.
-- `libpng-dev`: Required for Png Support.
-- `libjpg-dev`: Required for Jpg Support. 
-- `libjpeg-turbo`: Required for JPEG support.
-- `libwxgtk3.2-dev`: Required for GUI support.
-- `nlohmann-json3-dev`: Enables JSON parsing for configuration files.
-- `libtiff`: Supports TIFF image manipulation for image processing tools.
-- `wxWidgets`: Cross-platform GUI framework for the basic profile viewer.
 
 ---
 

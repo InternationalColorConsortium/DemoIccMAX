@@ -1,7 +1,0 @@
-The following files should be placed in this folder from a LibTiff distribution before trying to build:
-
-libtiff.a
-tiff.h
-tiffconf.h
-tiffio.h
-tiffvers.h

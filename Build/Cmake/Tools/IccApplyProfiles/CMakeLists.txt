@@ -3,9 +3,9 @@
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 #
 #
-# Last Updated: 09-APRIL-2025 1300 EDT  by David Hoyt
+# Last Updated: 28-JULY-2025 0100Z  by David Hoyt
 #
-# Changes:      Added TIFF Dependency
+# Changes:      Added JSON Dependency
 #               Adjusted Cross Platform Build Args
 #
 #
@@ -18,7 +18,10 @@ IF(NOT TARGET iccApplyProfiles)
   # Define the source path relative to this file
   SET(SRC_PATH ../../../..)
   SET(SOURCES ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/iccApplyProfiles.cpp
-              ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/TiffImg.cpp )
+              ${SRC_PATH}/Tools/CmdLine/IccApplyProfiles/TiffImg.cpp
+              ${SRC_PATH}/Tools/CmdLine/IccCommon/IccJsonUtil.cpp
+              ${SRC_PATH}/Tools/CmdLine/IccCommon/IccCmmConfig.cpp
+              )
   SET(TARGET_NAME iccApplyProfiles)
 
   # Define the executable target
