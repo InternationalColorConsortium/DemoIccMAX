@@ -1,160 +1,461 @@
-> [!NOTE]
-> **Upcoming Repository Name Change**
-> 
-> This project will be renamed to iccDEV on September 5, 2025. On that date, both the project name and its GitHub repository location will be updated accordingly.
-> Please update any bookmarks or dependencies to reflect this change.
+# iccDEV WASM Build
+[![WASM](https://github.com/xsscx/PatchIccMAX/actions/workflows/wasm.yaml/badge.svg)](https://github.com/xsscx/PatchIccMAX/actions/workflows/wasm.yaml)
 
-# IccMAX
+**Last Updated** 02-AUGUST-2025 at 1500Z by David Hoyt
 
-`brew install iccmax`
+**TL;DR**
 
-## Introduction
+The WebAssembly build (iccWASM) wraps the iccDEV Command Line Tools in JavaScript enabling color profile development using modern web browsers. 
 
-The IccMAX project (formally known as RefIccMAX, or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX based color management profiles based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/wasm/wasm_remote_build.sh)"
+```
 
-Within the project are several libraries and tools as follows:
+**INTENT:** This Branch `wasm` will be used for Runner CICD & [Build Outputs for .js & .wasm files](https://github.com/InternationalColorConsortium/DemoIccMAX/releases).
 
-* Libraries that allow applications to interact with iccMAX profiles
+## NPM Lib & Tool Bundle
 
-  * IccProfLib - The IccMAX IccProfLib project represents an open source &
-    cross platform reference implementation of a C++ library for reading,
-    writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
-    profile specification](http://www.color.org/iccmax.xalter).
+```
+Tools/IccDumpProfile/iccDumpProfile.wasm
+Tools/IccDumpProfile/iccDumpProfile.js
+Tools/IccFromCube/iccFromCube.js
+Tools/IccFromCube/iccFromCube.wasm
+Tools/IccApplyToLink/iccApplyToLink.wasm
+Tools/IccApplyToLink/iccApplyToLink.js
+Tools/IccApplyProfiles/iccApplyProfiles.js
+Tools/IccApplyProfiles/iccApplyProfiles.wasm
+Tools/IccJpegDump/iccJpegDump.wasm
+Tools/IccJpegDump/iccJpegDump.js
+Tools/IccApplyNamedCmm/iccApplyNamedCmm.wasm
+Tools/IccApplyNamedCmm/iccApplyNamedCmm.js
+Tools/IccFromXml/iccFromXml.js
+Tools/IccFromXml/iccFromXml.wasm
+Tools/IccSpecSepToTiff/iccSpecSepToTiff.wasm
+Tools/IccSpecSepToTiff/iccSpecSepToTiff.js
+Tools/IccRoundTrip/iccRoundTrip.wasm
+Tools/IccRoundTrip/iccRoundTrip.js
+Tools/IccV5DspObsToV4Dsp/iccV5DspObsToV4Dsp.js
+Tools/IccV5DspObsToV4Dsp/iccV5DspObsToV4Dsp.wasm
+Tools/IccToXml/iccToXml.wasm
+Tools/IccToXml/iccToXml.js
+Tools/IccPngDump/iccPngDump.js
+Tools/IccPngDump/iccPngDump.wasm
+Tools/IccTiffDump/iccTiffDump.wasm
+Tools/IccTiffDump/iccTiffDump.js
+IccProfLib/libIccProfLib2.a
+IccXML/libIccXML2.a
+```
 
-  * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
-    extension library (IccLibXML) which provides the ability to interact with the
-    objects defined by IccProfLib using an XML representation thus allowing iccMAX
-    profiles to be expressed as or created from text based XML files.
+## iccDEV WebAssembly (WASM) Build
 
+### Step 1: Set Up Emscripten SDK
 
-* Tools based upon these libraries
-
-  For command line arguments running the application without any arguments
-  will display help information about command line options.
-
-  * IccToXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be expressed using an XML representation. This allows
-    for profiles to be converted to a textual representation that can be directly
-    edited using a text editor and then converted back to ICC/iccMAX profile
-    formats using IccFromXML.
-
-  * IccFromXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be created from the same XML representation provided by
-    IccToXML. A schema for iccXML files is forthcoming but can be determined using
-    the FromXML() and ToXML() member functions defined in IccLibXML. The
-    IccFromXML tool provides a simple direct method to create and manipulate
-    iccMAX based profiles.
-
-  * IccApplyNamedCmm is a cross platform command line tool that allows a
-    sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
-    in a text based input profile outputting the results to the console, and can
-    be redirected to a output text file. Example source text files can be found in
-    Testing/ApplyDataFiles. The IccApplyNamedCmm application provides a basis for
-    testing various features of iccMAX.
-
-  * IccApplyProfiles is a cross platform command line tool that allows a sequence of
-    legacy and/or iccMAX profiles to a source TIFF image resulting in a destination
-    TIFF image. The final destination profile can optionally be embedded in the
-    resulting TIFF image.
-
-  * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console. Data
-    with non-printable values are replaced with '?'. Output from this tool is
-    not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
-    given platform.
-
-    Detailed validation messages start with either "Warning!", "Error!" or "NonCompliant!".
-    The overall status of validation is reported 2 lines below the line starting
-    "Validation Report" and can be located using the following simple `grep`:
-
-    ```bash
-    grep --text -A 3 "^Validation Report" out.txt
-    ```
+```
+cd ~
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+git pull
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+```
 
 
-  * IccRoundTrip is a cross platform command line tool that allows round trip
-    colorimetric processing characteristics of rendering intent of a profile to be
-    evaluated. (Evaluation goes from device values to PCS to establish initial PCS
-    values. These are then converted to device values and then PCS values for the
-    first round trip. Second round trip comparison then converts the second PCS
-    values to device values to PCS values for comparison to the second PCS values.
+### Step 2: Clone iccDEV Repository
 
-  * IccSpecSepToTiff is a cross platform command line tool that combines separate
-    individual TIFF images associated with different spectral wavelengths into a
-    single multi-sample per pixel TIFF image. An iccMAX based profile can optionally
-    be embedded in the resulting TIFF image.
+```
+cd ~
+git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+cd DemoIccMAX
+git checkout wasm
+cd Build
+```
 
-  * IccTiffDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a TIFF image to the console.
+### Step 3: Build Dependencies
 
-  * IccPngDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a PNG image to the console. 
+Create and enter the `third_party` directory:
 
-  * IccJpegDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a JPG image to the console. 
+```
+mkdir third_party && cd third_party
+```
 
-  * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
-    iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
-    wxWidgets 3.2.
+Build each dependency:
 
+* **zlib**:
 
-## Example iccMAX Profiles
+  ```
+  git clone https://github.com/madler/zlib.git && cd zlib
+  emconfigure ./configure --static --prefix=$(pwd)/out
+  emmake make -j$(nproc) && emmake make install
+  cd ..
+  ```
 
-XML files are provided that can be used to create example iccMAX profiles. The
-CreateAllProfiles.bat file uses the iccFromXML tool to create ICC profiles for
-each of these XML files. The XML files can be found in the following folders:
+* **libpng**:
 
-### [Calc](Testing/Calc)
+  ```
+  curl -LO https://download.sourceforge.net/libpng/libpng-1.6.43.tar.gz
+  tar -xzf libpng-1.6.43.tar.gz && mv libpng-1.6.43 libpng && cd libpng
+  CPPFLAGS="-I$(pwd)/../zlib" LDFLAGS="-L$(pwd)/../zlib/out/lib" emconfigure ./configure --disable-shared --enable-static --prefix=$(pwd)/out
+  emmake make -j$(nproc) && emmake make install
+  cd ..
+  ```
 
-This folder contains profiles that demonstrate color modeling using the
-Calculator MultiProcessElement. The srgbCalcTest profile exercises all specified
-calculator operations.
+* **libjpeg**:
 
-### [Display](Testing/Display)
+  ```
+  curl -LO https://ijg.org/files/jpegsrc.v9e.tar.gz
+  tar -xzf jpegsrc.v9e.tar.gz && mv jpeg-9e libjpeg && cd libjpeg
+  emconfigure ./configure --prefix=$(pwd)/out --disable-shared --enable-static
+  emmake make -j$(nproc) && emmake make install
+  cd ..
+  ```
 
-This folder contains profiles that demonstrate spectral modeling of display
-profiles allowing for late binding of the observer using MultiProcessElements
-that are transformed at startup to colorimetry for the desired observer.
+* **libtiff**:
 
-### [Encoding](Testing/Encoding)
+```
+git clone https://gitlab.com/libtiff/libtiff.git && cd libtiff
+mkdir wasm && cd wasm
+emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../out \
+-DZLIB_INCLUDE_DIR=$(realpath ../../zlib) -DZLIB_LIBRARY=$(realpath ../../zlib/out/lib/libz.a) \
+-DJPEG_INCLUDE_DIR=$(realpath ../../libjpeg/out/include) -DJPEG_LIBRARY=$(realpath ../../libjpeg/out/lib/libjpeg.a)
+emmake make -j$(nproc) && emmake make install
+cd ../..
+```
 
-This folder contains 3 channel encoding class profiles. Both "name only"
-profiles as well as fully specified profiles are present.
+* **libxml2**:
 
-### [Named](Testing/Named)
+  ```
+  git clone https://gitlab.gnome.org/GNOME/libxml2.git && cd libxml2
+  emconfigure ./autogen.sh --without-python --disable-shared --enable-static --prefix=$(pwd)/out
+  emmake make -j$(nproc) && emmake make install
+  cd ..
+  ```
 
-This folder contains named color profiles showcasing
-features such as tints, spectral reflectance, and fluorescence (with and with
-out sparse notation).
+* **JSON Headers**:
 
-### [PCC](Testing/PCC)
+  ```
+  mkdir -p nlohmann/json/include
+  curl -L https://github.com/nlohmann/json/releases/latest/download/json.hpp -o nlohmann/json/include/json.hpp
+  cd ..
+  ```
 
-This folder contains various profiles that can be used to
-define Profile Connection Conditions (PCC). All profiles are abstract profiles
-that perform no operation to PCS values. However, all profiles contain fully
-defined PCC tags that provide information that can be used to define rendering
-for various observers and illuminants. Profiles that utilize both absolute
-colorimetry as well as Material Adjusted colorimetry are present.
+### Step 4: Configure & Compile iccDEV
 
-### [SpecRef](Testing/SpaceRef)
+```
+# Copy the deps to fixup the wasm smoke test
+cp -r third_party Cmake
 
-This folder contains various profiles that convert data to/from/between a
-spectral reflectance PCS. The argbRef (AdobeRGB) and srgbRef (sRGB) convert RGB
-values to/from spectral reflectance. RefDecC, RefDecH, and RefIncW are abstract
-spectral reflectance profiles that modify "chroma", "hue", and "lightness" of
-spectral reflectance values in a spectral reflectance PCS. The argbRef, srgbRef,
-RefDecC, RefDecH, RefIncW profiles all estimate and/or manipulate spectral
-reflectance using Wpt based spectral estimation (see chapter 7 of
-http://scholarworks.rit.edu/theses/8789/. Additionally, examples of 6 channel
-abridged spectral encoding is provided.
+# Now configure for wasm and build
+emcmake cmake Cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DENABLE_TOOLS=ON \
+  -DENABLE_STATIC_LIBS=ON \
+  -DLIBXML2_INCLUDE_DIR=$(pwd)/third_party/libxml2/out/include/libxml2 \
+  -DLIBXML2_LIBRARY=$(pwd)/third_party/libxml2/out/lib/libxml2.a \
+  -DTIFF_INCLUDE_DIR=$(pwd)/third_party/libtiff/out/include \
+  -DTIFF_LIBRARY=$(pwd)/third_party/libtiff/out/lib/libtiff.a \
+  -DJPEG_INCLUDE_DIR=$(pwd)/third_party/libjpeg/out/include \
+  -DJPEG_LIBRARY=$(pwd)/third_party/libjpeg/out/lib/libjpeg.a \
+  -DPNG_INCLUDE_DIR=$(pwd)/third_party/libpng/out/include \
+  -DPNG_LIBRARY=$(pwd)/third_party/libpng/out/lib/libpng16.a \
+  -DZLIB_INCLUDE_DIR=$(pwd)/third_party/zlib \
+  -DZLIB_LIBRARY=$(pwd)/third_party/zlib/out/lib/libz.a \
+  -DCMAKE_CXX_FLAGS="\
+    -I$(pwd)/third_party/libtiff/out/include \
+    -I$(pwd)/third_party/libjpeg/out/include \
+    -I$(pwd)/third_party/libpng/out/include \
+    -I$(pwd)/third_party/zlib \
+    -I$(pwd)/third_party/nlohmann/json/include" \
+  -DCMAKE_EXE_LINKER_FLAGS="\
+    -s INITIAL_MEMORY=128MB \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s FORCE_FILESYSTEM=1 \
+    -s MODULARIZE=1 \
+    -s EXPORT_NAME=createModule \
+    -s EXPORTED_RUNTIME_METHODS=['FS','callMain']" \
+  -Wno-dev
 
-### Quick Start
+emmake make -j$(nproc)
+```
 
-- [iccMAX Release Binaries](https://github.com/InternationalColorConsortium/DemoIccMAX/releases/tag/v2.1.26) 
-- `brew install iccmax`
-- [Build](BUILD.md)
+### Step 5: Validate WASM Build
 
+Check WASM format:
 
----
+```
+find IccProfLib/ -name '*.a' -exec sh -c 'for obj in $(ar t "$1" | grep "\.o$"); do ar p "$1" "$obj" > "/tmp/$obj"; command -v wasm-objdump && wasm-objdump -x "/tmp/$obj" | head || echo "wasm-objdump not installed"; done' sh {} \;
+```
 
-[The ICC Software License](LICENSE.md)
+Compile and test a sample CPP file:
+
+```
+em++ test_link.cpp ./IccProfLib/libIccProfLib2.a -o test_link.js \
+-s WASM=1 -s EXIT_RUNTIME=1 -s ENVIRONMENT=node \
+-I./libxml2/out/include/libxml2 -std=c++17
+```
+
+Run validation test:
+
+```
+node test_link.js
+```
+
+### Expected Output
+
+```
+WASM Static Link Test Begin
+CalcFactors returned: 0
+WASM Static Link Test Passed
+```
+
+### Reproduction Log for CmakePreset.json
+
+```
+Fri Aug  1 06:09:24 PM UTC 2025
+Linux icc 6.8.0-71-generic #71-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 22 16:52:38 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+icc@icc:~/pr151/repro6/DemoIccMAX/Build/Cmake$ cmake --preset wasm-release
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Release"
+  CMAKE_CXX_FLAGS="-I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/include -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libjpeg/out/include -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libpng/out/include -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/zlib -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/nlohmann/json/include"
+  CMAKE_EXE_LINKER_FLAGS="-s INITIAL_MEMORY=128MB -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE=1 -s EXPORT_NAME=createModule -s EXPORTED_RUNTIME_METHODS=['FS','callMain']"
+  CMAKE_TOOLCHAIN_FILE="/home/icc/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+  ENABLE_STATIC_LIBS="ON"
+  ENABLE_TOOLS="ON"
+  JPEG_INCLUDE_DIR="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libjpeg/out/include"
+  JPEG_LIBRARY="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libjpeg/out/lib/libjpeg.a"
+  LIBXML2_INCLUDE_DIR="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libxml2/out/include/libxml2"
+  LIBXML2_LIBRARY="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libxml2/out/lib/libxml2.a"
+  PNG_INCLUDE_DIR="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libpng/out/include"
+  PNG_LIBRARY="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libpng/out/lib/libpng16.a"
+  TIFF_INCLUDE_DIR="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/include"
+  TIFF_LIBRARY="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/lib/libtiff.a"
+  ZLIB_INCLUDE_DIR="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/zlib"
+  ZLIB_LIBRARY="/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/zlib/out/lib/libz.a"
+
+--
+-- ############################################################
+-- ## Demonstration Implementation for iccMAX color profiles ##
+-- ############################################################
+-- ## Configuration and Build started at 2025-08-01 18:08:19 ##
+--
+--
+-- === Project Configuration Summary ===
+--   Project Name       : RefIccMAX
+--   Internal Name (UP) : REFICCMAX
+--   Version (Full)     : 2.2.61
+--   Version (Short)    : 2.2
+--   C++ Standard       : C++17
+--   Description        : Demonstration Implementation for iccMAX color profiles.
+-- =========================================
+--
+--
+-- ===  Build Environment Diagnostics ===
+-- Source Directory       : /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake
+-- Project Root Directory : /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../..
+-- System Name            : Emscripten
+-- System Version         : 1
+-- Processor Architecture : x86
+-- Build Host             : icc (icc)
+-- MSBuild Path            :
+-- =========================================
+--
+--
+-- ### Environment Diagnostics ###
+-- PATH Entries:
+--   [0] /home/icc/emsdk:/home/icc/emsdk/upstream/emscripten:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+-- CMAKE_PREFIX_PATH        :
+-- CMAKE_INSTALL_PREFIX     : /home/icc/emsdk/upstream/emscripten/cache/sysroot
+-- CMAKE_MODULE_PATH        : /home/icc/emsdk/upstream/emscripten/cmake/Modules;/home/icc/emsdk/upstream/emscripten/cmake/Modules;/home/icc/emsdk/upstream/emscripten/cmake/Modules;/home/icc/emsdk/upstream/emscripten/cmake/Modules
+--
+-- ### Compiler & Toolchain Info ###
+-- C++ Compiler            : /home/icc/emsdk/upstream/emscripten/em++
+-- C++ Compiler ID         : Clang
+-- C++ Compiler Version    : 21.0.0
+-- C Compiler              : /home/icc/emsdk/upstream/emscripten/emcc
+-- C Compiler Version      : 21.0.0
+-- Linker                  : /usr/bin/ld
+--
+-- ### Linux/Unix Specific Details ###
+-- System Info            : Linux icc 6.8.0-71-generic #71-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 22 16:52:38 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+-- C++ Compiler           : /home/icc/emsdk/upstream/emscripten/em++
+-- Linker Flags            : -s INITIAL_MEMORY=128MB -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE=1 -s EXPORT_NAME=createModule -s EXPORTED_RUNTIME_METHODS=['FS','callMain']
+--
+-- ### Cross-Platform Debugging ###
+-- Build Type              : Release
+-- Install Prefix          : /home/icc/emsdk/upstream/emscripten/cache/sysroot
+-- Build Generator         : Ninja
+-- Build Tool              : /usr/bin/ninja
+--
+-- ### Build Configuration ###
+-- Build Type              : Release
+-- C++ Standard            : C++17
+-- C++ Flags               : -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/include -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libjpeg/out/include -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libpng/out/include -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/zlib -I/home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/nlohmann/json/include
+-- C Flags                 :
+-- Active Config Flags     :
+--
+-- ### Dependency Summary ###
+-- LibXml2                :  (version: )
+CMake Warning (dev) at /usr/share/cmake-3.28/Modules/FetchContent.cmake:1331 (message):
+  The DOWNLOAD_EXTRACT_TIMESTAMP option was not given and policy CMP0135 is
+  not set.  The policy's OLD behavior will be used.  When using a URL
+  download, the timestamps of extracted files should preferably be that of
+  the time of extraction, otherwise code that depends on the extracted
+  contents might not be rebuilt if the URL changes.  The OLD behavior
+  preserves the timestamps from the archive instead, but this is usually not
+  what you want.  Update your project to the NEW behavior or specify the
+  DOWNLOAD_EXTRACT_TIMESTAMP option with a value of true to avoid this
+  robustness issue.
+Call Stack (most recent call first):
+  CMakeLists.txt:320 (FetchContent_Declare)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Using the multi-header code from /home/icc/pr151/repro6/DemoIccMAX/Build/wasm/_deps/nlohmann_json-src/include/
+-- nlohmann_json          :  (version: )
+--
+-- ### Include Paths ###
+-- IccProfLib             : /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../../IccProfLib
+-- IccXML                 : /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../../IccXML
+--
+-- ### Link Paths ###
+-- IccProfLib             : /home/icc/pr151/repro6/DemoIccMAX/Build/wasm/IccProfLib
+-- IccXML                 : /home/icc/pr151/repro6/DemoIccMAX/Build/wasm/IccXML
+-- Fallback               : /usr/local/lib
+--
+-- ### Debug Library Paths ###
+-- IccProfLib Debug Path : /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../../Build/IccProfLib
+-- IccXML Debug Path     : /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../../Build/IccXML
+--
+-- ### CI/CD Integration ###
+--  CI/CD Integration      : Not Detected
+--
+-- Initializing Install Paths with GNUInstallDirs...
+-- GNU Install Include Dir: include
+-- GNU Install Library Dir: lib
+-- GNU Install CMake Dir  : share/cmake
+--
+-- ### Build Options ###
+-- ENABLE_TESTS               = ON
+-- ENABLE_TOOLS               = ON
+-- ENABLE_SHARED_LIBS         = ON
+-- ENABLE_STATIC_LIBS         = ON
+-- ENABLE_ICCXML              = ON
+-- ICC_TRACE_NAN_ENABLED      = OFF
+-- ICC_CLUT_DEBUG             = OFF
+-- ICC_ENABLE_ASSERTS         = OFF
+-- ICC_LOG_SAFE               = OFF
+-- ENABLE_SANITIZERS          = OFF
+-- ENABLE_FUZZING             = OFF
+-- ENABLE_SPECTRE_MITIGATION  = OFF
+--
+--
+-- ### Build Context Check ###
+-- RefIccMAX is being built as a top-level project.
+-- ENABLE_INSTALL_RIM      = ON
+--
+-- ### Enforcing Default Build Type ###
+-- Build type explicitly set to: Release
+--
+-- ### Initializing Compiler Flags ###
+-- Configuring GCC/Clang runtime and flags
+-- Detected platform: Linux
+-- Linux build: Standard warning flags applied.
+-- Adding subdirectory for IccProfLib.
+CMake Warning (dev) at IccProfLib/CMakeLists.txt:121 (ADD_LIBRARY):
+  ADD_LIBRARY called with SHARED option but the target platform does not
+  support dynamic linking.  Building a STATIC library instead.  This may lead
+  to problems.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- ICCXML support enabled
+-- Found LibXml2 via system or toolchain integration
+-- Adding subdirectory for IccXML.
+-- Starting CMake debug for target: IccXML2
+-- CFILES = ../../../IccXML/IccLibXML/IccIoXml.cpp;../../../IccXML/IccLibXML/IccMpeXml.cpp;../../../IccXML/IccLibXML/IccMpeXmlFactory.cpp;../../../IccXML/IccLibXML/IccProfileXml.cpp;../../../IccXML/IccLibXML/IccTagXml.cpp;../../../IccXML/IccLibXML/IccTagXmlFactory.cpp;../../../IccXML/IccLibXML/IccUtilXml.cpp
+-- ENABLE_SHARED_LIBS = ON
+-- ENABLE_STATIC_LIBS = ON
+-- ENABLE_INSTALL_RIM = ON
+-- LIBXML2_LIBRARIES = LibXml2::LibXml2
+-- PROJECT_UP_NAME = REFICCMAX
+-- EXTRA_LIBS = LibXml2::LibXml2
+-- Building SHARED library: IccXML2
+CMake Warning (dev) at IccXML/CMakeLists.txt:78 (ADD_LIBRARY):
+  ADD_LIBRARY called with SHARED option but the target platform does not
+  support dynamic linking.  Building a STATIC library instead.  This may lead
+  to problems.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Installing SHARED library
+-- Building STATIC library: IccXML2-static
+-- Installing STATIC library
+-- Final TARGET_LIB = IccXML2
+-- SHARED lib output name: SHARED_OUTPUT_NAME-NOTFOUND
+-- SHARED lib output dir: SHARED_OUTPUT_DIR-NOTFOUND
+-- SHARED archive dir: SHARED_ARCHIVE_DIR-NOTFOUND
+-- CMAKE_EXE_LINKER_FLAGS = -s INITIAL_MEMORY=128MB -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE=1 -s EXPORT_NAME=createModule -s EXPORTED_RUNTIME_METHODS=['FS','callMain']
+-- CMAKE_SHARED_LINKER_FLAGS =
+-- CMAKE_MODULE_LINKER_FLAGS =
+-- nlohmann_json library found:
+-- nlohmann_json library found:
+-- Found nlohmann JSON library or target at:
+-- Adding Subdirectory IccFromXml.
+-- Adding Subdirectory: Tools/IccFromXml...
+-- Successfully added Subdirectory: Tools/IccFromXml
+-- Adding Subdirectory IccToXml.
+-- Adding Subdirectory: Tools/IccToXml...
+-- Successfully added Subdirectory: Tools/IccToXml
+-- Adding Subdirectory IccDumpProfile.
+-- Adding Subdirectory: Tools/IccDumpProfile...
+-- Successfully added Subdirectory: Tools/IccDumpProfile
+-- Adding Subdirectory IccRoundTrip.
+-- Adding Subdirectory: Tools/IccRoundTrip...
+-- Successfully added Subdirectory: Tools/IccRoundTrip
+-- Adding Subdirectory IccFromCube.
+-- Adding Subdirectory: Tools/IccFromCube...
+-- Successfully added Subdirectory: Tools/IccFromCube
+-- Adding Subdirectory IccV5DspObsToV4Dsp.
+-- Adding Subdirectory: Tools/IccV5DspObsToV4Dsp...
+-- Successfully added Subdirectory: Tools/IccV5DspObsToV4Dsp
+-- Adding Subdirectory IccTiffDump.
+-- Adding Subdirectory: Tools/IccTiffDump...
+-- Using TIFF_INCLUDE_DIR: /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/include
+-- Linking TIFF_LIBRARY: /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/lib/libtiff.a
+-- Successfully added Subdirectory: Tools/IccTiffDump
+-- Adding Subdirectory IccSpecSepToTiff.
+-- Adding Subdirectory: Tools/IccSpecSepToTiff...
+-- Successfully added Subdirectory: Tools/IccSpecSepToTiff
+-- Adding Subdirectory IccApplyProfiles.
+-- Adding Subdirectory: Tools/IccApplyProfiles...
+-- Linking TIFF_LIBRARY: /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/lib/libtiff.a
+-- Successfully added Subdirectory: Tools/IccApplyProfiles
+-- Adding Subdirectory IccApplyToLink.
+-- Adding Subdirectory: Tools/IccApplyToLink...
+-- Successfully added Subdirectory: Tools/IccApplyToLink
+-- Adding Subdirectory IccApplyNamedCmm.
+-- Adding Subdirectory: Tools/IccApplyNamedCmm...
+-- Linking TIFF_LIBRARY: /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libtiff/out/lib/libtiff.a
+-- Successfully added Subdirectory: Tools/IccApplyNamedCmm
+-- Adding Subdirectory IccJpegDump.
+-- Adding Subdirectory: Tools/IccJpegDump...
+-- Detected Ubuntu version: 24.04
+-- PROJECT_ROOT_DIR resolved as: /home/icc/pr151/repro6/DemoIccMAX
+-- Added executable target: iccJpegDump
+-- Linked with JPEG library: /home/icc/pr151/repro6/DemoIccMAX/Build/Cmake/../third_party/libjpeg/out/lib/libjpeg.a
+-- Linked with platform-specific libraries:
+-- Successfully added Subdirectory: Tools/IccJpegDump
+-- Adding Subdirectory IccPngDump.
+-- Adding Subdirectory: Tools/IccPngDump...
+-- PROJECT_ROOT_DIR resolved as: /home/icc/pr151/repro6/DemoIccMAX
+-- Added executable target: iccPngDump
+-- Include directories added for iccPngDump
+-- Libraries linked for iccPngDump
+-- Successfully added Subdirectory: Tools/IccPngDump
+Configured RefIccMAX-Emscripten64-2.2.61
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/icc/pr151/repro6/DemoIccMAX/Build/wasm
+icc@icc:~/pr151/repro6/DemoIccMAX/Build/Cmake$ cmake --build --preset wasm-release
+ninja: no work to do.
+icc@icc:~/pr151/repro6/DemoIccMAX/Build/Cmake$
+```

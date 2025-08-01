@@ -2,16 +2,16 @@
 # Cmake Project Configuration| iccMAX Project
 # Copyright (C) 2024-2025 The International Color Consortium.
 #                                        All rights reserved.
-# 
-#
-#  Last Updated: 17-JULY-2025 2055 EDT by David Hoyt
 #
 #
+#  Last Updated: 31-JULY-2025 1900Z by David Hoyt
 #
-#  Changes: Align Version on IccProfLibVer.h, Housekeeping, Debug Options
-#           Dup check on flags etc
-#           Adjusted Cross Platform Build args
-#						
+#
+#
+#  Changes: WASM Testing v0.02
+#           Ubuntu24 Only
+#
+#
 #  TODO:    Version Headers, Doxygen Config, Exports etc...
 #           Reduce 3-Tier CMakeLists.txt in NamedCmm, IccApplyProfiles
 #           Refactor this to .mk's, add research args, other Housekeeping
@@ -39,6 +39,8 @@ endif()
 # ----------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)  # Modern minimum for policy safety
+
+cmake_policy(SET CMP0135 NEW)
 
 # Adopt modern behavior for scoped scripts and alias linking
 # cmake_policy(SET CMP0112 NEW)  # Respect parent scope in script mode
@@ -296,40 +298,33 @@ message(STATUS "Active Config Flags     : ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}
 message(STATUS "")
 message(STATUS "### Dependency Summary ###")
 
-# --- LibXml2 ---
-find_package(LibXml2 REQUIRED)
-message(STATUS "LibXml2                : ${LIBXML2_LIBRARIES} (version: ${LIBXML2_VERSION})")
+# --- LibXml2 (Manually Linked) ---
+if(NOT LIBXML2_INCLUDE_DIR OR NOT LIBXML2_LIBRARY)
+  message(FATAL_ERROR "LIBXML2_INCLUDE_DIR or LIBXML2_LIBRARY is not set. Manual libxml2 linking requires both.")
+endif()
+
+add_library(LibXml2::LibXml2 STATIC IMPORTED GLOBAL)
+set_target_properties(LibXml2::LibXml2 PROPERTIES
+  IMPORTED_LOCATION "${LIBXML2_LIBRARY}"
+  INTERFACE_INCLUDE_DIRECTORIES "${LIBXML2_INCLUDE_DIR}"
+)
+
+message(STATUS "LibXml2                : ${LIBXML2_LIBRARY} (headers: ${LIBXML2_INCLUDE_DIR})")
 
 # --- nlohmann_json ---
-find_package(nlohmann_json REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(
+  nlohmann_json
+  URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
+
+FetchContent_MakeAvailable(nlohmann_json)
+
+
+# include_directories(/usr/include)
+# find_package(nlohmann_json REQUIRED)
 message(STATUS "nlohmann_json          : ${nlohmann_json_DIR} (version: ${nlohmann_json_VERSION})")
-
-# --- TIFF ---
-find_package(TIFF REQUIRED)
-message(STATUS "TIFF                   : ${TIFF_LIBRARIES} (version: ${TIFF_VERSION})")
-message(STATUS "TIFF Include Directory : ${TIFF_INCLUDE_DIR}")
-
-# --- PNG ---
-message(STATUS "Checking for PNG...")
-find_package(PNG REQUIRED)
-
-if(PNG_FOUND)
-  message(STATUS "PNG Library            : ${PNG_LIBRARIES}")
-  message(STATUS "PNG Include Directory  : ${PNG_INCLUDE_DIRS}")
-  message(STATUS "PNG Version            : ${PNG_VERSION}")
-else()
-  message(FATAL_ERROR " PNG not found. Please install libpng-dev or install via vcpkg.")
-endif()
-
-# --- JPEG ---
-message(STATUS "Checking for JPEG...")
-find_package(JPEG REQUIRED)
-if(JPEG_FOUND)
-  message(STATUS "JPEG Library           : ${JPEG_LIBRARIES}")
-  message(STATUS "JPEG Include Directory : ${JPEG_INCLUDE_DIR}")
-else()
-  message(FATAL_ERROR " JPEG not found. Please install libjpeg-dev or install via vcpkg.")
-endif()
 
 # ----------------------------------------------------------------------
 # Include Directories
@@ -646,32 +641,26 @@ set(TARGET_LIB_ICCPROFLIB IccProfLib2 CACHE INTERNAL "Link target for IccProfLib
 if(ENABLE_ICCXML)
   message(STATUS "ICCXML support enabled")
 
-  if(USE_SYSTEM_LIBXML2)
-    find_package(LibXml2 REQUIRED)
-  else()
-    find_package(LibXml2 QUIET)
+  if(NOT LIBXML2_INCLUDE_DIR OR NOT LIBXML2_LIBRARY)
+    message(FATAL_ERROR "ENABLE_ICCXML is ON, but LIBXML2_INCLUDE_DIR or LIBXML2_LIBRARY is not set.")
   endif()
 
-  if(LibXml2_FOUND)
-    message(STATUS "Found LibXml2 via system or toolchain integration")
-    set(HAVE_LIBXML2 TRUE)
+  message(STATUS "Using manually specified libxml2:")
+  message(STATUS " - Include dir: ${LIBXML2_INCLUDE_DIR}")
+  message(STATUS " - Static lib : ${LIBXML2_LIBRARY}")
 
-    # Use imported CMake target if available
-    if(TARGET LibXml2::LibXml2)
-      set(LIBXML2_LIBRARIES LibXml2::LibXml2)
-    else()
-      # Legacy fallback (non-target based CMake find)
-      include_directories(${LIBXML2_INCLUDE_DIR})
-      set(LIBXML2_LIBRARIES ${LIBXML2_LIBRARIES})
-    endif()
-  else()
-    message(WARNING "LibXml2 not found; falling back to internal IccXML/libxml2")
+  include_directories(${LIBXML2_INCLUDE_DIR})
 
-    set(HAVE_LIBXML2 TRUE)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/IccXML/libxml2)
-    add_subdirectory(IccXML/libxml2)
-    set(LIBXML2_LIBRARIES xml2-static)
+  if(NOT TARGET LibXml2::LibXml2)
+    add_library(LibXml2::LibXml2 STATIC IMPORTED GLOBAL)
+    set_target_properties(LibXml2::LibXml2 PROPERTIES
+      IMPORTED_LOCATION "${LIBXML2_LIBRARY}"
+      INTERFACE_INCLUDE_DIRECTORIES "${LIBXML2_INCLUDE_DIR}"
+    )
   endif()
+
+  set(HAVE_LIBXML2 TRUE)
+  set(LIBXML2_LIBRARIES LibXml2::LibXml2)
 endif()
 
 #
@@ -691,117 +680,91 @@ message(STATUS "CMAKE_EXE_LINKER_FLAGS = ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "CMAKE_MODULE_LINKER_FLAGS = ${CMAKE_MODULE_LINKER_FLAGS}")
 
-# Ensure nlohmann_json is found
-find_package(nlohmann_json REQUIRED)
+# --- Ensure nlohmann_json is found (Emscripten-safe rewrite) ---
+
+# Don't force /usr/include into path — this breaks Emscripten
+# include_directories(/usr/include)  # <-- COMMENTED OUT
+
+# Diagnostic message for manual or FetchContent builds
 message(STATUS "nlohmann_json library found: ${nlohmann_json_DIR}")
 
 IF(ENABLE_TOOLS)
-  # Verify nlohmann_json is configured properly
-  IF(nlohmann_json_DIR)
-    MESSAGE(STATUS "Found nlohmann JSON library at: ${nlohmann_json_DIR}")
+# --- Ensure nlohmann_json is found (Emscripten-safe) ---
 
-    # Use nlohmann_json include directory
-    include_directories(${nlohmann_json_DIR})
+# Skip system include: Emscripten cannot use /usr/include
+# include_directories(/usr/include)
 
- message(STATUS "Adding IccApplyNamedCmm from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
+message(STATUS "nlohmann_json library found: ${nlohmann_json_DIR}")
 
-# Add subdirectory for IccApplyNamedCmm
-IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
-  add_subdirectory(
-    ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm
-    ${CMAKE_BINARY_DIR}/Tools/IccApplyNamedCmm
-  )
-  message(STATUS "Added IccApplyNamedCmm")
-ELSE()
-  message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyNamedCmm")
-ENDIF()
+if(ENABLE_TOOLS)
+  # Check either CMake config path or target created by FetchContent
+  if(nlohmann_json_DIR OR TARGET nlohmann_json::nlohmann_json)
+    message(STATUS "Found nlohmann JSON library or target at: ${nlohmann_json_DIR}")
 
-    # Add IccApplyProfiles
-    MESSAGE(STATUS "Adding IccApplyProfiles from: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-    IF(EXISTS "${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-      add_subdirectory(
-        ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles
-        ${CMAKE_BINARY_DIR}/Tools/IccApplyProfiles
-      )
-      MESSAGE(STATUS "Added IccApplyProfiles")
-    ELSE()
-      message(FATAL_ERROR "Directory does not exist: ${PROJECT_ROOT_DIR}/Tools/CmdLine/IccApplyProfiles")
-    ENDIF()
-  ELSE()
-    MESSAGE(WARNING "nlohmann JSON library not found. Skipping Tools/IccApplyNamedCmm and Tools/IccApplyProfiles.")
-    RETURN() # Exit script for tools if dependency is not found
-  ENDIF()
+    # Add include directory only if it's a real path (for older setups)
+    if(nlohmann_json_DIR AND EXISTS "${nlohmann_json_DIR}")
+      include_directories(${nlohmann_json_DIR})
+    endif()
 
- # Function to add and log subdirectories
-function(add_tool_subdirectory TOOL_SUBDIRECTORY)
-    message(STATUS "Adding Subdirectory: ${TOOL_SUBDIRECTORY}...")
-    add_subdirectory(${TOOL_SUBDIRECTORY})
-    message(STATUS "Successfully added Subdirectory: ${TOOL_SUBDIRECTORY}")
-endfunction()
+    function(add_tool_subdirectory TOOL_SUBDIRECTORY)
+      message(STATUS "Adding Subdirectory: ${TOOL_SUBDIRECTORY}...")
+      add_subdirectory(${TOOL_SUBDIRECTORY})
+      message(STATUS "Successfully added Subdirectory: ${TOOL_SUBDIRECTORY}")
+    endfunction()
 
-  # Add remaining tools
-  message(STATUS "Adding Subdirectory IccDumpProfile.")
-  ADD_SUBDIRECTORY(Tools/IccDumpProfile)
-  message(STATUS "Adding Subdirectory IccDumpRoundTrip.")
-  ADD_SUBDIRECTORY(Tools/IccRoundTrip)
-  message(STATUS "Adding Subdirectory IccFromCube.")
-  ADD_SUBDIRECTORY(Tools/IccFromCube)
-  message(STATUS "Adding Subdirectory IccV5DspObsToV4Dsp.")
-  ADD_SUBDIRECTORY(Tools/IccV5DspObsToV4Dsp)
-  message(STATUS "Adding Subdirectory IccApplyToLink.")
-  ADD_SUBDIRECTORY(Tools/IccApplyToLink)
-  # Add PNG Tools
+    message(STATUS "Adding Subdirectory IccFromXml.")
+    add_tool_subdirectory(Tools/IccFromXml)
 
-# Check for PNG library
-find_package(PNG REQUIRED)
+    message(STATUS "Adding Subdirectory IccToXml.")
+    add_tool_subdirectory(Tools/IccToXml)
 
-if (PNG_FOUND)
-    include_directories(${PNG_INCLUDE_DIRS})
-    message(STATUS "PNG library found: ${PNG_LIBRARIES}")
+    message(STATUS "Adding Subdirectory IccDumpProfile.")
+    add_tool_subdirectory(Tools/IccDumpProfile)
+
+    message(STATUS "Adding Subdirectory IccRoundTrip.")
+    add_tool_subdirectory(Tools/IccRoundTrip)
+
+    message(STATUS "Adding Subdirectory IccFromCube.")
+    add_tool_subdirectory(Tools/IccFromCube)
+
+    message(STATUS "Adding Subdirectory IccV5DspObsToV4Dsp.")
+    add_tool_subdirectory(Tools/IccV5DspObsToV4Dsp)
+
+    message(STATUS "Adding Subdirectory IccTiffDump.")
+    add_tool_subdirectory(Tools/IccTiffDump)
+
+    message(STATUS "Adding Subdirectory IccSpecSepToTiff.")
+    add_tool_subdirectory(Tools/IccSpecSepToTiff)
+
+    message(STATUS "Adding Subdirectory IccApplyProfiles.")
+    add_tool_subdirectory(Tools/IccApplyProfiles)
+
+    message(STATUS "Adding Subdirectory IccApplyToLink.")
+    add_tool_subdirectory(Tools/IccApplyToLink)
+
+    message(STATUS "Adding Subdirectory IccApplyNamedCmm.")
+    add_tool_subdirectory(Tools/IccApplyNamedCmm)
+
+    message(STATUS "Top-Level JPEG_INCLUDE_DIR = ${JPEG_INCLUDE_DIR}")
+    message(STATUS "Top-Level JPEG_LIBRARY = ${JPEG_LIBRARY}")
+
+    # Force propagation to subdirectories
+    set(JPEG_INCLUDE_DIR "${JPEG_INCLUDE_DIR}" CACHE PATH "Path to JPEG include" FORCE)
+    set(JPEG_LIBRARY "${JPEG_LIBRARY}" CACHE FILEPATH "Path to JPEG static lib" FORCE)
+
+    message(STATUS "Adding Subdirectory IccJpegDump.")
+    add_tool_subdirectory(Tools/IccJpegDump)
 
     message(STATUS "Adding Subdirectory IccPngDump.")
-    ADD_SUBDIRECTORY(Tools/IccPngDump)
-else()
-    message(FATAL_ERROR "PNG library not found. Please install libpng-dev.")
+    add_tool_subdirectory(Tools/IccPngDump)
+
+  else()
+    message(WARNING "nlohmann JSON library not found. Skipping Tools")
+    return()  # Exit from tool addition only
+  endif()
 endif()
 
-    message(STATUS "Adding Subdirectory DemoIccMAXCmm.")
-    ADD_SUBDIRECTORY(Tools/DemoIccMAXCmm)
 
-
-  # Check for TIFF library
-  find_package(TIFF REQUIRED)
-  if (TIFF_FOUND)
-    include_directories(${TIFF_INCLUDE_DIR})
-    message(STATUS "TIFF library found: ${TIFF_LIBRARIES}")
-
-    # Add TIFF-dependent tools
-#    ADD_SUBDIRECTORY(Tools/IccApplyProfiles)
-    message(STATUS "Adding subdirectory IccSpecSepToTiff.")
-    ADD_SUBDIRECTORY(Tools/IccSpecSepToTiff)
-    message(STATUS "Adding Subdirectory IccTiffDump.")
-    ADD_SUBDIRECTORY(Tools/IccTiffDump)
-  else()
-    message(FATAL_ERROR "TIFF library not found. Please install libtiff-dev.")
-  endif()
-
-  # Add XML-related tools
-  message(STATUS "Adding Subdirectory IccFromXml.")
-  ADD_SUBDIRECTORY(Tools/IccFromXml)
-  message(STATUS "Adding Subdirectory IccToXml.")
-  ADD_SUBDIRECTORY(Tools/IccToXml)
-  message(STATUS "Adding Subdirectory IccJpegDump.")
-  ADD_SUBDIRECTORY(Tools/IccJpegDump)
-  
-  # Configure wxWidgets
-  find_package(wxWidgets COMPONENTS core base REQUIRED)
-  if (wxWidgets_FOUND)
-    include(${wxWidgets_USE_FILE})
-      ADD_SUBDIRECTORY(Tools/wxProfileDump)
-    message(STATUS "wxWidgets found and configured")
-  else()
-    message(FATAL_ERROR "wxWidgets not found. Please install it manually or via vcpkg.")
-  endif()
 
 ENDIF(ENABLE_TOOLS)
 
