@@ -1,0 +1,45 @@
+{
+  "name": "iccmax-npm",
+  "version": "2.2.61",
+  "description": "Developer tools for ICC color profiles",
+  "main": "index.js",
+  "files": [
+  	"LICENSE.md",
+  	"BUILD.md",
+  	"Readme.md",
+  	"NodeReadme.md",
+  	"IccProfLib",
+  	"IccXML",
+    "IccApplyNamedCmm",
+    "IccApplyProfiles",
+    "IccApplyToLink",
+    "IccDumpProfile",
+    "IccFromCube",
+    "IccFromXml",
+    "IccJpegDump",
+    "IccRoundTrip",
+    "IccSpecSepToTiff",
+    "IccTiffDump",
+    "iccToFromXml",
+    "IccToXml",
+    "IccV5DspObsToV4Dsp",
+    "index.js",
+    "argbCalc.xml",
+    "test.icc",
+    "test_iccFromXml.js",
+    "test_iccRoundTrip.js",
+    "test_iccToXml.js"
+  ],
+  "keywords": [
+    "icc",
+    "color",
+    "wasm",
+    "iccmax",
+    "color-management"
+  ],
+  "author": "International Color Consortium",
+  "license": "MIT",
+  "dependencies": {
+    "iccmax-npm": "file:iccmax-npm-2.2.61.tgz"
+  }
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ICC ↔ XML Converter</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+  </style>
+</head>
+<body>
+  <div id="PageBodyContainer">
+    <header id="HeaderContainer">
+      <div id="HeaderTitleContainer">
+        <a href="https://color.org/index.xalter">
+          <img src="https://color.org/system/images/ICC_logo_text.gif" width="368" height="27" alt="International Color Consortium">
+        </a>
+      </div>
+      <div id="HeaderLogoContainer">
+        <img src="https://color.org/system/images/ICC_logo_top.gif" width="143" height="65" alt="ICC Logo">
+        <img src="https://color.org/system/images/hd_images.jpg" width="657" height="46" alt="Making color seamless between devices and documents">
+      </div>
+    </header>
+
+    <h1>Convert Between ICC and XML</h1>
+
+    <section>
+      <h2>ICC → XML</h2>
+      <input type="file" id="iccInput" />
+      <button onclick="convertIccToXml()">Convert to XML</button>
+      <textarea id="xmlOutput" rows="20" cols="80" placeholder="Converted XML will appear here..."></textarea>
+    </section>
+
+    <section>
+      <h2>XML → ICC</h2>
+      <input type="file" id="xmlInput" />
+      <button onclick="convertXmlToIcc()">Convert to ICC</button>
+      <a id="iccDownload" style="display:none">Download ICC</a>
+    </section>
+  </div>
+
+  <script src="Tools/IccToXml/iccToXml.js"></script>
+  <script>
+    const createModule_IccToXml = createModule;
+  </script>
+
+  <script src="Tools/IccFromXml/iccFromXml.js"></script>
+  <script>
+    const createModule_IccFromXml = createModule;
+  </script>
+
+  <script>
+    let iccToXmlInstance;
+    let iccFromXmlInstance;
+
+    const iccToXmlReady = createModule_IccToXml().then((mod) => { iccToXmlInstance = mod; });
+    const iccFromXmlReady = createModule_IccFromXml().then((mod) => { iccFromXmlInstance = mod; });
+
+    async function convertIccToXml() {
+      await iccToXmlReady;
+      const file = document.getElementById("iccInput").files[0];
+      if (!file) return alert("No ICC file selected.");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = new Uint8Array(reader.result);
+          iccToXmlInstance.FS.writeFile("input.icc", data);
+          iccToXmlInstance.callMain(["input.icc", "output.xml"]);
+          const xml = iccToXmlInstance.FS.readFile("output.xml", { encoding: "utf8" });
+          document.getElementById("xmlOutput").value = xml;
+        } catch (err) {
+          console.error("Conversion failed:", err);
+          alert("Failed to convert ICC to XML.");
+        }
+      };
+      reader.onerror = () => {
+        console.error("File read failed:", reader.error);
+        alert("Failed to read the file.");
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    async function convertXmlToIcc() {
+      await iccFromXmlReady;
+      const file = document.getElementById("xmlInput").files[0];
+      if (!file) return alert("No XML file selected.");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = new Uint8Array(reader.result);
+          iccFromXmlInstance.FS.writeFile("input.xml", data);
+          iccFromXmlInstance.callMain(["input.xml", "output.icc"]);
+          const out = iccFromXmlInstance.FS.readFile("output.icc");
+          const blob = new Blob([out], { type: "application/octet-stream" });
+          const link = document.getElementById("iccDownload");
+          link.href = URL.createObjectURL(blob);
+          link.download = "output.icc";
+          link.textContent = "Download ICC";
+          link.style.display = "inline";
+        } catch (err) {
+          console.error("Conversion failed:", err);
+          alert("Failed to convert XML to ICC.");
+        }
+      };
+      reader.onerror = () => {
+        console.error("File read failed:", reader.error);
+        alert("Failed to read the file.");
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>

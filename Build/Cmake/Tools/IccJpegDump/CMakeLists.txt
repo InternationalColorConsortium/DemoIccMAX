@@ -1,24 +1,3 @@
-#################################################################################
-# iccJpegDump Cmake Project Configuration| iccMAX Project
-# Copyright (©) 2024-2025 The International Color Consortium. 
-#                                        All rights reserved.
-# 
-#
-# Last Updated: 18-APRIL-2025 1200 EDT by David Hoyt
-#
-# Changes: 	Modified output target to fix a few subproject pathing issues
-#           Added to CMakelists.txt: IccJpegDump
-#           Adjusted Cross Platform Build Args
-#						
-# TODO: Refactor Debug, Release, Asan, subproject pathing issues
-#       Collapse 3-tier CMakeLists.txt, Housekeeping
-#       Refactor Base Configs & logging to .mk's 
-#
-#
-#
-#
-#################################################################################
-
 # Set the project name
 project(iccJpegDump)
 
@@ -33,7 +12,7 @@ if(UNIX AND EXISTS "/etc/lsb-release")
     string(REGEX MATCHALL "[0-9]+" LSB_VERSION_PARTS "${LSB_VERSION}")
 
     if (NOT LSB_VERSION_PARTS)
-        message(WARNING "iccJpegDump is skipped: couldn't be able to detect Ubuntu version")
+        message(WARNING "iccJpegDump is skipped: couldn't detect Ubuntu version")
         return()
     endif()
 
@@ -41,7 +20,7 @@ if(UNIX AND EXISTS "/etc/lsb-release")
     list(GET LSB_VERSION_PARTS 1 UBUNTU_MINOR)
 
     if(NOT UBUNTU_MAJOR OR NOT UBUNTU_MINOR)
-        message(WARNING "iccJpegDump is skipped: couldn't be able to detect Ubuntu version")
+        message(WARNING "iccJpegDump is skipped: Ubuntu version parse failed")
         return()
     endif()
 
@@ -85,6 +64,24 @@ if(WIN32)
     endif()
 
     set(PLATFORM_LIBS ws2_32)
+
+elseif(EMSCRIPTEN)
+    message(STATUS "DEBUG: Input JPEG_INCLUDE_DIR = ${JPEG_INCLUDE_DIR}")
+    message(STATUS "DEBUG: Input JPEG_LIBRARY = ${JPEG_LIBRARY}")
+
+    find_path(JPEG_INCLUDE_DIR jpeglib.h PATHS ${JPEG_INCLUDE_DIR} NO_DEFAULT_PATH)
+    find_library(JPEG_LIBRARY NAMES jpeg PATHS ${JPEG_LIBRARY} NO_DEFAULT_PATH)
+
+    message(STATUS "DEBUG: Resolved JPEG_INCLUDE_DIR = ${JPEG_INCLUDE_DIR}")
+    message(STATUS "DEBUG: Resolved JPEG_LIBRARY = ${JPEG_LIBRARY}")
+
+    if(NOT JPEG_INCLUDE_DIR OR NOT JPEG_LIBRARY)
+        message(FATAL_ERROR "JPEG_INCLUDE_DIR or JPEG_LIBRARY not set or not found for Emscripten")
+    endif()
+
+    include_directories(${JPEG_INCLUDE_DIR})
+    set(PLATFORM_LIBS "")
+
 else()
     find_package(JPEG REQUIRED)
     include_directories(${JPEG_INCLUDE_DIR})
