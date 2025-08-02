@@ -1,5 +1,5 @@
 # 
-# IccApplyToLink CMakeLists.txt | iccDEV Project
+# IccApplyToLink CMakeLists.txt | DemoIccMAX Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #
@@ -26,7 +26,13 @@ IF(NOT TARGET iccApplyToLink)
   ADD_EXECUTABLE(${TARGET_NAME} ${SOURCES})
 
   # Link the necessary libraries to the target
-  TARGET_LINK_LIBRARIES(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})
+#  TARGET_LINK_LIBRARIES(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB})
+target_link_libraries(iccApplyToLink PRIVATE
+    ${TARGET_LIB_ICCPROFLIB}
+    ${TIFF_LIBRARY}
+    ${JPEG_LIBRARY}
+    ${ZLIB_LIBRARY}
+)
 
   # Optional: Install the executable if enabled
   IF(ENABLE_INSTALL_RIM)
