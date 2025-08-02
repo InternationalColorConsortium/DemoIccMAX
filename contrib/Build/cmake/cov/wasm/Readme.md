@@ -112,6 +112,7 @@ Build each dependency:
 * **libtiff**:
 
 ```
+
 git clone https://gitlab.com/libtiff/libtiff.git && cd libtiff
 mkdir wasm && cd wasm
 emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../out \
@@ -119,6 +120,7 @@ emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../out \
 -DJPEG_INCLUDE_DIR=$(realpath ../../libjpeg/out/include) -DJPEG_LIBRARY=$(realpath ../../libjpeg/out/lib/libjpeg.a)
 emmake make -j$(nproc) && emmake make install
 cd ../..
+
 ```
 
 * **libxml2**:
@@ -181,9 +183,11 @@ emmake make -j$(nproc)
 
 Check WASM format:
 
-```
-find IccProfLib/ -name '*.a' -exec sh -c 'for obj in $(ar t "$1" | grep "\.o$"); do ar p "$1" "$obj" > "/tmp/$obj"; command -v wasm-objdump && wasm-objdump -x "/tmp/$obj" | head || echo "wasm-objdump not installed"; done' sh {} \;
-```
+
+`find Tools/ -type f \( -name '*.js' -o -name '*.wasm' \) -ls`
+
+`find IccProfLib/ -name '*.a' -exec sh -c 'for obj in $(ar t "$1" | grep "\.o$"); do ar p "$1" "$obj" > "/tmp/$obj"; command -v wasm-objdump && wasm-objdump -x "/tmp/$obj" | head || echo "wasm-objdump not installed"; done' sh {} \;`
+
 
 Compile and test a sample CPP file:
 
