@@ -6,11 +6,13 @@
 
 # WASM Preview
 
-**Last Updated** 28-July-2025 at 1800Z by David Hoyt
+**Last Updated** 02-AUGUST-2025 at 1300Z by David Hoyt
 
-The WebAssembly build (iccWASM) wraps the iccDEV Command Line Tools in JavaScript enabling color profile development using modern web browsers. 
+**INTENT:** The Branch `wasm` will be used for Runner CICD & [Build Outputs for .js & .wasm files](https://github.com/InternationalColorConsortium/DemoIccMAX/releases).
 
-**INTENT:** This Branch `wasm` will be used for Runner CICD & [Build Outputs for .js & .wasm files](https://github.com/InternationalColorConsortium/DemoIccMAX/releases).
+**SEE WASM BRANCH FOR LATEST WASM BUILD**
+
+**This Branch is a Research Fork**
 
 ## NPM Lib & Tool Bundle
 
