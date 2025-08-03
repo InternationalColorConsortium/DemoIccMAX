@@ -1,6 +1,8 @@
 # iccDEV WASM Build
 [![WASM](https://github.com/xsscx/PatchIccMAX/actions/workflows/wasm.yaml/badge.svg)](https://github.com/xsscx/PatchIccMAX/actions/workflows/wasm.yaml)
 
+**npm install iccwasm**
+
 **Last Updated** 02-AUGUST-2025 at 1500Z by David Hoyt
 
 **TL;DR**

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <ProfileVersion>5.0</ProfileVersion>
+    <ProfileDeviceClass>cenc</ProfileDeviceClass>
+	<DataColourSpace>RGB </DataColourSpace>
+  </Header>
+  <Tags>
+    <utf8TextType>
+	  <TagSignature>rfnm</TagSignature>
+	  <TextData>sRGB</TextData>
+	</utf8TextType>
+	<tagStructureType>
+	  <TagSignature>cept</TagSignature>
+	  <StructureSignature>cept</StructureSignature>
+	  <MemberTags>
+	  <float16NumberType>
+	    <TagSignature>mbpl</TagSignature>
+	    <Data>0.5</Data>
+	  </float16NumberType>
+	  <float16NumberType>
+	    <TagSignature>mwpl</TagSignature>
+	    <Data>200.0</Data>
+	  </float16NumberType>
+	  </MemberTags>
+	</tagStructureType>
+  </Tags>  
+</IccProfile>

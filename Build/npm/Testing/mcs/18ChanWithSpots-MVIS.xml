@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>mvis</ProfileDeviceClass>
+    <ProfileDeviceSubClass>osim</ProfileDeviceSubClass>
+    <DataColourSpace></DataColourSpace>
+	<PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false" MCSNeedsSubset="false" />
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.841281646704631" Y="1.00000000" Z="0.963726140000727"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+	<MCS>mc0012</MCS>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[CMYK over White plus 13 Spots Overprint Visualization using MCS]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <multiProcessElementType>
+      <TagSignature>M2B0</TagSignature>
+	  <MultiProcessElements InputChannels="18" OutputChannels="3">
+		<CalculatorElement InputChannels="18" OutputChannels="3" InputNames="UnderWhite ProcessCyan ProcessMagenta ProcessYellow ProcessBlack OrangeYellow Orange Gold BlueGreen Purple Blue BrightRed PaleYellow White Silver Red WarmPink Violet">
+		    <Variables>
+			  <Declare Name="CMYK">C M Y K</Declare>
+			</Variables>
+			<SubElements>
+
+				<TintArrayElement Name="UnderWhiteScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/UnderSpot1-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="UnderWhiteOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/UnderSpot1-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<CurveSetElement Name="CMYK_Shaper" InputChannels="4" OutputChannels="4">
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Cyan.txt" Format="text"/>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Magenta.txt" Format="text"/>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Yellow.txt" Format="text"/>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Black.txt" Format="text"/>
+				</CurveSetElement>
+				<ExtCLutElement Name="CMYK_Scale" InputChannels="4" OutputChannels="3" Flags="0" StorageType="1"> <!-- Map adjusted CMYK to scaled XYZ -->
+				  <GridPoints>17 17 17 17</GridPoints>
+				  <TableData Filename="Spot-MVIS/CLUT-CMYK-scaleXYZ.txt" Format="text" FileEncoding="float"/>
+				</ExtCLutElement>
+				<ExtCLutElement Name="CMYK_Offset" InputChannels="4" OutputChannels="3" Flags="0" StorageType="1"> <!-- Map adjusted CMYK to offset XYZ -->
+				  <GridPoints>17 17 17 17</GridPoints>
+				  <TableData Filename="Spot-MVIS/CLUT-CMYK-offsetXYZ.txt" Format="text" FileEncoding="float"/>
+				</ExtCLutElement>
+
+				<TintArrayElement Name="OrangeYellowScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot1-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="OrangeYellowOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot1-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="OrangeScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot2-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="OrangeOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot2-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="GoldScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot3-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="GoldOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot3-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="BlueGreenScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot4-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="BlueGreenOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot4-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="PurpleScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot5-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="PurpleOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot5-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="BlueScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot6-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="BlueOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot6-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="BrightRedScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot7-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="BrightRedOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot7-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="PaleYellowScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot8-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="PaleYellowOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot8-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="SilverScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot10-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="SilverOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot10-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="WhiteScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot9-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="WhiteOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot9-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="RedScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot11-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="RedOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot11-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="WarmPinkScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot12-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="WarmPinkOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot12-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="VioletScale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot13-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="VioletOffset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot13-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+        	</SubElements>
+			<MainFunction>
+{
+;default background is D50 for relative white point
+env(bkgX) not if {pop 0.964246}
+env(bkgY) not if {pop 1.000000}
+env(bkgZ) not if {pop 0.824679}
+in{UnderWhite} 0 gt if {
+  in{UnderWhite} tint{UnderWhiteScale} mul(3)
+  in{UnderWhite} tint{UnderWhiteOffset} add(3)
+}
+in{ProcessCyan,4}
+curv{CMYK_Shaper} copy(4) tput{CMYK}
+clut{CMYK_Scale} mul(3)
+tget{CMYK}
+clut{CMYK_Offset} add(3)
+ 
+in{Violet} 0 gt if {
+  in{Violet} tint{VioletScale} mul(3)
+  in{Violet} tint{VioletOffset} add(3)
+}
+in{OrangeYellow} 0 gt if {
+  in{OrangeYellow} tint{OrangeYellowScale} mul(3)
+  in{OrangeYellow} tint{OrangeYellowOffset} add(3)
+}
+in{White} 0 gt if {
+  in{White} tint{WhiteScale} mul(3)
+  in{White} tint{WhiteOffset} add(3)
+}
+in{Orange} 0 gt if {
+  in{Orange} tint{OrangeScale} mul(3)
+  in{Orange} tint{OrangeOffset} add(3)
+}
+in{Gold} 0 gt if {
+  in{Gold} tint{GoldScale} mul(3)
+  in{Gold} tint{GoldOffset} add(3)
+}
+in{BlueGreen} 0 gt if {
+  in{BlueGreen} tint{BlueGreenScale} mul(3)
+  in{BlueGreen} tint{BlueGreenOffset} add(3)
+}
+in{Purple} 0 gt if {
+  in{Purple} tint{PurpleScale} mul(3)
+  in{Purple} tint{PurpleOffset} add(3)
+}
+in{Blue} 0 gt if {
+  in{Blue} tint{BlueScale} mul(3)
+  in{Blue} tint{BlueOffset} add(3)
+}
+in{BrightRed} 0 gt if {
+  in{BrightRed} tint{BrightRedScale} mul(3)
+  in{BrightRed} tint{BrightRedOffset} add(3)
+}
+in{PaleYellow} 0 gt if {
+  in{PaleYellow} tint{PaleYellowScale} mul(3)
+  in{PaleYellow} tint{PaleYellowOffset} add(3)
+}
+in{Red} 0 gt if {
+  in{Red} tint{RedScale} mul(3)
+  in{Red} tint{RedOffset} add(3)
+}
+in{Silver} 0 gt if {
+  in{Silver} tint{SilverScale} mul(3)
+  in{Silver} tint{SilverOffset} add(3)
+}
+in{WarmPink} 0 gt if {
+  in{WarmPink} tint{WarmPinkScale} mul(3)
+  in{WarmPink} tint{WarmPinkOffset} add(3)
+}
+out(0,3)
+}
+        	</MainFunction>					
+		</CalculatorElement>
+	  </MultiProcessElements>
+	</multiProcessElementType>
+
+	<tagArrayType>
+	  <TagSignature>mcta</TagSignature>
+	  <ArraySignature>utf8</ArraySignature>
+	  <ArrayTags> <!-- Order should match InputNames in Calculator Element -->
+		<utf8TextType><TextData>Under-White</TextData></utf8TextType> <!-- UnderSpot 1 -->
+	    <utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Magenta</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Yellow</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Black</TextData></utf8TextType>
+		<utf8TextType><TextData>Orange-Yellow</TextData></utf8TextType> <!-- Spot 1 -->
+		<utf8TextType><TextData>Orange</TextData></utf8TextType> <!-- Spot 2 -->
+		<utf8TextType><TextData>Gold</TextData></utf8TextType> <!-- Spot 3 -->
+		<utf8TextType><TextData>Blue-Green</TextData></utf8TextType> <!-- Spot 4 -->
+		<utf8TextType><TextData>Purple</TextData></utf8TextType> <!-- Spot 5 -->
+		<utf8TextType><TextData>Blue</TextData></utf8TextType> <!-- Spot 6 -->
+		<utf8TextType><TextData>Bright-Red</TextData></utf8TextType> <!-- Spot 7 -->
+		<utf8TextType><TextData>Pale-Yellow</TextData></utf8TextType> <!-- Spot 8 -->
+		<utf8TextType><TextData>White</TextData></utf8TextType> <!-- Spot 9 -->
+		<utf8TextType><TextData>Silver</TextData></utf8TextType> <!-- Spot 10 -->
+		<utf8TextType><TextData>Red</TextData></utf8TextType> <!-- Spot 11 -->
+		<utf8TextType><TextData>Warm-Pink</TextData></utf8TextType> <!-- Spot 12 -->
+		<utf8TextType><TextData>Violet</TextData></utf8TextType> <!-- Spot 13 -->
+	  </ArrayTags>
+	</tagArrayType>
+
+	<uInt16NumberType>
+	  <TagSignature>mdv </TagSignature>
+	  <Data>0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</Data>
+	</uInt16NumberType>
+
+    <XYZType>
+      <TagSignature>wtpt</TagSignature>
+      <XYZNumber X="0.841281646704631" Y="1.00000000" Z="0.963726140000727"/>
+    </XYZType>
+		
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2017 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+  </Tags>
+</IccProfile>

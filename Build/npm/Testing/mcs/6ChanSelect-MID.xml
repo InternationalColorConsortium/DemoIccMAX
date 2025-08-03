@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>mid </ProfileDeviceClass>
+    <ProfileDeviceSubClass>nink</ProfileDeviceSubClass>
+    <DataColourSpace>nc0006</DataColourSpace>
+	<PCS></PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false" MCSNeedsSubset="false" />
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0" Y="0" Z="0"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+	<MCS>mc0006</MCS>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Channel selection for Photoshop CMYKSS image using MCS]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <multiProcessElementType>
+      <TagSignature>A2M0</TagSignature>
+	  <MultiProcessElements InputChannels="6" OutputChannels="6">
+	  <!-- Photoshop inverts the spot samples so invert them to match MCS requirements -->
+		<CalculatorElement InputChannels="6" OutputChannels="6">
+			<SubElements/>
+			<MainFunction>
+			{ in(0,4) out(0,4)
+			1 in(4) sub out(4)
+			1 in(5) sub out(5) }
+			</MainFunction>
+		</CalculatorElement>
+	  </MultiProcessElements>
+	</multiProcessElementType>
+
+	<tagArrayType>
+	  <TagSignature>mcta</TagSignature>
+	  <ArraySignature>utf8</ArraySignature>
+	  <ArrayTags>
+	    <utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
+			<utf8TextType><TextData>Violet</TextData></utf8TextType>
+			<utf8TextType><TextData>Orange</TextData></utf8TextType>
+			<utf8TextType><TextData>White</TextData></utf8TextType>
+			<utf8TextType><TextData>Blue</TextData></utf8TextType>
+			<utf8TextType><TextData>Gold</TextData></utf8TextType>
+	  </ArrayTags>
+	</tagArrayType>
+
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2017 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+  </Tags>
+</IccProfile>

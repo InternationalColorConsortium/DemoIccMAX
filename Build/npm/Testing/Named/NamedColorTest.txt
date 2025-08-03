@@ -1,0 +1,22 @@
+'nmcl'	; Data Format
+icEncodeValue	; Encoding
+
+{ "Black" } 0.0
+{ "Black" } 1.0
+
+{ "Gray" } 0.50
+{ "Gray" } 1.0
+
+{ "Red" } .25
+{ "Red" } .50
+{ "Red" } .75
+{ "Red" } 1
+
+{ "Green" } .20
+{ "Green" } .40
+{ "Green" } .60
+{ "Green" } 1
+
+{ "Blue" } .25
+{ "Blue" } .75
+{ "Blue" } 1

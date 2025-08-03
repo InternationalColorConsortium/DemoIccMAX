@@ -8,6 +8,18 @@
     textarea { width: 100%; box-sizing: border-box; }
     label { display: block; margin-top: 0.5em; }
     input[type="file"], input[type="text"] { margin-top: 0.25em; display: block; }
+    #downloadSection {
+      margin-top: 1em;
+      display: none;
+    }
+    #downloadLink {
+      color: #0078d7;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    #downloadLink:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -22,6 +34,10 @@
     </label>
     <button onclick="runIccToXml()">Convert to XML</button>
     <textarea id="outputLog" rows="20" placeholder="Conversion log will appear here..."></textarea>
+
+    <div id="downloadSection">
+      <a id="downloadLink" href="#" download>Download Output XML File</a>
+    </div>
   </section>
 
   <script src="iccToXml.js"></script>
@@ -48,6 +64,21 @@
         try {
           iccToXmlInstance.FS.writeFile("input.icc", new Uint8Array(reader.result));
           iccToXmlInstance.callMain(["input.icc", outputName]);
+
+          // Wait for output and then offer download
+          setTimeout(() => {
+            try {
+              const data = iccToXmlInstance.FS.readFile(outputName);
+              const blob = new Blob([data], { type: "application/xml" });
+              const url = URL.createObjectURL(blob);
+              const link = document.getElementById("downloadLink");
+              link.href = url;
+              link.download = outputName;
+              document.getElementById("downloadSection").style.display = "block";
+            } catch (e) {
+              document.getElementById("outputLog").value += "\nERROR: Output file not found.";
+            }
+          }, 500);
         } catch (err) {
           document.getElementById("outputLog").value += "\n[⚠️ Error during execution.]\n";
         }

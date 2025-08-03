@@ -1,51 +1,115 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>iccDEV Tools</title>
+  <title>iccDEV WASM Tools</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    textarea { width: 100%; box-sizing: border-box; }
-    label { display: block; margin-top: 0.5em; }
+    body {
+      font-family: Segoe UI, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background-color: #fff;
+      padding: 1rem 0;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+    header img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0.5rem auto;
+    }
+    nav {
+      text-align: center;
+      background-color: #0078d7;
+      padding: 0.5rem 0;
+    }
+    nav a {
+      color: white;
+      margin: 0 1.5rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+    }
+    ul.tool-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.tool-list li {
+      margin: 0.4em 0;
+      padding-left: 1.5em;
+      position: relative;
+    }
+    ul.tool-list li::before {
+      content: "📁";
+      position: absolute;
+      left: 0;
+    }
+    hr {
+      margin: 2rem 0;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <a href="https://color.org/index.xalter">
-        <img src="https://color.org/system/images/ICC_logo_text.gif" width="368" height="27" alt="International Color Consortium">
-      </a>
-    </div>
-    <div>
-      <img src="https://color.org/system/images/ICC_logo_top.gif" width="143" height="65" alt="ICC Logo">
-      <img src="https://color.org/system/images/hd_images.jpg" width="657" height="46" alt="Making color seamless between devices and documents">
-    </div>
-  </header>
 
-<h1>Directory for iccDEV Tools</h1>
-<hr>
-<ul>
-<li><a href="argbCalc.xml">argbCalc.xml</a></li>
-<li><a href="BUILD.md">BUILD.md</a></li>
-<li><a href="IccApplyNamedCmm/">IccApplyNamedCmm/</a></li>
-<li><a href="IccApplyProfiles/">IccApplyProfiles/</a></li>
-<li><a href="IccApplyToLink/">IccApplyToLink/</a></li>
-<li><a href="IccDumpProfile/">IccDumpProfile/</a></li>
-<li><a href="IccFromCube/">IccFromCube/</a></li>
-<li><a href="IccFromXml/">IccFromXml/</a></li>
-<li><a href="IccJpegDump/">IccJpegDump/</a></li>
-<li><a href="IccRoundTrip/">IccRoundTrip/</a></li>
-<li><a href="IccSpecSepToTiff/">IccSpecSepToTiff/</a></li>
-<li><a href="IccTiffDump/">IccTiffDump/</a></li>
-<li><a href="iccToFromXml/">iccToFromXml/</a></li>
-<li><a href="IccToXml/">IccToXml/</a></li>
-<li><a href="IccV5DspObsToV4Dsp/">IccV5DspObsToV4Dsp/</a></li>
-<li><a href="LICENSE.md">LICENSE.md</a></li>
-<li><a href="output.icc">output.icc</a></li>
-<li><a href="output.xml">output.xml</a></li>
-<li><a href="Readme.md">Readme.md</a></li>
-<li><a href="WASM.md">WASM.md</a></li>
-</ul>
-<hr>
+<header>
+  <a href="https://color.org/index.xalter">
+    <img src="https://color.org/system/images/ICC_logo_text.gif" width="368" height="27" alt="International Color Consortium">
+  </a>
+  <img src="https://color.org/system/images/ICC_logo_top.gif" width="143" height="65" alt="ICC Logo">
+  <img src="https://color.org/system/images/hd_images.jpg" width="657" height="46" alt="Making color seamless between devices and documents">
+</header>
+
+<nav>
+  <a href="https://color.org">Home</a>
+  <a href="https://github.com/InternationalColorConsortium/DemoIccMAX">GitHub</a>
+</nav>
+
+<main>
+  <h1>iccDEV WASM Tools Directory</h1>
+  <hr>
+  <ul class="tool-list">
+    <li><a href="argbCalc.xml">argbCalc.xml</a></li>
+    <li><a href="BUILD.md">BUILD.md</a></li>
+    <li><a href="IccScanner/">IccScanner/</a></li>
+    <li><a href="IccApplyNamedCmm/">IccApplyNamedCmm/</a></li>
+    <li><a href="IccApplyProfiles/">IccApplyProfiles/</a></li>
+    <li><a href="IccApplyToLink/">IccApplyToLink/</a></li>
+    <li><a href="IccDumpProfile/">IccDumpProfile/</a></li>
+    <li><a href="IccFromCube/">IccFromCube/</a></li>
+    <li><a href="IccFromXml/">IccFromXml/</a></li>
+    <li><a href="IccJpegDump/">IccJpegDump/</a></li>
+    <li><a href="IccRoundTrip/">IccRoundTrip/</a></li>
+    <li><a href="IccSpecSepToTiff/">IccSpecSepToTiff/</a></li>
+    <li><a href="IccTiffDump/">IccTiffDump/</a></li>
+    <li><a href="IccToXml/">IccToXml/</a></li>
+    <li><a href="IccV5DspObsToV4Dsp/">IccV5DspObsToV4Dsp/</a></li>
+    <li><a href="LICENSE.md">LICENSE.md</a></li>
+    <li><a href="output.icc">output.icc</a></li>
+    <li><a href="output.xml">output.xml</a></li>
+    <li><a href="Readme.md">Readme.md</a></li>
+    <li><a href="WASM.md">WASM.md</a></li>
+  </ul>
+</main>
+
 </body>
 </html>

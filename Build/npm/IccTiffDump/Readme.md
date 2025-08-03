@@ -3,7 +3,7 @@
 **How-To**
 
 1. Clone the Repo
-2. cd `DemoIccMAX\contrib\Build\cmake\cov\wasm\Tools\IccTiffDump`
+2. cd `iccDEV\contrib\Build\cmake\cov\wasm\Tools\IccTiffDump`
 3. run `python3 -m http.server`
 4. Open URL http://localhost:8000/iccTiffDump.html
 
@@ -21,6 +21,6 @@ Serving HTTP on :: port 8000 (http://[::]:8000/) ...
 ## Expected Output
 
 3. iccTiffDump
-[![TiffDump Pic](https://github.com/InternationalColorConsortium/DemoIccMAX/blob/research/contrib/Build/cmake/cov/wasm/Tools/IccTiffDump/iccdev-wasm-icctiffdump-web-spa-example-001.png?raw=true "color.org")](https://color.org)
+[![TiffDump Pic](https://github.com/InternationalColorConsortium/iccDEV/blob/research/contrib/Build/cmake/cov/wasm/Tools/IccTiffDump/iccdev-wasm-icctiffdump-web-spa-example-001.png?raw=true "color.org")](https://color.org)
 
 

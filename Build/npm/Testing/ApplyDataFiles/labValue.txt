@@ -1,0 +1,5 @@
+'Lab ' ; Data Format
+icEncodeValue ; Encoding
+100.0   0.0   0.0
+ 50.0  55.0 -12.0
+ 89.6  -2.1 101.5

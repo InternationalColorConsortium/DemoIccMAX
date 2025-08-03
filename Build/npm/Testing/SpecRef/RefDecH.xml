@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.0</ProfileVersion>
+    <ProfileDeviceClass>abst</ProfileDeviceClass>
+    <DataColourSpace>rs001f</DataColourSpace>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="false" UseWithEmbeddedDataOnly="false"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Absolute</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.9494009398608970" Y="1.00000000" Z="1.0870912220594604"/>
+    </PCSIlluminant>
+    <ProfileCreator>ICC </ProfileCreator>
+    <ProfileID>34562ABF994CCD066D2C5721D0D68C5D</ProfileID>
+    <SpectralPCS>rs001f</SpectralPCS>
+    <SpectralRange>
+      <Wavelengths start="400" end="700" steps="31"/>
+    </SpectralRange>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Decrease Reflectance Hue using Wpt based spectral manipulation described by Max Derhak in  http://scholarworks.rit.edu/theses/8789/]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+    <multiProcessElementType>
+      <TagSignature>D2B0</TagSignature>
+      <MultiProcessElements InputChannels="31" OutputChannels="31">
+        <CalculatorElement InputChannels="31" OutputChannels="31">
+          <Imports>
+            <Import Filename="RefEstimationImport.xml"/>
+          </Imports>      
+          <Variables>
+            <Declare Name="Wch">W c h</Declare>
+            <Declare Name="ModWch">W c h</Declare>
+          </Variables>
+          <MainFunction>
+{
+in(0,31)
+copy(31) ; make copy of reflectance
+call{RefToWpt} ;convert reflectance to Normalized Wpt
+ctop 360 div ; convert to polar and normalize h to range 0.0 - 1.0
+
+tsav{Wch} ; initial Wch
+tput{ModWch} ; modified Wch
+
+;modify h
+tget{ModWch.h}
+0.9 add   ;results in a subtraction of 9 degrees of hue
+1.0 mod
+tput{ModWch.h}
+
+;estimate reflectance from modified Wch
+tget{ModWch}
+call{WchToRef}
+
+;estimate reflectance from original Wch
+tget{Wch}
+call{WchToRef}
+
+;take difference betwen estimated reflectances
+sub(31)
+
+;add difference to original reflectance
+add(31)
+
+out(0,31)
+}
+          </MainFunction>          
+        </CalculatorElement>
+      </MultiProcessElements>
+    </multiProcessElementType>
+    <XYZType>
+      <TagSignature>wtpt</TagSignature>
+         <XYZNumber X="0.9494009398608970" Y="1.00000000" Z="1.0870912220594604"/>
+    </XYZType>
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2015 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <spectralViewingConditionsType>
+      <TagSignature>svcn</TagSignature>
+      <StdObserver>CIE 1931 standard colorimetric observer</StdObserver>
+      <IlluminantXYZ X="0.9494009398608970" Y="1.00000000" Z="1.0870912220594604"/>
+      <ObserverFuncs start="400" end="700" steps="31">
+       0.0143100000000000 0.0435100000000000 0.1343800000000000 0.2839000000000000 0.3482800000000000 0.3362000000000000 0.2908000000000000 0.1953600000000000 0.0956400000000000
+       0.0320100000000000 0.0049000000000000 0.0093000000000000 0.0632700000000000 0.1655000000000000 0.2904000000000000 0.4334500000000000 0.5945000000000000 0.7621000000000000
+       0.9163000000000000 1.0263000000000000 1.0622000000000000 1.0025999999999999 0.8544500000000000 0.6424000000000000 0.4479000000000000 0.2835000000000000 0.1649000000000000
+       0.0874000000000000 0.0467700000000000 0.0227000000000000 0.0113590000000000
+
+       0.0003960000000000 0.0012100000000000 0.0040000000000000 0.0116000000000000 0.0230000000000000 0.0380000000000000 0.0600000000000000 0.0909800000000000 0.1390200000000000
+       0.2080200000000000 0.3230000000000000 0.5030000000000000 0.7100000000000000 0.8620000000000000 0.9540000000000000 0.9949500000000000 0.9950000000000000 0.9520000000000000
+       0.8700000000000000 0.7570000000000000 0.6310000000000000 0.5030000000000000 0.3810000000000000 0.2650000000000000 0.1750000000000000 0.1070000000000000 0.0610000000000000
+       0.0320000000000000 0.0170000000000000 0.0082100000000000 0.0041020000000000
+
+       0.0678500000000000 0.2074000000000000 0.6456000000000000 1.3855999999999999 1.7470600000000001 1.7721100000000001 1.6692000000000000 1.2876399999999999 0.8129500000000000
+       0.4651800000000000 0.2720000000000000 0.1582000000000000 0.0782500000000000 0.0421600000000000 0.0203000000000000 0.0087500000000000 0.0039000000000000 0.0021000000000000
+       0.0016500000000000 0.0011000000000000 0.0008000000000000 0.0003400000000000 0.0001900000000000 0.0000500000000000 0.0000200000000000 0.0000000000000000 0.0000000000000000
+       0.0000000000000000 0.0000000000000000 0.0000000000000000 0.0000000000000000
+      </ObserverFuncs>
+      <StdIlluminant>Illuminant D65</StdIlluminant>
+      <ColorTemperature>6500</ColorTemperature>
+      <IlluminantSPD start="400" end="700" steps="31">
+       82.7549000000000063 91.4860000000000042 93.4317999999999955 86.6822999999999979 104.8649999999999949 117.0079999999999956 117.8119999999999976 114.8610000000000042 115.9230000000000018
+       108.8110000000000070 109.3539999999999992 107.8020000000000067 104.7900000000000063 107.6889999999999930 104.4050000000000011 104.0460000000000065 100.0000000000000000 96.3341999999999956
+       95.7879999999999967 88.6855999999999938 90.0062000000000069 89.5991000000000071 87.6987000000000023 83.2886000000000024 83.6992000000000047 80.0267999999999944 80.2146000000000043
+       82.2777999999999992 78.2841999999999985 69.7212999999999994 71.6090999999999980
+      </IlluminantSPD>
+      <SurroundXYZ X="0.9494009398608970" Y="1.00000000" Z="1.0870912220594604"/>
+    </spectralViewingConditionsType>
+
+    <multiProcessElementType>
+      <TagSignature>c2sp</TagSignature>
+      <MultiProcessElements InputChannels="3" OutputChannels="3">
+        <MatrixElement InputChannels="3" OutputChannels="3">
+          <MatrixData>
+           1.1359895464653496 -0.0506701053085678 -0.0584991133762143
+           0.0982623957708864 0.9345915952901624 -0.0256482672495546
+           -0.0209790930478337 0.0228893743262988 0.7558770356603665
+          </MatrixData>
+        </MatrixElement>
+      </MultiProcessElements>
+    </multiProcessElementType>
+  
+    <multiProcessElementType>
+      <TagSignature>s2cp</TagSignature>
+      <MultiProcessElements InputChannels="3" OutputChannels="3">
+        <MatrixElement InputChannels="3" OutputChannels="3">
+          <MatrixData>
+           0.8776043668559377 0.0458788943119850 0.0694766331308295
+           -0.0915262791147964 1.0643128680092535 0.0290306143218533
+           0.0271291783813654 -0.0309560377410005 1.3240157022082715
+          </MatrixData>
+        </MatrixElement>
+      </MultiProcessElements>
+    </multiProcessElementType>
+
+  </Tags>
+</IccProfile>

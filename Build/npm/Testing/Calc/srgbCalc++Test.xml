@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+	<Header>
+		<PreferredCMMType></PreferredCMMType>
+		<ProfileVersion>5.0</ProfileVersion>
+		<ProfileDeviceClass>spac</ProfileDeviceClass>
+		<DataColourSpace>RGB </DataColourSpace>
+		<PCS>XYZ </PCS>
+		<CreationDateTime>now</CreationDateTime>
+		<ProfileFlags EmbeddedInFile="false" UseWithEmbeddedDataOnly="false"/>
+		<DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+		<RenderingIntent>Relative</RenderingIntent>
+		<PCSIlluminant>
+			<XYZNumber X="0.96420288" Y="1.00000000" Z="0.82490540"/>
+		</PCSIlluminant>
+		<ProfileCreator>ICC </ProfileCreator>
+		<ProfileID>34562ABF994CCD066D2C5721D0D68C5D</ProfileID>
+	</Header>
+	<Tags>
+		<multiLocalizedUnicodeType>
+			<TagSignature>desc</TagSignature>
+			<LocalizedText LanguageCountry="enUS"><![CDATA[sRGB calc tester]]></LocalizedText>
+		</multiLocalizedUnicodeType>
+		<multiProcessElementType>
+			<TagSignature>A2B1</TagSignature>
+			<MultiProcessElements InputChannels="3" OutputChannels="3">
+				<CalculatorElement InputChannels="3" OutputChannels="3">
+					<Imports>
+						<Import Filename="calcImport.xml"/>
+					</Imports>
+					<Variables>
+						<Declare Name="rv" Position="0" Size="21"/>
+						<Declare Name="rgb">r g b</Declare>
+						<Declare Name="primaries">red[3] green[3] blue[3]</Declare>
+					</Variables>
+					<Macros>
+						<Macro Name="tiny">1e-10</Macro>
+						<Macro Name="storergb">tput{rgb}</Macro>
+						<Macro Name="checkrgb">copy(3) call{storergb} tget{rgb} sub(3) abs(3) sum(3) 0.1 lt</Macro>
+						<Macro Name="scaleoffset3" Local="scale offset">tput{@offset} tput{@scale} tget{@scale} smul(3) tget{@offset} sadd(3)</Macro>
+						<Macro Name="scaleoffsetclamp3" Local="range[2]">tput{@range} call{scaleoffset3} tget{@range[0]} copy[1,2] vmax[3] tget{@range[1]} copy[1,2] vmin[3]</Macro>
+					</Macros>		
+					<SubElements>
+						<CurveSetElement Name="applyCurves" InputChannels="3" OutputChannels="3">
+							<SegmentedCurve>
+								<FormulaSegment Start="-infinity" End="+infinity" FunctionType="0">
+									1.00000000 0.5 0.0 0.0
+								</FormulaSegment>
+							</SegmentedCurve>
+							<SegmentedCurve>
+								<FormulaSegment Start="-infinity" End="+infinity" FunctionType="0">
+									1.00000000 1.0 0.0 0.0
+								</FormulaSegment>
+							</SegmentedCurve>
+							<SegmentedCurve>
+								<FormulaSegment Start="-infinity" End="+infinity" FunctionType="0">
+									1.00000000 1.5 0.0 0.0
+								</FormulaSegment>
+							</SegmentedCurve>
+						</CurveSetElement>
+
+						<CurveSetElement Name="applyGamma" InputChannels="3" OutputChannels="3">
+							<SegmentedCurve>
+								<FormulaSegment Start="-infinity" End="0.04045" FunctionType="0">
+									1.00000000 0.0764319 0.0125 0.00000000
+								</FormulaSegment>
+								<FormulaSegment Start="0.04045" End="+infinity" FunctionType="0">
+									2.40000000 0.9429124761 0.05186018619 0.0125
+								</FormulaSegment>
+							</SegmentedCurve>
+							<SegmentedCurve>
+								<FormulaSegment Start="-infinity" End="0.04045" FunctionType="0">
+									1.00000000 0.0764319 0.0125 0.00000000
+								</FormulaSegment>
+								<FormulaSegment Start="0.04045" End="+infinity" FunctionType="0">
+									2.40000000 0.9429124761 0.05186018619 0.0125
+								</FormulaSegment>
+							</SegmentedCurve>
+							<SegmentedCurve>
+								<FormulaSegment Start="-infinity" End="0.04045" FunctionType="0">
+									1.00000000 0.0764319 0.0125 0.00000000
+								</FormulaSegment>
+								<FormulaSegment Start="0.04045" End="+infinity" FunctionType="0">
+									2.40000000 0.9429124761 0.05186018619 0.0125
+								</FormulaSegment>
+							</SegmentedCurve>
+						</CurveSetElement>
+	 
+						<MatrixElement Name="applyMtx" InputChannels="3" OutputChannels="3">
+							<MatrixData>
+								1.00000000 1.00000000 -1.00000000
+								2.00000000 1.00000000 -1.00000000
+								1.00000000 -1.00000000 1.00000000
+							</MatrixData>
+						</MatrixElement>
+						
+						<MatrixElement Name="linearRGBToXYZ" InputChannels="3" OutputChannels="3">
+							<MatrixData>
+								0.4660 0.3851 0.1431
+								0.2225 0.7169 0.0606
+								0.0139 0.0971 0.7139
+							</MatrixData>
+						</MatrixElement>
+
+
+						<CLutElement Name="applyLut" InputChannels="3" OutputChannels="3">
+							<GridPoints>2 2 2</GridPoints>
+							<TableData>
+								0.0 0.0 0.0 
+								0.0 0.0 0.75
+								0.0 0.5 0.0
+								0.0 0.5 0.75
+								0.25 0.0 0.0
+								0.25 0.0 0.75
+								0.25 0.5 0.0
+								0.25 0.5 0.75
+							</TableData>
+						</CLutElement>
+
+						<CalculatorElement Name="applyCalc" InputChannels="3" OutputChannels="3">
+							<MainFunction>{ in(0,3) 1 1 1 add(3) out(0,3) }</MainFunction>
+						</CalculatorElement>
+
+						<CalculatorElement Name="reorderCalc" InputChannels="7" OutputChannels="6"
+	                                       InputNames="C M Y K Lab[3]" OutputNames="a b C MY[2] L">
+							<MainFunction>
+{
+in{C}		;place input channel 0 onto stack
+out{C}		;place stack value into output channel 2
+in{Lab[1],2}	;place 2 input channels starting at index 5 (i.e. 4+1) onto stack
+out{a,2}	;place 2 values on stack into output channels starting at index 0
+in{M}		;place input channel 1 onto stack
+in{Y}		;place input channel 2 onto stack
+out{MY}	;place 2 values on stack into output channels starting at index 3
+in{Lab[0]}	;place input channel 4 onto stack
+out{L}		;place value on stack into output channel 5
+}
+							</MainFunction>
+						</CalculatorElement>
+						
+						<JabToXYZElement Name="JabToXYZ" InputChannels="3" OutputChannels="3">
+							<ColorAppearanceParams>
+								<WhitePoint>
+									<XYZNumber X="0.9642" Y="1.0000" Z="0.8249"/>
+								</WhitePoint>
+								<Luminance>500.0</Luminance>
+								<BackgroundLuminance>20.0</BackgroundLuminance>
+								<ImpactSurround>0.69</ImpactSurround>
+								<ChromaticInductionFactor>1.00</ChromaticInductionFactor>
+								<AdaptationFactor>1.00</AdaptationFactor>
+							</ColorAppearanceParams>
+						</JabToXYZElement>
+
+						<XYZToJabElement Name="XYZToJab" InputChannels="3" OutputChannels="3">
+							<ColorAppearanceParams>
+								<WhitePoint>
+									<XYZNumber X="0.9642" Y="1.0000" Z="0.8249"/>
+								</WhitePoint>
+								<Luminance>500.0</Luminance>
+								<BackgroundLuminance>20.0</BackgroundLuminance>
+								<ImpactSurround>0.69</ImpactSurround>
+								<ChromaticInductionFactor>1.00</ChromaticInductionFactor>
+								<AdaptationFactor>1.00</AdaptationFactor>
+							</ColorAppearanceParams>
+						</XYZToJabElement>
+
+						<TintArrayElement Name="applyTint" InputChannels="1" OutputChannels="3">
+							<float32NumberType>
+								<Data>
+									0  2  4
+									2  4  8 
+								</Data>
+							</float32NumberType>
+						</TintArrayElement>
+					</SubElements>
+				<MainFunction>
+{
+1 1 1
+tput{rv(0,3)}
+
+tget{rv(0,3)}
+sum(3)
+3 eq
+tput{rv(3)]}
+
+1 1 1
+curv{applyCurves} %y=.5x; y=x; y=1.5x
+sum(3)
+3 eq
+tput{rv(4)}
+
+1 2 3
+mtx{applyMtx} %[1 1 -1; 2 1 -1; 1 -1 1]
+0 1 2
+sub(3)
+sum(3)
+0 eq
+tput{rv(5)}
+
+1 1 1
+clut{applyLut} %clut with 0.25 0.5 0.75 at entry 1 1 1
+0.25 0.5 0.75
+sub(3)
+sum(3)
+0 eq
+tput{rv(6)}
+
+1 2 3
+calc{applyCalc} %{ in(0,3) 1 1 1 add(3) out(0,3) }
+2 3 4
+sub(3)
+sum(3)
+0 eq
+tput{rv(7)}
+
+.5
+tint{applyTint}
+1 3 6
+sub(3)
+sum(3)
+0 eq
+tput{rv(8)}
+
+100 0 0
+fJab{JabToXYZ}
+0.9642 1.0 0.8249
+sub(3)
+abs(3)
+sum(3)
+0.001 le
+tput{rv(9)}
+
+0.9642 1.0 0.8249
+tJab{XYZToJab}
+100 0 0
+sub(3)
+abs(3)
+sum(3)
+0.1 le
+tput{rv(10)}
+
+.5
+elem{applyTint}
+1 3 6
+sub(3)
+sum(3)
+0 eq
+tput{rv(11)}
+
+call{tiny} 1e-10 eq
+tput{rv(12)}
+
+1 tput{v1}
+2 tput{v2}
+2 2 2
+call{v1Inc}
+call{v2Inc}
+call{applyIdent}
+2 2 2
+sub(3)
+sum(3)
+0 eq
+tput{rv(13)}
+
+1 2 3
+#storergb
+tget{rgb}
+1 2 3
+sub(3)
+abs(3)
+sum(3)
+0.1 lt
+tput{rv(14)}
+
+1 2 3
+call{checkrgb}
+tput{rv(15)}
+
+tget{rgb.r} tget{rgb.g} tget{rgb.b}
+1 2 3
+sub(3)
+abs(3)
+sum(3)
+0.1 lt
+tput{rv(16)}
+
+100 0 0
+0 100 0
+0 0 100
+tput{primaries}
+tget{primaries.red[0]}
+tget{primaries.green[1]}
+tget{primaries.blue[2]}
+100 100 100
+sub(3)
+abs(3)
+sum(3)
+0.1 lt
+tput{rv(17)}
+
+.5 .5 .5 1.5 0.25 call{scaleoffset3}
+1 1 1
+sub(3)
+abs(3)
+sum(3)
+0.1 lt
+tput{rv(18)}
+
+.5 .5 .5 1.5 0.25 0 0.9 call{scaleoffsetclamp3}
+.9 .9 .9
+sub(3)
+abs(3)
+sum(3)
+0.1 lt
+tput{rv(19)}
+
+0 1 2 3 4 5 6 calc{reorderCalc}
+5 6 0 1 2 4
+sub(6)
+abs(6)
+sum(6)
+0.1 lt
+tput{rv(20)}
+
+tget{rv}
+sum(21)
+21 eq
+if {
+ env(01020304) if {
+  copy(1,2)
+ }
+ else {
+  in(0,3)
+  curv{applyGamma}
+  mtx{linearRGBToXYZ}
+ }
+ out(0,3)
+}
+else {
+ 0 0 0
+ out(0,3)
+}
+
+}
+					</MainFunction>					
+				</CalculatorElement>
+			</MultiProcessElements>
+		</multiProcessElementType>
+		<multiProcessElementType>
+		  <TagSignature>B2A1</TagSignature>
+		  <MultiProcessElements InputChannels="3" OutputChannels="3">
+					<MatrixElement InputChannels="3" OutputChannels="3">
+						<MatrixData>
+							 3.134578  -0.978957   0.072119
+							-1.617306   1.916218  -0.229142
+							-0.491034   0.033570   1.405751
+						</MatrixData>
+					</MatrixElement>
+					<CurveSetElement InputChannels="3" OutputChannels="3">
+						<SegmentedCurve>
+							<FormulaSegment Start="-infinity" End="0.015592" FunctionType="0">
+								1.00000000 13.08354234 0.16354428 0.00000000
+							</FormulaSegment>
+							<FormulaSegment Start="0.015592" End="+infinity" FunctionType="0">
+								0.41667 1.15151257 -0.01439391 -0.055
+							</FormulaSegment>
+						</SegmentedCurve>
+						<SegmentedCurve>
+							<FormulaSegment Start="-infinity" End="0.015592" FunctionType="0">
+								1.00000000 13.08354234 0.16354428 0.00000000
+							</FormulaSegment>
+							<FormulaSegment Start="0.015592" End="+infinity" FunctionType="0">
+								0.41667 1.15151257 -0.01439391 -0.055
+							</FormulaSegment>
+						</SegmentedCurve>
+						<SegmentedCurve>
+							<FormulaSegment Start="-infinity" End="0.015592" FunctionType="0">
+								1.00000000 13.08354234 0.16354428 0.00000000
+							</FormulaSegment>
+							<FormulaSegment Start="0.015592" End="+infinity" FunctionType="0">
+								0.41667 1.15151257 -0.01439391 -0.055
+							</FormulaSegment>
+						</SegmentedCurve>
+					</CurveSetElement>
+				</MultiProcessElements>
+			</multiProcessElementType>
+		<XYZType>
+			<TagSignature>wtpt</TagSignature>
+			<XYZNumber X="0.96420288" Y="1.00000000" Z="0.82490540"/>
+		</XYZType>
+		<multiLocalizedUnicodeType>
+			<TagSignature>cprt</TagSignature>
+			<LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2017 International Color Consortium]]></LocalizedText>
+		</multiLocalizedUnicodeType>
+	</Tags>
+</IccProfile>

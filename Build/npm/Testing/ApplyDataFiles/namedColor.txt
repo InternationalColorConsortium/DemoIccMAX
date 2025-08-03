@@ -1,0 +1,5 @@
+'nmcl' ; Data Format
+icEncodeValue ; Encoding
+"Color 1 Name"
+"Color 2 Name"
+"Color 3 Name"

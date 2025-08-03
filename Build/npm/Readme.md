@@ -1,30 +1,59 @@
-# iccDEV
+# iccDEV WASM
 
-**Install:**`brew install iccmax`
+The International Color Consortium....promoting and encouraging the standardization of an open color management system
+
+> [!NOTE]
+> **Upcoming Repository Name Change**
+>
+> This project will be renamed to iccDEV on September 5, 2025. On that date, both the project name and its GitHub repository location will be updated accordingly.
+> Please update any bookmarks or dependencies to reflect this change.
+
+## Quick Start
+
+```
+npm install iccwasm
+cd node_modules/iccwasm
+node .\test_iccFromXml.js
+```
+
+### Expected Output
+
+```
+IccFromXml built with IccProfLib Version 2.2.61, IccLibXML Version 2.2.61
+Usage: IccFromXml xml_file saved_profile_file {-noid -v{=[relax_ng_schema_file - optional]}}
+```
+
+### Web Browser
+
+```
+npx http-server .
+Browse URL http://localhost:8080
+```
+
+[![iccwasm](https://xss.cx/2025/08/03/img/iccwasm-npm-landing-page-3.png?raw=true "color.org")](https://color.org)
 
 ## Introduction
 
 The iccDEV project (formally known as RefIccMAX or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccDEV based color management profiles based on the [iccDEV profile specification](http://www.color.org/iccdev.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
 
-Within the project are several libraries and tools as follows:
+Within this NPM Bundle are the IccProfLib & IccXML libraries compiled for WASM and the command line tools as Browser Apps:
 
-* Libraries that allow applications to interact with iccDEV profiles
+* WASM Libraries that allow applications to interact with iccDEV profiles using modern Web Browsers
 
-  * IccProfLib - The iccDEV IccProfLib project represents an open source &
+  * IccProfLib WASM - The iccDEV IccProfLib project represents an open source &
     cross platform reference implementation of a C++ library for reading,
     writing, applying, manipulating iccDEV color profiles defined by the [iccDEV
     profile specification](http://www.color.org/iccdev.xalter).
 
-  * IccLibXML - The iccDEV IccLibXML project contains a parallel C++
+  * IccLibXML WASM - The iccDEV IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
     objects defined by IccProfLib using an XML representation thus allowing iccDEV
     profiles to be expressed as or created from text based XML files.
 
 
-* Tools based upon these libraries
+* Web Apps based upon these libraries
 
-  For command line arguments running the application without any arguments
-  will display help information about command line options.
+  Run the Javascript without any arguments to display help information.
 
   * IccToXML is a cross platform command line tool that allows both legacy ICC
     and iccDEV profiles to be expressed using an XML representation. This allows
@@ -82,69 +111,18 @@ Within the project are several libraries and tools as follows:
     embedded ICC profile information about a TIFF image to the console.
 
   * IccPngDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a PNG image to the console. 
+    embedded ICC profile information about a PNG image to the console.
 
   * IccJpegDump is a cross platform command line tool that outputs header and
-    embedded ICC profile information about a JPG image to the console. 
+    embedded ICC profile information about a JPG image to the console.
 
   * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
     iccDEV and legacy ICC profile inspector tool. The code for this tool is based on
     wxWidgets 3.2.
 
+### Related Links
 
-## Example iccDEV Profiles
-
-XML files are provided that can be used to create example iccDEV profiles. The
-CreateAllProfiles.bat file uses the iccFromXML tool to create ICC profiles for
-each of these XML files. The XML files can be found in the following folders:
-
-### [Calc](Testing/Calc)
-
-This folder contains profiles that demonstrate color modeling using the
-Calculator MultiProcessElement. The srgbCalcTest profile exercises all specified
-calculator operations.
-
-### [Display](Testing/Display)
-
-This folder contains profiles that demonstrate spectral modeling of display
-profiles allowing for late binding of the observer using MultiProcessElements
-that are transformed at startup to colorimetry for the desired observer.
-
-### [Encoding](Testing/Encoding)
-
-This folder contains 3 channel encoding class profiles. Both "name only"
-profiles as well as fully specified profiles are present.
-
-### [Named](Testing/Named)
-
-This folder contains named color profiles showcasing
-features such as tints, spectral reflectance, and fluorescence (with and with
-out sparse notation).
-
-### [PCC](Testing/PCC)
-
-This folder contains various profiles that can be used to
-define Profile Connection Conditions (PCC). All profiles are abstract profiles
-that perform no operation to PCS values. However, all profiles contain fully
-defined PCC tags that provide information that can be used to define rendering
-for various observers and illuminants. Profiles that utilize both absolute
-colorimetry as well as Material Adjusted colorimetry are present.
-
-### [SpecRef](Testing/SpaceRef)
-
-This folder contains various profiles that convert data to/from/between a
-spectral reflectance PCS. The argbRef (AdobeRGB) and srgbRef (sRGB) convert RGB
-values to/from spectral reflectance. RefDecC, RefDecH, and RefIncW are abstract
-spectral reflectance profiles that modify "chroma", "hue", and "lightness" of
-spectral reflectance values in a spectral reflectance PCS. The argbRef, srgbRef,
-RefDecC, RefDecH, RefIncW profiles all estimate and/or manipulate spectral
-reflectance using Wpt based spectral estimation (see chapter 7 of
-http://scholarworks.rit.edu/theses/8789/. Additionally, examples of 6 channel
-abridged spectral encoding is provided.
-
-### Quick Start
-
-- [iccDEV Release Binaries](https://github.com/InternationalColorConsortium/iccDEV/releases) 
+- [iccDEV Repo](https://github.com/InternationalColorConsortium/DemoIccMAX)
 - `brew install iccmax`
 - [Build](BUILD.md)
 

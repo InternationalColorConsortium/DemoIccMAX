@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>mvis</ProfileDeviceClass>
+	<ProfileDeviceSubClass>osim</ProfileDeviceSubClass>
+    <DataColourSpace></DataColourSpace>
+	<PCS>XYZ </PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false" MCSNeedsSubset="false" />
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.841281646704631" Y="1.00000000" Z="0.963726140000727"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+	<MCS>mc0011</MCS>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[CMYK plus 13 Spots Overprint Simulation using MCS]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <multiProcessElementType>
+      <TagSignature>M2B0</TagSignature>
+	  <MultiProcessElements InputChannels="17" OutputChannels="3">
+		<CalculatorElement InputChannels="17" OutputChannels="3" InputNames="Cyan Magenta Yellow Black Spot1 Spot2 Spot3 Spot4 Spot5 Spot6 Spot7 Spot8 Spot9 Spot10 Spot11 Spot12 Spot13">
+			<SubElements>
+				<CurveSetElement Name="CMYK_Shaper" InputChannels="4" OutputChannels="4">
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Cyan.txt" Format="text"/>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Magenta.txt" Format="text"/>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Yellow.txt" Format="text"/>
+					<SingleSampledCurve FirstEntry="0.0" LastEntry="1.0" StorageType="2" ExtensionType="0" 
+						 Filename="Spot-MVIS/Shaper-Black.txt" Format="text"/>
+				</CurveSetElement>
+				<ExtCLutElement Name="CMYK_CLUT" InputChannels="4" OutputChannels="3" Flags="0" StorageType="1"> <!-- Map adjusted CMYK to XYZ -->
+				  <GridPoints>17 17 17 17</GridPoints>
+				  <TableData Filename="Spot-MVIS/CLUT-CMYK-XYZ.txt" Format="text" FileEncoding="float"/>
+				</ExtCLutElement>
+
+				<TintArrayElement Name="Spot1Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot1-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot1Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot1-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot2Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot2-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot2Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot2-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot3Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot3-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot3Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot3-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot4Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot4-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot4Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot4-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot5Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot5-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot5Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot5-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot6Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot6-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot6Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot6-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot7Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot7-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot7Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot7-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot8Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot8-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot8Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot8-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot9Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot9-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot9Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot9-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot10Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot10-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot10Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot10-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot11Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot11-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot11Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot11-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot12Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot12-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot12Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot12-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+
+				<TintArrayElement Name="Spot13Scale" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot13-scaleXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+				<TintArrayElement Name="Spot13Offset" InputChannels="1" OutputChannels="3">
+					<float32NumberType>
+						<Data Filename="Spot-MVIS/Spot13-offsetXYZ.txt" Format="text"/>
+					</float32NumberType>
+				</TintArrayElement>
+        	</SubElements>
+			<MainFunction>
+{
+in(0,4)
+curv{CMYK_Shaper}
+clut{CMYK_CLUT}
+in{Spot1} 0 gt if {
+  in{Spot1} tint{Spot1Scale} mul(3)
+  in{Spot1} tint{Spot1Offset} add(3)
+}
+in{Spot2} 0 gt if {
+  in{Spot2} tint{Spot2Scale} mul(3)
+  in{Spot2} tint{Spot2Offset} add(3)
+}
+in{Spot3} 0 gt if {
+  in{Spot3} tint{Spot3Scale} mul(3)
+  in{Spot3} tint{Spot3Offset} add(3)
+}
+in{Spot4} 0 gt if {
+  in{Spot4} tint{Spot4Scale} mul(3)
+  in{Spot4} tint{Spot4Offset} add(3)
+}
+in{Spot5} 0 gt if {
+  in{Spot5} tint{Spot5Scale} mul(3)
+  in{Spot5} tint{Spot5Offset} add(3)
+}
+in{Spot6} 0 gt if {
+  in{Spot6} tint{Spot6Scale} mul(3)
+  in{Spot6} tint{Spot6Offset} add(3)
+}
+in{Spot7} 0 gt if {
+  in{Spot7} tint{Spot7Scale} mul(3)
+  in{Spot7} tint{Spot7Offset} add(3)
+}
+in{Spot8} 0 gt if {
+  in{Spot8} tint{Spot8Scale} mul(3)
+  in{Spot8} tint{Spot8Offset} add(3)
+}
+in{Spot9} 0 gt if {
+  in{Spot9} tint{Spot9Scale} mul(3)
+  in{Spot9} tint{Spot9Offset} add(3)
+}
+in{Spot10} 0 gt if {
+  in{Spot10} tint{Spot10Scale} mul(3)
+  in{Spot10} tint{Spot10Offset} add(3)
+}
+in{Spot11} 0 gt if {
+  in{Spot11} tint{Spot11Scale} mul(3)
+  in{Spot11} tint{Spot11Offset} add(3)
+}
+in{Spot12} 0 gt if {
+  in{Spot12} tint{Spot12Scale} mul(3)
+  in{Spot12} tint{Spot12Offset} add(3)
+}
+in{Spot13} 0 gt if {
+  in{Spot13} tint{Spot13Scale} mul(3)
+  in{Spot13} tint{Spot13Offset} add(3)
+}
+out(0,3)
+}
+        	</MainFunction>					
+		</CalculatorElement>
+	  </MultiProcessElements>
+	</multiProcessElementType>
+
+	<!-- Example brdfMToB0Tag
+	<tagStructureType>
+		<TagSignature>bMB0</TagSignature>
+		<StructureSignature>brdf</StructureSignature>
+		<MemberTags>
+			<signatureType>
+				<TagSignature>type</TagSignature>
+				<Signature>mono</Signature>
+			</signatureType>
+			<signatureType>
+				<TagSignature>func</TagSignature>
+				<Signature>BPh0</Signature>
+			</signatureType>
+			<uInt16NumberType>
+				<TagSignature>nump</TagSignature>
+				<Data>4</Data>
+			</uInt16NumberType>
+			<multiProcessElementType>
+				<TagSignature>xfrm</TagSignature>
+				<MultiProcessElements InputChannels="17" OutputChannels="4">
+					<CalculatorElement InputChannels="17" OutputChannels="4">
+						<MainFunction>{ 0 0 0 0 out[0,4] }</MainFunction>
+					</CalculatorElement>
+				</MultiProcessElements>
+			</multiProcessElementType>
+		</MemberTags>
+	</tagStructureType>
+	-->
+
+	<tagArrayType>
+	  <TagSignature>mcta</TagSignature>
+	  <ArraySignature>utf8</ArraySignature>
+	  <ArrayTags>
+	    <utf8TextType><TextData>Process Cyan</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Magenta</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Yellow</TextData></utf8TextType>
+		<utf8TextType><TextData>Process Black</TextData></utf8TextType>
+		<utf8TextType><TextData>Orange-Yellow</TextData></utf8TextType> <!-- Spot1 -->
+		<utf8TextType><TextData>Orange</TextData></utf8TextType> <!-- Spot2 -->
+		<utf8TextType><TextData>Gold</TextData></utf8TextType> <!-- Spot3 -->
+		<utf8TextType><TextData>Blue-Green</TextData></utf8TextType> <!-- Spot4 -->
+		<utf8TextType><TextData>Purple</TextData></utf8TextType> <!-- Spot5 -->
+		<utf8TextType><TextData>Blue</TextData></utf8TextType> <!-- Spot6 -->
+		<utf8TextType><TextData>Bright-Red</TextData></utf8TextType> <!-- Spot7 -->
+		<utf8TextType><TextData>Pale-Yellow</TextData></utf8TextType> <!-- Spot8 -->
+		<utf8TextType><TextData>White</TextData></utf8TextType> <!-- Spot9 -->
+		<utf8TextType><TextData>Silver</TextData></utf8TextType> <!-- Spot10 -->
+		<utf8TextType><TextData>Red</TextData></utf8TextType> <!-- Spot11 -->
+		<utf8TextType><TextData>Warm-Pink</TextData></utf8TextType> <!-- Spot12 -->
+		<utf8TextType><TextData>Violet</TextData></utf8TextType> <!-- Spot13 -->
+	  </ArrayTags>
+	</tagArrayType>
+
+	<uInt16NumberType>
+	  <TagSignature>mdv </TagSignature>
+	  <Data>0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</Data>
+	</uInt16NumberType>
+
+    <XYZType>
+      <TagSignature>wtpt</TagSignature>
+      <XYZNumber X="0.841281646704631" Y="1.00000000" Z="0.963726140000727"/>
+    </XYZType>
+		
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2017 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+  </Tags>
+</IccProfile>

@@ -8,6 +8,18 @@
     textarea { width: 100%; box-sizing: border-box; }
     label { display: block; margin-top: 0.5em; }
     input[type="file"], input[type="text"], select { display: block; margin-top: 0.25em; }
+    #downloadSection {
+      margin-top: 1em;
+      display: none;
+    }
+    #downloadLink {
+      color: #0078d7;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    #downloadLink:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -27,6 +39,10 @@
     </label>
     <button onclick="runIccFromXml()">Run Conversion</button>
     <textarea id="outputLog" rows="20" placeholder="Conversion output will appear here..."></textarea>
+
+    <div id="downloadSection">
+      <a id="downloadLink" href="#" download>Download Output ICC Profile</a>
+    </div>
   </section>
 
   <script src="iccFromXml.js"></script>
@@ -66,15 +82,31 @@
           const reader2 = new FileReader();
           reader2.onload = () => {
             iccFromXmlInstance.FS.writeFile("schema.rng", new Uint8Array(reader2.result));
-            iccFromXmlInstance.callMain(args);
+            runConversion(iccFromXmlInstance, args, outputName);
           };
           reader2.readAsArrayBuffer(schemaFile);
         } else {
-          iccFromXmlInstance.callMain(args);
+          runConversion(iccFromXmlInstance, args, outputName);
         }
       };
-
       reader1.readAsArrayBuffer(xmlFile);
+    }
+
+    function runConversion(module, args, outputName) {
+      module.callMain(args);
+      setTimeout(() => {
+        try {
+          const data = module.FS.readFile(outputName);
+          const blob = new Blob([data], { type: "application/octet-stream" });
+          const url = URL.createObjectURL(blob);
+          const link = document.getElementById("downloadLink");
+          link.href = url;
+          link.download = outputName;
+          document.getElementById("downloadSection").style.display = "block";
+        } catch (e) {
+          document.getElementById("outputLog").value += "\nERROR: Output file not found.";
+        }
+      }, 500);
     }
   </script>
 </body>

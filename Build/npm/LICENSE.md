@@ -44,7 +44,7 @@ individuals on behalf of the The International Color Consortium.
 Membership in the ICC is encouraged when this software is used for
 commercial purposes. 
 
-  
+
 For more information on The International Color Consortium, please
 see [www.color.org](http://www.color.org).
 
@@ -52,28 +52,33 @@ see [www.color.org](http://www.color.org).
 
 ## OSS License Notification
 
-Packages for Download included the following Licenses & Copyrights:
+Packages used in the iccDEV WASM Build are:
 
-**nanosvg**
+**lcms2**
 
 ```
-Copyright (c) 2013-14 Mikko Mononen memon@inside.org
+MIT License
 
-This software is provided 'as-is', without any express or implied
-warranty.  In no event will the authors be held liable for any damages
-arising from the use of this software.
+Copyright (c) 2023 Marti Maria Saguer
 
-Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute it
-freely, subject to the following restrictions:
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the 
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to 
+permit persons to whom the Software is furnished to do so, subject
+to the following conditions:
 
-1. The origin of this software must not be misrepresented; you must not
-claim that you wrote the original software. If you use this software
-in a product, an acknowledgment in the product documentation would be
-appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be
-misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+The above copyright notice and this permission notice shall be 
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 **zlib**
@@ -670,61 +675,28 @@ EXEMPTION FOR BINARY LIBRARY-LIKE PACKAGES
 The second condition in the BSD licence (covering binary redistributions) does not apply all the way down a chain of software. If binary package A includes PCRE2, it must respect the condition, but if package B is software that includes package A, the condition is not imposed on package B unless it uses PCRE2 independently.
 ```
 
-
-**libjpeg**
-
-```
-LICENSE TERMS (ships as a part of the libjpeg package in the README file)
-=============
-
-1. We don't promise that this software works.  (But if you find any bugs,
-   please let us know!)
-2. You can use this software for whatever you want.  You don't have to pay us.
-3. You may not pretend that you wrote this software.  If you use it in a
-   program, you must acknowledge somewhere in your documentation that
-   you've used the IJG code.
-
-In legalese:
-
-The authors make NO WARRANTY or representation, either express or implied,
-with respect to this software, its quality, accuracy, merchantability, or
-fitness for a particular purpose.  This software is provided "AS IS", and you,
-its user, assume the entire risk as to its quality and accuracy.
-
-This software is copyright (C) 1991-2016, Thomas G. Lane, Guido Vollbeding.
-All Rights Reserved except as specified below.
-
-Permission is hereby granted to use, copy, modify, and distribute this
-software (or portions thereof) for any purpose, without fee, subject to these
-conditions:
-(1) If any part of the source code for this software is distributed, then this
-README file must be included, with this copyright and no-warranty notice
-unaltered; and any additions, deletions, or changes to the original files
-must be clearly indicated in accompanying documentation.
-(2) If only executable code is distributed, then the accompanying
-documentation must state that "this software is based in part on the work of
-the Independent JPEG Group".
-(3) Permission for use of this software is granted only if the user accepts
-full responsibility for any undesirable consequences; the authors accept
-NO LIABILITY for damages of any kind.
-
-These conditions apply to any software derived from or based on the IJG code,
-not just to the unmodified library.  If you use our work, you ought to
-acknowledge us.
-
-Permission is NOT granted for the use of any IJG author's name or company name
-in advertising or publicity relating to this software or products derived from
-it.  This software may be referred to only as "the Independent JPEG Group's
-software".
-
-We specifically permit and encourage the use of this software as the basis of
-commercial products, provided that all warranty or liability claims are
-assumed by the product vendor.
+**nanosvg**
 
 ```
+Copyright (c) 2013-14 Mikko Mononen memon@inside.org
 
-----
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the authors be held liable for any damages
+arising from the use of this software.
 
-NOTE: If we have missed your License & Copyright Notices, we apologize in advance and will remedy the issue(s) immediately upon Notification. 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
 
-Please open an Issue
+1. The origin of this software must not be misrepresented; you must not
+claim that you wrote the original software. If you use this software
+in a product, an acknowledgment in the product documentation would be
+appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+```
+
+---
+
+Note: If we should have or need to include any additional License or Copyright, please open an Issue. We apologize in advance for any errors or omissions and will remedy immediately upon notification.
