@@ -4,17 +4,17 @@
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: 17-JULY-2025 2055 EDT by David Hoyt
+#  Last Updated: 05-AUGUST-2025 0100Z by David Hoyt
 #
 #
 #
-#  Changes: Align Version on IccProfLibVer.h, Housekeeping, Debug Options
-#           Dup check on flags etc
-#           Adjusted Cross Platform Build args
+#  Changes: Smoke Test for iccdev nameroll
+#           Brew Linux Build Checks fail with PR145
+#           REMOVE Graphics, Widgets
 #						
-#  TODO:    Version Headers, Doxygen Config, Exports etc...
-#           Reduce 3-Tier CMakeLists.txt in NamedCmm, IccApplyProfiles
-#           Refactor this to .mk's, add research args, other Housekeeping
+#  TODO:    Add the REMOVED Tools
+#           
+#           
 #
 #
 #################################################################################
@@ -759,14 +759,14 @@ if (PNG_FOUND)
     include_directories(${PNG_INCLUDE_DIRS})
     message(STATUS "PNG library found: ${PNG_LIBRARIES}")
 
-    message(STATUS "Adding Subdirectory IccPngDump.")
-    ADD_SUBDIRECTORY(Tools/IccPngDump)
+    message(STATUS "Skipping Subdirectory IccPngDump.")
+#    ADD_SUBDIRECTORY(Tools/IccPngDump)
 else()
     message(FATAL_ERROR "PNG library not found. Please install libpng-dev.")
 endif()
 
-    message(STATUS "Adding Subdirectory DemoIccMAXCmm.")
-    ADD_SUBDIRECTORY(Tools/DemoIccMAXCmm)
+    message(STATUS "Skipping Subdirectory DemoIccMAXCmm.")
+#    ADD_SUBDIRECTORY(Tools/DemoIccMAXCmm)
 
 
   # Check for TIFF library
@@ -777,10 +777,10 @@ endif()
 
     # Add TIFF-dependent tools
 #    ADD_SUBDIRECTORY(Tools/IccApplyProfiles)
-    message(STATUS "Adding subdirectory IccSpecSepToTiff.")
-    ADD_SUBDIRECTORY(Tools/IccSpecSepToTiff)
-    message(STATUS "Adding Subdirectory IccTiffDump.")
-    ADD_SUBDIRECTORY(Tools/IccTiffDump)
+    message(STATUS "Skipping subdirectory IccSpecSepToTiff.")
+#    ADD_SUBDIRECTORY(Tools/IccSpecSepToTiff)
+    message(STATUS "Skipping Subdirectory IccTiffDump.")
+#    ADD_SUBDIRECTORY(Tools/IccTiffDump)
   else()
     message(FATAL_ERROR "TIFF library not found. Please install libtiff-dev.")
   endif()
@@ -790,18 +790,18 @@ endif()
   ADD_SUBDIRECTORY(Tools/IccFromXml)
   message(STATUS "Adding Subdirectory IccToXml.")
   ADD_SUBDIRECTORY(Tools/IccToXml)
-  message(STATUS "Adding Subdirectory IccJpegDump.")
-  ADD_SUBDIRECTORY(Tools/IccJpegDump)
+  message(STATUS "Skipping Subdirectory IccJpegDump.")
+# ADD_SUBDIRECTORY(Tools/IccJpegDump)
   
   # Configure wxWidgets
-  find_package(wxWidgets COMPONENTS core base REQUIRED)
-  if (wxWidgets_FOUND)
-    include(${wxWidgets_USE_FILE})
-      ADD_SUBDIRECTORY(Tools/wxProfileDump)
-    message(STATUS "wxWidgets found and configured")
-  else()
-    message(FATAL_ERROR "wxWidgets not found. Please install it manually or via vcpkg.")
-  endif()
+ # find_package(wxWidgets COMPONENTS core base REQUIRED)
+ # if (wxWidgets_FOUND)
+ #   include(${wxWidgets_USE_FILE})
+ #     ADD_SUBDIRECTORY(Tools/wxProfileDump)
+ #   message(STATUS "wxWidgets found and configured")
+ # else()
+ #   message(FATAL_ERROR "wxWidgets not found. Please install it manually or via vcpkg.")
+ # endif()
 
 ENDIF(ENABLE_TOOLS)
 
