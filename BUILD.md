@@ -2,7 +2,7 @@
 
 # IccMAX Build
 
-Install: `brew install iccmax`
+Install: `brew install iccdev`
 
 ### Dependencies
 | Dependency         | Ubuntu (apt)                     | macOS (brew)          | Windows (vcpkg)       |
