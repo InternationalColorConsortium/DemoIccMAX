@@ -1,16 +1,16 @@
 #################################################################################
-# Cmake Project Configuration| iccMAX Project
+# Cmake Project Configuration| iccDEV Project
 # Copyright (C) 2024-2025 The International Color Consortium.
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: 17-JULY-2025 2055 EDT by David Hoyt
+#  Last Updated: 05-AUGUST-2025 at 2300Z by David Hoyt
 #
 #
 #
-#  Changes: Align Version on IccProfLibVer.h, Housekeeping, Debug Options
-#           Dup check on flags etc
-#           Adjusted Cross Platform Build args
+#  Changes: Banner: Developer tools for ICC color profiles
+#           
+#          
 #						
 #  TODO:    Version Headers, Doxygen Config, Exports etc...
 #           Reduce 3-Tier CMakeLists.txt in NamedCmm, IccApplyProfiles
@@ -60,7 +60,7 @@ set(CMAKE_SUPPRESS_REGENERATION ON)
 string(TIMESTAMP CURRENT_DATETIME "%Y-%m-%d %H:%M:%S")
 message(STATUS "")
 message(STATUS "############################################################")
-message(STATUS "## Demonstration Implementation for iccMAX color profiles ##") 
+message(STATUS "##          Developer tools for ICC color profiles        ##") 
 message(STATUS "############################################################")
 message(STATUS "## Configuration and Build started at ${CURRENT_DATETIME} ##") 
 message(STATUS "")

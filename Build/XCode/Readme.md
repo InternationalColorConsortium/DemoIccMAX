@@ -1,6 +1,6 @@
 # Xcode Project Create & Build
 
-**Quick Start** `brew install iccmax`
+**Quick Start** `brew install iccdev`
 
 The instructions below will create a new Xcode Project for iccMAX and compile the Tools.
 
