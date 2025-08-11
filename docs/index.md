@@ -1,20 +1,16 @@
-[![color.org logo](ReadMeFiles/icc-logo.svg)](https://color.org)
-
-# iccdev
-
-`brew install iccdev`
-
 ## Introduction
 
-The iccdev project (formally known as RefIccMAX, or DemoIccMAX) provides an
+The iccdev project (formally known as DemoIccMAX) provides an
 open source set of libraries and tools that allow for the interaction, manipulation,
 and application of ICC based color management profiles based on the 
 [ICC profile specification](http://www.color.org/icc_specs2.xalter) and 
 [iccMAX profile specification](http://www.color.org/iccmax.xalter).
 
+## Features Overview
+
 Within the project are several libraries and tools as follows:
 
-* Libraries that allow applications to interact with ICC profiles
+### Libraries that allow applications to interact with ICC profiles
 
   * IccProfLib - The IccProfLib library represents an open source &
     cross platform reference implementation of a C++ library for reading,
@@ -26,7 +22,7 @@ Within the project are several libraries and tools as follows:
     profiles to be expressed as or created from text based XML files.
 
 
-* Tools based upon these libraries
+### Tools based upon these libraries
 
   For command line arguments running the application without any arguments
   will display help information about command line options.
@@ -142,17 +138,16 @@ values to/from spectral reflectance. RefDecC, RefDecH, and RefIncW are abstract
 spectral reflectance profiles that modify "chroma", "hue", and "lightness" of
 spectral reflectance values in a spectral reflectance PCS. The argbRef, srgbRef,
 RefDecC, RefDecH, RefIncW profiles all estimate and/or manipulate spectral
-reflectance using Wpt based spectral estimation (see chapter 7 of
-http://scholarworks.rit.edu/theses/8789/. Additionally, examples of 6 channel
+reflectance using Wpt based spectral estimation ([see chapter 7 of Spectrally Based Material Color Equivalency: Modeling and Manipulation](http://scholarworks.rit.edu/theses/8789/)). Additionally, examples of 6 channel
 abridged spectral encoding is provided.
 
-### Quick Start
 
-- [iccdev Release Binaries](https://github.com/InternationalColorConsortium/iccdev/releases/tag/v2.1.26) 
-- `brew install iccdev`
-- [Build](BUILD.md)
+## Installation
 
+Install iccDEV using the Homebrew package manager:
 
----
+```
+brew install iccdev
+```
 
-[The ICC Software License](LICENSE.md)
+[Build on Windows, macOS, Linux](BUILD.md)
