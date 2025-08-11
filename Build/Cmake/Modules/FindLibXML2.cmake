@@ -55,10 +55,13 @@ endif()
 
 # Handle result
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LibXML2
+find_package_handle_standard_args(LibXml2
   REQUIRED_VARS LIBXML2_LIBRARIES LIBXML2_INCLUDE_DIR
   VERSION_VAR LIBXML2_VERSION_STRING
 )
+
+# Back-compat variable for any code checking the old name
+set(LIBXML2_FOUND "${LibXml2_FOUND}")
 
 mark_as_advanced(
   LIBXML2_INCLUDE_DIR 

@@ -30,11 +30,11 @@ set(SOURCES
 
 # Resolve project root directory
 get_filename_component(PROJECT_ROOT_DIR "${CMAKE_SOURCE_DIR}/../.." ABSOLUTE)
-message(STATUS "PROJECT_ROOT_DIR resolved as: ${PROJECT_ROOT_DIR}")
+# message(STATUS "PROJECT_ROOT_DIR resolved as: ${PROJECT_ROOT_DIR}")
 
 # Set the target name
 set(TARGET_NAME iccPngDump)
-message(STATUS "Added executable target: ${TARGET_NAME}")
+# message(STATUS "Added executable target: ${TARGET_NAME}")
 
 # Include directories
 include_directories(
@@ -44,7 +44,7 @@ include_directories(
     /usr/local/include
 )
 
-message(STATUS "Include directories added for ${TARGET_NAME}")
+# message(STATUS "Include directories added for ${TARGET_NAME}")
 
 # Find required libraries
 find_package(PNG REQUIRED)
@@ -55,14 +55,14 @@ add_executable(${TARGET_NAME} ${SOURCES})
 # Link libraries
 target_link_libraries(${TARGET_NAME} ${TARGET_LIB_ICCPROFLIB} ${PNG_LIBRARY})
 
-message(STATUS "Libraries linked for ${TARGET_NAME}")
+# message(STATUS "Libraries linked for ${TARGET_NAME}")
 
 # Set output directories
 # set_target_properties(${TARGET_NAME} PROPERTIES
 #    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_ROOT_DIR}/Testing/Release"
 #    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_ROOT_DIR}/Testing/Debug"
 # )
-message(STATUS "Output directories set for ${TARGET_NAME}")
+# message(STATUS "Output directories set for ${TARGET_NAME}")
 
 # Optional installation rule
 if(ENABLE_INSTALL_RIM)

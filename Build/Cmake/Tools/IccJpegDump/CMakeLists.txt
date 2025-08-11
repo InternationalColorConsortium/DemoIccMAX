@@ -60,11 +60,11 @@ set(SOURCES
 
 # Resolve project root directory
 get_filename_component(PROJECT_ROOT_DIR "${CMAKE_SOURCE_DIR}/../.." ABSOLUTE)
-message(STATUS "PROJECT_ROOT_DIR resolved as: ${PROJECT_ROOT_DIR}")
+# message(STATUS "PROJECT_ROOT_DIR resolved as: ${PROJECT_ROOT_DIR}")
 
 # Set the target name
 set(TARGET_NAME iccJpegDump)
-message(STATUS "Added executable target: ${TARGET_NAME}")
+# message(STATUS "Added executable target: ${TARGET_NAME}")
 
 # Include directories
 include_directories(
@@ -101,8 +101,8 @@ target_link_libraries(${TARGET_NAME}
     ${PLATFORM_LIBS}
 )
 
-message(STATUS "Linked with JPEG library: ${JPEG_LIBRARY}")
-message(STATUS "Linked with platform-specific libraries: ${PLATFORM_LIBS}")
+# message(STATUS "Linked with JPEG library: ${JPEG_LIBRARY}")
+# message(STATUS "Linked with platform-specific libraries: ${PLATFORM_LIBS}")
 
 # Optional installation rule
 if(ENABLE_INSTALL_RIM)
