@@ -19,7 +19,7 @@
 #
 ###############################################################
 
-name: E-CI
+name: cmake-branch-test
 
 on:
   workflow_dispatch:
