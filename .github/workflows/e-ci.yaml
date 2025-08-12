@@ -19,7 +19,7 @@
 #
 ###############################################################
 
-name: E-CI
+name: Nameroll Test
 
 on:
   workflow_dispatch:
