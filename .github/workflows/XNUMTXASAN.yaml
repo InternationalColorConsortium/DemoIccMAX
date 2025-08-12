@@ -53,6 +53,7 @@ jobs:
       - name: Configure Build with CMake (ASan + Debug)
         run: |
           cd PatchIccMAX/Build
+          git checkout cmake
           export CC=clang
           export CXX=clang++
           export PATH="/usr/lib/llvm-17/bin:$PATH"
