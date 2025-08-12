@@ -35,7 +35,7 @@ jobs:
         arch: [x86_64, arm64]
 
     steps:
-      - name: Checkout Repository for mtx-research-stub
+      - name: Checkout Repository for cmake branch matrix tests
         uses: actions/checkout@v4
 
       - name: Set Up Git Identity for mtx-research-stub
@@ -46,12 +46,12 @@ jobs:
         run: |
           echo "=== Installing Build and Runtime Dependencies ==="
           brew install nlohmann-json libxml2 wxwidgets libtiff libpng jpeg
-      - name: Get research for mtx-research-stub
+      - name: Get cmake branch
         run: |
           echo "=== Cloning off research Branch for mtx-research-stub ==="
           git clone https://github.com/xsscx/PatchIccMAX.git
           cd PatchIccMAX
-          git checkout research
+          git checkout cmake
           echo "=== DONE Cloning PatchIccMAX for mtx-research-stub ==="
       - name: Configure with CMake (ASAN + Debug)
         run: |
