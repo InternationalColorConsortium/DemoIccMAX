@@ -102,7 +102,7 @@ jobs:
           cd PatchIccMAX
           git branch
           git status
-          git checkout cmake
+          git checkout nameroll
           echo "📦 Installing Homebrew dependencies..."
           brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg || echo "⚠️ Some dependencies might already be installed."
           echo "✔ Dependency installation complete."
