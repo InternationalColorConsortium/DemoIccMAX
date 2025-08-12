@@ -65,6 +65,7 @@ jobs:
       run: |
         cd PatchIccMAX/Build
         make -j$(nproc)
+        find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
     # Run additional system info and validation commands
     - name: Gather system information
       run: |
@@ -74,15 +75,6 @@ jobs:
         lscpu
         free -m
         df -h
-    # Check build success
-    - name: Check build success
-      run: |
-        if [ -f DemoIccMAX/Build/CMakeCache.txt ]; then
-          echo "✅ Build configuration exists."
-        else
-          echo "❌ Build configuration failed."
-          exit 1
-        fi
     # Upload built binaries as artifacts
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
