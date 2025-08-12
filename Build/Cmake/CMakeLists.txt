@@ -4,7 +4,7 @@
 #                                        All rights reserved.
 # 
 #
-#  Last Updated: 08-MAY-2025 1700 EDT by David Hoyt
+#  Last Updated: 17-JULY-2025 2055 EDT by David Hoyt
 #
 #
 #
@@ -92,7 +92,7 @@ set(PROJECT_DOWN_NAME "reficcmax")
 # Version components
 set(${PROJECT_UP_NAME}_MAJOR_VERSION 2)
 set(${PROJECT_UP_NAME}_MINOR_VERSION 2)
-set(${PROJECT_UP_NAME}_MICRO_VERSION 26)
+set(${PROJECT_UP_NAME}_MICRO_VERSION 61)
 
 # Composite versions
 set(${PROJECT_UP_NAME}_VERSION

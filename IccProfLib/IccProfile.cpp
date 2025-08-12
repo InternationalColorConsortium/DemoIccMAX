@@ -2983,14 +2983,24 @@ void CIccProfile::getNormIlluminantXYZ(icFloatNumber *pXYZ)
 {
   const CIccTagSpectralViewingConditions *pCond = getPccViewingConditions();
   if (!pCond) {
-    pXYZ[0] = icFtoD(m_Header.illuminant.X);
-    pXYZ[1] = icFtoD(m_Header.illuminant.Y);
-    pXYZ[2] = icFtoD(m_Header.illuminant.Z);
+    if (m_Header.version < icVersionNumberV5) {
+      memcpy(pXYZ, icD50XYZ, 3*sizeof(icFloatNumber));
+    }
+    else {
+      pXYZ[0] = icFtoD(m_Header.illuminant.X);
+      pXYZ[1] = icFtoD(m_Header.illuminant.Y);
+      pXYZ[2] = icFtoD(m_Header.illuminant.Z);
+    }
   }
   else {
-    pXYZ[0] = pCond->m_illuminantXYZ.X / pCond->m_illuminantXYZ.Y;
-    pXYZ[1] = 1.0f;
-    pXYZ[2] = pCond->m_illuminantXYZ.Z / pCond->m_illuminantXYZ.Y;
+    if (pCond->isStandardPcc()) {
+      memcpy(pXYZ, icD50XYZ, 3 * sizeof(icFloatNumber));
+    }
+    else {
+      pXYZ[0] = pCond->m_illuminantXYZ.X / pCond->m_illuminantXYZ.Y;
+      pXYZ[1] = 1.0f;
+      pXYZ[2] = pCond->m_illuminantXYZ.Z / pCond->m_illuminantXYZ.Y;
+    }
   }
 }
 

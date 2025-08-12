@@ -31,8 +31,19 @@ if(UNIX AND EXISTS "/etc/lsb-release")
     )
     message(STATUS "Detected Ubuntu version: ${LSB_VERSION}")
     string(REGEX MATCHALL "[0-9]+" LSB_VERSION_PARTS "${LSB_VERSION}")
+
+    if (NOT LSB_VERSION_PARTS)
+        message(WARNING "iccJpegDump is skipped: couldn't be able to detect Ubuntu version")
+        return()
+    endif()
+
     list(GET LSB_VERSION_PARTS 0 UBUNTU_MAJOR)
     list(GET LSB_VERSION_PARTS 1 UBUNTU_MINOR)
+
+    if(NOT UBUNTU_MAJOR OR NOT UBUNTU_MINOR)
+        message(WARNING "iccJpegDump is skipped: couldn't be able to detect Ubuntu version")
+        return()
+    endif()
 
     math(EXPR LSB_VERSION_COMBINED "${UBUNTU_MAJOR} * 100 + ${UBUNTU_MINOR}")
     if(LSB_VERSION_COMBINED LESS 2404)
