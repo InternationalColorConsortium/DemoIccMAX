@@ -52,6 +52,7 @@ jobs:
         run: |
           git clone https://github.com/xsscx/PatchIccMAX.git
           cd PatchIccMAX
+          git checkout cmake
 
       - name: Configure Build with CMake (ASan + Debug)
         run: |
