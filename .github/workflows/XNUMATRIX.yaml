@@ -46,7 +46,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          brew install nlohmann-json libxml2 wxwidgets libtiff libpng jpeg wx-common
+          brew install nlohmann-json libxml2 wxwidgets libtiff libpng jpeg
 
       - name: Clone and Checkout PatchIccMAX
         run: |
