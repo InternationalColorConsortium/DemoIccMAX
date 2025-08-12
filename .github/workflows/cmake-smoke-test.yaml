@@ -46,7 +46,7 @@ jobs:
     - name: Clone the PatchIccMAX repository cmake branch
       run: |
         git clone https://github.com/xsscx/PatchIccMAX.git
-        cd PAtchccMAX
+        cd PatchccMAX
         git checkout cmake
     # Configure the build with CMake
     - name: Configure the build with CMake
