@@ -59,6 +59,7 @@ jobs:
           $CC --version >> $GITHUB_STEP_SUMMARY
       - name: CMake Configure
         run: |
+          git clone https://github.com/xsscx/PatchIccMAX.git
           git checkout nameroll
           cd Build
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
