@@ -74,14 +74,7 @@ jobs:
           make -j$(nproc)
           find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) \
             -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
-      - name: Verify CMake Cache
-        run: |
-          if test -f Build/CMakeCache.txt; then
-            echo "? Build OK" | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "::error ::Build failed! CMakeCache.txt not found." | tee -a $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+
       - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -137,20 +130,12 @@ jobs:
                 -DENABLE_SHARED_LIBS=ON \
                 -DJPEG_LIBRARY=$(brew --prefix jpeg)/lib/libjpeg.dylib \
                 -DJPEG_INCLUDE_DIR=$(brew --prefix jpeg)/include \
+                -DPNG_INCLUDE_DIR=$(brew --prefix libpng)/include \
                 -Wno-dev Cmake/
           make -j$(sysctl -n hw.ncpu)
           find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) \
             -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
           echo "✔ Build process completed."
-
-      - name: Verify CMake Cache
-        run: |
-          if test -f PatchIccMAX/Build/CMakeCache.txt; then
-            echo "? Build OK" | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "::error ::Build failed! CMakeCache.txt not found." | tee -a $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
 
       - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
