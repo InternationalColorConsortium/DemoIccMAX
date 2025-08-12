@@ -71,9 +71,6 @@ jobs:
                 -DENABLE_STATIC_LIBS=ON \
                 -DENABLE_SHARED_LIBS=ON \
                 -Wno-dev Cmake/
-      - name: Build
-        run: |
-          cd Build
           make -j$(nproc)
           find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) \
             -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
