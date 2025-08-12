@@ -63,7 +63,7 @@ jobs:
           cd PatchIccMAX
           git branch
           git status
-          git checkout cmake
+          git checkout nameroll
           cd Build
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
                 -DCMAKE_BUILD_TYPE=Release \
