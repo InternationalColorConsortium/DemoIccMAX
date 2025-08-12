@@ -63,7 +63,7 @@ jobs:
           clang++ --version
           clang --version
           sudo rm -rf /Library/Frameworks/Mono.framework/Headers/png.h
-          cmake -S Cmake -B xnu -DCMAKE_PREFIX_PATH="$(brew --prefix nlohmann-json);$(brew --prefix libtiff);$(brew --prefix wxwidgets)"
+          cmake -S Cmake -B . -DCMAKE_PREFIX_PATH="$(brew --prefix nlohmann-json);$(brew --prefix libtiff);$(brew --prefix wxwidgets)"
           cmake --build Build -v
       - name: Build with make
         run: |
