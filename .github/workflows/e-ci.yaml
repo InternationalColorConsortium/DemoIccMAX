@@ -138,12 +138,6 @@ jobs:
                 -DJPEG_LIBRARY=$(brew --prefix jpeg)/lib/libjpeg.dylib \
                 -DJPEG_INCLUDE_DIR=$(brew --prefix jpeg)/include \
                 -Wno-dev Cmake/
-          echo "✔ CMake configuration complete."
-
-      - name: Build
-        run: |
-          echo "🛠️ Starting build process..."
-          cd PatchIccMAX/Build
           make -j$(sysctl -n hw.ncpu)
           find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) \
             -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
