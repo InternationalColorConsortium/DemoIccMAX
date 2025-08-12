@@ -19,7 +19,7 @@ on:
 
 jobs:
   build-linux:
-    name: Build and Test cmake branch
+    name: Build and Test PatchIccMAX cmake branch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -42,16 +42,16 @@ jobs:
           libxml2 libxml2-dev libtiff-dev nlohmann-json3-dev build-essential \
           cmake clang clang-tools python3 python3-pip libwxgtk3.2-dev wx-common \
           libopencl-clang-17-dev curl git llvm clang-17 libjpeg-dev libpng-dev
-    # Clone the DemoIccMAX repository
-    - name: Clone the DemoIccMAX repository cmake branch
+    # Clone the PatchIccMAX repository
+    - name: Clone the PatchIccMAX repository cmake branch
       run: |
-        git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
-        cd DemoIccMAX
+        git clone https://github.com/xsscx/PatchIccMAX.git
+        cd PAtchccMAX
         git checkout cmake
     # Configure the build with CMake
     - name: Configure the build with CMake
       run: |
-        cd DemoIccMAX/Build
+        cd PatchIccMAX/Build
         export CC=clang
         export CXX=clang++
         export PATH="/usr/lib/llvm-17/bin:$PATH"
@@ -63,7 +63,7 @@ jobs:
     # Build the project using CMake
     - name: Build project with CMake
       run: |
-        cd DemoIccMAX/Build
+        cd PatchIccMAX/Build
         make -j$(nproc)
     # Run additional system info and validation commands
     - name: Gather system information
@@ -88,11 +88,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: master-build-linux
-        path: DemoIccMAX/Build
+        path: PatchIccMAX/Build
 
     # Upload build logs
     - name: Upload build logs
       uses: actions/upload-artifact@v4
       with:
         name: build-logs
-        path: DemoIccMAX/Build/CMakeCache.txt
+        path: PatchIccMAX/Build/CMakeCache.txt
