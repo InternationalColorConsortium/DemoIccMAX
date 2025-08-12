@@ -60,6 +60,8 @@ jobs:
       - name: CMake Configure
         run: |
           git clone https://github.com/xsscx/PatchIccMAX.git
+          git branch
+          git status
           git checkout nameroll
           cd Build
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
@@ -107,6 +109,8 @@ jobs:
           echo "📥 Cloning PatchIccMAX repository..."
           git clone https://github.com/xsscx/PatchIccMAX.git
           cd PatchIccMAX
+          git branch
+          git status
           git checkout cmake
           echo "📦 Installing Homebrew dependencies..."
           brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg || echo "⚠️ Some dependencies might already be installed."
