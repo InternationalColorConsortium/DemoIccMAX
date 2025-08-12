@@ -60,6 +60,7 @@ jobs:
       - name: CMake Configure
         run: |
           git clone https://github.com/xsscx/PatchIccMAX.git
+          cd PatchIccMAX
           git branch
           git status
           git checkout nameroll
