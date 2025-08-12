@@ -63,13 +63,8 @@ jobs:
           clang++ --version
           clang --version
           sudo rm -rf /Library/Frameworks/Mono.framework/Headers/png.h
-          cmake -S Cmake -B . -DCMAKE_PREFIX_PATH="$(brew --prefix nlohmann-json);$(brew --prefix libtiff);$(brew --prefix wxwidgets)"
-          cmake --build . -v
-      - name: Build with make
-        run: |
-          cd PatchIccMAX/Build
-          make -j$(sysctl -n hw.logicalcpu)
-
+          cmake -G "Xcode" Build/Cmake
+          xcodebuild -project RefIccMAX.xcodeproj
       - name: Run PoC Harness
         run: |
           cd PatchIccMAX/Testing
