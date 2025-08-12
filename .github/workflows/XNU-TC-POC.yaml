@@ -27,7 +27,7 @@ on:
 
 jobs:
   build-linux:
-    name: Build PoC Stub off research Branch for XNU-FUZZ
+    name: Build PoC Stub off nameroll to test
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -49,7 +49,7 @@ jobs:
           echo "=== Cloning off research Branch ==="
           git clone https://github.com/xsscx/PatchIccMAX.git
           cd PatchIccMAX
-          git checkout research
+          git checkout nameroll
           echo "=== DONE Cloning PatchIccMAX for research ==="
       - name: Configure with CMake (ASAN + Debug)
         run: |
