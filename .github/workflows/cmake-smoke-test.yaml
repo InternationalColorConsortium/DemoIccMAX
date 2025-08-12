@@ -59,7 +59,7 @@ jobs:
         echo "CXX=clang++" >> $GITHUB_ENV
         clang++ --version
         clang --version
-        cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release -DENABLE_TOOLS=ON -Wno-dev Cmake/ -DVERBOSE=ON
+        cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Release -DENABLE_TOOLS=ON -Wno-dev Cmake
     # Build the project using CMake
     - name: Build project with CMake
       run: |
