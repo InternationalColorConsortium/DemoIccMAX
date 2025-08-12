@@ -1,17 +1,17 @@
 ###############################################################
 #
-## Copyright (©) 2025 International Color Consortium. 
-##                 All rights reserved. 
-##                 https://color.org
+## Copyright (©) 2024-2025 David H Hoyt. All rights reserved.
+##                 https://srd.cx
+##
+## Last Updated: 25-JULY-2025 1600Z by David Hoyt (©)
+#
+## Intent: 4Cmake
+#
+## TODO: Add Unit Test Suite
 #
 #
-## Intent: iccMAX for Cmake Windows Build
 #
-## Last Updated: 24-JULY-2025 0000Z by David Hoyt 
-#                Add Permission Block
-## TODO: Push binary releases, tags etc.. 
 #
-## Comment: Known good and working from PatchIccMax
 #
 #
 #
@@ -19,9 +19,7 @@
 #
 ###############################################################
 
-name: WindowsCmake
-permissions:
-  contents: read
+name: 4Cmake
 
 on:
   workflow_dispatch:
@@ -37,7 +35,8 @@ jobs:
         build_type: [Release]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Cache vcpkg packages
         uses: actions/cache@v3
@@ -49,6 +48,7 @@ jobs:
           key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
           restore-keys: |
             vcpkg-${{ runner.os }}-
+
       - name: Cache build binaries
         uses: actions/cache@v3
         with:
@@ -57,13 +57,14 @@ jobs:
           key: cmake-build-${{ runner.os }}-${{ matrix.build_type }}-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
             cmake-build-${{ runner.os }}-${{ matrix.build_type }}-
-      - name: Install dependencies
+
+      - name: Clone Official DemoIccMAX
         run: |
           git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
           cd DemoIccMAX
-          git checkout cmake
           vcpkg integrate install
           vcpkg install
+
       - name: Configure
         run: |
           cd DemoIccMAX
@@ -71,12 +72,23 @@ jobs:
           cmake -B build -S . -G "Visual Studio 17 2022" -A x64 ^
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ^
           -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+
       - name: Build
         run: |
           cd DemoIccMAX\Build\Cmake
           cmake --build build --config ${{ matrix.build_type }}
           dir /s /b *.exe *.lib
-      - name: Run Unit Tests
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: iccmax-windows-msvc
+          path: DemoIccMAX\Build\Cmake\build\**\*.{exe,lib}
+
+      - name: Summary Report
+        if: always()
         run: |
-          cd DemoIccMAX\Testing
-          dir
+          echo "### Windows Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Directory: DemoIccMAX\\Build\\Cmake\\build\\" >> $GITHUB_STEP_SUMMARY
+          echo "- Artifacts Uploaded: iccmax-windows-msvc" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
