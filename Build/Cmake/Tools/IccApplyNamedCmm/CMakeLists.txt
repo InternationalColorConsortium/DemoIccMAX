@@ -1,12 +1,18 @@
 #
-# IccApplyNamedCmm CMakeLists.txt | DemoIccMAX Project
+# IccApplyNamedCmm CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 #
 #
-# Last Updated: 09-APRIL-2025 at 1300 EDT by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes:      Added JSON Dependency
-#               Adjusted Cross Platform Build Args
+# Changes:      Modify iccMAX to iccDEV
+#
+#
+#
+#
+#
+#
+#
 #
 #
 #

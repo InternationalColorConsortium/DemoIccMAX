@@ -1,11 +1,11 @@
 # 
-# IccApplyToLink CMakeLists.txt | DemoIccMAX Project
+# IccApplyToLink CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #
-# Last Updated: 03-DEC-2024 by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes: 	Remove hardcoded build args and debugging output from my prior commit
+# Changes: 	Modify iccMAX to iccDEV
 #						
 #						
 # TODO: Refactor Debug, Release, Asan 
@@ -14,14 +14,14 @@
 #
 
 # Minimum CMake Version
-cmake_minimum_required(VERSION 3.5)
+# cmake_minimum_required(VERSION 3.5)
 
 # Project Definition
 project(iccApplyToLink)
 
 # Set C++ Standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set Architecture (x86_64 Only)
 # set(CMAKE_OSX_ARCHITECTURES "x86_64")

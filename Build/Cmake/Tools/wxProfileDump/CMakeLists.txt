@@ -1,15 +1,15 @@
 #################################################################################
-# Cmake Project Configuration| iccMAX Project
+# Cmake Project Configuration| iccDEV Project
 # Copyright (C) 2024-2025 The International Color Consortium. 
 #                                        All rights reserved.
-#  Last Updated: Mon Apr 28 14:50:05 EDT 2025 by David Hoyt
+#  Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
 #
 #
 #  
-#  Changes: Modified Build/Cmake/CMakeLists.txt and others
-#           Improved dependency linking and error handling
-#           Adjusted cross-platform build args
+#  Changes: Modify iccMAX to iccDEV
+#           
+#           
 #
 #  TODO: Refactor Debug, Release, Asan 
 #        Collapse 3-tier CMakeLists.txt, Housekeeping

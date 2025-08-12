@@ -1,14 +1,14 @@
 #
-# IccV5DspObsToV4Dsp CMakeLists.txt | DemoIccMAX Project
+# IccV5DspObsToV4Dsp CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 #
 #
-# Last Updated: 02-DEC-2024 by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes:  Modified Build/Cmake/CMakelists.txt and others
-#           Added IccFromCubeProject
-#           Added IccV5DspObsToV4Dsp
-#           Adjusted Cross Platform Build Args
+# Changes: Modify iccMAX to iccDEV
+#
+#
+#
 #
 # TODO: Refactor Debug, Release, Asan
 #                       Collapse 3-tier CMakeLists.txt, Housekeeping

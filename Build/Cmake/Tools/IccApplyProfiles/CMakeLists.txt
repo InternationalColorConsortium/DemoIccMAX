@@ -1,15 +1,14 @@
 #
-# IccApplyProfiles CMakeLists.txt | DemoIccMAX Project
+# IccApplyProfiles CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 #
 #
-# Last Updated: 28-JULY-2025 0100Z  by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes:      Added JSON Dependency
-#               Adjusted Cross Platform Build Args
+# Changes:      Modify iccMAX to iccDEV
 #
 #
-# Found the missing Tiff Include Dep from AFL and Graph - DHOYT
+# 
 #
 #
 

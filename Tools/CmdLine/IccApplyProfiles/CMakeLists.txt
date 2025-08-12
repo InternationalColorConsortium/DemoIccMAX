@@ -1,11 +1,11 @@
 # 
-# IccApplyProfiles CMakeLists.txt | DemoIccMAX Project
+# IccApplyProfiles CMakeLists.txt | iccDEV Project
 # Copyright (©) 2024 The International Color Consortium. All rights reserved.
 # 
 #
-# Last Updated: 08-MAY-2025 by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes: 	Remove hardcoded build args and debugging output from my prior commit
+# Changes: 	Modify iccMAX to iccDEV
 #						
 #						
 # TODO: Refactor Debug, Release, Asan 
@@ -17,8 +17,8 @@
 project(iccApplyProfiles)
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure architecture compatibility on macOS
 # if(APPLE)

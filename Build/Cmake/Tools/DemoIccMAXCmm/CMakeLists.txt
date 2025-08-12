@@ -1,18 +1,18 @@
 #################################################################################
-# iccMAXCmm Cmake Project Configuration| iccMAX Project
+# iccMAXCmm Cmake Project Configuration| iccDEV Project
 # Copyright (©) 2024-2025 The International Color Consortium. 
 #                                        All rights reserved.
-# Last Updated: 14-MAR-2025 1007 EDT by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes:  Modified Build/Cmake/CMakeLists.txt and others
-# TODO :    Adjusted CMM build, wrapped build type in conditional
-#           Debug to MinSizeRel and x64-Debug - IN PROCESS
-#           Library path.part slightly hardcoded
-#           Refactor for x64-MinSizeRel, x64-Debug, Unix/Win/macOS wrap
-#           HARDCODED - Release or Debug, needs rel-debug wrapper
-#           Refactor Debug, Release, Asan 
-#           Collapse 3-tier CMakeLists.txt, Housekeeping
-#           Refactor Base Configs & logging to .mk's
+# Changes:  Modified iccMAX to iccDEV
+#
+#
+#
+#
+#
+#
+#
+#
 #
 #
 #

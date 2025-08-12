@@ -1,14 +1,12 @@
 #################################################################################
-# iccJpegDump Cmake Project Configuration| iccMAX Project
+# iccJpegDump Cmake Project Configuration| iccDEV Project
 # Copyright (©) 2024-2025 The International Color Consortium. 
 #                                        All rights reserved.
 # 
 #
-# Last Updated: 18-APRIL-2025 1200 EDT by David Hoyt
+# Last Updated: 12-AUGUST-2025 1600Z by David Hoyt
 #
-# Changes: 	Modified output target to fix a few subproject pathing issues
-#           Added to CMakelists.txt: IccJpegDump
-#           Adjusted Cross Platform Build Args
+# Changes: 	Modified iccMAX to iccDEV
 #						
 # TODO: Refactor Debug, Release, Asan, subproject pathing issues
 #       Collapse 3-tier CMakeLists.txt, Housekeeping

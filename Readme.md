@@ -1,29 +1,21 @@
-> [!NOTE]
-> **Upcoming Repository Name Change**
-> 
-> This project will be renamed to iccDEV on September 5, 2025. On that date, both the project name and its GitHub repository location will be updated accordingly.
-> Please update any bookmarks or dependencies to reflect this change.
-
-# IccMAX
-
-`brew install iccmax`
+# iccDEV
 
 ## Introduction
 
-The IccMAX project (formally known as RefIccMAX, or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccMAX based color management profiles based on the [iccMAX profile specification](http://www.color.org/iccmax.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
+The iccDEV project (formally known as RefIccMAX or DemoIccMAX) provides an open source set of libraries and tools that allow for the interaction, manipulation, and application of iccDEV based color management profiles based on the [iccDEV profile specification](http://www.color.org/iccdev.xalter) in addition to legacy ICC profiles defined by [earlier ICC profile specifications](http://www.color.org/icc_specs2.xalter) and [documentation](ReadMeFiles/Readme.md).
 
 Within the project are several libraries and tools as follows:
 
-* Libraries that allow applications to interact with iccMAX profiles
+* Libraries that allow applications to interact with iccDEV profiles
 
-  * IccProfLib - The IccMAX IccProfLib project represents an open source &
+  * IccProfLib - The iccDEV IccProfLib project represents an open source &
     cross platform reference implementation of a C++ library for reading,
-    writing, applying, manipulating iccMAX color profiles defined by the [iccMAX
-    profile specification](http://www.color.org/iccmax.xalter).
+    writing, applying, manipulating iccDEV color profiles defined by the [iccDEV
+    profile specification](http://www.color.org/iccdev.xalter).
 
-  * IccLibXML - The IccMAX IccLibXML project contains a parallel C++
+  * IccLibXML - The iccDEV IccLibXML project contains a parallel C++
     extension library (IccLibXML) which provides the ability to interact with the
-    objects defined by IccProfLib using an XML representation thus allowing iccMAX
+    objects defined by IccProfLib using an XML representation thus allowing iccDEV
     profiles to be expressed as or created from text based XML files.
 
 
@@ -33,32 +25,32 @@ Within the project are several libraries and tools as follows:
   will display help information about command line options.
 
   * IccToXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be expressed using an XML representation. This allows
+    and iccDEV profiles to be expressed using an XML representation. This allows
     for profiles to be converted to a textual representation that can be directly
-    edited using a text editor and then converted back to ICC/iccMAX profile
+    edited using a text editor and then converted back to ICC/iccDEV profile
     formats using IccFromXML.
 
   * IccFromXML is a cross platform command line tool that allows both legacy ICC
-    and iccMAX profiles to be created from the same XML representation provided by
+    and iccDEV profiles to be created from the same XML representation provided by
     IccToXML. A schema for iccXML files is forthcoming but can be determined using
     the FromXML() and ToXML() member functions defined in IccLibXML. The
     IccFromXML tool provides a simple direct method to create and manipulate
-    iccMAX based profiles.
+    iccDEV based profiles.
 
   * IccApplyNamedCmm is a cross platform command line tool that allows a
-    sequence of legacy ICC and/or iccMAX profiles to be applied to colors defined
+    sequence of legacy ICC and/or iccDEV profiles to be applied to colors defined
     in a text based input profile outputting the results to the console, and can
     be redirected to a output text file. Example source text files can be found in
     Testing/ApplyDataFiles. The IccApplyNamedCmm application provides a basis for
-    testing various features of iccMAX.
+    testing various features of iccDEV.
 
   * IccApplyProfiles is a cross platform command line tool that allows a sequence of
-    legacy and/or iccMAX profiles to a source TIFF image resulting in a destination
+    legacy and/or iccDEV profiles to a source TIFF image resulting in a destination
     TIFF image. The final destination profile can optionally be embedded in the
     resulting TIFF image.
 
   * IccDumpProfile is a cross platform command line tool that allows information
-    from a legacy ICC and or iccMAX profile to be output to the console. Data
+    from a legacy ICC and or iccDEV profile to be output to the console. Data
     with non-printable values are replaced with '?'. Output from this tool is
     not guaranteed to be ASCII or UTF-8, but line-endings are consistent for a
     given platform.
@@ -81,7 +73,7 @@ Within the project are several libraries and tools as follows:
 
   * IccSpecSepToTiff is a cross platform command line tool that combines separate
     individual TIFF images associated with different spectral wavelengths into a
-    single multi-sample per pixel TIFF image. An iccMAX based profile can optionally
+    single multi-sample per pixel TIFF image. An iccDEV based profile can optionally
     be embedded in the resulting TIFF image.
 
   * IccTiffDump is a cross platform command line tool that outputs header and
@@ -94,13 +86,13 @@ Within the project are several libraries and tools as follows:
     embedded ICC profile information about a JPG image to the console. 
 
   * wxProfileDump provides a [wxWidgets](https://www.wxwidgets.org/) GUI based
-    iccMAX and legacy ICC profile inspector tool. The code for this tool is based on
+    iccDEV and legacy ICC profile inspector tool. The code for this tool is based on
     wxWidgets 3.2.
 
 
-## Example iccMAX Profiles
+## Example iccDEV Profiles
 
-XML files are provided that can be used to create example iccMAX profiles. The
+XML files are provided that can be used to create example iccDEV profiles. The
 CreateAllProfiles.bat file uses the iccFromXML tool to create ICC profiles for
 each of these XML files. The XML files can be found in the following folders:
 
@@ -150,8 +142,8 @@ abridged spectral encoding is provided.
 
 ### Quick Start
 
-- [iccMAX Release Binaries](https://github.com/InternationalColorConsortium/DemoIccMAX/releases/tag/v2.1.26) 
-- `brew install iccmax`
+- [iccDEV Release Binaries](https://github.com/InternationalColorConsortium/iccDEV/releases) 
+- `brew install iccdev`
 - [Build](BUILD.md)
 
 
