@@ -114,7 +114,7 @@ jobs:
           echo "⚙️ Setting up CMake build configuration..."
           mkdir -p PatchIccMAX/Build
           cd PatchIccMAX/Build
-          sudo rm -rf /Library/Frameworks/Mono.framework/Headers/png.h || true
+          # sudo rm -rf /Library/Frameworks/Mono.framework/Headers/png.h || true
           echo 'export PATH="/opt/homebrew/opt/jpeg/bin:$PATH"' >> /Users/runner/.bash_profile
           export CPPFLAGS="-I/opt/homebrew/opt/jpeg/include"
           export PKG_CONFIG_PATH="/opt/homebrew/opt/jpeg/lib/pkgconfig"
