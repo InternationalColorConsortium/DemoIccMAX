@@ -19,7 +19,7 @@
 #
 ###############################################################
 
-name: cmake Test
+name: E-CI
 
 on:
   workflow_dispatch:
@@ -74,7 +74,6 @@ jobs:
           make -j$(nproc)
           find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) \
             -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
-
       - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -102,16 +101,14 @@ jobs:
           cd PatchIccMAX
           git branch
           git status
-          git checkout cmake
+          git checkout nameroll
           echo "📦 Installing Homebrew dependencies..."
           brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg || echo "⚠️ Some dependencies might already be installed."
           echo "✔ Dependency installation complete."
-
       - name: Print Compiler Version
         run: |
           echo "Compiler Version:" >> $GITHUB_STEP_SUMMARY
           clang --version >> $GITHUB_STEP_SUMMARY
-
       - name: CMake Configure
         run: |
           echo "⚙️ Setting up CMake build configuration..."
@@ -136,7 +133,6 @@ jobs:
           find . -type f \( -perm -111 -o -name "*.a" -o -name "*.so" -o -name "*.dylib" \) \
             -mmin -1440 ! -path "*/.git/*" ! -path "*/CMakeFiles/*" ! -name "*.sh" -print
           echo "✔ Build process completed."
-
       - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
         with:
