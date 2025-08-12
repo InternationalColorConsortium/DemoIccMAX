@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        macos: [13, 14]
+        macos: [13, 14, Latest]
         arch: [x86_64, arm64]
 
     steps:
