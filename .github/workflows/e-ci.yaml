@@ -19,7 +19,7 @@
 #
 ###############################################################
 
-name: Nameroll Test
+name: cmake Test
 
 on:
   workflow_dispatch:
@@ -63,7 +63,7 @@ jobs:
           cd PatchIccMAX
           git branch
           git status
-          git checkout nameroll
+          git checkout cmake
           cd Build
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
                 -DCMAKE_BUILD_TYPE=Release \
@@ -102,7 +102,7 @@ jobs:
           cd PatchIccMAX
           git branch
           git status
-          git checkout nameroll
+          git checkout cmake
           echo "📦 Installing Homebrew dependencies..."
           brew install libpng nlohmann-json libxml2 wxwidgets libtiff jpeg || echo "⚠️ Some dependencies might already be installed."
           echo "✔ Dependency installation complete."
