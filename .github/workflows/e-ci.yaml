@@ -59,7 +59,7 @@ jobs:
           $CC --version >> $GITHUB_STEP_SUMMARY
       - name: CMake Configure
         run: |
-          git checkout cmake
+          git checkout nameroll
           cd Build
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
                 -DCMAKE_BUILD_TYPE=Release \
