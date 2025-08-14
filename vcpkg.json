@@ -7,6 +7,19 @@
   "homepage": "https://github.com/InternationalColorConsortium/DemoIccMAX",
   "documentation": "https://www.color.org/iccmax/index.xalter",
   "supports": "windows | linux | osx",
+  "license": "BSD-3-Clause",
+  "licenseFile": "LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InternationalColorConsortium/DemoIccMAX"
+  },
+  "issues": "https://github.com/InternationalColorConsortium/DemoIccMAX/issues",
+  "maintainers": [
+    {
+      "name": "International Color Consortium",
+      "email": "info@color.org"
+    }
+  ],
   "dependencies": [
     "libpng",
     "wxwidgets",
@@ -15,5 +28,7 @@
     "nlohmann-json",
     "libjpeg-turbo"
   ],
-  "overrides": []
+  "overrides": [],
+  "features": {},
+  "default-features": []
 }
