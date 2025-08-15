@@ -1,0 +1,143 @@
+xss@W5:~/pr152/repro5/DemoIccMAX$ date
+Wed Aug  6 19:00:48 EDT 2025
+
+xss@W5:~/pr152/repro5/DemoIccMAX$ uname -a
+Linux W5 5.15.167.4-microsoft-standard-WSL2 #1 SMP Tue Nov 5 00:21:55 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+
+REQUIRED:  
+sudo apt update
+sudo apt upgrade
+sudo apt install -y autoconf autoconf-archive automake bison build-essential clang clang-tools clang-tidy clangd cmake g++ gcc gdb gettext libegl1-mesa-dev libgles2-mesa-dev libibus-1.0-dev libstdc++-12-dev libc++-dev libc++abi-dev libtool libvalgrind-dev libwayland-dev libx11-dev libxext-dev libxft-dev libxi-dev libxkbcommon-dev libxrandr-dev libxrandr2 libxtst-dev lld lldb m4 ninja-build valgrind
+
+xss@W5:~/pr152/repro5/DemoIccMAX$ ~/vcpkg/vcpkg --version
+vcpkg package management program version 2025-04-16-f9b6c6917b23c1ccf16c1a9f015ebabf8f615045
+See LICENSE.txt for license information.
+
+xss@W5:~/pr152/repro5$ git clone https://github.com/InternationalColorConsortium/DemoIccMAX.git
+Cloning into 'DemoIccMAX'...
+remote: Enumerating objects: 5390, done.
+remote: Counting objects: 100% (245/245), done.
+remote: Compressing objects: 100% (117/117), done.
+cd Receiving objects:   8% (448/5390), 12.43 MiB | 12.35 MiB/s
+remote: Total 5390 (delta 156), reused 136 (delta 126), pack-reused 5145 (from 3)
+Receiving objects: 100% (5390/5390), 61.62 MiB | 13.20 MiB/s, done.
+Resolving deltas: 100% (3448/3448), done.
+
+
+xss@W5:~/pr152/repro5$ cd DemoIccMAX/
+
+
+xss@W5:~/pr152/repro5/DemoIccMAX$ git checkout vcpkg
+branch 'vcpkg' set up to track 'origin/vcpkg'.
+Switched to a new branch 'vcpkg'
+
+
+xss@W5:~/pr152/repro5/DemoIccMAX$ rm vcpkg.json
+
+
+xss@W5:~/pr152/repro5/DemoIccMAX$ ~/vcpkg/vcpkg install iccdev --overlay-ports=ports    --clean-after-build
+Computing installation plan...
+The following packages will be built and installed:
+    iccdev:x64-linux@2.2.61 -- /home/xss/pr152/repro5/DemoIccMAX/ports/iccdev
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/g++
+Restored 0 package(s) from /home/xss/.cache/vcpkg/archives in 456 us. Use --debug to see more details.
+Installing 1/1 iccdev:x64-linux@2.2.61...
+Building iccdev:x64-linux@2.2.61...
+/home/xss/pr152/repro5/DemoIccMAX/ports/iccdev: info: installing overlay port from here
+-- Using cached InternationalColorConsortium-DemoIccMAX-4c0949c23631ca449f480da80630c34765fb61c7.tar.gz
+-- Extracting source /home/xss/vcpkg/downloads/InternationalColorConsortium-DemoIccMAX-4c0949c23631ca449f480da80630c34765fb61c7.tar.gz
+-- Using source at /home/xss/vcpkg/buildtrees/iccdev/src/4765fb61c7-0d6b46bc5b.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Installing: /home/xss/vcpkg/packages/iccdev_x64-linux/share/iccdev/copyright
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccApplyToLink' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccDumpProfile' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccFromCube' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccFromXml' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccRoundTrip' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccToXml' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/bin/iccV5DspObsToV4Dsp' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccApplyToLink' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccDumpProfile' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccFromCube' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccFromXml' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccRoundTrip' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccToXml' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/bin/iccV5DspObsToV4Dsp' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/lib/libIccProfLib2.so.2.2.61' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/debug/lib/libIccXML2.so.2.2.61' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/lib/libIccProfLib2.so.2.2.61' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/home/xss/vcpkg/packages/iccdev_x64-linux/lib/libIccXML2.so.2.2.61' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Starting submission of iccdev:x64-linux@2.2.61 to 1 binary cache(s) in the background
+Elapsed time to handle iccdev:x64-linux: 38 s
+iccdev:x64-linux package ABI: 4d867707826a68fe5d9b9eea9beb6601d35df2b1d6285b74802fad8da1f9a705
+Total install time: 38 s
+Waiting for 1 remaining binary cache submissions...
+Completed submission of iccdev:x64-linux@2.2.61 to 1 binary cache(s) in 1.4 s (1/1)
+
+xss@W5:~/pr152/repro5/DemoIccMAX$ ~/vcpkg/vcpkg --classic  install iccdev --overlay-ports=ports    --clean-after-build
+Computing installation plan...
+The following packages are already installed:
+    iccdev:x64-linux@2.2.61
+
+iccdev:x64-linux is already installed
+Total install time: 448 us
+icc@icc:~/DemoIccMAX$ for tool in ~/vcpkg/installed/x64-linux/bin/icc*; do     echo "== Testing $tool ==";     "$tool" 2>&1 | head -n 20;     echo ""; done
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccApplyToLink ==
+iccApplyToLink built with IccProfLib version 2.2.61
+
+Usage: iccApplyToLink dst_link_file link_type lut_size option title range_min range_max first_transform interp {{-ENV:sig value} profile_file_path rendering_intent {-PCC connection_conditions_path}}
+
+  dst_link_file is path of file to create
+
+  For link_type:
+    0 - Device Link
+    1 - .cube text file
+
+  Where lut_size represents the number of grid entries for each lut dimension.
+
+  For option when link_type is 0:
+    option represents the digits of precision for lut for .cube files
+  For option when link_type is 1:
+    0 - version 4 profile with 16-bit table
+    1 - version 5 profile
+
+  title is the title/description for the dest_link_file
+
+
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccDumpProfile ==
+Usage: iccDumpProfile {-v} {int} profile {tagId to dump/"ALL"}
+Built with IccProfLib version 2.2.61
+
+The -v option causes profile validation to be performed.
+The optional integer parameter specifies verboseness of output (1-100, default=100).
+iccDumpProfile built with IccProfLib version 2.2.61
+
+
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccFromCube ==
+Usage: iccFromCube cube_file output_icc_file
+Built with IccProfLib version 2.2.61
+
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccFromXml ==
+IccFromXml built with IccProfLib Version 2.2.61, IccLibXML Version 2.2.61
+
+Usage: IccFromXml xml_file saved_profile_file {-noid -v{=[relax_ng_schema_file - optional]}}
+
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccRoundTrip ==
+Usage: iccRoundTrip profile {rendering_intent=1 {use_mpe=0}}
+Built with IccProfLib version 2.2.61
+  where rendering_intent is (0=perceptual, 1=relative, 2=saturation, 3=absolute)
+
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccToXml ==
+IccToXml built with IccProfLib Version 2.2.61, IccLibXML Version 2.2.61
+
+Usage: IccToXml src_icc_profile dest_xml_file
+
+== Testing /home/icc/vcpkg/installed/x64-linux/bin/iccV5DspObsToV4Dsp ==
+Usage: iccV5DspObsToV4Dsp v5DspIccPath v5ObsPcc v4DspIccPath
+Built with IccProfLib version 2.2.61

@@ -1,0 +1,17 @@
+{
+  "name": "iccdev",
+  "version": "2.2.50",
+  "description": "Developer tools for ICC color profiles",
+  "license": "MIT",
+  "dependencies": [
+    "vcpkg-cmake",
+    "vcpkg-cmake-config",
+    "libpng",
+    "tiff",
+    "libxml2",
+    "libiconv",
+    "nlohmann-json",
+    "libjpeg-turbo"
+  ]
+}
+
