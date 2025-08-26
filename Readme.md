@@ -6,7 +6,7 @@
 
 # IccMAX
 
-`brew install iccmax`
+`brew install iccdev`
 
 ## Introduction
 
@@ -150,10 +150,8 @@ abridged spectral encoding is provided.
 
 ### Quick Start
 
-- [iccMAX Release Binaries](https://github.com/InternationalColorConsortium/DemoIccMAX/releases/tag/v2.1.26) 
-- `brew install iccmax`
+- [iccDEV Release Binaries](https://github.com/InternationalColorConsortium/iccDEV/releases/) 
 - [Build](BUILD.md)
-
 
 ---
 
