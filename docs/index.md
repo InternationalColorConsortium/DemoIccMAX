@@ -98,30 +98,30 @@ XML files are provided that can be used to create example iccMAX profiles. The
 CreateAllProfiles.bat file uses the iccFromXML tool to create ICC profiles for
 each of these XML files. The XML files can be found in the following folders:
 
-### [Calc](Testing/Calc)
+### [Calc](../Testing/Calc)
 
 This folder contains profiles that demonstrate color modeling using the
 Calculator MultiProcessElement. The srgbCalcTest profile exercises all specified
 calculator operations.
 
-### [Display](Testing/Display)
+### [Display](../Testing/Display)
 
 This folder contains profiles that demonstrate spectral modeling of display
 profiles allowing for late binding of the observer using MultiProcessElements
 that are transformed at startup to colorimetry for the desired observer.
 
-### [Encoding](Testing/Encoding)
+### [Encoding](../Testing/Encoding)
 
 This folder contains 3 channel encoding class profiles. Both "name only"
 profiles as well as fully specified profiles are present.
 
-### [Named](Testing/Named)
+### [Named](../Testing/Named)
 
 This folder contains named color profiles showcasing
 features such as tints, spectral reflectance, and fluorescence (with and with
 out sparse notation).
 
-### [PCC](Testing/PCC)
+### [PCC](../Testing/PCC)
 
 This folder contains various profiles that can be used to
 define Profile Connection Conditions (PCC). All profiles are abstract profiles
@@ -130,7 +130,7 @@ defined PCC tags that provide information that can be used to define rendering
 for various observers and illuminants. Profiles that utilize both absolute
 colorimetry as well as Material Adjusted colorimetry are present.
 
-### [SpecRef](Testing/SpaceRef)
+### [SpecRef](../Testing/SpaceRef)
 
 This folder contains various profiles that convert data to/from/between a
 spectral reflectance PCS. The argbRef (AdobeRGB) and srgbRef (sRGB) convert RGB
